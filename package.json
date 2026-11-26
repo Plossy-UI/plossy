@@ -1,10 +1,11 @@
 {
   "name": "plossy",
-  "version": "0.1.1",
-  "description": "Plossy — lekka, nowoczesna biblioteka komponentów UI (CSS + vanilla JS).",
+  "version": "0.2.1",
+  "description": "Plossy — nowoczesna biblioteka komponentów UI (CSS + vanilla JS).",
   "type": "module",
   "license": "MIT",
   "main": "dist/plossy.esm.js",
+  "types": "dist/plossy.d.ts",
   "style": "dist/plossy.css",
   "scripts": {
     "dev": "astro dev --root docs",

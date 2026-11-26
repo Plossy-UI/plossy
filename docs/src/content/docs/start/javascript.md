@@ -95,6 +95,28 @@ Plossy.register('clicker', Clicker);
 | `this.on(cel, typ, fn)` | Nasłuch sprzątany automatycznie w `destroy()`. |
 | `this.emit(typ, detail, cancelable)` | Wysyła `pl:{typ}`; zwraca `false`, gdy anulowano. |
 
+## TypeScript
+
+Paczka zawiera deklaracje typów (`dist/plossy.d.ts`) — edytor podpowiada opcje i metody każdego komponentu, a kompilator wyłapuje literówki. Nie trzeba niczego doinstalowywać.
+
+```ts
+import Plossy, { type PlossyEvent } from 'plossy';
+
+const quantity = Plossy.quantity('#ilosc', { min: 1, max: 10 });
+quantity?.step(1);
+
+document.addEventListener('pl:change', (event) => {
+  console.log(event.detail.value, event.detail.component);
+});
+
+// Gdy chcesz dokładnie opisać zawartość zdarzenia:
+function onChange(event: PlossyEvent<{ value: number; previous: number }>) {
+  console.log(event.detail.value - event.detail.previous);
+}
+```
+
+Funkcje `Plossy.nazwa()` zwracają `null`, gdy element nie istnieje — stąd `?.` w przykładzie. Typy opcji są dostępne pod nazwami `{Komponent}Options` (np. `ModalOptions`, `SliderOptions`).
+
 ## Narzędzia
 
 `Plossy.util` zawiera funkcje używane przez komponenty — przydatne także we własnym kodzie.

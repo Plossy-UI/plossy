@@ -1,6 +1,6 @@
 ---
 title: Wprowadzenie
-description: Plossy to lekka biblioteka komponentów interfejsu — czysty CSS oparty na tokenach i małe moduły JavaScript bez żadnych zależności.
+description: Plossy to biblioteka komponentów interfejsu — czysty CSS oparty na tokenach i małe moduły JavaScript bez żadnych zależności.
 order: 1
 ---
 
@@ -16,19 +16,61 @@ Plossy dostarcza kilkadziesiąt gotowych komponentów — od przycisków i formu
 
 ## Instalacja
 
-Zbuduj paczkę poleceniem `npm run dist` — w katalogu `dist/` pojawią się gotowe pliki. Dołącz je do strony:
+### NPM
 
-```html
-<link rel="stylesheet" href="dist/plossy.min.css" />
-<script src="dist/plossy.min.js" defer></script>
+```bash
+npm install plossy
 ```
 
-W projekcie z bundlerem zaimportuj źródła:
+W projekcie z bundlerem (Vite, Astro, webpack…) zaimportuj gotowe pliki z paczki:
 
 ```js
-import 'plossy/src/scss/plossy.scss';
-import Plossy from 'plossy/src/js/index.js';
+import 'plossy/dist/plossy.min.css';
+import Plossy from 'plossy';
 ```
+
+Import JavaScriptu uruchamia automatyczną inicjalizację komponentów z atrybutów `data-pl-*`; obiekt `Plossy` daje dostęp do API (np. `Plossy.modal('#okno').show()`).
+
+### CDN
+
+Bez instalacji — dołącz pliki prosto ze strony:
+
+```html
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/plossy@0.2/dist/plossy.min.css" />
+<script src="https://cdn.jsdelivr.net/npm/plossy@0.2/dist/plossy.min.js" defer></script>
+```
+
+Skrypt udostępnia globalny obiekt `window.Plossy`.
+
+### Tylko to, czego używasz
+
+`plossy.min.css` zawiera wszystko. Jeśli zależy Ci na rozmiarze, załaduj sam rdzeń i dołóż tylko potrzebne części — w tej kolejności:
+
+```html
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/plossy@0.2/dist/plossy.core.min.css" />
+<!-- opcjonalnie: wybrany styl (data-pl-style="flat") -->
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/plossy@0.2/dist/presets/flat.min.css" />
+<!-- opcjonalnie: klasy Bootstrapa (d-flex, col-md-6, .btn …) -->
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/plossy@0.2/dist/plossy.bootstrap.min.css" />
+```
+
+Rdzeń ma domyślny wygląd (styl „soft"), jasny i ciemny motyw oraz wszystkie akcenty. Po kompresji gzip waży ok. 65 kB zamiast 85 kB pełnego pliku; pojedynczy preset to 1–2 kB, a warstwa Bootstrapa ok. 25 kB.
+
+### Pliki w paczce
+
+| Plik | Do czego |
+| --- | --- |
+| `dist/plossy.min.css` | Wszystko: rdzeń, wszystkie style i zgodność z Bootstrapem. |
+| `dist/plossy.core.min.css` | Sam rdzeń: komponenty, narzędzia, motywy i akcenty. |
+| `dist/presets/{nazwa}.min.css` | Jeden styl (`flat`, `glass`, `pop`…), ładowany po rdzeniu. |
+| `dist/plossy.bootstrap.min.css` | Klasy Bootstrapa, ładowane po rdzeniu. |
+| `dist/plossy.min.js` | Skrypt dla tagu `<script>` (globalne `Plossy`). |
+| `dist/plossy.esm.js` | Moduł ES dla bundlerów — to on ładuje się przy `import Plossy from 'plossy'`. |
+| `dist/plossy.d.ts` | Deklaracje typów dla TypeScriptu — ładują się same. |
+
+Każdy plik CSS i `plossy.js` ma też wersję czytelną, bez `.min`.
+
+Źródła SCSS i JS nie wchodzą do paczki NPM. Jeśli chcesz zmieniać zmienne Sass albo budować własną wersję, pobierz [repozytorium z GitHuba](https://github.com/plossy-ui/plossy) i uruchom `npm install`, a potem `npm run dist`.
 
 Biblioteka nie dołącza krojów pisma. Domyślne tokeny wskazują na **Geist** (tekst), **Bricolage Grotesque** (nagłówki) i **Geist Mono** (kod) z bezpiecznymi zamiennikami systemowymi — kroje podmienisz zmiennymi `--pl-font-sans`, `--pl-font-display` i `--pl-font-mono`.
 

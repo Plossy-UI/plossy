@@ -1,0 +1,9 @@
+// Plossy — warstwa zgodności z klasami Bootstrapa (d-flex, my-2, row/col-md-6, .btn …).
+// Ładowana po rdzeniu (i po presetach).
+@use 'compat/bootstrap';
+@use 'compat/bootstrap-components';
+
+// Atrybut hidden wygrywa z narzędziami display (.d-flex, .d-block …).
+[hidden]:not([hidden='until-found']) {
+  display: none !important;
+}

@@ -1,7 +1,7 @@
 
 # Plossy
 
-A lightweight, modern CSS and Vanilla JavaScript UI framework.
+A modern CSS and Vanilla JavaScript UI framework.
 
 ## Installation
 

@@ -251,7 +251,7 @@ Wystarczy blok CSS z własną nazwą. Poniższy przykład definiuje styl `brutal
 
 ### W Sass
 
-Presety biblioteki leżą w `src/scss/styles/` i są dołączane w `plossy.scss` — niepotrzebne możesz stamtąd usunąć. Własny dodasz mixinami z `_engine.scss`; same dbają o przeliczenie kolorów pochodnych (hover, tła „soft", cienie), także gdy styl jest użyty lokalnie, a nie na `<html>`.
+Presety biblioteki leżą w `src/scss/styles/` i są dołączane w `plossy.scss` — niepotrzebne możesz stamtąd usunąć. W paczce NPM każdy preset jest też osobnym plikiem `dist/presets/{nazwa}.min.css`, który ładuje się po `plossy.core.min.css`. Własny dodasz mixinami z `_engine.scss`; same dbają o przeliczenie kolorów pochodnych (hover, tła „soft", cienie), także gdy styl jest użyty lokalnie, a nie na `<html>`.
 
 ```scss
 @use 'engine' as *;

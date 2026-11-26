@@ -1,0 +1,94 @@
+// Plossy — rdzeń: tokeny → baza → komponenty → narzędzia.
+// Wygląd domyślny (styl „soft"), jasny i ciemny motyw, akcenty. Bez presetów data-pl-style
+// i bez warstwy zgodności z Bootstrapem (plossy.bootstrap.scss).
+@use 'tokens';
+@use 'base';
+
+@use 'components/container';
+@use 'components/grid';
+@use 'components/section';
+@use 'components/tile';
+@use 'components/column';
+@use 'components/cover';
+@use 'components/divider';
+@use 'components/alert';
+@use 'components/article';
+@use 'components/avatar';
+@use 'components/badge';
+@use 'components/button';
+@use 'components/card';
+@use 'components/chip';
+@use 'components/close';
+@use 'components/comment';
+@use 'components/countdown';
+@use 'components/description-list';
+@use 'components/heading';
+@use 'components/icon';
+@use 'components/iconnav';
+@use 'components/image';
+@use 'components/label';
+@use 'components/leader';
+@use 'components/link';
+@use 'components/list';
+@use 'components/marker';
+@use 'components/overlay';
+@use 'components/placeholder';
+@use 'components/progress';
+@use 'components/spinner';
+@use 'components/table';
+@use 'components/totop';
+@use 'components/breadcrumb';
+@use 'components/dotnav';
+@use 'components/nav';
+@use 'components/navbar';
+@use 'components/pagination';
+@use 'components/slidenav';
+@use 'components/stepper';
+@use 'components/subnav';
+@use 'components/tab';
+@use 'components/thumbnav';
+@use 'components/form';
+@use 'components/search';
+@use 'components/upload';
+@use 'components/otp';
+@use 'components/strength';
+@use 'components/rating';
+@use 'components/quantity';
+@use 'components/combobox';
+@use 'components/datepicker';
+@use 'components/range';
+@use 'components/drop';
+@use 'components/tooltip';
+@use 'components/popover';
+@use 'components/modal';
+@use 'components/offcanvas';
+@use 'components/notification';
+@use 'components/lightbox';
+@use 'components/accordion';
+@use 'components/switcher';
+@use 'components/sticky';
+@use 'components/slider';
+@use 'components/slideshow';
+@use 'components/sortable';
+@use 'components/filter';
+@use 'components/spotlight';
+
+@use 'utilities/flex';
+@use 'utilities/width';
+@use 'utilities/height';
+@use 'utilities/margin';
+@use 'utilities/padding';
+@use 'utilities/position';
+@use 'utilities/text';
+@use 'utilities/background';
+@use 'utilities/align';
+@use 'utilities/visibility';
+@use 'utilities/utility';
+@use 'utilities/animation';
+@use 'utilities/transition';
+@use 'utilities/inverse';
+
+// Atrybut hidden wygrywa z narzędziami display (.pl-display-block, .d-flex …).
+[hidden]:not([hidden='until-found']) {
+  display: none !important;
+}

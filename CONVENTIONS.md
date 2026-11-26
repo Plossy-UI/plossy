@@ -10,7 +10,10 @@ src/scss/_tokens.scss            tokeny projektowe (CSS custom properties)
 src/scss/_base.scss              reset + wygląd elementów HTML
 src/scss/components/_{nazwa}.scss
 src/scss/utilities/_{nazwa}.scss
-src/scss/plossy.scss               indeks (lista @use) — nie zmieniaj
+src/scss/_core.scss                rdzeń: indeks komponentów i narzędzi (lista @use)
+src/scss/plossy.scss               pełny arkusz: rdzeń + presety + zgodność z Bootstrapem
+src/scss/plossy.core.scss          sam rdzeń
+src/scss/plossy.bootstrap.scss     sama zgodność z Bootstrapem
 src/js/core.js                   rdzeń: Component, register, narzędzia
 src/js/components/{nazwa}.js
 src/js/index.js                  indeks importów — nie zmieniaj

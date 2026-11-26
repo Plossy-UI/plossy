@@ -9,14 +9,14 @@
   // Kolory składni (motyw Shiki oparty o zmienne CSS).
   --shiki-foreground: var(--pl-text);
   --shiki-background: transparent;
-  --shiki-token-constant: oklch(0.52 0.16 250);
-  --shiki-token-string: oklch(0.5 0.13 155);
-  --shiki-token-comment: var(--pl-text-subtle);
-  --shiki-token-keyword: oklch(0.52 0.2 300);
-  --shiki-token-parameter: oklch(0.55 0.15 50);
-  --shiki-token-function: oklch(0.52 0.19 280);
-  --shiki-token-string-expression: oklch(0.5 0.13 155);
-  --shiki-token-punctuation: var(--pl-text-muted);
+  --shiki-token-constant: oklch(0.42 0.16 250);
+  --shiki-token-string: oklch(0.4 0.12 155);
+  --shiki-token-comment: var(--pl-text-muted);
+  --shiki-token-keyword: oklch(0.42 0.2 300);
+  --shiki-token-parameter: oklch(0.45 0.14 50);
+  --shiki-token-function: oklch(0.42 0.19 280);
+  --shiki-token-string-expression: oklch(0.4 0.12 155);
+  --shiki-token-punctuation: var(--pl-text);
   --shiki-token-link: var(--pl-primary-text);
 }
 
