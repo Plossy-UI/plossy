@@ -175,19 +175,21 @@ W kontenerze `.pl-animation-toggle` animacje dzieci czekają na najechanie kurso
 
 ## Ken Burns
 
-`.pl-animation-kenburns` powoli powiększa obraz (15 s). Kontener potrzebuje `overflow: hidden`. Punkt, ku któremu obraz „płynie", ustawiają klasy `.pl-transform-origin-*`; `.pl-animation-reverse` zamienia zbliżenie w oddalenie.
+`.pl-animation-kenburns` powoli powiększa obraz (15 s). Animacja rusza sama w chwili dodania klasy i odtwarza się raz — nie reaguje na najechanie. Kontener potrzebuje `overflow: hidden`. Punkt, ku któremu obraz „płynie", ustawiają klasy `.pl-transform-origin-*`; `.pl-animation-reverse` zamienia zbliżenie w oddalenie.
+
+W przykładzie klasę dodaje [Scrollspy](/docs/interactive/scrollspy/) przy każdym wejściu obrazu w widok — dzięki temu ruch zaczyna się, gdy do niego przewiniesz, a nie przy wczytaniu strony.
 
 ```html example
 <div class="pl-grid pl-grid-small pl-child-width-1-2@s">
   <div>
     <div class="pl-overflow-hidden pl-radius-lg">
-      <img class="pl-animation-kenburns" src="/img/photo-5.svg" alt="Wybrzeże o zachodzie słońca">
+      <img data-pl-scrollspy="cls: pl-animation-kenburns; hidden: false; repeat: true" src="/img/photo-5.svg" alt="Wybrzeże o zachodzie słońca">
     </div>
     <p class="pl-text-meta pl-margin-small-top">Zbliżenie do środka</p>
   </div>
   <div>
     <div class="pl-overflow-hidden pl-radius-lg">
-      <img class="pl-animation-kenburns pl-animation-reverse pl-transform-origin-bottom-right" src="/img/photo-6.svg" alt="Las we mgle">
+      <img class="pl-transform-origin-bottom-right" data-pl-scrollspy="cls: pl-animation-kenburns pl-animation-reverse; hidden: false; repeat: true" src="/img/photo-6.svg" alt="Las we mgle">
     </div>
     <p class="pl-text-meta pl-margin-small-top">Oddalenie od prawego dolnego rogu</p>
   </div>

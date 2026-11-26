@@ -73,6 +73,8 @@ $slide-dirs: (
   animation-name: pl-kenburns;
   animation-duration: 15s;
   animation-timing-function: linear;
+  // Obraz zostaje powiększony po zakończeniu (nie wraca skokiem do wyjściowej skali).
+  animation-fill-mode: both;
 }
 
 // Rysowanie konturu SVG. Dodaj pathLength="1" do kształtów albo ustaw
@@ -82,6 +84,7 @@ $slide-dirs: (
 
   animation-name: pl-stroke;
   animation-duration: 2s;
+  animation-fill-mode: both;
   animation-timing-function: var(--pl-ease-in-out);
   stroke-dasharray: var(--pl-animation-stroke);
 }
