@@ -150,6 +150,10 @@
 
   em {
     position: relative;
+    // Własne pudełko o wysokości 1em: zakreślacz trafia pod litery niezależnie od kroju
+    // (kroje o wysokim polu znaku, np. Baloo Tamma 2, spychały go pod tekst).
+    display: inline-block;
+    line-height: 1;
     font-style: normal;
     white-space: nowrap;
 
@@ -591,4 +595,9 @@
   padding-block: 2.5rem;
   font-size: var(--pl-text-sm);
   color: var(--pl-text-subtle);
+}
+
+// Baloo Tamma 2 (styl Flat) ma litery osadzone wyżej w polu znaku — zakreślacz idzie za nimi.
+[data-pl-style='flat'] .home-title em::after {
+  bottom: 0.2em;
 }

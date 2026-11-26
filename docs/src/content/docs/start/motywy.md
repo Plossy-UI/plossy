@@ -4,6 +4,8 @@ description: Cały wygląd Plossy opiera się na zmiennych CSS. Ciemny motyw, ko
 order: 2
 ---
 
+> Wolisz ustawić wygląd suwakami? [Kreator motywu](/kreator/) pokazuje zmiany na żywo, pilnuje kontrastu i wypisuje gotowy CSS.
+
 ## Jasny i ciemny motyw
 
 Motyw ustawia atrybut `data-pl-theme` — zwykle na elemencie `<html>`. Wartość `auto` podąża za ustawieniami systemu.

@@ -5,6 +5,8 @@ order: 3
 badge: Nowy
 ---
 
+> Wolisz ustawić wygląd suwakami? [Kreator motywu](/kreator/) pokazuje zmiany na żywo, pilnuje kontrastu i wypisuje gotowy CSS.
+
 ## Jak to działa
 
 Wygląd Plossy ma trzy niezależne osie, każda sterowana atrybutem — zwykle na `<html>`, ale działa też na dowolnym fragmencie strony:

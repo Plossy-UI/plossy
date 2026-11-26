@@ -193,3 +193,47 @@ test('filter: kontrolka jest przyciskiem ze stanem wciśnięcia i reaguje na spa
   await expect(controls.nth(1)).toHaveAttribute('aria-pressed', 'true');
   await expect(controls.first()).toHaveAttribute('aria-pressed', 'false');
 });
+
+test('kreator: ustawienia zmieniają podgląd, a wyeksportowany CSS daje ten sam wygląd na innej stronie', async ({ page }) => {
+  // Bez animacji — kolory czytamy od razu po zmianie ustawień.
+  await page.emulateMedia({ reducedMotion: 'reduce' });
+  await open(page, '/kreator/');
+  await page.selectOption('#k-style', 'flat');
+  await page.locator('input[name=accentOn]').check();
+  await page.locator('#k-h').fill('150');
+  await page.locator('#k-l').fill('0.7');
+  await page.locator('input[name=shapeOn]').check();
+  await page.locator('#k-r').fill('20');
+  await page.locator('[data-kreator-theme=dark]').click();
+
+  const look = (selector) =>
+    page.evaluate((sel) => {
+      const style = getComputedStyle(document.querySelector(sel));
+      return [style.backgroundColor, style.color, style.borderRadius].join(' | ');
+    }, selector);
+  await page.waitForTimeout(500); // kolory dochodzą do wartości końcowej
+  const inPreview = await look('[data-kreator-preview] .pl-button-primary');
+  const html = await page.locator('[data-kreator-html]').textContent();
+  const css = await page.locator('[data-kreator-css]').textContent();
+  expect(css).toContain('--pl-accent-h: 150');
+  expect(html).toContain('data-pl-accent="custom"');
+  await expect(page.locator('[data-kreator-contrast] li')).toHaveCount(5);
+  const shared = page.url();
+
+  // Wklejamy eksport na zwykłej stronie dokumentacji — przycisk ma wyglądać jak w podglądzie.
+  await page.goto('/docs/elements/button/');
+  await page.evaluate(
+    ({ html, css }) => {
+      for (const [, name, value] of html.matchAll(/(data-pl-[a-z]+)="([^"]*)"/g)) document.documentElement.setAttribute(name, value);
+      document.head.append(Object.assign(document.createElement('style'), { textContent: css }));
+    },
+    { html, css },
+  );
+  await expect.poll(() => look('.docs-preview .pl-button-primary')).toBe(inPreview);
+
+  // Link odtwarza ustawienia.
+  await page.goto(shared);
+  await expect(page.locator('#k-style')).toHaveValue('flat');
+  await expect(page.locator('#k-h')).toHaveValue('150');
+  await expect(page.locator('[data-kreator-preview]')).toHaveAttribute('data-pl-theme', 'dark');
+});

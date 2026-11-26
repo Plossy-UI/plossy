@@ -245,6 +245,24 @@ html {
   }
 }
 
+// Między 960 a 1200 px pełne menu i kropki akcentów nie mieszczą się obok siebie — kropki ustępują.
+@media (min-width: 960px) and (max-width: 1199.98px) {
+  .docs-accents {
+    display: none;
+  }
+
+  // Wyszukiwarka zwija się do samej ikony.
+  .docs-search-btn {
+    min-width: 0;
+    margin-left: auto;
+    padding: 0 0.6rem;
+
+    > :not([data-pl-icon], svg) {
+      display: none !important;
+    }
+  }
+}
+
 .docs-accent {
   @include button-reset;
   width: 1.05rem;

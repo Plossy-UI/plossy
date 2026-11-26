@@ -9,6 +9,7 @@ export const STYLES = ['soft', 'flat', 'elegant', 'tender', 'round', 'pop', 'edi
 export const THEMES = ['light', 'dark'];
 export const PHONE = { width: 390, height: 844 };
 export const DESKTOP = { width: 1440, height: 900 };
+export const TABLET = { width: 1024, height: 768 };
 
 /** Wszystkie strony zbudowanej dokumentacji (ścieżki zakończone „/"). */
 export function allPages() {

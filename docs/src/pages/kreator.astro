@@ -1,0 +1,677 @@
+---
+// Kreator motywu — ustawia tokeny Plossy na podglądzie i wypisuje gotowy CSS.
+import Base from '../layouts/Base.astro';
+import { styles } from '../styles';
+
+const fonts = [
+  ['', 'Ze stylu'],
+  ["'Geist Variable', 'Geist', system-ui, sans-serif", 'Geist'],
+  ["'Bricolage Grotesque Variable', 'Bricolage Grotesque', system-ui, sans-serif", 'Bricolage Grotesque'],
+  ["'Jost Variable', 'Jost', system-ui, sans-serif", 'Jost'],
+  ["'Nunito Variable', 'Nunito', system-ui, sans-serif", 'Nunito'],
+  ["'Baloo Tamma 2 Variable', 'Baloo Tamma 2', system-ui, sans-serif", 'Baloo Tamma 2'],
+  ["'Fraunces Variable', 'Fraunces', Georgia, serif", 'Fraunces'],
+  ["'Playfair Display Variable', 'Playfair Display', Georgia, serif", 'Playfair Display'],
+  ["'Cormorant Garamond Variable', 'Cormorant Garamond', Georgia, serif", 'Cormorant Garamond'],
+  ["'DM Serif Display', Georgia, serif", 'DM Serif Display'],
+  ['system-ui, -apple-system, "Segoe UI", Roboto, sans-serif', 'Systemowy'],
+];
+---
+
+<Base title="Kreator motywu" description="Ułóż własny wygląd Plossy: styl, motyw, akcent, zaokrąglenia, cienie i kroje pisma — z podglądem na żywo, kontrolą kontrastu i gotowym CSS do skopiowania.">
+  <main id="main" class="kreator" data-kreator>
+    <header class="kreator-head">
+      <p class="pl-heading-eyebrow">Kreator motywu</p>
+      <h1 class="kreator-title">Jeden framework. <em>Twoja osobowość.</em></h1>
+      <p class="kreator-lead">Wybierz styl, dobierz kolor i kształt, a na końcu skopiuj kilka linii CSS. Podgląd reaguje od razu, a kontrast sprawdza się sam.</p>
+    </header>
+
+    <div class="kreator-grid">
+      <form class="kreator-panel" data-kreator-form aria-label="Ustawienia motywu">
+        <fieldset class="kreator-group">
+          <legend>Punkt wyjścia</legend>
+          <div class="pl-form-field">
+            <label class="pl-form-label" for="k-style">Styl</label>
+            <select class="pl-select" id="k-style" name="style">
+              {styles.map((style) => <option value={style.id}>{style.label} — {style.text}</option>)}
+            </select>
+          </div>
+          <div class="pl-form-field">
+            <span class="pl-form-label" id="k-theme-label">Motyw</span>
+            <div class="pl-button-group kreator-theme" role="group" aria-labelledby="k-theme-label">
+              <button class="pl-button pl-button-small" type="button" data-kreator-theme="light" aria-pressed="true">Jasny</button>
+              <button class="pl-button pl-button-small" type="button" data-kreator-theme="dark" aria-pressed="false">Ciemny</button>
+            </div>
+          </div>
+        </fieldset>
+
+        <fieldset class="kreator-group">
+          <legend>Akcent</legend>
+          <label class="pl-form-check">
+            <input class="pl-switch" type="checkbox" role="switch" name="accentOn">
+            Własny kolor akcentu
+          </label>
+          <div class="kreator-sub" data-kreator-sub="accentOn">
+            <div class="pl-form-field">
+              <label class="pl-form-label" for="k-h">Odcień <output data-kreator-out="h"></output></label>
+              <input class="kreator-range kreator-hue" id="k-h" name="h" type="range" min="0" max="360" step="1" value="282">
+            </div>
+            <div class="pl-form-field">
+              <label class="pl-form-label" for="k-c">Nasycenie <output data-kreator-out="c"></output></label>
+              <input class="kreator-range" id="k-c" name="c" type="range" min="0" max="0.3" step="0.005" value="0.21">
+            </div>
+            <div class="pl-form-field">
+              <label class="pl-form-label" for="k-l">Jasność <output data-kreator-out="l"></output></label>
+              <input class="kreator-range" id="k-l" name="l" type="range" min="0.25" max="0.8" step="0.005" value="0.52">
+            </div>
+          </div>
+        </fieldset>
+
+        <fieldset class="kreator-group">
+          <legend>Kształt</legend>
+          <label class="pl-form-check">
+            <input class="pl-switch" type="checkbox" role="switch" name="shapeOn">
+            Własne zaokrąglenia, ramki i cienie
+          </label>
+          <div class="kreator-sub" data-kreator-sub="shapeOn">
+            <div class="pl-form-field">
+              <label class="pl-form-label" for="k-r">Zaokrąglenie <output data-kreator-out="r"></output></label>
+              <input class="kreator-range" id="k-r" name="r" type="range" min="0" max="28" step="1" value="12">
+            </div>
+            <div class="pl-form-field">
+              <label class="pl-form-label" for="k-b">Grubość ramek <output data-kreator-out="b"></output></label>
+              <input class="kreator-range" id="k-b" name="b" type="range" min="0.5" max="3" step="0.5" value="1">
+            </div>
+            <div class="pl-form-field">
+              <label class="pl-form-label" for="k-s">Siła cieni <output data-kreator-out="s"></output></label>
+              <input class="kreator-range" id="k-s" name="s" type="range" min="0" max="2.5" step="0.05" value="1">
+              <p class="pl-form-help" data-kreator-shadownote hidden>Ten styl nie używa miękkich cieni, więc suwak nie ma tu czego zmieniać.</p>
+            </div>
+          </div>
+        </fieldset>
+
+        <fieldset class="kreator-group">
+          <legend>Typografia</legend>
+          <div class="pl-form-field">
+            <label class="pl-form-label" for="k-fd">Nagłówki</label>
+            <select class="pl-select" id="k-fd" name="fd">
+              {fonts.map(([value, label]) => <option value={value}>{label}</option>)}
+            </select>
+          </div>
+          <div class="pl-form-field">
+            <label class="pl-form-label" for="k-fs">Tekst</label>
+            <select class="pl-select" id="k-fs" name="fs">
+              {fonts.map(([value, label]) => <option value={value}>{label}</option>)}
+            </select>
+          </div>
+        </fieldset>
+
+        <button class="pl-button pl-button-ghost pl-button-small" type="button" data-kreator-reset>
+          <span data-pl-icon="rotate-ccw"></span> Zacznij od nowa
+        </button>
+      </form>
+
+      <div class="kreator-main">
+        <section class="kreator-contrast" aria-labelledby="k-contrast-title">
+          <h2 class="kreator-h2" id="k-contrast-title">Kontrast</h2>
+          <ul class="kreator-checks" data-kreator-contrast aria-live="polite"></ul>
+        </section>
+
+        <section class="kreator-preview" data-kreator-preview aria-label="Podgląd motywu">
+          <div class="kreator-row">
+            <button class="pl-button pl-button-primary" type="button">Zapisz zmiany</button>
+            <button class="pl-button" type="button">Anuluj</button>
+            <button class="pl-button pl-button-primary pl-button-soft" type="button">Podgląd</button>
+            <button class="pl-button pl-button-ghost" type="button">Pomiń</button>
+            <a class="pl-link-arrow" href="#">Dowiedz się więcej</a>
+          </div>
+
+          <div class="kreator-row">
+            <span class="pl-label">Szkic</span>
+            <span class="pl-label pl-label-primary">Nowość</span>
+            <span class="pl-label pl-label-success">Opłacone</span>
+            <span class="pl-label pl-label-warning">Oczekuje</span>
+            <span class="pl-label pl-label-danger">Błąd</span>
+          </div>
+
+          <div class="kreator-cols">
+            <div class="pl-card">
+              <div class="pl-card-body">
+                <p class="pl-card-meta">Plan zespołowy</p>
+                <h3 class="pl-card-title">Wszystko, czego potrzebuje zespół</h3>
+                <p class="pl-card-text">Wspólne projekty, role i uprawnienia oraz historia zmian w jednym miejscu.</p>
+                <progress class="pl-progress" value="64" max="100" aria-label="Wykorzystanie planu">64%</progress>
+              </div>
+              <div class="pl-card-footer">
+                <button class="pl-button pl-button-primary pl-button-small" type="button">Wybierz plan</button>
+                <button class="pl-button pl-button-small pl-button-ghost" type="button">Szczegóły</button>
+              </div>
+            </div>
+
+            <div class="pl-card">
+              <div class="pl-card-body">
+                <div class="pl-form-field">
+                  <label class="pl-form-label" for="k-demo-mail">Adres e-mail</label>
+                  <input class="pl-input" id="k-demo-mail" type="email" placeholder="anna@example.com" autocomplete="off">
+                  <p class="pl-form-help">Wyślemy na niego potwierdzenie.</p>
+                </div>
+                <div class="pl-form-field">
+                  <label class="pl-form-label" for="k-demo-plan">Plan</label>
+                  <select class="pl-select" id="k-demo-plan">
+                    <option>Miesięczny</option>
+                    <option>Roczny</option>
+                  </select>
+                </div>
+                <label class="pl-form-check"><input class="pl-checkbox" type="checkbox" checked> Zapamiętaj mnie</label>
+                <label class="pl-form-check"><input class="pl-radio" type="radio" name="k-demo-radio" checked> Kurier</label>
+                <label class="pl-form-check"><input class="pl-radio" type="radio" name="k-demo-radio"> Odbiór osobisty</label>
+                <label class="pl-form-check"><input class="pl-switch" type="checkbox" role="switch" checked> Powiadomienia</label>
+              </div>
+            </div>
+          </div>
+
+          <div class="pl-alert pl-alert-primary">
+            <div class="pl-alert-body">Zmiany w dokumencie zapisują się automatycznie co 30 sekund.</div>
+          </div>
+
+          <ul class="pl-tab" data-pl-switcher>
+            <li class="pl-active"><a href="#">Opis</a></li>
+            <li><a href="#">Specyfikacja</a></li>
+            <li><a href="#">Opinie</a></li>
+          </ul>
+          <div class="pl-switcher pl-margin-small-top">
+            <div class="pl-active"><p>Tekst zwykły i <a href="#">odnośnik w zdaniu</a>, a obok <span class="pl-text-muted">tekst pomocniczy</span>.</p></div>
+            <div><p>Wymiary, materiały i sposób pielęgnacji.</p></div>
+            <div><p>Opinie klientów z ostatnich 30 dni.</p></div>
+          </div>
+        </section>
+
+        <section class="kreator-export" aria-labelledby="k-export-title">
+          <div class="kreator-export-head">
+            <h2 class="kreator-h2" id="k-export-title">Twój motyw</h2>
+            <div class="kreator-row">
+              <button class="pl-button pl-button-small" type="button" data-kreator-copy="link"><span data-pl-icon="link"></span> Kopiuj link</button>
+              <button class="pl-button pl-button-primary pl-button-small" type="button" data-kreator-copy="css"><span data-pl-icon="copy"></span> Kopiuj CSS</button>
+            </div>
+          </div>
+          <p class="kreator-note">Dodaj atrybuty do znacznika <code>&lt;html&gt;</code>, a CSS wklej po arkuszu Plossy.</p>
+          <pre class="kreator-code" tabindex="0" aria-label="Znacznik html"><code data-kreator-html></code></pre>
+          <pre class="kreator-code" tabindex="0" aria-label="Kod CSS motywu"><code data-kreator-css></code></pre>
+          <p class="kreator-note" data-kreator-fontnote hidden>Biblioteka nie dołącza krojów pisma — wybrany krój załaduj u siebie (np. z Google Fonts albo paczki Fontsource).</p>
+        </section>
+      </div>
+    </div>
+  </main>
+</Base>
+
+<style lang="scss" is:global>
+  .kreator {
+    max-width: 78rem;
+    margin: 0 auto;
+    padding: calc(var(--docs-header-h) + 2.5rem) 1.25rem 5rem;
+  }
+
+  .kreator-title {
+    margin: 0.4rem 0 0.75rem;
+    font-size: clamp(2rem, 4.5vw, 3.25rem);
+    line-height: 1.05;
+    letter-spacing: var(--pl-display-tracking, -0.03em);
+
+    em {
+      font-style: normal;
+      color: var(--pl-primary-text);
+    }
+  }
+
+  .kreator-lead {
+    max-width: 44rem;
+    margin: 0 0 2.25rem;
+    font-size: var(--pl-text-lg);
+    color: var(--pl-text-muted);
+  }
+
+  .kreator-grid {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+    gap: 1.5rem;
+    align-items: start;
+
+    @media (min-width: 960px) {
+      grid-template-columns: 20rem minmax(0, 1fr);
+      gap: 2rem;
+    }
+  }
+
+  .kreator-panel {
+    display: grid;
+    gap: 1rem;
+    padding: 1.25rem;
+    border: 1px solid var(--pl-border);
+    border-radius: var(--pl-radius-lg);
+    background: var(--pl-surface);
+
+    @media (min-width: 960px) {
+      position: sticky;
+      top: calc(var(--docs-header-h) + 1.25rem);
+      max-height: calc(100vh - var(--docs-header-h) - 2.5rem);
+      overflow-y: auto;
+    }
+  }
+
+  .kreator-group {
+    display: grid;
+    gap: 0.85rem;
+    min-width: 0;
+    margin: 0;
+    padding: 0 0 1rem;
+    border: 0;
+    border-bottom: 1px solid var(--pl-border);
+
+    legend {
+      padding: 0;
+      margin-bottom: 0.85rem;
+      font-family: var(--pl-font-mono);
+      font-size: 0.6875rem;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: var(--pl-text-muted);
+    }
+
+    .pl-form-field {
+      margin: 0;
+    }
+
+    .pl-form-label {
+      display: flex;
+      justify-content: space-between;
+      gap: 0.5rem;
+    }
+
+    output {
+      font-family: var(--pl-font-mono);
+      font-size: var(--pl-text-xs);
+      font-weight: 400;
+      color: var(--pl-text-muted);
+    }
+  }
+
+  .kreator-sub {
+    display: grid;
+    gap: 0.85rem;
+
+    &[hidden] {
+      display: none;
+    }
+  }
+
+  .kreator-theme > .pl-button[aria-pressed='true'] {
+    background: var(--pl-ink);
+    border-color: var(--pl-ink);
+    color: var(--pl-on-ink);
+  }
+
+  .kreator-range {
+    width: 100%;
+    margin: 0;
+    accent-color: var(--pl-primary);
+  }
+
+  // Suwak odcienia pokazuje koło barw.
+  .kreator-hue {
+    height: 0.6rem;
+    border-radius: 999px;
+    appearance: none;
+    background: linear-gradient(
+      to right in oklch longer hue,
+      oklch(0.65 0.18 0),
+      oklch(0.65 0.18 360)
+    );
+
+    &::-webkit-slider-thumb {
+      appearance: none;
+      width: 1.1rem;
+      height: 1.1rem;
+      border: 2px solid var(--pl-surface);
+      border-radius: 50%;
+      background: var(--pl-text);
+      box-shadow: 0 0 0 1px var(--pl-border-strong);
+    }
+
+    &::-moz-range-thumb {
+      width: 0.9rem;
+      height: 0.9rem;
+      border: 2px solid var(--pl-surface);
+      border-radius: 50%;
+      background: var(--pl-text);
+    }
+  }
+
+  .kreator-main {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+    gap: 1.5rem;
+    min-width: 0;
+  }
+
+  .kreator-h2 {
+    margin: 0;
+    font-size: var(--pl-text-lg);
+  }
+
+  .kreator-checks {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    margin: 0.75rem 0 0;
+    padding: 0;
+    list-style: none;
+
+    li {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.45rem;
+      padding: 0.3rem 0.65rem;
+      border: 1px solid var(--pl-border);
+      border-radius: 999px;
+      background: var(--pl-surface);
+      font-size: var(--pl-text-sm);
+    }
+
+    b {
+      font-family: var(--pl-font-mono);
+      font-weight: 500;
+    }
+
+    .kreator-ok {
+      color: var(--pl-success-text);
+    }
+
+    .kreator-bad {
+      border-color: var(--pl-danger-border);
+      background: var(--pl-danger-soft);
+      color: var(--pl-danger-text);
+    }
+  }
+
+  .kreator-preview {
+    display: grid;
+    gap: 1.25rem;
+    min-width: 0;
+    padding: 1.5rem;
+    border: 1px solid var(--pl-border);
+    border-radius: var(--pl-radius-lg);
+    background: var(--pl-bg);
+    font-family: var(--pl-font-sans);
+    color: var(--pl-text);
+
+    @media (min-width: 640px) {
+      padding: 2rem;
+    }
+
+    p {
+      margin: 0;
+    }
+  }
+
+  .kreator-row {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 0.6rem;
+  }
+
+  .kreator-cols {
+    display: grid;
+    gap: 1.25rem;
+
+    @media (min-width: 720px) {
+      grid-template-columns: 1fr 1fr;
+    }
+
+    .pl-card-body {
+      display: grid;
+      gap: 0.75rem;
+      align-content: start;
+    }
+
+    .pl-form-field {
+      margin: 0;
+    }
+  }
+
+  .kreator-export-head {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: 0.75rem;
+  }
+
+  .kreator-note {
+    margin: 0.75rem 0 0;
+    font-size: var(--pl-text-sm);
+    color: var(--pl-text-muted);
+  }
+
+  .kreator-code {
+    margin: 0.75rem 0 0;
+    padding: 1rem 1.15rem;
+    border: 1px solid var(--pl-border);
+    border-radius: var(--pl-radius-md);
+    background: var(--pl-surface);
+    font-family: var(--pl-font-mono);
+    font-size: 0.8125rem;
+    line-height: 1.7;
+    white-space: pre;
+    overflow-x: auto;
+  }
+</style>
+
+<script>
+  // Kreator motywu: formularz → tokeny na podglądzie → kontrast → eksport. Stan mieszka w adresie (#…).
+  const RADIUS = { xs: 0.33, sm: 0.67, md: 1, lg: 1.5, xl: 2.33 };
+  const DEFAULTS = { style: 'soft', theme: 'light', accentOn: false, h: 282, c: 0.21, l: 0.52, shapeOn: false, r: 12, b: 1, s: 1, fd: '', fs: '' };
+  const NUMERIC = ['h', 'c', 'l', 'r', 'b', 's'];
+  // Style, które celowo wyłączają miękkie cienie (płaskie) albo mają własne, twarde.
+  const NO_SOFT_SHADOW = ['flat', 'editorial', 'pop'];
+
+  function setup() {
+    const root = document.querySelector('[data-kreator]');
+    if (!root || root.dataset.ready) return;
+    root.dataset.ready = 'true';
+
+    const form = root.querySelector('[data-kreator-form]');
+    const preview = root.querySelector('[data-kreator-preview]');
+    const state = { ...DEFAULTS };
+
+    // ── Stan z adresu albo z bieżącego wyglądu strony ──
+    const hash = new URLSearchParams(location.hash.slice(1));
+    if ([...hash.keys()].length) {
+      for (const key of Object.keys(DEFAULTS)) {
+        if (!hash.has(key)) continue;
+        const value = hash.get(key);
+        state[key] = typeof DEFAULTS[key] === 'boolean' ? value === '1' : NUMERIC.includes(key) ? Number(value) : value;
+      }
+    } else {
+      state.style = document.documentElement.dataset.plStyle || 'soft';
+      state.theme = document.documentElement.dataset.plTheme === 'dark' ? 'dark' : 'light';
+    }
+
+    function writeForm() {
+      form.elements.style.value = state.style;
+      for (const key of [...NUMERIC, 'fd', 'fs']) form.elements[key].value = state[key];
+      form.elements.accentOn.checked = state.accentOn;
+      form.elements.shapeOn.checked = state.shapeOn;
+    }
+
+    /** Wartości wynikające ze stylu — punkt startowy suwaków, gdy użytkownik włącza własne ustawienia. */
+    function seedFromStyle(group) {
+      const computed = getComputedStyle(preview);
+      const number = (name, fallback) => {
+        const value = parseFloat(computed.getPropertyValue(name));
+        return Number.isFinite(value) ? value : fallback;
+      };
+      if (group === 'accent') {
+        state.l = number('--pl-accent-l', DEFAULTS.l);
+        state.c = number('--pl-accent-c', DEFAULTS.c);
+        state.h = number('--pl-accent-h', DEFAULTS.h);
+      } else {
+        state.r = Math.min(28, Math.round(number('--pl-radius-md', DEFAULTS.r)));
+        state.b = number('--pl-border-w', DEFAULTS.b);
+        state.s = number('--pl-shadow-scale', DEFAULTS.s);
+      }
+    }
+
+    /** Deklaracje CSS wynikające ze stanu: osobno akcent, osobno reszta. */
+    function declarations() {
+      const accent = state.accentOn ? [['--pl-accent-l', state.l], ['--pl-accent-c', state.c], ['--pl-accent-h', state.h]] : [];
+      const rest = [];
+      if (state.shapeOn) {
+        for (const [size, factor] of Object.entries(RADIUS)) rest.push([`--pl-radius-${size}`, `${Math.round(state.r * factor)}px`]);
+        rest.push(['--pl-border-w', `${state.b}px`]);
+        if (!NO_SOFT_SHADOW.includes(state.style)) rest.push(['--pl-shadow-scale', state.s]);
+      }
+      if (state.fd) rest.push(['--pl-font-display', state.fd]);
+      if (state.fs) rest.push(['--pl-font-sans', state.fs]);
+      return { accent, rest };
+    }
+
+    function applyPreview() {
+      preview.dataset.plTheme = state.theme;
+      preview.dataset.plStyle = state.style;
+      // Znacznik „custom" wyłącza domyślny akcent stylu, żeby kolor tekstu na akcencie dobrał się sam.
+      if (state.accentOn) preview.dataset.plAccent = 'custom';
+      else delete preview.dataset.plAccent;
+      preview.removeAttribute('style');
+      const { accent, rest } = declarations();
+      for (const [name, value] of [...accent, ...rest]) preview.style.setProperty(name, String(value));
+    }
+
+    // ── Kontrast (WCAG): pary tokenów liczone na faktycznych kolorach podglądu ──
+    const canvas = document.createElement('canvas').getContext('2d', { willReadFrequently: true });
+    function paint(token, under) {
+      const probe = document.createElement('i');
+      probe.style.cssText = `position:absolute;visibility:hidden;background:var(--pl-${token})`;
+      preview.append(probe);
+      const color = getComputedStyle(probe).backgroundColor;
+      probe.remove();
+      canvas.clearRect(0, 0, 1, 1);
+      canvas.fillStyle = `rgb(${under.join(',')})`;
+      canvas.fillRect(0, 0, 1, 1);
+      canvas.fillStyle = color;
+      canvas.fillRect(0, 0, 1, 1);
+      return [...canvas.getImageData(0, 0, 1, 1).data].slice(0, 3);
+    }
+    const luminance = (rgb) => {
+      const [r, g, b] = rgb.map((v) => ((v /= 255) <= 0.03928 ? v / 12.92 : ((v + 0.055) / 1.055) ** 2.4));
+      return 0.2126 * r + 0.7152 * g + 0.0722 * b;
+    };
+    const PAIRS = [
+      ['Tekst na tle', 'text', 'bg'],
+      ['Tekst pomocniczy', 'text-muted', 'bg'],
+      ['Napis na przycisku', 'on-primary', 'primary'],
+      ['Odnośnik na tle', 'primary-text', 'bg'],
+      ['Odnośnik na karcie', 'primary-text', 'surface'],
+    ];
+    function renderContrast() {
+      const page = paint('bg', [255, 255, 255]);
+      root.querySelector('[data-kreator-contrast]').innerHTML = PAIRS.map(([label, text, ground]) => {
+        const back = ground === 'bg' ? page : paint(ground, page);
+        const a = luminance(paint(text, back));
+        const b = luminance(back);
+        const ratio = (Math.max(a, b) + 0.05) / (Math.min(a, b) + 0.05);
+        const ok = ratio >= 4.5;
+        return `<li class="${ok ? 'kreator-ok' : 'kreator-bad'}"><span>${label}</span> <b>${ratio.toFixed(1)}:1</b> <span>${ok ? 'w porządku' : 'za słaby'}</span></li>`;
+      }).join('');
+    }
+
+    // ── Eksport ──
+    function exportCode() {
+      const { accent, rest } = declarations();
+      const attrs = [`data-pl-theme="${state.theme}"`];
+      if (state.style !== 'soft') attrs.unshift(`data-pl-style="${state.style}"`);
+      if (state.accentOn) attrs.push('data-pl-accent="custom"');
+      const block = (selector, list) => `${selector} {\n${list.map(([name, value]) => `  ${name}: ${value};`).join('\n')}\n}`;
+      const css = [];
+      if (accent.length) css.push(block("[data-pl-accent='custom']", accent));
+      if (rest.length) css.push(block(state.style === 'soft' ? ':root' : `[data-pl-style='${state.style}']`, rest));
+      return {
+        html: `<html lang="pl" ${attrs.join(' ')}>`,
+        css: css.length ? `/* Plossy — motyw z kreatora */\n${css.join('\n\n')}` : '/* Ten zestaw nie wymaga dodatkowego CSS — wystarczą atrybuty powyżej. */',
+      };
+    }
+
+    function shareHash() {
+      const params = new URLSearchParams();
+      for (const [key, value] of Object.entries(state)) {
+        if (value === DEFAULTS[key]) continue;
+        if (!state.accentOn && ['h', 'c', 'l'].includes(key)) continue;
+        if (!state.shapeOn && ['r', 'b', 's'].includes(key)) continue;
+        params.set(key, typeof value === 'boolean' ? (value ? '1' : '0') : String(value));
+      }
+      return params.toString();
+    }
+
+    function render() {
+      applyPreview();
+      for (const sub of root.querySelectorAll('[data-kreator-sub]')) sub.hidden = !state[sub.dataset.kreatorSub];
+      for (const button of root.querySelectorAll('[data-kreator-theme]')) button.setAttribute('aria-pressed', String(button.dataset.kreatorTheme === state.theme));
+      const out = { h: `${Math.round(state.h)}°`, c: Number(state.c).toFixed(3), l: Number(state.l).toFixed(3), r: `${state.r}px`, b: `${state.b}px`, s: `×${Number(state.s).toFixed(2)}` };
+      for (const el of root.querySelectorAll('[data-kreator-out]')) el.textContent = out[el.dataset.kreatorOut];
+      const noShadow = NO_SOFT_SHADOW.includes(state.style);
+      form.elements.s.disabled = noShadow;
+      root.querySelector('[data-kreator-shadownote]').hidden = !noShadow;
+      const code = exportCode();
+      root.querySelector('[data-kreator-html]').textContent = code.html;
+      root.querySelector('[data-kreator-css]').textContent = code.css;
+      root.querySelector('[data-kreator-fontnote]').hidden = !(state.fd || state.fs);
+      history.replaceState(null, '', `${location.pathname}${location.search}${shareHash() ? `#${shareHash()}` : ''}`);
+      // Kolory ustalają się po przeliczeniu stylów.
+      requestAnimationFrame(renderContrast);
+    }
+
+    form.addEventListener('input', (event) => {
+      const { name } = event.target;
+      if (!name) return;
+      if (name === 'accentOn' || name === 'shapeOn') {
+        state[name] = event.target.checked;
+        if (event.target.checked) seedFromStyle(name === 'accentOn' ? 'accent' : 'shape');
+        writeForm();
+      } else {
+        state[name] = NUMERIC.includes(name) ? Number(event.target.value) : event.target.value;
+      }
+      render();
+    });
+    form.addEventListener('submit', (event) => event.preventDefault());
+
+    root.addEventListener('click', async (event) => {
+      const theme = event.target.closest('[data-kreator-theme]');
+      const copy = event.target.closest('[data-kreator-copy]');
+      if (theme) {
+        state.theme = theme.dataset.kreatorTheme;
+        render();
+      } else if (event.target.closest('[data-kreator-reset]')) {
+        Object.assign(state, DEFAULTS);
+        writeForm();
+        render();
+      } else if (copy) {
+        const code = exportCode();
+        const text = copy.dataset.kreatorCopy === 'link' ? location.href : `${code.html}\n\n${code.css}`;
+        try {
+          await navigator.clipboard.writeText(text);
+          window.Plossy?.notification(copy.dataset.kreatorCopy === 'link' ? 'Link skopiowany' : 'CSS skopiowany', { status: 'success', timeout: 2200 });
+        } catch {
+          window.Plossy?.notification('Nie udało się skopiować — zaznacz kod ręcznie.', { status: 'danger' });
+        }
+      } else if (event.target.closest('[data-kreator-preview] a[href="#"]')) {
+        event.preventDefault();
+      }
+    });
+
+    writeForm();
+    render();
+  }
+
+  document.addEventListener('astro:page-load', setup);
+  setup();
+</script>
