@@ -1,0 +1,35 @@
+// Styl „round" — miękki i przyjazny: duże zaokrąglenia, przyciski-pastylki,
+// wyraźniejsze cienie i żywszy ruch. Włączenie: <html data-pl-style="round">.
+@use '../tokens' as tokens;
+
+[data-pl-style='round'] {
+  --pl-radius-xs: 10px;
+  --pl-radius-sm: 14px;
+  --pl-radius-md: 20px;
+  --pl-radius-lg: 30px;
+  --pl-radius-xl: 44px;
+  --pl-shadow-scale: 1.7;
+  --pl-lift: 1.6;
+  --pl-press: 0.94;
+  --pl-heading-weight: 720;
+  --pl-display-weight: 680;
+  --pl-control-weight: 620;
+  --pl-control-h: 2.75rem;
+  --pl-control-h-sm: 2.15rem;
+  --pl-control-h-lg: 3.35rem;
+  @include tokens.derived;
+
+  .pl-button {
+    --pl-button-radius: var(--pl-radius-pill);
+    --pl-button-px: 1.35em;
+  }
+
+  .pl-button-icon {
+    --pl-button-px: 0;
+  }
+
+  .pl-input,
+  .pl-select {
+    padding-inline: 1.15em;
+  }
+}

@@ -1,0 +1,274 @@
+// Placeholder — pusty stan (przerywana ramka) oraz szkielety ładowania (.pl-skeleton).
+@use '../abstracts' as *;
+
+.pl-placeholder {
+  --pl-placeholder-p: 2.5rem;
+
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: var(--pl-space-2);
+  padding: var(--pl-placeholder-p);
+  border: 1.5px dashed var(--pl-border-strong);
+  border-radius: var(--pl-radius-lg);
+  background: color-mix(in oklab, var(--pl-muted) 55%, transparent);
+  color: var(--pl-text-muted);
+  text-align: center;
+  @include transition('border-color, background-color', var(--pl-dur-2));
+
+  > * {
+    margin: 0;
+  }
+}
+
+.pl-placeholder-icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 3.25rem;
+  height: 3.25rem;
+  margin-bottom: var(--pl-space-2);
+  padding: 0.85rem;
+  border: 1px solid var(--pl-border);
+  border-radius: var(--pl-radius-md);
+  background: var(--pl-surface);
+  box-shadow: var(--pl-shadow-sm);
+  color: var(--pl-text-muted);
+  transition: transform var(--pl-dur-4) var(--pl-ease-spring);
+
+  > svg {
+    width: 100%;
+    height: 100%;
+  }
+}
+
+.pl-placeholder:hover > .pl-placeholder-icon {
+  transform: translateY(-3px) rotate(-4deg);
+}
+
+.pl-placeholder-title {
+  font-family: var(--pl-font-display);
+  font-size: var(--pl-text-lg);
+  font-weight: var(--pl-display-weight, 600);
+  line-height: 1.3;
+  letter-spacing: var(--pl-display-tracking, -0.015em);
+  color: var(--pl-text);
+}
+
+.pl-placeholder-text {
+  max-width: 26rem;
+  font-size: var(--pl-text-sm);
+  text-wrap: balance;
+}
+
+.pl-placeholder-actions {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: var(--pl-space-2);
+  margin-top: var(--pl-space-3);
+}
+
+// ── Warianty ────────────────────────────────────────────────────────────
+.pl-placeholder-small {
+  --pl-placeholder-p: 1.25rem;
+  border-radius: var(--pl-radius-md);
+
+  .pl-placeholder-icon {
+    width: 2.5rem;
+    height: 2.5rem;
+    padding: 0.6rem;
+    border-radius: var(--pl-radius-sm);
+  }
+
+  .pl-placeholder-title {
+    font-size: var(--pl-text-md);
+  }
+}
+
+.pl-placeholder-large {
+  --pl-placeholder-p: 4.5rem 2.5rem;
+}
+
+// Bez tła i ramki — pusty stan wewnątrz karty lub tabeli.
+.pl-placeholder-plain {
+  border-color: transparent;
+  background: none;
+}
+
+// Układ poziomy: ikona | tekst | akcja.
+.pl-placeholder-horizontal {
+  @include up(s) {
+    flex-direction: row;
+    gap: var(--pl-space-4);
+    text-align: start;
+
+    > .pl-placeholder-icon {
+      flex: none;
+      margin-bottom: 0;
+    }
+
+    > .pl-placeholder-content {
+      flex: 1 1 auto;
+      min-width: 0;
+    }
+
+    .pl-placeholder-actions {
+      flex: none;
+      margin-top: 0;
+    }
+  }
+}
+
+.pl-placeholder-content > * {
+  margin: 0;
+}
+
+.pl-placeholder-content > * + * {
+  margin-top: var(--pl-space-1);
+}
+
+// Interaktywny (np. „dodaj pierwszy element", strefa upuszczania).
+a.pl-placeholder,
+button.pl-placeholder,
+.pl-placeholder-hover {
+  width: 100%;
+  font: inherit;
+  text-decoration: none;
+  cursor: pointer;
+
+  &:hover,
+  &.pl-active {
+    border-color: var(--pl-primary);
+    background: var(--pl-primary-soft);
+    text-decoration: none;
+
+    .pl-placeholder-icon {
+      color: var(--pl-primary-text);
+    }
+  }
+
+  @include focus-visible;
+}
+
+// ── Skeleton — szkielet ładowania z połyskiem ───────────────────────────
+.pl-skeleton {
+  --pl-skeleton-base: var(--pl-muted-strong);
+  --pl-skeleton-shine: color-mix(in oklab, var(--pl-surface) 75%, var(--pl-muted-strong));
+
+  display: block;
+  min-height: 0.75em;
+  border-radius: var(--pl-radius-sm);
+  background-color: var(--pl-skeleton-base);
+  background-image: linear-gradient(
+    100deg,
+    transparent 30%,
+    var(--pl-skeleton-shine) 50%,
+    transparent 70%
+  );
+  background-repeat: no-repeat;
+  background-position: 200% 0;
+  background-size: 200% 100%;
+  color: transparent;
+  user-select: none;
+
+  // Treść zastępowana szkieletem nie jest widoczna.
+  > * {
+    visibility: hidden;
+  }
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .pl-skeleton {
+    animation: pl-skeleton-shimmer 1.6s linear infinite;
+  }
+
+  .pl-skeleton-pulse {
+    background-image: none;
+    animation: pl-skeleton-pulse 1.4s var(--pl-ease-in-out) infinite alternate;
+  }
+
+  .pl-skeleton-static {
+    animation: none;
+  }
+}
+
+@keyframes pl-skeleton-shimmer {
+  from {
+    background-position: 200% 0;
+  }
+
+  to {
+    background-position: -100% 0;
+  }
+}
+
+@keyframes pl-skeleton-pulse {
+  from {
+    opacity: 1;
+  }
+
+  to {
+    opacity: 0.45;
+  }
+}
+
+// Wiersz tekstu.
+.pl-skeleton-text {
+  height: 0.75em;
+  margin-block: 0.425em;
+  border-radius: var(--pl-radius-pill);
+
+  & + & {
+    margin-top: 0.85em;
+  }
+}
+
+// Nagłówek.
+.pl-skeleton-title {
+  width: 55%;
+  height: 1.25em;
+  margin-bottom: 1em;
+  border-radius: var(--pl-radius-pill);
+  font-size: var(--pl-text-xl);
+}
+
+// Koło (awatar).
+.pl-skeleton-circle {
+  flex: none;
+  width: var(--pl-skeleton-size, 2.75rem);
+  height: var(--pl-skeleton-size, 2.75rem);
+  border-radius: 50%;
+}
+
+// Prostokąt (obraz, karta). Proporcje: --pl-skeleton-ratio.
+.pl-skeleton-rect {
+  width: 100%;
+  aspect-ratio: var(--pl-skeleton-ratio, 16 / 9);
+  border-radius: var(--pl-radius-md);
+}
+
+// Przycisk / kontrolka.
+.pl-skeleton-button {
+  display: inline-block;
+  width: 7rem;
+  height: var(--pl-control-h);
+  border-radius: var(--pl-radius-md);
+  vertical-align: middle;
+}
+
+// Kontener: ukrywa szkielet przed czytnikami, układa wiersze.
+.pl-skeleton-group {
+  display: flex;
+  flex-direction: column;
+  gap: 0.85em;
+
+  > .pl-skeleton-text {
+    margin: 0;
+  }
+
+  > .pl-skeleton-text:last-child:not(:only-child) {
+    width: 62%;
+  }
+}

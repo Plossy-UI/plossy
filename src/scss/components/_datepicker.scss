@@ -1,0 +1,464 @@
+// Datepicker — kalendarz w okienku lub osadzony, z wyborem zakresu
+@use '../abstracts' as *;
+
+.pl-datepicker {
+  --pl-datepicker-cell: 2.25rem;
+  --pl-datepicker-gap: 2px;
+  --pl-datepicker-pad: 0.75rem;
+  --pl-datepicker-accent: var(--pl-primary);
+  --pl-datepicker-on-accent: var(--pl-on-primary);
+  --pl-datepicker-shift: -6px;
+
+  @include floating-surface(var(--pl-radius-lg));
+  box-sizing: border-box;
+  width: calc(var(--pl-datepicker-cell) * 7 + var(--pl-datepicker-pad) * 2 + 2px);
+  padding: var(--pl-datepicker-pad);
+  font-family: var(--pl-font-sans);
+  font-size: var(--pl-text-sm);
+  line-height: 1;
+  user-select: none;
+  transform-origin: top left;
+
+  &[data-pl-placement^='top'] {
+    --pl-datepicker-shift: 6px;
+    transform-origin: bottom left;
+  }
+
+  @media (prefers-reduced-motion: no-preference) {
+    animation: pl-datepicker-in var(--pl-dur-3) var(--pl-ease-spring);
+
+    &.pl-datepicker-out {
+      animation: pl-datepicker-out var(--pl-dur-1) var(--pl-ease-in) forwards;
+    }
+  }
+}
+
+// Kalendarz osadzony w treści strony.
+.pl-datepicker-inline {
+  position: relative;
+  z-index: auto;
+  display: block;
+  max-width: 100%;
+  box-shadow: var(--pl-shadow-sm);
+  animation: none;
+}
+
+.pl-datepicker.pl-datepicker-large,
+.pl-datepicker-large > .pl-datepicker {
+  --pl-datepicker-cell: 2.75rem;
+  --pl-datepicker-pad: 1rem;
+  font-size: 0.9375rem;
+}
+
+.pl-datepicker-plain.pl-datepicker-inline,
+.pl-datepicker-plain > .pl-datepicker-inline {
+  --pl-datepicker-pad: 0rem;
+  border: 0;
+  background: none;
+  box-shadow: none;
+}
+
+// ── Nagłówek ────────────────────────────────────────────────────────────
+.pl-datepicker-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--pl-space-2);
+  margin-bottom: 0.5rem;
+}
+
+.pl-datepicker-title {
+  @include button-reset;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.3rem;
+  height: 2rem;
+  padding: 0 0.55rem;
+  border-radius: var(--pl-radius-sm);
+  color: var(--pl-text);
+  font-family: var(--pl-font-display);
+  font-size: 1rem;
+  font-weight: var(--pl-display-weight, 600);
+  letter-spacing: var(--pl-display-tracking, -0.012em);
+  @include transition('background-color, color');
+
+  &::first-letter {
+    text-transform: uppercase;
+  }
+
+  // Mały znacznik „rozwiń".
+  &::after {
+    content: '';
+    width: 0.38rem;
+    height: 0.38rem;
+    margin-top: -0.2rem;
+    border: solid var(--pl-text-subtle);
+    border-width: 0 1.5px 1.5px 0;
+    transform: rotate(45deg);
+    transition: transform var(--pl-dur-4) var(--pl-ease-spring);
+  }
+
+  &:hover {
+    background: var(--pl-muted);
+  }
+
+  @include focus-visible(0);
+}
+
+.pl-datepicker:not([data-view='days']) .pl-datepicker-title::after {
+  margin-top: 0.15rem;
+  transform: rotate(225deg);
+}
+
+.pl-datepicker-nav {
+  display: inline-flex;
+  gap: 2px;
+}
+
+.pl-datepicker-prev,
+.pl-datepicker-next {
+  @include button-reset;
+  display: grid;
+  place-items: center;
+  width: 2rem;
+  height: 2rem;
+  border-radius: var(--pl-radius-sm);
+  color: var(--pl-text-muted);
+  transition:
+    background-color var(--pl-dur-2) var(--pl-ease),
+    color var(--pl-dur-2) var(--pl-ease),
+    transform var(--pl-dur-3) var(--pl-ease-spring);
+
+  > svg {
+    width: 1.1rem;
+    height: 1.1rem;
+    transition: transform var(--pl-dur-3) var(--pl-ease-spring);
+  }
+
+  &:hover {
+    background: var(--pl-muted);
+    color: var(--pl-text);
+  }
+
+  &:active {
+    transform: scale(0.9);
+  }
+
+  &:disabled {
+    opacity: 0.35;
+    pointer-events: none;
+  }
+
+  @include focus-visible(0);
+}
+
+// ── Siatka dni ──────────────────────────────────────────────────────────
+.pl-datepicker-body {
+  position: relative;
+  min-height: calc(var(--pl-datepicker-cell) * 7 + var(--pl-datepicker-gap) * 12 - 0.35rem);
+  overflow: hidden;
+  // Miejsce na pierścień fokusu skrajnych dni.
+  margin: -3px;
+  padding: 3px;
+}
+
+.pl-datepicker-grid {
+  width: 100%;
+  margin: 0;
+  border: 0;
+  border-collapse: separate;
+  border-spacing: 0;
+  table-layout: fixed;
+
+  th {
+    height: calc(var(--pl-datepicker-cell) - 0.35rem);
+    padding: 0;
+    border: 0;
+    background: none;
+    color: var(--pl-text-subtle);
+    font-family: var(--pl-font-mono);
+    font-size: 0.6875rem;
+    font-weight: 500;
+    letter-spacing: 0.04em;
+    text-align: center;
+    text-transform: uppercase;
+  }
+
+  td {
+    padding: var(--pl-datepicker-gap) 0;
+    border: 0;
+    background: none;
+    text-align: center;
+  }
+}
+
+.pl-datepicker-day {
+  @include button-reset;
+  position: relative;
+  display: grid;
+  place-items: center;
+  width: var(--pl-datepicker-cell);
+  max-width: 100%;
+  height: var(--pl-datepicker-cell);
+  margin: 0 auto;
+  border-radius: var(--pl-radius-sm);
+  color: var(--pl-text);
+  font-size: inherit;
+  font-variant-numeric: tabular-nums;
+  text-align: center;
+  transition:
+    background-color var(--pl-dur-1) var(--pl-ease),
+    color var(--pl-dur-1) var(--pl-ease),
+    transform var(--pl-dur-3) var(--pl-ease-spring);
+
+  &:hover {
+    background: var(--pl-muted-strong);
+  }
+
+  &:active {
+    transform: scale(0.9);
+  }
+
+  @include focus-visible(1px);
+
+  &.pl-datepicker-outside {
+    color: var(--pl-text-subtle);
+    opacity: 0.7;
+  }
+
+  // Dziś — limonkowa iskra pod liczbą.
+  &.pl-datepicker-today {
+    font-weight: 650;
+
+    &::after {
+      content: '';
+      position: absolute;
+      bottom: 0.26rem;
+      left: 50%;
+      width: 0.3rem;
+      height: 0.3rem;
+      margin-left: -0.15rem;
+      border-radius: 50%;
+      background: var(--pl-spark);
+      box-shadow: 0 0 0 1px color-mix(in oklab, var(--pl-on-spark) 25%, transparent);
+    }
+  }
+
+  &.pl-datepicker-selected {
+    background: var(--pl-datepicker-accent);
+    color: var(--pl-datepicker-on-accent);
+    font-weight: 600;
+    opacity: 1;
+    box-shadow:
+      inset 0 1px 0 oklch(1 0 0 / 0.16),
+      0 4px 10px -4px color-mix(in oklab, var(--pl-datepicker-accent) 70%, transparent);
+  }
+
+  &.pl-datepicker-pop {
+    animation: pl-datepicker-pop var(--pl-dur-4) var(--pl-ease-spring);
+  }
+
+  &.pl-disabled {
+    background: none;
+    color: var(--pl-text-subtle);
+    box-shadow: none;
+    opacity: 0.45;
+    text-decoration: line-through;
+    text-decoration-color: color-mix(in oklab, currentColor 50%, transparent);
+    cursor: not-allowed;
+    transform: none;
+  }
+}
+
+// ── Zakres ──────────────────────────────────────────────────────────────
+.pl-datepicker-grid td.pl-datepicker-in-range {
+  --pl-datepicker-band: color-mix(in oklab, var(--pl-datepicker-accent) 13%, transparent);
+  background: linear-gradient(var(--pl-datepicker-band), var(--pl-datepicker-band)) center / 100% var(--pl-datepicker-cell) no-repeat;
+
+  &.pl-datepicker-preview {
+    --pl-datepicker-band: color-mix(in oklab, var(--pl-datepicker-accent) 7%, transparent);
+  }
+
+  &.pl-datepicker-range-start {
+    background-position: right center;
+    background-size: 50% var(--pl-datepicker-cell);
+  }
+
+  &.pl-datepicker-range-end {
+    background-position: left center;
+    background-size: 50% var(--pl-datepicker-cell);
+  }
+
+  &:first-child:not(.pl-datepicker-range-end) {
+    border-radius: var(--pl-radius-sm) 0 0 var(--pl-radius-sm);
+  }
+
+  &:last-child:not(.pl-datepicker-range-start) {
+    border-radius: 0 var(--pl-radius-sm) var(--pl-radius-sm) 0;
+  }
+
+  > .pl-datepicker-day:not(.pl-datepicker-selected, .pl-disabled) {
+    color: var(--pl-primary-text);
+
+    &:hover {
+      background: color-mix(in oklab, var(--pl-datepicker-accent) 20%, transparent);
+    }
+  }
+
+  // Koniec podglądu (dzień pod kursorem).
+  &.pl-datepicker-preview:is(.pl-datepicker-range-start, .pl-datepicker-range-end) > .pl-datepicker-day:not(.pl-datepicker-selected) {
+    background: color-mix(in oklab, var(--pl-datepicker-accent) 20%, var(--pl-surface-raised));
+    box-shadow: inset 0 0 0 1px color-mix(in oklab, var(--pl-datepicker-accent) 45%, transparent);
+  }
+}
+
+// ── Widok miesięcy / lat ────────────────────────────────────────────────
+.pl-datepicker-months,
+.pl-datepicker-years {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 0.35rem;
+  min-height: inherit;
+  align-content: center;
+}
+
+.pl-datepicker-cell {
+  @include button-reset;
+  height: 2.9rem;
+  border-radius: var(--pl-radius-sm);
+  color: var(--pl-text);
+  font-size: inherit;
+  font-weight: 500;
+  text-align: center;
+  transition:
+    background-color var(--pl-dur-1) var(--pl-ease),
+    color var(--pl-dur-1) var(--pl-ease),
+    transform var(--pl-dur-3) var(--pl-ease-spring);
+
+  &::first-letter {
+    text-transform: uppercase;
+  }
+
+  &:hover {
+    background: var(--pl-muted-strong);
+  }
+
+  &:active {
+    transform: scale(0.94);
+  }
+
+  @include focus-visible(1px);
+
+  &.pl-datepicker-current {
+    box-shadow: inset 0 -2px 0 -0px var(--pl-spark);
+  }
+
+  &.pl-datepicker-selected {
+    background: var(--pl-datepicker-accent);
+    color: var(--pl-datepicker-on-accent);
+    box-shadow: none;
+  }
+
+  &[aria-disabled='true'] {
+    background: none;
+    color: var(--pl-text-subtle);
+    opacity: 0.45;
+    cursor: not-allowed;
+    transform: none;
+  }
+}
+
+// ── Stopka ──────────────────────────────────────────────────────────────
+.pl-datepicker-footer {
+  display: flex;
+  justify-content: space-between;
+  gap: var(--pl-space-2);
+  margin-top: 0.6rem;
+  padding-top: 0.6rem;
+  border-top: 1px solid var(--pl-border);
+}
+
+.pl-datepicker-action {
+  @include button-reset;
+  height: 1.875rem;
+  padding: 0 0.65rem;
+  border-radius: var(--pl-radius-sm);
+  color: var(--pl-text-muted);
+  font-size: 0.8125rem;
+  font-weight: 540;
+  transition:
+    background-color var(--pl-dur-2) var(--pl-ease),
+    color var(--pl-dur-2) var(--pl-ease),
+    transform var(--pl-dur-3) var(--pl-ease-spring);
+
+  &:hover {
+    background: var(--pl-muted);
+    color: var(--pl-text);
+  }
+
+  &:active {
+    transform: scale(0.95);
+  }
+
+  @include focus-visible(0);
+}
+
+.pl-datepicker-action-today {
+  color: var(--pl-primary-text);
+
+  &:hover {
+    background: var(--pl-primary-soft);
+    color: var(--pl-primary-text);
+  }
+}
+
+// ── Animacje widoków ────────────────────────────────────────────────────
+@media (prefers-reduced-motion: no-preference) {
+  .pl-datepicker-anim-next {
+    --pl-datepicker-from: 14px;
+    animation: pl-datepicker-slide var(--pl-dur-3) var(--pl-ease) both;
+  }
+
+  .pl-datepicker-anim-prev {
+    --pl-datepicker-from: -14px;
+    animation: pl-datepicker-slide var(--pl-dur-3) var(--pl-ease) both;
+  }
+
+  .pl-datepicker-anim-zoom {
+    animation: pl-datepicker-zoom var(--pl-dur-3) var(--pl-ease-spring) both;
+  }
+}
+
+@keyframes pl-datepicker-in {
+  from {
+    opacity: 0;
+    transform: translateY(var(--pl-datepicker-shift)) scale(0.96);
+  }
+}
+
+@keyframes pl-datepicker-out {
+  to {
+    opacity: 0;
+    transform: translateY(var(--pl-datepicker-shift)) scale(0.98);
+  }
+}
+
+@keyframes pl-datepicker-slide {
+  from {
+    opacity: 0;
+    transform: translateX(var(--pl-datepicker-from));
+  }
+}
+
+@keyframes pl-datepicker-zoom {
+  from {
+    opacity: 0;
+    transform: scale(0.94);
+  }
+}
+
+@keyframes pl-datepicker-pop {
+  from {
+    transform: scale(0.8);
+  }
+}

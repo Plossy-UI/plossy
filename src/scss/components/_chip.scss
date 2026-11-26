@@ -1,0 +1,296 @@
+// Chip — znacznik z opcjonalnym awatarem / ikoną i przyciskiem usuwania.
+@use '../abstracts' as *;
+
+.pl-chip {
+  --pl-tone: var(--pl-text);
+  --pl-on-tone: var(--pl-on-ink);
+  --pl-tone-soft: var(--pl-muted);
+  --pl-tone-text: var(--pl-text);
+  --pl-chip-h: 2rem;
+  --pl-chip-px: 0.75rem;
+  --pl-chip-radius: var(--pl-radius-pill);
+
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4em;
+  max-width: 100%;
+  height: var(--pl-chip-h);
+  padding: 0 var(--pl-chip-px);
+  border: 1px solid color-mix(in oklab, var(--pl-tone) 12%, transparent);
+  border-radius: var(--pl-chip-radius);
+  background: var(--pl-tone-soft);
+  color: var(--pl-tone-text);
+  font-family: var(--pl-font-sans);
+  font-size: 0.8125rem;
+  font-weight: 520;
+  line-height: 1;
+  letter-spacing: -0.004em;
+  text-decoration: none;
+  white-space: nowrap;
+  vertical-align: middle;
+  user-select: none;
+  transition:
+    background-color var(--pl-dur-2) var(--pl-ease),
+    border-color var(--pl-dur-2) var(--pl-ease),
+    color var(--pl-dur-2) var(--pl-ease),
+    box-shadow var(--pl-dur-2) var(--pl-ease),
+    transform var(--pl-dur-3) var(--pl-ease-spring);
+
+  > .pl-icon,
+  > svg {
+    flex: none;
+    width: 1.1em;
+    height: 1.1em;
+    margin-left: -0.15em;
+    opacity: 0.8;
+  }
+}
+
+@include tones('pl-chip');
+
+.pl-chip-secondary {
+  --pl-tone: var(--pl-ink);
+  --pl-on-tone: var(--pl-on-ink);
+  --pl-tone-soft: var(--pl-muted-strong);
+  --pl-tone-text: var(--pl-text);
+}
+
+// ── Części ──────────────────────────────────────────────────────────────
+.pl-chip-label {
+  min-width: 0;
+  @include truncate;
+}
+
+.pl-chip-avatar {
+  flex: none;
+  width: calc(var(--pl-chip-h) - 0.5rem);
+  height: calc(var(--pl-chip-h) - 0.5rem);
+  margin-left: calc(var(--pl-chip-px) * -1 + 0.2rem);
+  border-radius: 50%;
+  object-fit: cover;
+}
+
+// Kolorowa kropka statusu / kategorii.
+.pl-chip-dot {
+  flex: none;
+  width: 0.45rem;
+  height: 0.45rem;
+  border-radius: 50%;
+  background: var(--pl-chip-dot, var(--pl-tone));
+}
+
+.pl-chip-dot-spark {
+  --pl-chip-dot: var(--pl-spark);
+  box-shadow: 0 0 0 1px color-mix(in oklab, var(--pl-on-spark) 25%, transparent);
+}
+
+.pl-chip-remove {
+  @include button-reset;
+  position: relative;
+  flex: none;
+  width: 1.25rem;
+  height: 1.25rem;
+  margin-right: calc(var(--pl-chip-px) * -1 + 0.3rem);
+  border-radius: 50%;
+  opacity: 0.6;
+  transition:
+    background-color var(--pl-dur-2) var(--pl-ease),
+    opacity var(--pl-dur-2) var(--pl-ease),
+    transform var(--pl-dur-3) var(--pl-ease-spring);
+
+  &::before,
+  &::after {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 0.5625rem;
+    height: 1.5px;
+    margin: -0.75px 0 0 -0.28125rem;
+    border-radius: 2px;
+    background: currentColor;
+    transform: rotate(45deg);
+  }
+
+  &::after {
+    transform: rotate(-45deg);
+  }
+
+  &:hover {
+    background: color-mix(in oklab, currentColor 16%, transparent);
+    opacity: 1;
+    transform: rotate(90deg);
+  }
+
+  &:active {
+    transform: rotate(90deg) scale(0.85);
+  }
+
+  @include focus-visible(1px);
+}
+
+// ── Style ───────────────────────────────────────────────────────────────
+.pl-chip-solid {
+  border-color: transparent;
+  background: var(--pl-tone);
+  color: var(--pl-on-tone);
+}
+
+.pl-chip-solid:not([class*='pl-chip-primary'], [class*='pl-chip-success'], [class*='pl-chip-warning'], [class*='pl-chip-danger'], [class*='pl-chip-info']) {
+  --pl-tone: var(--pl-ink);
+}
+
+.pl-chip-outline {
+  border-color: color-mix(in oklab, var(--pl-tone) 32%, transparent);
+  background: transparent;
+}
+
+// ── Klikalny ────────────────────────────────────────────────────────────
+a.pl-chip,
+button.pl-chip,
+.pl-chip-selectable {
+  cursor: pointer;
+
+  &:hover {
+    border-color: color-mix(in oklab, var(--pl-tone) 30%, transparent);
+    background: color-mix(in oklab, var(--pl-tone) 14%, var(--pl-surface));
+  }
+
+  &:active {
+    transform: scale(0.96);
+    transition-duration: var(--pl-dur-1);
+  }
+
+  @include focus-visible;
+}
+
+:is(a, button).pl-chip-solid:hover {
+  background: color-mix(in oklab, var(--pl-tone), var(--pl-mix-strong) 12%);
+}
+
+:is(a, button).pl-chip-outline:hover {
+  background: color-mix(in oklab, var(--pl-tone) 8%, transparent);
+}
+
+// ── Wybieralny (checkbox / radio, tylko CSS) ────────────────────────────
+// <label class="pl-chip pl-chip-selectable"><input type="checkbox"> Etykieta</label>
+.pl-chip-selectable {
+  --pl-chip-active: var(--pl-primary);
+  --pl-chip-on-active: var(--pl-on-primary);
+  border-color: var(--pl-border);
+  background: var(--pl-surface);
+  color: var(--pl-text);
+
+  > input {
+    @include visually-hidden;
+  }
+
+  // Znacznik wyboru — wysuwa się po zaznaczeniu.
+  &::before {
+    content: '';
+    flex: none;
+    width: 0;
+    height: 0.55em;
+    margin-right: -0.4em;
+    border: solid currentColor;
+    border-width: 0 0 1.75px 1.75px;
+    opacity: 0;
+    transform: translateY(-0.12em) rotate(-45deg) scale(0.4);
+    transition:
+      width var(--pl-dur-3) var(--pl-ease-spring),
+      margin var(--pl-dur-3) var(--pl-ease-spring),
+      opacity var(--pl-dur-2) var(--pl-ease),
+      transform var(--pl-dur-3) var(--pl-ease-spring);
+  }
+
+  &:hover {
+    border-color: var(--pl-border-strong);
+    background: var(--pl-muted);
+  }
+
+  &:has(> input:checked) {
+    border-color: transparent;
+    background: var(--pl-chip-active);
+    color: var(--pl-chip-on-active);
+    box-shadow: 0 6px 14px -8px color-mix(in oklab, var(--pl-chip-active) 80%, transparent);
+
+    &::before {
+      width: 0.95em;
+      margin-right: 0;
+      opacity: 1;
+      transform: translateY(-0.12em) rotate(-45deg) scale(1);
+    }
+  }
+
+  &:has(> input:focus-visible) {
+    @include focus-ring;
+  }
+
+  &:has(> input:disabled) {
+    opacity: 0.5;
+    pointer-events: none;
+  }
+}
+
+// Zaznaczenie w wersji „soft" (zabarwione tło zamiast pełnego).
+.pl-chip-selectable.pl-chip-soft:has(> input:checked) {
+  border-color: var(--pl-primary-border);
+  background: var(--pl-primary-soft);
+  color: var(--pl-primary-text);
+  box-shadow: none;
+}
+
+// Bez znacznika wyboru.
+.pl-chip-selectable.pl-chip-plain::before {
+  content: none;
+}
+
+// ── Rozmiary i kształt ──────────────────────────────────────────────────
+.pl-chip-small {
+  --pl-chip-h: 1.5rem;
+  --pl-chip-px: 0.55rem;
+  font-size: 0.75rem;
+
+  .pl-chip-remove {
+    width: 1rem;
+    height: 1rem;
+  }
+}
+
+.pl-chip-large {
+  --pl-chip-h: 2.5rem;
+  --pl-chip-px: 1rem;
+  font-size: 0.9375rem;
+}
+
+.pl-chip-rounded {
+  --pl-chip-radius: var(--pl-radius-sm);
+
+  .pl-chip-avatar {
+    border-radius: var(--pl-radius-xs);
+  }
+}
+
+.pl-chip.pl-disabled {
+  opacity: 0.5;
+  pointer-events: none;
+}
+
+// ── Grupa ───────────────────────────────────────────────────────────────
+.pl-chip-group {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--pl-space-2);
+  margin: 0;
+  padding: 0;
+  border: 0;
+  list-style: none;
+}
+
+// Animacja usuwania (klasę dodaje skrypt aplikacji).
+.pl-chip-leave {
+  opacity: 0;
+  transform: scale(0.8);
+  pointer-events: none;
+}

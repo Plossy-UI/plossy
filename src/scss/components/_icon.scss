@@ -1,0 +1,89 @@
+// Icon
+@use '../abstracts' as *;
+
+.pl-icon {
+  display: inline-flex;
+  flex: none;
+  align-items: center;
+  justify-content: center;
+  width: 1.25em;
+  height: 1.25em;
+  color: inherit;
+  vertical-align: -0.22em;
+  line-height: 1;
+
+  > svg {
+    display: block;
+    width: 100%;
+    height: 100%;
+  }
+}
+
+.pl-icon-small { width: 1em; height: 1em; }
+.pl-icon-large { width: 2em; height: 2em; }
+.pl-icon-xlarge { width: 3em; height: 3em; }
+
+// Ikona w tle — okrągły / zaokrąglony znaczek.
+.pl-icon-box {
+  width: 2.75rem;
+  height: 2.75rem;
+  padding: 0.7rem;
+  border-radius: var(--pl-radius-md);
+  background: var(--pl-tone-soft, var(--pl-muted));
+  color: var(--pl-tone-text, var(--pl-text));
+  vertical-align: middle;
+}
+
+.pl-icon-box.pl-icon-solid {
+  background: var(--pl-tone, var(--pl-ink));
+  color: var(--pl-on-tone, var(--pl-on-ink));
+}
+
+.pl-icon-circle {
+  border-radius: 50%;
+}
+
+@include tones('pl-icon');
+
+// Kolor samej ikony (bez tła).
+.pl-icon:not(.pl-icon-box):is(.pl-icon-primary, .pl-icon-secondary, .pl-icon-success, .pl-icon-warning, .pl-icon-danger, .pl-icon-info) {
+  color: var(--pl-tone-text);
+}
+
+// Przycisk-ikona (link / button zawierający samą ikonę).
+.pl-icon-button {
+  @include button-reset;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 2.25rem;
+  height: 2.25rem;
+  border-radius: var(--pl-radius-sm);
+  color: var(--pl-text-muted);
+  text-decoration: none;
+  transition:
+    background-color var(--pl-dur-2) var(--pl-ease),
+    color var(--pl-dur-2) var(--pl-ease),
+    transform var(--pl-dur-3) var(--pl-ease-spring);
+
+  &:hover {
+    background: var(--pl-muted-strong);
+    color: var(--pl-text);
+  }
+
+  &:active {
+    transform: scale(0.92);
+  }
+
+  @include focus-visible;
+}
+
+.pl-icon-spin > svg {
+  animation: pl-icon-spin 1s linear infinite;
+}
+
+@keyframes pl-icon-spin {
+  to {
+    transform: rotate(360deg);
+  }
+}

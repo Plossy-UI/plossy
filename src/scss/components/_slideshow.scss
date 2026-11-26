@@ -1,0 +1,341 @@
+// Slideshow — jeden slajd naraz, przejścia sterowane przez JS.
+@use '../abstracts' as *;
+
+.pl-slideshow {
+  --pl-slideshow-radius: var(--pl-radius-lg);
+  --pl-slideshow-arrow-offset: 0.875rem;
+  position: relative;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  border-radius: var(--pl-slideshow-radius);
+
+  @include focus-visible(4px);
+}
+
+.pl-slideshow-items {
+  position: relative;
+  grid-area: 1 / 1;
+  width: 100%;
+  min-width: 0;
+  aspect-ratio: var(--pl-slideshow-ratio, 16 / 9);
+  min-height: var(--pl-slideshow-min-height, 0px);
+  max-height: var(--pl-slideshow-max-height, none);
+  margin: 0;
+  padding: 0;
+  overflow: hidden;
+  list-style: none;
+  border-radius: var(--pl-slideshow-radius);
+  background: var(--pl-muted);
+  touch-action: pan-y;
+  // Izolacja, żeby zaokrąglenie przycinało także transformowane slajdy.
+  isolation: isolate;
+
+  > * {
+    position: absolute;
+    inset: 0;
+    margin: 0;
+    overflow: hidden;
+    visibility: hidden;
+    will-change: transform, opacity;
+
+    &.pl-active,
+    &.pl-transition-active {
+      visibility: visible;
+    }
+  }
+
+  // Media wypełniają cały slajd.
+  > * > img,
+  > * > video,
+  > * > picture > img,
+  > * > .pl-slideshow-media {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    max-width: none;
+    object-fit: cover;
+    -webkit-user-drag: none;
+  }
+}
+
+// Zanim wystartuje JS — widoczny pierwszy slajd.
+.pl-slideshow:not(.pl-slideshow-ready) .pl-slideshow-items > :first-child {
+  visibility: visible;
+}
+
+.pl-slideshow-square {
+  --pl-slideshow-radius: 0px;
+}
+
+.pl-slideshow-draggable .pl-slideshow-items {
+  cursor: grab;
+  user-select: none;
+  -webkit-user-select: none;
+}
+
+.pl-slideshow-dragging .pl-slideshow-items {
+  cursor: grabbing;
+}
+
+// ── Podpis ──────────────────────────────────────────────────────────────
+.pl-slideshow-caption {
+  position: absolute;
+  inset: auto 0 0 0;
+  z-index: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: var(--pl-space-2);
+  padding: clamp(1.25rem, 5%, 3rem);
+  padding-top: clamp(3rem, 14%, 6rem);
+  color: oklch(1 0 0);
+  background: linear-gradient(to top, oklch(0 0 0 / 0.62), oklch(0 0 0 / 0.28) 55%, transparent);
+
+  > * {
+    margin: 0;
+    max-width: 38rem;
+  }
+
+  :where(h1, h2, h3, h4) {
+    font-family: var(--pl-font-display);
+    font-size: clamp(1.375rem, 1rem + 2vw, 2.5rem);
+    font-weight: var(--pl-display-weight, 600);
+    line-height: var(--pl-leading-tight);
+    letter-spacing: var(--pl-display-tracking, -0.02em);
+    color: inherit;
+  }
+
+  :where(p) {
+    color: oklch(1 0 0 / 0.82);
+  }
+}
+
+.pl-slideshow-caption-top {
+  inset: 0 0 auto 0;
+  padding-top: clamp(1.25rem, 5%, 3rem);
+  padding-bottom: clamp(3rem, 14%, 6rem);
+  background: linear-gradient(to bottom, oklch(0 0 0 / 0.62), oklch(0 0 0 / 0.28) 55%, transparent);
+}
+
+.pl-slideshow-caption-center {
+  inset: 0;
+  align-items: center;
+  justify-content: center;
+  padding-top: clamp(1.25rem, 5%, 3rem);
+  text-align: center;
+  background: oklch(0 0 0 / 0.38);
+}
+
+// Mała etykieta nad tytułem.
+.pl-slideshow-eyebrow {
+  font-family: var(--pl-font-mono);
+  font-size: var(--pl-text-xs);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--pl-spark);
+}
+
+// Podpis jako karta na szkle.
+.pl-slideshow-caption-card {
+  inset: auto auto clamp(0.75rem, 3%, 1.5rem) clamp(0.75rem, 3%, 1.5rem);
+  max-width: min(26rem, calc(100% - 1.5rem));
+  padding: var(--pl-space-4) var(--pl-space-5);
+  border: 1px solid oklch(1 0 0 / 0.18);
+  border-radius: var(--pl-radius-md);
+  background: oklch(0 0 0 / 0.42);
+  backdrop-filter: blur(14px) saturate(1.4);
+}
+
+// Treść podpisu wjeżdża kaskadowo, gdy slajd staje się aktywny.
+.pl-slideshow-items > :not(.pl-active) .pl-slideshow-caption > *,
+.pl-slideshow-items > :not(.pl-active) [data-pl-slideshow-in] {
+  opacity: 0;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .pl-slideshow-ready .pl-slideshow-items > .pl-active .pl-slideshow-caption > *,
+  .pl-slideshow-ready .pl-slideshow-items > .pl-active [data-pl-slideshow-in] {
+    animation: pl-slideshow-in var(--pl-dur-4) var(--pl-ease) both;
+    animation-delay: calc(140ms + var(--pl-i, 0) * 80ms);
+  }
+
+  @for $i from 2 through 6 {
+    .pl-slideshow-caption > :nth-child(#{$i}) {
+      --pl-i: #{$i - 1};
+    }
+  }
+}
+
+@keyframes pl-slideshow-in {
+  from {
+    opacity: 0;
+    transform: translateY(1rem);
+  }
+}
+
+// ── Ken Burns ───────────────────────────────────────────────────────────
+@media (prefers-reduced-motion: no-preference) {
+  .pl-slideshow-kenburns .pl-slideshow-items > :is(.pl-active, .pl-transition-active) {
+    > img,
+    > picture > img,
+    > .pl-slideshow-media {
+      animation: pl-slideshow-kenburns 16s linear both;
+      transform-origin: 30% 30%;
+    }
+
+    &:nth-child(2n) > :is(img, picture, .pl-slideshow-media) {
+      transform-origin: 75% 60%;
+      animation-direction: reverse;
+    }
+
+    &:nth-child(3n) > :is(img, picture, .pl-slideshow-media) {
+      transform-origin: 20% 80%;
+    }
+  }
+}
+
+@keyframes pl-slideshow-kenburns {
+  from {
+    transform: scale(1);
+  }
+
+  to {
+    transform: scale(1.2);
+  }
+}
+
+// ── Strzałki ────────────────────────────────────────────────────────────
+.pl-slideshow > .pl-slidenav-previous,
+.pl-slideshow > .pl-slidenav-next,
+.pl-slideshow > [data-pl-slideshow-item='previous'],
+.pl-slideshow > [data-pl-slideshow-item='next'] {
+  grid-area: 1 / 1;
+  align-self: center;
+  justify-self: start;
+  z-index: 3;
+  margin-inline: var(--pl-slideshow-arrow-offset);
+}
+
+.pl-slideshow > .pl-slidenav-next,
+.pl-slideshow > [data-pl-slideshow-item='next'] {
+  justify-self: end;
+}
+
+@media (hover: hover) {
+  .pl-slideshow-arrows-hover > :is([data-pl-slideshow-item='previous'], [data-pl-slideshow-item='next']) {
+    opacity: 0;
+    transition:
+      opacity var(--pl-dur-2) var(--pl-ease),
+      background-color var(--pl-dur-2) var(--pl-ease),
+      transform var(--pl-dur-3) var(--pl-ease-spring),
+      translate var(--pl-dur-4) var(--pl-ease-spring);
+
+    &[data-pl-slideshow-item='previous'] {
+      translate: -0.5rem 0;
+    }
+
+    &[data-pl-slideshow-item='next'] {
+      translate: 0.5rem 0;
+    }
+  }
+
+  .pl-slideshow-arrows-hover:hover > [data-pl-slideshow-item],
+  .pl-slideshow-arrows-hover:focus-within > [data-pl-slideshow-item] {
+    opacity: 1;
+    translate: 0 0;
+  }
+}
+
+// Pasek sterowania pod slajdami.
+.pl-slideshow-arrows {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: var(--pl-space-2);
+  margin-top: var(--pl-space-4);
+
+  > .pl-slideshow-nav {
+    margin: 0 auto 0 0;
+  }
+}
+
+.pl-slideshow [data-pl-slideshow-item][aria-disabled='true'],
+.pl-slideshow .pl-disabled > [aria-disabled='true'] {
+  opacity: 0.35;
+  pointer-events: none;
+}
+
+// ── Nawigacja ───────────────────────────────────────────────────────────
+.pl-slideshow-nav {
+  justify-content: center;
+  margin-top: var(--pl-space-4);
+}
+
+// Kropki / miniatury na slajdzie.
+.pl-slideshow > .pl-slideshow-nav-inside {
+  grid-area: 1 / 1;
+  align-self: end;
+  justify-self: center;
+  z-index: 3;
+  margin: 0 0 var(--pl-space-4);
+}
+
+// ── Pasek postępu autoodtwarzania (segment na slajd) ────────────────────
+.pl-slideshow-progress {
+  grid-area: 1 / 1;
+  align-self: start;
+  z-index: 3;
+  display: flex;
+  gap: 0.25rem;
+  margin: 0.75rem 0.875rem 0;
+  pointer-events: none;
+
+  > span {
+    position: relative;
+    flex: 1;
+    height: 3px;
+    overflow: hidden;
+    border-radius: var(--pl-radius-pill);
+    background: oklch(1 0 0 / 0.32);
+    box-shadow: 0 0 0 0.5px oklch(0 0 0 / 0.08);
+
+    &::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      border-radius: inherit;
+      background: oklch(1 0 0);
+      transform: scaleX(0);
+      transform-origin: left center;
+    }
+
+    &.pl-done::after,
+    &.pl-active::after {
+      transform: scaleX(1);
+    }
+  }
+}
+
+.pl-slideshow-autoplay .pl-slideshow-progress > .pl-active::after {
+  animation: pl-slideshow-progress var(--pl-slideshow-interval, 6000ms) linear both;
+}
+
+.pl-slideshow-paused .pl-slideshow-progress > .pl-active::after {
+  animation-play-state: paused;
+}
+
+.pl-slideshow-progress-bottom {
+  align-self: end;
+  margin: 0 0.875rem 0.75rem;
+}
+
+@keyframes pl-slideshow-progress {
+  from {
+    transform: scaleX(0);
+  }
+
+  to {
+    transform: scaleX(1);
+  }
+}

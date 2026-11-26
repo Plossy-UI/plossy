@@ -1,0 +1,343 @@
+---
+import Example from '../../layouts/Example.astro';
+---
+
+<Example title="Lorem — konto" description="Logowanie i rejestracja w sklepie: zakładki, miernik siły hasła, walidacja, przypomnienie hasła i weryfikacja kodem jednorazowym.">
+  <div class="pl-grid pl-grid-collapse pl-grid-match auth">
+    <!-- Panel marki -->
+    <aside class="pl-width-1-2@m pl-visible@m">
+      <div class="pl-cover-container pl-light pl-background-secondary pl-background-aurora pl-background-aurora-strong auth-visual">
+        <img class="pl-cover auth-visual-img" src="/img/photo-6.svg" alt="" />
+        <div class="pl-position-cover pl-flex pl-flex-column pl-flex-between auth-visual-body">
+          <a class="pl-logo" href="/examples/sklep/"><span class="pl-logo-mark"></span> Lorem</a>
+
+          <div class="pl-animation-slide-up">
+            <p class="pl-heading-eyebrow">Klub Lorem</p>
+            <h2 class="pl-heading-medium pl-margin-remove-top pl-text-balance">Dom, do którego <span class="pl-text-gradient pl-text-gradient-animated">chce się wracać</span></h2>
+            <ul class="pl-list pl-list-check pl-margin-medium-top">
+              <li>10% rabatu na pierwsze zamówienie</li>
+              <li>Historia zakupów i szybkie zwroty w jednym miejscu</li>
+              <li>Przedsprzedaże kolekcji 48 h przed premierą</li>
+            </ul>
+          </div>
+
+          <figure class="pl-overlay pl-overlay-default pl-overlay-rounded pl-margin-remove">
+            <blockquote class="auth-quote">„Zamawiam trzeci raz i za każdym razem paczka wygląda jak prezent. Konto przydaje się zwłaszcza przy zwrotach — dwa kliknięcia.”</blockquote>
+            <figcaption class="pl-flex pl-flex-middle pl-gap-small pl-margin-small-top">
+              <img class="pl-avatar pl-avatar-small" src="/img/avatar-3.svg" alt="" width="32" height="32" />
+              <span class="pl-text-small"><strong>Agnieszka Nowak</strong> · klientka od 2021 r.</span>
+            </figcaption>
+          </figure>
+        </div>
+      </div>
+    </aside>
+
+    <!-- Formularze -->
+    <div class="pl-width-1-1 pl-width-1-2@m">
+      <div class="pl-flex pl-flex-column auth-main">
+        <header class="pl-flex pl-flex-between pl-flex-middle pl-gap-small">
+          <a class="pl-logo pl-hidden@m" href="/examples/sklep/"><span class="pl-logo-mark"></span> Lorem</a>
+          <a class="pl-link-arrow pl-link-arrow-left pl-link-muted pl-margin-auto-left" href="/examples/sklep/">Wróć do sklepu</a>
+        </header>
+
+        <main class="pl-margin-auto-vertical auth-card pl-animation-fade">
+          <h1 class="pl-heading-small pl-margin-remove-bottom">Miło Cię widzieć</h1>
+          <p class="pl-text-muted pl-margin-small-top">Zaloguj się lub załóż konto, aby śledzić zamówienia i zbierać rabaty.</p>
+
+          <ul class="pl-tab pl-tab-segment pl-tab-fill pl-margin-top" data-pl-switcher="connect: #auth-panels" id="auth-tabs">
+            <li class="pl-active"><a href="#">Logowanie</a></li>
+            <li><a href="#">Rejestracja</a></li>
+          </ul>
+
+          <div class="pl-switcher pl-margin-top" id="auth-panels">
+            <!-- Logowanie -->
+            <div class="pl-active">
+              <form class="pl-form-stacked" id="auth-login" data-pl-form-validate novalidate>
+                <div class="pl-form-field">
+                  <label class="pl-form-label" for="auth-login-email">E-mail</label>
+                  <div class="pl-form-icon">
+                    <span data-pl-icon="mail"></span>
+                    <input class="pl-input pl-form-large" id="auth-login-email" type="email" name="email" placeholder="anna@example.com" autocomplete="email" required data-pl-message-required="Podaj adres e-mail." data-pl-message-type="To nie wygląda na poprawny adres e-mail." />
+                  </div>
+                </div>
+                <div class="pl-form-field">
+                  <div class="pl-flex pl-flex-between pl-flex-baseline">
+                    <label class="pl-form-label" for="auth-login-password">Hasło</label>
+                    <a class="pl-text-small" href="#auth-reset" data-pl-modal-open="#auth-reset">Nie pamiętasz hasła?</a>
+                  </div>
+                  <div class="pl-form-icon">
+                    <span data-pl-icon="lock"></span>
+                    <input class="pl-input pl-form-large" id="auth-login-password" type="password" name="password" placeholder="Twoje hasło" autocomplete="current-password" required minlength="8" data-pl-message-required="Wpisz hasło." data-pl-message-minlength="Hasło ma co najmniej 8 znaków." />
+                    <button class="pl-form-icon-flip" type="button" aria-label="Pokaż lub ukryj hasło" data-pl-password-toggle><span data-pl-icon="eye"></span></button>
+                  </div>
+                </div>
+                <label class="pl-form-check">
+                  <input class="pl-checkbox" type="checkbox" name="remember" checked />
+                  Zapamiętaj mnie na tym urządzeniu
+                </label>
+                <button class="pl-button pl-button-primary pl-button-large pl-button-block" type="submit">Zaloguj się <span data-pl-icon="arrow-right"></span></button>
+              </form>
+
+              <div class="pl-divider-label pl-margin" role="separator">lub</div>
+
+              <div class="pl-grid pl-grid-small pl-child-width-1-2@s">
+                <div>
+                  <button class="pl-button pl-button-block" type="button" data-auth-demo="Wysłaliśmy link logowania na Twój e-mail."><span data-pl-icon="wand-sparkles"></span> Link na e-mail</button>
+                </div>
+                <div>
+                  <button class="pl-button pl-button-block" type="button" data-auth-demo="Potwierdź logowanie kluczem dostępu na urządzeniu."><span data-pl-icon="key"></span> Klucz dostępu</button>
+                </div>
+              </div>
+              <p class="pl-text-small pl-text-muted pl-text-center pl-margin-top">
+                Nie masz konta? <a href="#" data-auth-tab="1">Zarejestruj się</a>
+              </p>
+            </div>
+
+            <!-- Rejestracja -->
+            <div>
+              <form class="pl-form-stacked" id="auth-register" data-pl-form-validate="success: true" novalidate>
+                <div class="pl-form-grid">
+                  <div class="pl-form-field">
+                    <label class="pl-form-label" for="auth-reg-name">Imię</label>
+                    <input class="pl-input pl-form-large" id="auth-reg-name" type="text" name="firstname" placeholder="Anna" autocomplete="given-name" required data-pl-message-required="Podaj imię." />
+                  </div>
+                  <div class="pl-form-field">
+                    <label class="pl-form-label" for="auth-reg-surname">Nazwisko</label>
+                    <input class="pl-input pl-form-large" id="auth-reg-surname" type="text" name="lastname" placeholder="Kowalska" autocomplete="family-name" required data-pl-message-required="Podaj nazwisko." />
+                  </div>
+                </div>
+                <div class="pl-form-field">
+                  <label class="pl-form-label" for="auth-reg-email">E-mail</label>
+                  <div class="pl-form-icon">
+                    <span data-pl-icon="mail"></span>
+                    <input class="pl-input pl-form-large" id="auth-reg-email" type="email" name="email" placeholder="anna@example.com" autocomplete="email" required data-pl-message-required="Podaj adres e-mail." data-pl-message-type="To nie wygląda na poprawny adres e-mail." />
+                  </div>
+                </div>
+                <div class="pl-form-field">
+                  <label class="pl-form-label" for="auth-reg-password">Hasło</label>
+                  <div data-pl-strength="rules: true; min-length: 8; empty-label: Wpisz hasło">
+                    <div class="pl-form-icon">
+                      <span data-pl-icon="lock"></span>
+                      <input class="pl-input pl-form-large" id="auth-reg-password" type="password" name="password" placeholder="Minimum 8 znaków" autocomplete="new-password" required minlength="8" data-pl-message-required="Ustaw hasło." data-pl-message-minlength="Hasło musi mieć co najmniej 8 znaków." />
+                      <button class="pl-form-icon-flip" type="button" aria-label="Pokaż lub ukryj hasło" data-pl-password-toggle><span data-pl-icon="eye"></span></button>
+                    </div>
+                  </div>
+                </div>
+                <div class="pl-form-field">
+                  <label class="pl-form-check">
+                    <input class="pl-checkbox" type="checkbox" name="terms" required data-pl-message-required="Zaakceptuj regulamin, aby założyć konto." />
+                    <span>Akceptuję <a href="/examples/cms/">regulamin sklepu</a> i <a href="/examples/cms/">politykę prywatności</a>.</span>
+                  </label>
+                </div>
+                <label class="pl-form-check">
+                  <input class="pl-checkbox" type="checkbox" name="newsletter" />
+                  <span>Chcę dostawać newsletter i kod −10% na pierwsze zakupy <span class="pl-text-muted">(opcjonalnie)</span>.</span>
+                </label>
+                <button class="pl-button pl-button-primary pl-button-large pl-button-block" type="submit">Załóż konto <span data-pl-icon="arrow-right"></span></button>
+              </form>
+              <p class="pl-text-small pl-text-muted pl-text-center pl-margin-top">
+                Masz już konto? <a href="#" data-auth-tab="0">Zaloguj się</a>
+              </p>
+            </div>
+          </div>
+        </main>
+
+        <footer class="pl-flex pl-flex-between pl-flex-wrap pl-gap-small pl-text-meta">
+          <span>© 2027 Lorem</span>
+          <span class="pl-flex pl-flex-middle pl-gap-xsmall"><span data-pl-icon="shield-check"></span> Połączenie szyfrowane · dane zgodnie z RODO</span>
+        </footer>
+      </div>
+    </div>
+  </div>
+
+  <!-- Przypomnienie hasła -->
+  <dialog class="pl-modal pl-modal-small pl-modal-center pl-modal-sheet" id="auth-reset" data-pl-modal>
+    <div class="pl-modal-dialog">
+      <div class="pl-modal-header">
+        <div>
+          <p class="pl-modal-eyebrow">Odzyskiwanie dostępu</p>
+          <h2 class="pl-modal-title">Nie pamiętasz hasła?</h2>
+        </div>
+        <button class="pl-close" type="button" aria-label="Zamknij" data-pl-modal-close></button>
+      </div>
+      <form id="auth-reset-form" data-pl-form-validate novalidate>
+        <div class="pl-modal-body">
+          <p class="pl-text-muted pl-margin-remove-top">Podaj e-mail użyty przy rejestracji. Wyślemy link do ustawienia nowego hasła — będzie ważny przez 30 minut.</p>
+          <div class="pl-form-field">
+            <label class="pl-form-label" for="auth-reset-email">E-mail</label>
+            <div class="pl-form-icon">
+              <span data-pl-icon="mail"></span>
+              <input class="pl-input" id="auth-reset-email" type="email" name="email" placeholder="anna@example.com" required data-pl-message-required="Podaj adres e-mail." data-pl-message-type="To nie wygląda na poprawny adres e-mail." />
+            </div>
+          </div>
+        </div>
+        <div class="pl-modal-footer">
+          <button class="pl-button pl-button-ghost" type="button" data-pl-modal-close>Anuluj</button>
+          <button class="pl-button pl-button-primary" type="submit">Wyślij link</button>
+        </div>
+      </form>
+    </div>
+  </dialog>
+
+  <!-- Weryfikacja kodem -->
+  <dialog class="pl-modal pl-modal-small pl-modal-center pl-modal-sheet" id="auth-otp" data-pl-modal="static: true">
+    <div class="pl-modal-dialog">
+      <div class="pl-modal-body pl-text-center">
+        <button class="pl-close pl-modal-close-default" type="button" aria-label="Zamknij" data-pl-modal-close></button>
+        <span class="auth-otp-icon pl-background-primary-soft pl-text-primary"><span data-pl-icon="mail"></span></span>
+        <h2 class="pl-modal-title pl-margin-top">Potwierdź adres e-mail</h2>
+        <p class="pl-text-muted pl-margin-small-top">Wysłaliśmy 6-cyfrowy kod na <strong class="pl-text-emphasis" id="auth-otp-email">anna@example.com</strong>. Wpisz go poniżej.</p>
+
+        <div class="pl-flex pl-flex-center pl-margin-top">
+          <div class="pl-otp" id="auth-otp-input" data-pl-otp="length: 6; separator: 3" aria-label="Kod weryfikacyjny">
+            <input type="text" name="code" />
+          </div>
+        </div>
+        <p class="pl-text-meta pl-margin-small-top">W wersji demonstracyjnej poprawny kod to <strong class="pl-text-mono">123456</strong>.</p>
+
+        <p class="pl-text-small pl-text-muted pl-margin-top pl-margin-remove-bottom">
+          Kod nie dotarł?
+          <span id="auth-otp-wait">
+            Wyślemy nowy za
+            <strong class="pl-countdown pl-countdown-inline" id="auth-otp-timer" data-pl-countdown="seconds: 30; autostart: false">
+              <span class="pl-countdown-item"><span class="pl-countdown-number pl-countdown-seconds"></span><span class="pl-countdown-label">s</span></span>
+            </strong>
+          </span>
+          <button class="pl-button pl-button-link" type="button" id="auth-otp-resend" hidden>Wyślij ponownie</button>
+        </p>
+      </div>
+    </div>
+  </dialog>
+</Example>
+
+<script>
+  const Plossy = (window as any).Plossy;
+  const notify = (message: string, status = 'success') => Plossy?.notification({ message, status, timeout: 3500 });
+
+  // Linki „Zarejestruj się" / „Zaloguj się" pod formularzami przełączają zakładki.
+  document.querySelectorAll<HTMLElement>('[data-auth-tab]').forEach((link) => {
+    link.addEventListener('click', (event) => {
+      event.preventDefault();
+      Plossy.switcher('#auth-tabs').show(Number(link.dataset.authTab));
+    });
+  });
+
+  document.querySelectorAll<HTMLElement>('[data-auth-demo]').forEach((button) => {
+    button.addEventListener('click', () => notify(button.dataset.authDemo ?? '', 'primary'));
+  });
+
+  // Logowanie.
+  document.querySelector('#auth-login')?.addEventListener('pl:valid', (event) => {
+    const button = (event.target as HTMLFormElement).querySelector<HTMLButtonElement>('[type="submit"]')!;
+    button.classList.add('pl-button-loading');
+    button.disabled = true;
+    setTimeout(() => {
+      button.classList.remove('pl-button-loading');
+      button.disabled = false;
+      notify('Zalogowano. Witaj ponownie w Lorem!');
+    }, 900);
+  });
+
+  // Przypomnienie hasła.
+  document.querySelector('#auth-reset-form')?.addEventListener('pl:valid', (event) => {
+    const form = event.target as HTMLFormElement;
+    Plossy.modal('#auth-reset').hide();
+    notify(`Link do zmiany hasła wysłaliśmy na <strong>${form.email.value}</strong>.`);
+    form.reset();
+  });
+
+  // Rejestracja → weryfikacja kodem.
+  const otp = () => Plossy.otp('#auth-otp-input');
+  const timer = () => Plossy.countdown('#auth-otp-timer');
+  const wait = document.querySelector<HTMLElement>('#auth-otp-wait')!;
+  const resend = document.querySelector<HTMLElement>('#auth-otp-resend')!;
+
+  const startTimer = () => {
+    wait.hidden = false;
+    resend.hidden = true;
+    timer()?.reset?.();
+    timer()?.start?.();
+  };
+
+  document.querySelector('#auth-register')?.addEventListener('pl:valid', (event) => {
+    const form = event.target as HTMLFormElement;
+    document.querySelector('#auth-otp-email')!.textContent = form.email.value;
+    otp().clear();
+    Plossy.modal('#auth-otp')
+      .show()
+      .then(() => otp().focus());
+    startTimer();
+  });
+
+  document.querySelector('#auth-otp-timer')?.addEventListener('pl:end', () => {
+    wait.hidden = true;
+    resend.hidden = false;
+  });
+
+  resend.addEventListener('click', () => {
+    notify('Nowy kod jest już w drodze.', 'primary');
+    otp().clear(true);
+    startTimer();
+  });
+
+  document.querySelector('#auth-otp-input')?.addEventListener('pl:complete', (event) => {
+    const { value } = (event as CustomEvent).detail;
+    if (value !== '123456') {
+      otp().error({ clear: true });
+      return;
+    }
+    otp().success();
+    setTimeout(() => {
+      Plossy.modal('#auth-otp').hide();
+      notify('Konto utworzone. Kod −10% czeka w Twojej skrzynce!');
+      (document.querySelector('#auth-register') as HTMLFormElement).reset();
+      Plossy.switcher('#auth-tabs').show(0);
+    }, 900);
+  });
+</script>
+
+<style>
+  /* Układ dzielony na pełną wysokość okna. */
+  .auth,
+  .auth-visual,
+  .auth-main {
+    min-height: 100vh;
+    min-height: 100dvh;
+  }
+  .auth-visual {
+    height: 100%;
+  }
+  .auth-visual-img {
+    opacity: 0.55;
+    mix-blend-mode: luminosity;
+  }
+  .auth-visual-body {
+    padding: clamp(var(--pl-space-6), 4vw, var(--pl-space-8));
+    padding-bottom: 5rem;
+  }
+  .auth-quote {
+    margin: 0;
+    padding: 0;
+    border: 0;
+    font-size: var(--pl-text-md);
+    color: inherit;
+  }
+  .auth-main {
+    gap: var(--pl-space-6);
+    padding: var(--pl-space-5) clamp(var(--pl-space-4), 5vw, var(--pl-space-8)) 4.5rem;
+  }
+  .auth-card {
+    width: 100%;
+    max-width: 27rem;
+    margin-inline: auto;
+  }
+  .auth-otp-icon {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 3.5rem;
+    height: 3.5rem;
+    border-radius: 50%;
+    font-size: 1.25rem;
+  }
+</style>

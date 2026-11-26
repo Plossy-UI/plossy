@@ -1,0 +1,297 @@
+// Plossy — baza: reset i domyślny wygląd elementów HTML.
+@use 'abstracts' as *;
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html {
+  -webkit-text-size-adjust: 100%;
+  text-size-adjust: 100%;
+  -webkit-tap-highlight-color: transparent;
+  scroll-padding-top: 5rem;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  html {
+    scroll-behavior: smooth;
+  }
+}
+
+body {
+  margin: 0;
+  background: var(--pl-bg);
+  color: var(--pl-text);
+  font-family: var(--pl-font-sans);
+  font-size: var(--pl-text-md);
+  font-weight: var(--pl-body-weight, 400);
+  line-height: var(--pl-leading);
+  font-feature-settings: 'ss01', 'cv11';
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  text-rendering: optimizeLegibility;
+}
+
+::selection {
+  background: var(--pl-spark);
+  color: var(--pl-on-spark);
+}
+
+:focus-visible {
+  @include focus-ring;
+}
+
+// ── Nagłówki ────────────────────────────────────────────────────────────
+h1, h2, h3, h4, h5, h6,
+.pl-h1, .pl-h2, .pl-h3, .pl-h4, .pl-h5, .pl-h6 {
+  margin: 0 0 0.6em;
+  font-family: var(--pl-font-display);
+  font-weight: var(--pl-heading-weight);
+  line-height: var(--pl-leading-tight);
+  letter-spacing: var(--pl-heading-tracking);
+  text-transform: var(--pl-heading-case);
+  color: var(--pl-text);
+  text-wrap: balance;
+}
+
+h1, .pl-h1 { font-size: var(--pl-text-4xl); letter-spacing: var(--pl-heading-tracking-h1, -0.035em); }
+h2, .pl-h2 { font-size: var(--pl-text-3xl); letter-spacing: var(--pl-heading-tracking-h2, -0.03em); }
+h3, .pl-h3 { font-size: var(--pl-text-2xl); }
+h4, .pl-h4 { font-size: var(--pl-text-xl); }
+h5, .pl-h5 { font-size: var(--pl-text-lg); letter-spacing: var(--pl-heading-tracking-h5, -0.012em); }
+h6, .pl-h6 { font-size: var(--pl-text-md); letter-spacing: var(--pl-heading-tracking-h6, -0.008em); }
+
+* + h1, * + h2, * + h3, * + h4, * + h5, * + h6 {
+  margin-top: 1.6em;
+}
+
+// ── Tekst ───────────────────────────────────────────────────────────────
+p, ul, ol, dl, pre, address, fieldset, figure, blockquote, table {
+  margin: 0 0 1.1em;
+}
+
+p {
+  text-wrap: pretty;
+}
+
+:where(h1, h2, h3, h4, h5, h6, p, ul, ol, dl, pre, figure, blockquote, table):last-child {
+  margin-bottom: 0;
+}
+
+a {
+  color: var(--pl-primary-text);
+  text-decoration: underline;
+  text-decoration-color: color-mix(in oklab, currentColor 30%, transparent);
+  text-decoration-thickness: 1px;
+  text-underline-offset: 0.22em;
+  @include transition('color, text-decoration-color', var(--pl-dur-1));
+
+  &:hover {
+    text-decoration-color: currentColor;
+  }
+}
+
+b, strong {
+  font-weight: 620;
+}
+
+small {
+  font-size: var(--pl-text-sm);
+}
+
+mark {
+  padding: 0.05em 0.3em;
+  border-radius: var(--pl-radius-xs);
+  background: var(--pl-spark);
+  color: var(--pl-on-spark);
+}
+
+abbr[title] {
+  text-decoration: underline dotted;
+  cursor: help;
+}
+
+sub, sup {
+  position: relative;
+  font-size: 0.72em;
+  line-height: 0;
+  vertical-align: baseline;
+}
+sup { top: -0.5em; }
+sub { bottom: -0.25em; }
+
+ul, ol {
+  padding-left: 1.4em;
+}
+
+li > ul, li > ol {
+  margin-bottom: 0;
+}
+
+dt { font-weight: 600; }
+dd { margin-left: 0; }
+
+blockquote {
+  padding: 0.2em 0 0.2em 1.25em;
+  border-left: 2px solid var(--pl-primary);
+  font-family: var(--pl-font-display);
+  font-size: var(--pl-text-xl);
+  line-height: 1.4;
+  letter-spacing: -0.015em;
+
+  footer {
+    margin-top: 0.75em;
+    font-family: var(--pl-font-sans);
+    font-size: var(--pl-text-sm);
+    letter-spacing: 0;
+    color: var(--pl-text-muted);
+  }
+}
+
+hr {
+  height: 0;
+  margin: var(--pl-space-5) 0;
+  border: 0;
+  border-top: 1px solid var(--pl-border);
+  overflow: visible;
+}
+
+// ── Kod ─────────────────────────────────────────────────────────────────
+code, kbd, samp, pre {
+  font-family: var(--pl-font-mono);
+  font-size: 0.875em;
+  font-feature-settings: normal;
+}
+
+:not(pre) > code {
+  padding: 0.14em 0.4em;
+  border: 1px solid var(--pl-border);
+  border-radius: var(--pl-radius-xs);
+  background: var(--pl-muted);
+  color: var(--pl-primary-text);
+  white-space: nowrap;
+}
+
+kbd {
+  display: inline-block;
+  min-width: 1.6em;
+  padding: 0.1em 0.42em;
+  border: 1px solid var(--pl-border-strong);
+  border-bottom-width: 2px;
+  border-radius: var(--pl-radius-xs);
+  background: var(--pl-surface);
+  color: var(--pl-text);
+  font-size: 0.8em;
+  line-height: 1.5;
+  text-align: center;
+}
+
+pre {
+  padding: var(--pl-space-4);
+  border: 1px solid var(--pl-border);
+  border-radius: var(--pl-radius-md);
+  background: var(--pl-muted);
+  line-height: 1.6;
+  overflow: auto;
+  tab-size: 2;
+}
+
+// ── Media ───────────────────────────────────────────────────────────────
+img, svg, video, canvas, audio, iframe {
+  vertical-align: middle;
+}
+
+img, video, canvas {
+  max-width: 100%;
+  height: auto;
+}
+
+iframe {
+  border: 0;
+}
+
+figure {
+  margin-inline: 0;
+}
+
+figcaption {
+  margin-top: 0.6em;
+  font-size: var(--pl-text-sm);
+  color: var(--pl-text-muted);
+}
+
+// ── Formularze (minimum; reszta w komponencie form) ─────────────────────
+button, input, optgroup, select, textarea {
+  margin: 0;
+  font: inherit;
+  color: inherit;
+  letter-spacing: inherit;
+}
+
+button, [role='button'], summary, label[for] {
+  cursor: pointer;
+}
+
+fieldset {
+  min-width: 0;
+  padding: 0;
+  border: 0;
+}
+
+[hidden] {
+  display: none !important;
+}
+
+// Cienkie paski przewijania w obszarach przewijanych.
+// Firefox: właściwości standardowe (pasek bez strzałek, nakładany).
+@supports not selector(::-webkit-scrollbar) {
+  * {
+    scrollbar-width: thin;
+    scrollbar-color: var(--pl-border-strong) transparent;
+  }
+}
+
+// Chromium / Safari: własny pasek bez przycisków-strzałek, z odsuniętym od krawędzi uchwytem.
+// Dzięki temu w zaokrąglonych kontenerach nic nie jest obcinane w narożnikach.
+// Odstęp od końców toru: --pl-scrollbar-inset (domyślnie 0.5rem).
+@supports selector(::-webkit-scrollbar) {
+  ::-webkit-scrollbar {
+    width: 10px;
+    height: 10px;
+  }
+
+  ::-webkit-scrollbar-button {
+    display: none;
+  }
+
+  ::-webkit-scrollbar-track,
+  ::-webkit-scrollbar-corner {
+    background: transparent;
+  }
+
+  ::-webkit-scrollbar-track {
+    margin: var(--pl-scrollbar-inset, 0.5rem);
+  }
+
+  :root::-webkit-scrollbar-track {
+    margin: 0;
+  }
+
+  ::-webkit-scrollbar-thumb {
+    border: 3px solid transparent;
+    border-radius: 999px;
+    background: var(--pl-border-strong) padding-box;
+  }
+
+  ::-webkit-scrollbar-thumb:hover {
+    background-color: var(--pl-text-subtle);
+  }
+}
+
+// Blokada przewijania strony (modal, offcanvas, lightbox).
+.pl-scroll-lock {
+  overflow: hidden;
+  padding-right: var(--pl-scrollbar-w, 0);
+}

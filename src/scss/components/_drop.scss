@@ -1,0 +1,314 @@
+// Drop — pływająca karta przypięta do przełącznika + menu rozwijane (.pl-dropdown-nav).
+// <button>Menu</button>
+// <div class="pl-drop pl-dropdown" data-pl-drop>
+//   <ul class="pl-dropdown-nav"><li><a href="#">…</a></li></ul>
+// </div>
+@use '../abstracts' as *;
+
+.pl-drop {
+  --pl-drop-width: 18rem;
+  --pl-drop-padding: var(--pl-space-4);
+  --pl-drop-radius: var(--pl-radius-lg);
+  // Kierunek wejścia — nadpisywany niżej na podstawie data-pl-placement.
+  --pl-drop-tx: 0px;
+  --pl-drop-ty: -8px;
+
+  @include floating-surface(var(--pl-drop-radius));
+  // Ukryty do czasu otwarcia przez JS (bez mignięcia przed inicjalizacją).
+  display: none;
+  box-sizing: border-box;
+  width: var(--pl-drop-width);
+  max-height: calc(100vh - 16px);
+  max-height: calc(100dvh - 16px);
+  padding: var(--pl-drop-padding);
+  font-size: var(--pl-text-sm);
+  line-height: 1.55;
+  text-align: left;
+  transform-origin: top left;
+
+  &.pl-open,
+  &.pl-leave {
+    display: block;
+  }
+
+  &.pl-leave {
+    pointer-events: none;
+    animation: pl-drop-out var(--pl-dur-1) var(--pl-ease) forwards;
+  }
+
+  &[data-pl-placement^='top'] {
+    --pl-drop-ty: 8px;
+    transform-origin: bottom left;
+  }
+
+  &[data-pl-placement^='left'] {
+    --pl-drop-tx: 8px;
+    --pl-drop-ty: 0px;
+    transform-origin: center right;
+  }
+
+  &[data-pl-placement^='right'] {
+    --pl-drop-tx: -8px;
+    --pl-drop-ty: 0px;
+    transform-origin: center left;
+  }
+
+  &[data-pl-placement='top'] { transform-origin: bottom center; }
+  &[data-pl-placement='bottom'] { transform-origin: top center; }
+  &[data-pl-placement='top-end'] { transform-origin: bottom right; }
+  &[data-pl-placement='bottom-end'] { transform-origin: top right; }
+  &[data-pl-placement='left-start'] { transform-origin: top right; }
+  &[data-pl-placement='left-end'] { transform-origin: bottom right; }
+  &[data-pl-placement='right-start'] { transform-origin: top left; }
+  &[data-pl-placement='right-end'] { transform-origin: bottom left; }
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .pl-drop.pl-open {
+    animation:
+      pl-drop-fade var(--pl-dur-2) var(--pl-ease),
+      pl-drop-in var(--pl-dur-4) var(--pl-ease-spring);
+  }
+}
+
+@keyframes pl-drop-fade {
+  from { opacity: 0; }
+}
+
+@keyframes pl-drop-in {
+  from { transform: translate(var(--pl-drop-tx), var(--pl-drop-ty)) scale(0.96); }
+}
+
+@keyframes pl-drop-out {
+  to { opacity: 0; transform: scale(0.98); }
+}
+
+// ── Szerokości ──────────────────────────────────────────────────────────
+.pl-drop-large {
+  --pl-drop-width: 28rem;
+  --pl-drop-padding: var(--pl-space-5);
+}
+
+.pl-drop-auto {
+  --pl-drop-width: max-content;
+}
+
+// Przewijana zawartość, gdy drop jest wyższy niż okno.
+.pl-drop-scroll {
+  overflow-y: auto;
+  overscroll-behavior: contain;
+}
+
+// Części opcjonalne karty.
+.pl-drop-title {
+  margin: 0 0 var(--pl-space-1);
+  font-family: var(--pl-font-display);
+  font-size: var(--pl-text-md);
+  font-weight: var(--pl-display-weight, 600);
+  letter-spacing: var(--pl-display-tracking, -0.012em);
+  color: var(--pl-text);
+}
+
+.pl-drop-text {
+  margin: 0;
+  color: var(--pl-text-muted);
+}
+
+.pl-drop-footer {
+  display: flex;
+  justify-content: flex-end;
+  gap: var(--pl-space-2);
+  margin-top: var(--pl-space-3);
+}
+
+// ── Dropdown: ciasny wariant na menu ────────────────────────────────────
+.pl-dropdown {
+  --pl-drop-width: max-content;
+  --pl-drop-padding: 0.375rem;
+  --pl-drop-radius: calc(var(--pl-radius-md) + 2px);
+  min-width: 12.5rem;
+}
+
+.pl-dropdown-nav {
+  --pl-dropdown-item-radius: var(--pl-radius-sm);
+  display: flex;
+  flex-direction: column;
+  gap: 1px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+
+  > li {
+    position: relative;
+    margin: 0;
+  }
+
+  > li > a,
+  > li > button {
+    @include button-reset;
+    display: flex;
+    align-items: center;
+    gap: 0.625rem;
+    box-sizing: border-box;
+    width: 100%;
+    min-height: 2.125rem;
+    padding: 0.375rem 0.625rem;
+    border-radius: var(--pl-dropdown-item-radius);
+    color: var(--pl-text);
+    font-size: var(--pl-text-sm);
+    font-weight: 480;
+    line-height: 1.35;
+    text-decoration: none;
+    white-space: nowrap;
+    cursor: pointer;
+    transition:
+      background-color var(--pl-dur-2) var(--pl-ease),
+      color var(--pl-dur-1) var(--pl-ease);
+
+    // Ikona wiodąca.
+    > .pl-icon,
+    > svg {
+      flex: none;
+      width: 1rem;
+      height: 1rem;
+      color: var(--pl-text-subtle);
+      transition:
+        color var(--pl-dur-1) var(--pl-ease),
+        transform var(--pl-dur-3) var(--pl-ease-spring);
+    }
+
+    // Skrót klawiszowy / dodatkowa informacja dosunięta do prawej.
+    > kbd,
+    > .pl-dropdown-meta {
+      margin-left: auto;
+      padding: 0 0 0 var(--pl-space-5);
+      border: 0;
+      background: none;
+      color: var(--pl-text-subtle);
+      font-family: var(--pl-font-mono);
+      font-size: var(--pl-text-xs);
+      letter-spacing: 0.04em;
+      min-width: 0;
+    }
+
+    > .pl-badge,
+    > .pl-label {
+      margin-left: auto;
+    }
+
+    &:hover,
+    &:focus-visible,
+    &.pl-open {
+      background: var(--pl-muted);
+      // Wejście tła natychmiast, zejście miękko — wrażenie „ślizgania" podświetlenia.
+      transition-duration: 0s, var(--pl-dur-1);
+      text-decoration: none;
+
+      > .pl-icon,
+      > svg {
+        color: var(--pl-text);
+        transform: translateX(1px) scale(1.06);
+      }
+    }
+
+    &:focus-visible {
+      outline: 0;
+      box-shadow: inset 0 0 0 2px var(--pl-focus);
+    }
+
+    &:active {
+      background: var(--pl-muted-strong);
+    }
+
+    // Strzałka podmenu (atrybut ustawia JS na przełączniku zagnieżdżonego dropa).
+    &[aria-haspopup]::after {
+      content: '';
+      flex: none;
+      width: 0.375rem;
+      height: 0.375rem;
+      margin-left: auto;
+      border-top: 1.5px solid currentColor;
+      border-right: 1.5px solid currentColor;
+      opacity: 0.5;
+      transform: rotate(45deg);
+      transition: transform var(--pl-dur-3) var(--pl-ease-spring);
+    }
+
+    &[aria-expanded='true']::after {
+      opacity: 0.9;
+      transform: translateX(2px) rotate(45deg);
+    }
+  }
+
+  // Pozycja aktywna — znacznik „iskra" po lewej.
+  > li.pl-active > a,
+  > li.pl-active > button {
+    background: var(--pl-primary-soft);
+    color: var(--pl-primary-text);
+    font-weight: 560;
+
+    > .pl-icon,
+    > svg {
+      color: currentColor;
+    }
+  }
+
+  > li.pl-disabled > a,
+  > li.pl-disabled > button,
+  > li > button:disabled {
+    opacity: 0.45;
+    pointer-events: none;
+  }
+
+  // Pozycja niebezpieczna.
+  > li.pl-dropdown-danger > a,
+  > li.pl-dropdown-danger > button {
+    color: var(--pl-danger-text);
+
+    > .pl-icon,
+    > svg {
+      color: currentColor;
+    }
+
+    &:hover,
+    &:focus-visible {
+      background: var(--pl-danger-soft);
+    }
+  }
+
+  // Nagłówek grupy.
+  > li.pl-nav-header {
+    padding: 0.5rem 0.625rem 0.25rem;
+    color: var(--pl-text-subtle);
+    font-family: var(--pl-font-mono);
+    font-size: 0.6875rem;
+    font-weight: 500;
+    letter-spacing: 0.07em;
+    line-height: 1.4;
+    text-transform: uppercase;
+    white-space: nowrap;
+
+    &:not(:first-child) {
+      margin-top: 0.25rem;
+    }
+  }
+
+  // Separator.
+  > li.pl-nav-divider {
+    height: 1px;
+    margin: 0.3125rem -0.375rem;
+    padding: 0;
+    border: 0;
+    background: var(--pl-border);
+  }
+}
+
+// Opis pod etykietą pozycji: <a><span data-pl-icon></span><span>Etykieta<small>Opis</small></span></a>
+.pl-dropdown-nav > li > a small,
+.pl-dropdown-nav > li > button small {
+  display: block;
+  margin-top: 1px;
+  color: var(--pl-text-muted);
+  font-size: var(--pl-text-xs);
+  font-weight: 400;
+}

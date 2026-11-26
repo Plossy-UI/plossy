@@ -1,0 +1,178 @@
+// Styl „elegant" — wytworny: zero cieni, ostre rogi, cienkie kroje, szeryfowe nagłówki,
+// przyciski rozstrzelonymi wersalikami, krem i złoto, spokojny ruch bez sprężyn.
+// Włączenie: <html data-pl-style="elegant"> (działa też lokalnie, na fragmencie strony).
+@use '../tokens' as tokens;
+
+[data-pl-style='elegant'] {
+  // Kształt i głębia
+  --pl-radius-xs: 0px;
+  --pl-radius-sm: 0px;
+  --pl-radius-md: 0px;
+  --pl-radius-lg: 0px;
+  --pl-radius-xl: 0px;
+  --pl-radius-pill: 0px;
+  --pl-shadow-scale: 0;
+  --pl-gloss: 0;
+  --pl-lift: 0;
+  --pl-press: 1;
+
+  // Typografia
+  --pl-font-sans: 'Jost Variable', 'Jost', ui-sans-serif, system-ui, sans-serif;
+  --pl-font-display: 'Cormorant Garamond Variable', 'Cormorant Garamond', Georgia, 'Times New Roman', serif;
+  --pl-body-weight: 300;
+  --pl-leading: 1.75;
+  --pl-heading-weight: 500;
+  --pl-heading-tracking: 0em;
+  --pl-heading-tracking-h1: -0.01em;
+  --pl-heading-tracking-h2: -0.005em;
+  --pl-heading-tracking-h5: 0em;
+  --pl-heading-tracking-h6: 0em;
+  --pl-display-weight: 500;
+  --pl-display-tracking: 0em;
+  --pl-control-weight: 400;
+  --pl-control-tracking: 0.16em;
+  --pl-control-case: uppercase;
+  --pl-control-text: 0.75rem;
+  // Szeryf ma małą wysokość x — większe stopnie pisma dla nagłówków.
+  --pl-text-lg: 1.2rem;
+  --pl-text-xl: 1.55rem;
+  --pl-text-2xl: 2rem;
+  --pl-text-3xl: 2.6rem;
+  --pl-text-4xl: clamp(2.9rem, 2.2rem + 2.8vw, 4.25rem);
+  --pl-text-5xl: clamp(3.5rem, 2.2rem + 5.4vw, 6rem);
+
+  // Ruch: wolniej, bez przestrzelenia
+  --pl-dur-2: 260ms;
+  --pl-dur-3: 420ms;
+  --pl-dur-4: 640ms;
+  --pl-ease-spring: cubic-bezier(0.33, 0.5, 0.2, 1);
+
+  // Paleta (jasna): krem, ciepły brąz, złota iskra
+  --pl-bg: oklch(0.975 0.008 85);
+  --pl-surface: oklch(0.985 0.006 85);
+  --pl-surface-raised: oklch(0.99 0.005 85);
+  --pl-muted: oklch(0.955 0.012 85);
+  --pl-muted-strong: oklch(0.925 0.015 85);
+  --pl-border: oklch(0.885 0.016 85);
+  --pl-border-strong: oklch(0.78 0.02 80);
+  --pl-text: oklch(0.36 0.025 60);
+  --pl-text-muted: oklch(0.53 0.022 65);
+  --pl-text-subtle: oklch(0.67 0.02 70);
+  --pl-ink: oklch(0.3 0.025 60);
+  --pl-on-ink: oklch(0.97 0.01 85);
+  --pl-secondary: oklch(0.3 0.025 60);
+  --pl-on-secondary: oklch(0.97 0.01 85);
+  --pl-spark: oklch(0.77 0.09 82);
+  --pl-on-spark: oklch(0.27 0.04 70);
+  --pl-overlay: oklch(0.3 0.03 60 / 0.4);
+
+  @include tokens.derived;
+}
+
+// Domyślny akcent stylu (gdy nie wybrano własnego przez data-pl-accent).
+[data-pl-style='elegant']:not([data-pl-accent]) {
+  --pl-accent-l: 0.34;
+  --pl-accent-c: 0.03;
+  --pl-accent-h: 60;
+  @include tokens.derived;
+}
+
+// Paleta ciemna: głęboka czerń, kremowy tekst, złoty akcent.
+[data-pl-theme='dark'][data-pl-style='elegant'],
+[data-pl-theme='dark'] [data-pl-style='elegant'],
+[data-pl-style='elegant'] [data-pl-theme='dark'] {
+  --pl-bg: oklch(0.125 0.008 285);
+  --pl-surface: oklch(0.15 0.008 285);
+  --pl-surface-raised: oklch(0.18 0.009 285);
+  --pl-muted: oklch(0.18 0.009 285);
+  --pl-muted-strong: oklch(0.225 0.01 285);
+  --pl-border: oklch(0.255 0.01 285);
+  --pl-border-strong: oklch(0.35 0.012 285);
+  --pl-text: oklch(0.93 0.022 85);
+  --pl-text-muted: oklch(0.7 0.022 80);
+  --pl-text-subtle: oklch(0.54 0.02 75);
+  --pl-ink: oklch(0.93 0.022 85);
+  --pl-on-ink: oklch(0.16 0.01 285);
+  --pl-secondary: oklch(0.93 0.022 85);
+  --pl-on-secondary: oklch(0.16 0.01 285);
+  --pl-overlay: oklch(0.05 0.01 285 / 0.7);
+  @include tokens.derived;
+}
+
+[data-pl-theme='dark'][data-pl-style='elegant']:not([data-pl-accent]),
+[data-pl-theme='dark'] [data-pl-style='elegant']:not([data-pl-accent]) {
+  --pl-accent-l: 0.67;
+  --pl-accent-c: 0.09;
+  --pl-accent-h: 82;
+  --pl-on-primary: oklch(0.16 0.01 285);
+  @include tokens.derived;
+}
+
+// ── Korekty komponentów ─────────────────────────────────────────────────
+[data-pl-style='elegant'] {
+  // Własne poświaty i cienie komponentów (poza tokenami) — wyłączone.
+  :is(
+      .pl-button, .pl-card, .pl-tile, .pl-alert, .pl-label, .pl-badge, .pl-chip, .pl-avatar, .pl-drop, .pl-popover,
+      .pl-tooltip, .pl-notification, .pl-modal-dialog, .pl-offcanvas-bar, .pl-navbar-container, .pl-pagination a,
+      .pl-pagination span, .pl-totop, .pl-slidenav-previous, .pl-slidenav-next, .pl-list-group, .pl-icon-box,
+      .pl-accordion-item, .pl-comment, .pl-countdown-number, .pl-placeholder, .pl-switch, .pl-thumbnav a
+    ),
+  :is(.pl-button, .pl-card, .pl-tile, .pl-chip, .pl-pagination a, .pl-totop, .pl-slidenav-previous, .pl-slidenav-next):is(:hover, :active) {
+    box-shadow: none !important;
+  }
+
+  // Przycisk domyślny: sama ramka, przy hoverze wypełnia się kolorem tekstu.
+  .pl-button {
+    --pl-button-px: 1.9em;
+  }
+
+  .pl-button:not(
+      .pl-button-primary, .pl-button-secondary, .pl-button-success, .pl-button-warning, .pl-button-danger,
+      .pl-button-info, .pl-button-soft, .pl-button-ghost, .pl-button-text, .pl-button-link, .pl-button-outline
+    ) {
+    border-color: var(--pl-text);
+    background: transparent;
+
+    &:hover {
+      border-color: var(--pl-text);
+      background: var(--pl-text);
+      color: var(--pl-bg);
+    }
+  }
+
+  .pl-button-icon {
+    --pl-button-px: 0;
+  }
+
+  .pl-button-small {
+    font-size: 0.6875rem;
+  }
+
+  .pl-button-large {
+    font-size: 0.8125rem;
+  }
+
+  // Pola: przezroczyste, z samą ramką.
+  .pl-input,
+  .pl-textarea,
+  .pl-select {
+    background-color: transparent;
+  }
+
+  // Drobne etykiety — wersaliki z rozstrzeleniem.
+  .pl-label,
+  .pl-badge:not(.pl-badge-dot) {
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+  }
+
+  // Cytaty kursywą — charakterystyczne dla kroju szeryfowego.
+  blockquote {
+    font-style: italic;
+    font-weight: 400;
+  }
+
+  :not(pre) > code {
+    border-radius: 0;
+  }
+}

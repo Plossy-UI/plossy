@@ -1,0 +1,128 @@
+// Thumbnav
+@use '../abstracts' as *;
+
+.pl-thumbnav {
+  --pl-thumbnav-w: 5rem;
+  --pl-thumbnav-h: 3.25rem;
+  --pl-thumbnav-radius: var(--pl-radius-sm);
+  --pl-thumbnav-gap: 0.625rem;
+  --pl-thumbnav-ring: var(--pl-primary);
+  --pl-thumbnav-ring-gap: var(--pl-bg);
+
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--pl-thumbnav-gap);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+
+  > li {
+    display: flex;
+  }
+
+  > li > a,
+  > li > button {
+    @include button-reset;
+    position: relative;
+    display: block;
+    width: var(--pl-thumbnav-w);
+    height: var(--pl-thumbnav-h);
+    border-radius: var(--pl-thumbnav-radius);
+    background: var(--pl-muted);
+    opacity: 0.55;
+    filter: saturate(0.6);
+    transition:
+      opacity var(--pl-dur-2) var(--pl-ease),
+      filter var(--pl-dur-3) var(--pl-ease),
+      box-shadow var(--pl-dur-3) var(--pl-ease),
+      transform var(--pl-dur-3) var(--pl-ease-spring);
+
+    > img,
+    > picture > img,
+    > video {
+      display: block;
+      width: 100%;
+      height: 100%;
+      border-radius: inherit;
+      object-fit: cover;
+    }
+
+    &:hover {
+      opacity: 1;
+      filter: none;
+      transform: translateY(-2px);
+    }
+
+    &:active {
+      transform: scale(0.96);
+    }
+
+    @include focus-visible(3px);
+
+    &:focus-visible {
+      opacity: 1;
+      filter: none;
+    }
+  }
+
+  // Aktywna miniatura: pełna jasność + pierścień z odstępem.
+  > li.pl-active > * {
+    opacity: 1;
+    filter: none;
+    box-shadow:
+      0 0 0 2px var(--pl-thumbnav-ring-gap),
+      0 0 0 4px var(--pl-thumbnav-ring);
+    transform: none;
+  }
+
+  > li.pl-disabled > * {
+    opacity: 0.25;
+    pointer-events: none;
+  }
+}
+
+.pl-thumbnav-vertical {
+  flex-direction: column;
+  flex-wrap: nowrap;
+
+  > li > a:hover,
+  > li > button:hover {
+    transform: translateX(2px);
+  }
+}
+
+// ── Kształty i rozmiary ─────────────────────────────────────────────────
+.pl-thumbnav-square {
+  --pl-thumbnav-w: 3.5rem;
+  --pl-thumbnav-h: 3.5rem;
+}
+
+.pl-thumbnav-circle {
+  --pl-thumbnav-w: 3rem;
+  --pl-thumbnav-h: 3rem;
+  --pl-thumbnav-radius: 50%;
+}
+
+.pl-thumbnav-small {
+  --pl-thumbnav-w: 3.5rem;
+  --pl-thumbnav-h: 2.25rem;
+  --pl-thumbnav-radius: var(--pl-radius-xs);
+  --pl-thumbnav-gap: 0.5rem;
+}
+
+.pl-thumbnav-large {
+  --pl-thumbnav-w: 7.5rem;
+  --pl-thumbnav-h: 5rem;
+  --pl-thumbnav-radius: var(--pl-radius-md);
+  --pl-thumbnav-gap: 0.75rem;
+}
+
+// Na zdjęciach / ciemnych tłach.
+.pl-thumbnav-light {
+  --pl-thumbnav-ring: oklch(1 0 0);
+  --pl-thumbnav-ring-gap: transparent;
+}
+
+.pl-thumbnav-center {
+  justify-content: center;
+}

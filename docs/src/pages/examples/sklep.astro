@@ -1,0 +1,460 @@
+---
+import Example from '../../layouts/Example.astro';
+import ShopHeader from '../../components/examples/ShopHeader.astro';
+import ShopFooter from '../../components/examples/ShopFooter.astro';
+
+const slides = [
+  {
+    img: '/img/photo-6.svg',
+    eyebrow: 'Kolekcja zimowa 2027',
+    title: 'Ciepłe światło na długie wieczory',
+    text: 'Lampy z dębu i lnu, ręcznie toczona ceramika, wełna z Gotlandii.',
+    cta: 'Zobacz kolekcję',
+  },
+  {
+    img: '/img/photo-3.svg',
+    eyebrow: 'Nowość · Ceramika',
+    title: 'Seria Otoczak — kształty wygładzone przez morze',
+    text: 'Wazony i misy z kamionki, szkliwione w pracowni w Bornholmie.',
+    cta: 'Poznaj serię',
+  },
+  {
+    img: '/img/photo-8.svg',
+    eyebrow: 'Do −30% · tylko do niedzieli',
+    title: 'Tydzień tekstyliów',
+    text: 'Pledy, pościel lniana i poduszki w cenach, które wracają raz w roku.',
+    cta: 'Sprawdź okazje',
+  },
+];
+
+const products = [
+  { name: 'Lampa stołowa Mgła', cat: 'Oświetlenie', price: '349 zł', img: '/img/photo-2.svg', label: 'Nowość', tone: 'pl-label-spark' },
+  { name: 'Wazon Otoczak 24 cm', cat: 'Ceramika', price: '129 zł', img: '/img/photo-5.svg', label: 'Nowość', tone: 'pl-label-spark' },
+  { name: 'Koc wełniany Szron', cat: 'Tekstylia', price: '389 zł', old: '459 zł', img: '/img/photo-7.svg', label: '−15%', tone: 'pl-label-danger pl-label-solid' },
+  { name: 'Fotel Fjord, dąb', cat: 'Meble', price: '1 890 zł', img: '/img/photo-1.svg', label: 'Bestseller', tone: 'pl-label-primary' },
+  { name: 'Kubek Brzeg, zestaw 2 szt.', cat: 'Ceramika', price: '98 zł', img: '/img/photo-4.svg', label: 'Nowość', tone: 'pl-label-spark' },
+  { name: 'Lampa wisząca Kropla', cat: 'Oświetlenie', price: '529 zł', img: '/img/photo-8.svg', label: 'Nowość', tone: 'pl-label-spark' },
+  { name: 'Poduszka lniana Wydma', cat: 'Tekstylia', price: '119 zł', old: '149 zł', img: '/img/photo-3.svg', label: '−20%', tone: 'pl-label-danger pl-label-solid' },
+];
+
+const usps = [
+  { icon: 'truck', title: 'Darmowa dostawa od 299 zł', text: 'Wysyłamy w 24 h kurierem lub do paczkomatu.' },
+  { icon: 'rotate-ccw', title: '30 dni na zwrot', text: 'Bez podawania przyczyny, z darmową etykietą.' },
+  { icon: 'shield-check', title: '5 lat gwarancji', text: 'Na meble i oświetlenie z naszych pracowni.' },
+  { icon: 'leaf', title: 'Naturalne materiały', text: 'Drewno FSC, len, wełna i kamionka.' },
+];
+
+const posts = [
+  { title: 'Jak dobrać światło do salonu? Trzy warstwy, które robią nastrój', cat: 'Poradnik', date: '18 listopada 2026', time: '6 min', img: '/img/photo-6.svg' },
+  { title: 'Z wizytą w pracowni: jak powstaje wazon Otoczak', cat: 'Pracownie', date: '9 listopada 2026', time: '8 min', img: '/img/photo-5.svg' },
+  { title: 'Len czy bawełna? Krótki przewodnik po pościeli na zimę', cat: 'Materiały', date: '28 października 2026', time: '5 min', img: '/img/photo-7.svg' },
+];
+
+const reviews = [
+  { name: 'Marta Wolska', city: 'Gdańsk', avatar: '/img/avatar-1.svg', product: 'Lampa stołowa Mgła', text: 'Lampa wygląda jeszcze lepiej niż na zdjęciach. Daje miękkie, ciepłe światło, a paczka dotarła następnego dnia — zapakowana bez grama plastiku.' },
+  { name: 'Tomasz Zieliński', city: 'Poznań', avatar: '/img/avatar-2.svg', product: 'Fotel Fjord', text: 'Szukałem fotela, który przetrwa dzieci i kota. Po pół roku dąb wygląda jak nowy, a obsługa pomogła mi dobrać tkaninę przez telefon.' },
+  { name: 'Agnieszka Nowak', city: 'Kraków', avatar: '/img/avatar-3.svg', product: 'Koc wełniany Szron', text: 'Trzeci koc z Lorem w naszym domu. Wełna nie gryzie, nie mechaci się i pachnie… po prostu wełną. Polecam na prezent.' },
+  { name: 'Paweł Kamiński', city: 'Wrocław', avatar: '/img/avatar-4.svg', product: 'Seria Otoczak', text: 'Zamówiłem cały zestaw ceramiki do nowego mieszkania. Jeden talerz dotarł wyszczerbiony — wymienili go w dwa dni, bez żadnych formularzy.' },
+];
+---
+
+<Example title="Lorem — sklep" description="Strona główna sklepu z wyposażeniem wnętrz: pokaz slajdów, kategorie, nowości, promocja z odliczaniem i opinie.">
+  <ShopHeader active="sklep" />
+
+  <main>
+    <!-- Hero -->
+    <section class="pl-section pl-section-xsmall">
+      <div class="pl-container">
+        <div
+          class="pl-slideshow pl-slideshow-arrows-hover home-hero"
+          data-pl-slideshow="animation: fade; autoplay: true; autoplay-interval: 7000; kenburns: true; ratio: false"
+          aria-label="Aktualne kolekcje"
+        >
+          <ul class="pl-slideshow-items">
+            {
+              slides.map((slide, i) => (
+                <li>
+                  <img src={slide.img} alt="" />
+                  <div class="pl-slideshow-caption home-hero-caption">
+                    <span class="pl-slideshow-eyebrow">{slide.eyebrow}</span>
+                    {i === 0 ? <h1 class="pl-heading-medium">{slide.title}</h1> : <h2 class="pl-heading-medium">{slide.title}</h2>}
+                    <p class="home-hero-lead">{slide.text}</p>
+                    <p>
+                      <a class="pl-button pl-button-primary pl-button-large pl-button-pill" href="/examples/kategoria/">
+                        {slide.cta} <span data-pl-icon="arrow-right" />
+                      </a>
+                    </p>
+                  </div>
+                </li>
+              ))
+            }
+          </ul>
+          <button class="pl-slidenav-previous pl-visible@s" type="button" aria-label="Poprzedni slajd" data-pl-slideshow-item="previous"></button>
+          <button class="pl-slidenav-next pl-visible@s" type="button" aria-label="Następny slajd" data-pl-slideshow-item="next"></button>
+          <ul class="pl-slideshow-nav pl-slideshow-nav-inside pl-dotnav"></ul>
+        </div>
+      </div>
+    </section>
+
+    <!-- USP -->
+    <section class="pl-section pl-section-xsmall">
+      <div class="pl-container">
+        <div class="pl-grid pl-grid-medium pl-child-width-1-2@s pl-child-width-1-4@m" data-pl-scrollspy="cls: pl-animation-slide-up; target: > *; delay: 80">
+          {
+            usps.map((usp) => (
+              <div>
+                <div class="pl-flex pl-flex-middle pl-gap-small">
+                  <span class="home-icon pl-background-primary-soft pl-text-primary">
+                    <span data-pl-icon={usp.icon} />
+                  </span>
+                  <div>
+                    <strong class="pl-display-block">{usp.title}</strong>
+                    <span class="pl-text-small pl-text-muted">{usp.text}</span>
+                  </div>
+                </div>
+              </div>
+            ))
+          }
+        </div>
+      </div>
+    </section>
+
+    <!-- Kategorie -->
+    <section class="pl-section">
+      <div class="pl-container">
+        <div class="pl-flex pl-flex-between pl-flex-bottom pl-flex-wrap pl-gap-small pl-margin-medium-bottom">
+          <div>
+            <p class="pl-heading-eyebrow">Kategorie</p>
+            <h2 class="pl-heading-small pl-margin-remove">Urządź dom <span class="pl-text-highlight">po swojemu</span></h2>
+          </div>
+          <a class="pl-link-arrow" href="/examples/kategoria/">Wszystkie kategorie</a>
+        </div>
+
+        <div class="pl-bento home-bento" data-pl-scrollspy="cls: pl-animation-scale-up; target: > *; delay: 90">
+          <a class="pl-image pl-image-rounded pl-image-zoom pl-span-2 pl-row-span-2 pl-light" href="/examples/kategoria/">
+            <img class="pl-cover" src="/img/photo-2.svg" alt="" />
+            <div class="pl-overlay pl-overlay-gradient pl-position-bottom">
+              <span class="pl-label pl-label-spark pl-label-small">142 produkty</span>
+              <h3 class="pl-margin-small-top pl-margin-remove-bottom">Oświetlenie</h3>
+              <p class="pl-margin-remove">Lampy stołowe, wiszące i kinkiety z ciepłym światłem.</p>
+            </div>
+          </a>
+          <a class="pl-image pl-image-rounded pl-image-zoom pl-span-2 pl-light" href="/examples/kategoria/">
+            <img class="pl-cover" src="/img/photo-5.svg" alt="" />
+            <div class="pl-overlay pl-overlay-gradient pl-position-bottom">
+              <h3 class="pl-margin-remove">Ceramika</h3>
+              <p class="pl-margin-remove">Wazony, kubki i misy z kamionki.</p>
+            </div>
+          </a>
+          <a class="pl-image pl-image-rounded pl-image-zoom pl-light" href="/examples/kategoria/">
+            <img class="pl-cover" src="/img/photo-7.svg" alt="" />
+            <div class="pl-overlay pl-overlay-gradient pl-position-bottom">
+              <h3 class="pl-margin-remove">Tekstylia</h3>
+              <p class="pl-margin-remove">Wełna i len.</p>
+            </div>
+          </a>
+          <a class="pl-image pl-image-rounded pl-image-zoom pl-light" href="/examples/kategoria/">
+            <img class="pl-cover" src="/img/photo-1.svg" alt="" />
+            <div class="pl-overlay pl-overlay-gradient pl-position-bottom">
+              <h3 class="pl-margin-remove">Meble</h3>
+              <p class="pl-margin-remove">Dąb i jesion.</p>
+            </div>
+          </a>
+        </div>
+      </div>
+    </section>
+
+    <!-- Nowości -->
+    <section class="pl-section pl-section-muted">
+      <div class="pl-container">
+        <div class="pl-flex pl-flex-between pl-flex-bottom pl-flex-wrap pl-gap-small pl-margin-medium-bottom">
+          <div>
+            <p class="pl-heading-eyebrow">Prosto z pracowni</p>
+            <h2 class="pl-heading-small pl-margin-remove">Nowości</h2>
+          </div>
+          <a class="pl-link-arrow" href="/examples/kategoria/">Zobacz wszystkie</a>
+        </div>
+
+        <div class="pl-slider" data-pl-slider="finite: true" aria-label="Nowości">
+          <div class="pl-slider-container pl-slider-container-offset">
+            <ul class="pl-slider-items pl-slider-cols-1 pl-slider-cols-2@s pl-slider-cols-3@m pl-slider-cols-4@l">
+              {
+                products.map((p) => (
+                  <li>
+                    <article class="pl-card pl-card-hover home-product">
+                      <span class={`pl-card-badge pl-label ${p.tone}`}>{p.label}</span>
+                      <a class="pl-card-media" href="/examples/produkt/" tabindex="-1" aria-hidden="true">
+                        <img class="pl-ratio-4-3" src={p.img} alt="" width="1200" height="800" loading="lazy" />
+                      </a>
+                      <div class="pl-card-body">
+                        <p class="pl-card-meta">{p.cat}</p>
+                        <h3 class="pl-card-title">
+                          <a class="pl-link-heading" href="/examples/produkt/">
+                            {p.name}
+                          </a>
+                        </h3>
+                        <div class="pl-flex pl-flex-between pl-flex-middle pl-margin-auto-top home-product-foot">
+                          <p class="pl-margin-remove pl-text-tabular">
+                            <strong class="pl-text-large">{p.price}</strong>
+                            {p.old && <s class="pl-text-small pl-text-muted"> {p.old}</s>}
+                          </p>
+                          <button
+                            class="pl-button pl-button-secondary pl-button-icon pl-drag-ignore"
+                            type="button"
+                            aria-label={`Dodaj do koszyka: ${p.name}`}
+                            data-pl-tooltip="title: Dodaj do koszyka; pos: top"
+                            data-shop-add={p.name}
+                          >
+                            <span data-pl-icon="shopping-bag" />
+                          </button>
+                        </div>
+                      </div>
+                    </article>
+                  </li>
+                ))
+              }
+            </ul>
+          </div>
+          <div class="pl-slider-arrows">
+            <ul class="pl-slider-nav pl-dotnav"></ul>
+            <button class="pl-slidenav-previous pl-slidenav-small" type="button" aria-label="Poprzednie produkty" data-pl-slider-item="previous"></button>
+            <button class="pl-slidenav-next pl-slidenav-small" type="button" aria-label="Następne produkty" data-pl-slider-item="next"></button>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Promocja z odliczaniem -->
+    <section class="pl-section">
+      <div class="pl-container">
+        <div class="pl-tile pl-tile-secondary pl-tile-rounded pl-tile-large pl-background-aurora home-promo" data-pl-scrollspy="cls: pl-animation-scale-up">
+          <div class="pl-grid pl-grid-large pl-flex-middle">
+            <div class="pl-width-1-1 pl-width-3-5@m">
+              <span class="pl-label pl-label-spark pl-label-dot pl-label-pulse">Trwa do niedzieli</span>
+              <h2 class="pl-heading-medium pl-margin-top pl-margin-remove-bottom">Tydzień tekstyliów<br /><span class="pl-text-gradient pl-text-gradient-animated">do −30%</span></h2>
+              <p class="pl-text-lead pl-margin-small-top">Pledy z wełny gotlandzkiej, pościel z lnu i poduszki — z kodem <strong class="pl-text-mono">CIEPLO</strong> dodatkowe 5% przy zamówieniu od 500 zł.</p>
+              <div class="pl-flex pl-flex-wrap pl-gap-small pl-margin-top">
+                <a class="pl-button pl-button-primary pl-button-large" href="/examples/kategoria/">Kup taniej <span data-pl-icon="arrow-right"></span></a>
+                <button class="pl-button pl-button-ghost pl-button-large" type="button" data-home-copy="CIEPLO"><span data-pl-icon="copy"></span> Skopiuj kod</button>
+              </div>
+            </div>
+            <div class="pl-width-1-1 pl-width-2-5@m">
+              <p class="pl-text-eyebrow pl-margin-small-bottom">Do końca promocji</p>
+              <div class="pl-countdown pl-countdown-card home-countdown" data-pl-countdown="seconds: 311400; reload: true">
+                <div class="pl-countdown-item">
+                  <div class="pl-countdown-number pl-countdown-days"></div>
+                  <div class="pl-countdown-label">Dni</div>
+                </div>
+                <div class="pl-countdown-item">
+                  <div class="pl-countdown-number pl-countdown-hours"></div>
+                  <div class="pl-countdown-label">Godz.</div>
+                </div>
+                <div class="pl-countdown-item">
+                  <div class="pl-countdown-number pl-countdown-minutes"></div>
+                  <div class="pl-countdown-label">Min</div>
+                </div>
+                <div class="pl-countdown-item">
+                  <div class="pl-countdown-number pl-countdown-seconds"></div>
+                  <div class="pl-countdown-label">Sek.</div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Blog -->
+    <section class="pl-section pl-section-remove-top">
+      <div class="pl-container">
+        <div class="pl-flex pl-flex-between pl-flex-bottom pl-flex-wrap pl-gap-small pl-margin-medium-bottom">
+          <div>
+            <p class="pl-heading-eyebrow">Dziennik Lorem</p>
+            <h2 class="pl-heading-small pl-margin-remove">Inspiracje i poradniki</h2>
+          </div>
+          <a class="pl-link-arrow" href="/examples/blog/">Przejdź do bloga</a>
+        </div>
+
+        <div class="pl-grid pl-grid-match pl-child-width-1-1 pl-child-width-1-3@m" data-pl-scrollspy="cls: pl-animation-slide-up; target: > *; delay: 100">
+          {
+            posts.map((post) => (
+              <div>
+                <article class="pl-card pl-card-ghost pl-card-hover">
+                  <div class="pl-card-media pl-card-media-inset">
+                    <img class="pl-ratio-3-2" src={post.img} alt="" width="1200" height="800" loading="lazy" />
+                  </div>
+                  <div class="pl-card-body">
+                    <p class="pl-card-meta">
+                      <span class="pl-label pl-label-small">{post.cat}</span> {post.date} · {post.time} czytania
+                    </p>
+                    <h3 class="pl-card-title">
+                      <a class="pl-link-heading pl-card-stretch" href="/examples/wpis/">
+                        {post.title}
+                      </a>
+                    </h3>
+                  </div>
+                </article>
+              </div>
+            ))
+          }
+        </div>
+      </div>
+    </section>
+
+    <!-- Opinie -->
+    <section class="pl-section pl-section-muted">
+      <div class="pl-container">
+        <div class="pl-text-center pl-margin-medium-bottom">
+          <p class="pl-heading-eyebrow pl-heading-eyebrow-center">Opinie klientów</p>
+          <h2 class="pl-heading-small pl-margin-remove">
+            <span data-pl-counter="to: 4.9; decimals: 1"></span> / 5 na podstawie <span data-pl-counter="2846"></span> opinii
+          </h2>
+        </div>
+
+        <div class="pl-slider" data-pl-slider="autoplay: true; autoplay-interval: 6000" aria-label="Opinie klientów">
+          <div class="pl-slider-container pl-slider-container-offset">
+            <ul class="pl-slider-items pl-slider-cols-1 pl-slider-cols-2@s pl-slider-cols-3@l">
+              {
+                reviews.map((r) => (
+                  <li>
+                    <figure class="pl-card pl-margin-remove home-review">
+                      <div class="pl-card-body">
+                        <div class="pl-flex pl-gap-xsmall pl-text-warning" role="img" aria-label="Ocena: 5 na 5">
+                          {[1, 2, 3, 4, 5].map(() => (
+                            <span class="home-star" data-pl-icon="star" />
+                          ))}
+                        </div>
+                        <blockquote class="pl-margin-top pl-margin-remove-bottom home-quote">{r.text}</blockquote>
+                        <figcaption class="pl-flex pl-flex-middle pl-gap-small pl-margin-auto-top home-review-author">
+                          <img class="pl-avatar" src={r.avatar} alt="" width="40" height="40" />
+                          <span>
+                            <strong class="pl-display-block">{r.name}</strong>
+                            <span class="pl-text-meta">
+                              {r.city} · kupiono: {r.product}
+                            </span>
+                          </span>
+                        </figcaption>
+                      </div>
+                    </figure>
+                  </li>
+                ))
+              }
+            </ul>
+          </div>
+          <ul class="pl-slider-nav pl-dotnav pl-flex-center pl-margin-top"></ul>
+        </div>
+      </div>
+    </section>
+
+    <!-- O marce -->
+    <section class="pl-section pl-section-large">
+      <div class="pl-container">
+        <div class="pl-grid pl-grid-large pl-flex-middle">
+          <div class="pl-width-1-1 pl-width-1-2@m" data-pl-scrollspy="cls: pl-animation-slide-right">
+            <div class="pl-image pl-image-rounded pl-image-shadow pl-ratio-4-3">
+              <img src="/img/photo-4.svg" alt="Pracownia ceramiki Lorem" width="1200" height="800" loading="lazy" />
+              <div class="pl-image-caption pl-image-caption-chip">Pracownia w Gdyni-Orłowie</div>
+            </div>
+          </div>
+          <div class="pl-width-1-1 pl-width-1-2@m" data-pl-scrollspy="cls: pl-animation-slide-up; target: > *; delay: 80">
+            <p class="pl-heading-eyebrow">O Lorem</p>
+            <h2 class="pl-heading-small pl-margin-remove-top">Mniej rzeczy, <span class="pl-heading-accent">za to na lata</span></h2>
+            <p class="pl-text-lead">Od 2014 roku współpracujemy z małymi pracowniami z Polski, Danii i Szwecji. Każdy przedmiot znamy z imienia i nazwiska rzemieślnika, który go zrobił.</p>
+            <div class="pl-grid pl-grid-small pl-child-width-1-3 pl-margin-medium-top">
+              <div>
+                <div class="pl-text-3xl pl-text-display pl-text-semibold"><span data-pl-counter="12"></span></div>
+                <div class="pl-text-small pl-text-muted">lat na rynku</div>
+              </div>
+              <div>
+                <div class="pl-text-3xl pl-text-display pl-text-semibold"><span data-pl-counter="38"></span></div>
+                <div class="pl-text-small pl-text-muted">pracowni partnerskich</div>
+              </div>
+              <div>
+                <div class="pl-text-3xl pl-text-display pl-text-semibold"><span data-pl-counter="to: 64; suffix: ' tys.'"></span></div>
+                <div class="pl-text-small pl-text-muted">wysłanych zamówień</div>
+              </div>
+            </div>
+            <div class="pl-flex pl-flex-wrap pl-gap-small pl-margin-medium-top">
+              <a class="pl-button pl-button-secondary" href="/examples/cms/">Poznaj naszą historię</a>
+              <a class="pl-button pl-button-ghost" href="/examples/kontakt/"><span data-pl-icon="map-pin"></span> Odwiedź showroom</a>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <ShopFooter />
+</Example>
+
+<script>
+  // Kopiowanie kodu rabatowego.
+  document.querySelectorAll<HTMLElement>('[data-home-copy]').forEach((button) => {
+    button.addEventListener('click', () => {
+      const code = button.dataset.homeCopy ?? '';
+      navigator.clipboard?.writeText(code).catch(() => {});
+      (window as any).Plossy?.notification({ message: `Skopiowano kod <strong>${code}</strong>`, status: 'success', timeout: 2500 });
+    });
+  });
+</script>
+
+<style>
+  /* Okrągłe pole ikony w pasku korzyści. */
+  .home-icon {
+    display: inline-flex;
+    flex: none;
+    align-items: center;
+    justify-content: center;
+    width: 2.75rem;
+    height: 2.75rem;
+    border-radius: 50%;
+  }
+  /* Podpis slajdu: węższa kolumna tekstu. */
+  .home-hero-caption > :is(h1, h2, p) {
+    max-width: 34rem;
+  }
+  /* Kafle kategorii: wyższe wiersze od tabletu w górę. */
+  .home-bento {
+    --pl-bento-row: 13rem;
+  }
+  .home-product,
+  .home-review {
+    height: 100%;
+  }
+  .home-product-foot {
+    padding-top: var(--pl-space-3);
+  }
+  .home-star :global(svg) {
+    fill: currentColor;
+  }
+  .home-quote {
+    padding: 0;
+    border: 0;
+    font-size: var(--pl-text-md);
+    color: var(--pl-text);
+  }
+  .home-review-author {
+    padding-top: var(--pl-space-5);
+  }
+  .home-countdown {
+    --pl-countdown-size: clamp(1.75rem, 1rem + 2.6vw, 3rem);
+    --pl-countdown-gap: clamp(0.4rem, 0.2rem + 1vw, 1rem);
+    justify-content: flex-start;
+    flex-wrap: nowrap;
+  }
+  /* Wysokość pokazu slajdów bez proporcji — patrz uwaga w raporcie (ratio + min-height rozpycha wąskie ekrany). */
+  .home-hero :global(.pl-slideshow-items) {
+    --pl-slideshow-min-height: clamp(27rem, 42vw, 38rem);
+  }
+  .home-hero-lead {
+    font-size: var(--pl-text-lg);
+  }
+  @media (max-width: 639px) {
+    .home-hero :global(.home-hero-caption) {
+      padding-bottom: 3.25rem;
+    }
+    .home-promo {
+      --pl-tile-p: var(--pl-space-5);
+    }
+  }
+</style>

@@ -1,0 +1,332 @@
+// Countdown
+@use '../abstracts' as *;
+
+.pl-countdown {
+  --pl-countdown-size: clamp(2.25rem, 1.4rem + 3.4vw, 4rem);
+  --pl-countdown-gap: clamp(0.5rem, 0.2rem + 1.4vw, 1.25rem);
+  --pl-countdown-color: var(--pl-text);
+
+  display: inline-flex;
+  flex-wrap: wrap;
+  align-items: flex-start;
+  gap: var(--pl-countdown-gap);
+  color: var(--pl-countdown-color);
+  vertical-align: middle;
+}
+
+.pl-countdown-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.5rem;
+  min-width: 0;
+}
+
+.pl-countdown-number {
+  display: inline-flex;
+  justify-content: center;
+  min-width: 2ch;
+  font-family: var(--pl-font-display);
+  font-size: var(--pl-countdown-size);
+  font-weight: var(--pl-display-weight, 620);
+  font-variant-numeric: tabular-nums;
+  line-height: 1;
+  letter-spacing: var(--pl-display-tracking, -0.04em);
+}
+
+// Pojedyncza cyfra — okno, w którym wymieniają się stara i nowa wartość.
+.pl-countdown-digit {
+  position: relative;
+  display: inline-block;
+  overflow: hidden;
+  min-width: 0.62em;
+  // Zapas, żeby wymieniające się cyfry nie były przycinane.
+  margin-block: -0.12em;
+  padding-block: 0.12em;
+  text-align: center;
+
+  > span {
+    display: block;
+  }
+}
+
+.pl-countdown-digit-out {
+  position: absolute;
+  inset: 0.12em 0 auto;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .pl-countdown-digit-in {
+    animation: pl-countdown-in var(--pl-dur-4) var(--pl-ease-spring) both;
+  }
+
+  .pl-countdown-digit-out {
+    animation: pl-countdown-out var(--pl-dur-3) var(--pl-ease) both;
+  }
+
+  // Wariant „flip" — obrót wokół osi poziomej.
+  .pl-countdown-flip {
+    .pl-countdown-digit {
+      perspective: 4em;
+    }
+
+    .pl-countdown-digit-in {
+      animation-name: pl-countdown-flip-in;
+      transform-origin: 50% 100%;
+    }
+
+    .pl-countdown-digit-out {
+      animation-name: pl-countdown-flip-out;
+      transform-origin: 50% 0;
+    }
+  }
+
+  // Wariant „fade" — miękkie przenikanie z rozmyciem.
+  .pl-countdown-fade {
+    .pl-countdown-digit-in {
+      animation: pl-countdown-fade-in var(--pl-dur-3) var(--pl-ease) both;
+    }
+
+    .pl-countdown-digit-out {
+      animation: pl-countdown-fade-out var(--pl-dur-3) var(--pl-ease) both;
+    }
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .pl-countdown-digit-out {
+    display: none !important;
+  }
+}
+
+@keyframes pl-countdown-in {
+  from {
+    opacity: 0;
+    transform: translateY(-70%);
+  }
+}
+
+@keyframes pl-countdown-out {
+  to {
+    opacity: 0;
+    transform: translateY(70%);
+  }
+}
+
+@keyframes pl-countdown-flip-in {
+  from {
+    opacity: 0;
+    transform: rotateX(90deg);
+  }
+}
+
+@keyframes pl-countdown-flip-out {
+  to {
+    opacity: 0;
+    transform: rotateX(-90deg);
+  }
+}
+
+@keyframes pl-countdown-fade-in {
+  from {
+    opacity: 0;
+    filter: blur(6px);
+    transform: scale(0.8);
+  }
+}
+
+@keyframes pl-countdown-fade-out {
+  to {
+    opacity: 0;
+    filter: blur(6px);
+    transform: scale(1.2);
+  }
+}
+
+.pl-countdown-label {
+  font-family: var(--pl-font-mono);
+  font-size: var(--pl-text-xs);
+  font-weight: 500;
+  line-height: 1.2;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--pl-text-subtle);
+}
+
+// Separator: dwie kropki rysowane w CSS (element może być pusty).
+.pl-countdown-separator {
+  position: relative;
+  flex: none;
+  align-self: flex-start;
+  width: 0.14em;
+  height: 1em;
+  font-size: var(--pl-countdown-size);
+  line-height: 1;
+  color: var(--pl-text-subtle);
+
+  &::before,
+  &::after {
+    content: '';
+    position: absolute;
+    left: 0;
+    width: 0.14em;
+    height: 0.14em;
+    border-radius: 50%;
+    background: currentColor;
+  }
+
+  &::before { top: 0.26em; }
+  &::after { bottom: 0.2em; }
+}
+
+// Kropki „tykają" co sekundę.
+.pl-countdown-running .pl-countdown-separator {
+  animation: pl-countdown-blink 1s var(--pl-ease-in-out) infinite;
+}
+
+@keyframes pl-countdown-blink {
+  50% {
+    opacity: 0.25;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .pl-countdown-running .pl-countdown-separator {
+    animation: none;
+  }
+}
+
+// ── Warianty ────────────────────────────────────────────────────────────
+// Każda jednostka na osobnej karcie.
+.pl-countdown-card {
+  .pl-countdown-item {
+    position: relative;
+    min-width: calc(var(--pl-countdown-size) * 1.9);
+    padding: calc(var(--pl-countdown-size) * 0.32) calc(var(--pl-countdown-size) * 0.3) calc(var(--pl-countdown-size) * 0.26);
+    @include surface(var(--pl-radius-lg), var(--pl-shadow-sm));
+  }
+
+  .pl-countdown-separator {
+    align-self: center;
+  }
+}
+
+// Karty z miękkim tłem bez ramki.
+.pl-countdown-muted {
+  .pl-countdown-item {
+    min-width: calc(var(--pl-countdown-size) * 1.9);
+    padding: calc(var(--pl-countdown-size) * 0.32) calc(var(--pl-countdown-size) * 0.3) calc(var(--pl-countdown-size) * 0.26);
+    border-radius: var(--pl-radius-lg);
+    background: var(--pl-muted);
+  }
+
+  .pl-countdown-separator {
+    align-self: center;
+  }
+}
+
+// Odwrócone, „atramentowe" karty z limonkową etykietą.
+.pl-countdown-ink {
+  .pl-countdown-item {
+    min-width: calc(var(--pl-countdown-size) * 1.9);
+    padding: calc(var(--pl-countdown-size) * 0.32) calc(var(--pl-countdown-size) * 0.3) calc(var(--pl-countdown-size) * 0.26);
+    border-radius: var(--pl-radius-lg);
+    background: var(--pl-ink);
+    color: var(--pl-on-ink);
+    box-shadow: var(--pl-shadow-md);
+  }
+
+  .pl-countdown-label {
+    color: color-mix(in oklab, var(--pl-on-ink) 62%, transparent);
+  }
+
+  .pl-countdown-item:last-of-type .pl-countdown-label {
+    color: color-mix(in oklab, var(--pl-spark) 80%, var(--pl-on-ink));
+  }
+
+  .pl-countdown-separator {
+    align-self: center;
+  }
+}
+
+// Etykiety obok liczb, wszystko w jednej linii tekstu.
+.pl-countdown-inline {
+  --pl-countdown-size: 1em;
+  --pl-countdown-gap: 0.5em;
+  align-items: baseline;
+  flex-wrap: nowrap;
+
+  .pl-countdown-item {
+    flex-direction: row;
+    align-items: baseline;
+    gap: 0.2em;
+  }
+
+  .pl-countdown-number {
+    min-width: 0;
+    font-family: var(--pl-font-mono);
+    font-weight: 600;
+    letter-spacing: -0.02em;
+  }
+
+  .pl-countdown-label {
+    font-size: 0.75em;
+    letter-spacing: 0.02em;
+    text-transform: none;
+  }
+
+  .pl-countdown-separator {
+    align-self: center;
+    margin-inline: -0.2em;
+  }
+}
+
+// Ton liczb.
+@include tones('pl-countdown');
+
+.pl-countdown:is(.pl-countdown-primary, .pl-countdown-success, .pl-countdown-warning, .pl-countdown-danger, .pl-countdown-info) .pl-countdown-number {
+  color: var(--pl-tone-text);
+}
+
+// ── Rozmiary ────────────────────────────────────────────────────────────
+.pl-countdown-small {
+  --pl-countdown-size: 1.75rem;
+  --pl-countdown-gap: 0.5rem;
+
+  .pl-countdown-item {
+    gap: 0.3rem;
+    border-radius: var(--pl-radius-md);
+  }
+
+  .pl-countdown-label {
+    font-size: 0.625rem;
+  }
+}
+
+.pl-countdown-large {
+  --pl-countdown-size: clamp(3rem, 1.4rem + 6.4vw, 6.5rem);
+  --pl-countdown-gap: clamp(0.75rem, 0.2rem + 2.2vw, 2rem);
+
+  .pl-countdown-item {
+    gap: 0.75rem;
+  }
+}
+
+// ── Stan końcowy ────────────────────────────────────────────────────────
+.pl-countdown-ended {
+  .pl-countdown-number {
+    opacity: 0.45;
+  }
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .pl-countdown-ended.pl-countdown-finish {
+    animation: pl-countdown-finish var(--pl-dur-4) var(--pl-ease-spring);
+  }
+}
+
+@keyframes pl-countdown-finish {
+  40% {
+    transform: scale(1.05);
+  }
+}

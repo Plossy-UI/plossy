@@ -1,0 +1,141 @@
+// Rating — gwiazdki ocen (odczyt w czystym CSS, wybór z JS)
+@use '../abstracts' as *;
+
+// Gwiazdka z marginesem w polu widzenia — komórki stykają się, a odstęp daje sam rysunek.
+$star: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='-2 -2 28 28'%3E%3Cpath d='M11.5 2.3a.53.53 0 0 1 .95 0l2.31 4.68a2.1 2.1 0 0 0 1.6 1.16l5.16.75a.53.53 0 0 1 .3.9l-3.74 3.64a2.1 2.1 0 0 0-.61 1.88l.88 5.14a.53.53 0 0 1-.77.56l-4.62-2.43a2.1 2.1 0 0 0-1.97 0L6.4 21.01a.53.53 0 0 1-.77-.56l.88-5.14a2.1 2.1 0 0 0-.61-1.88L2.16 9.8a.53.53 0 0 1 .3-.91l5.16-.75a2.1 2.1 0 0 0 1.6-1.16z'/%3E%3C/svg%3E");
+
+.pl-rating {
+  --pl-rating-size: 1.375rem;
+  --pl-rating-max: 5;
+  --pl-rating-value: 0;
+  --pl-rating-color: var(--pl-warning);
+  --pl-rating-empty: var(--pl-border-strong);
+
+  position: relative;
+  display: inline-flex;
+  flex: none;
+  align-items: center;
+  vertical-align: middle;
+  line-height: 1;
+}
+
+// ── Tylko do odczytu: <span class="pl-rating" style="--pl-rating-value: 4.5"> ──
+.pl-rating:not([data-pl-rating]) {
+  width: calc(var(--pl-rating-size) * var(--pl-rating-max));
+  height: var(--pl-rating-size);
+  background: linear-gradient(
+    90deg,
+    var(--pl-rating-color) calc(var(--pl-rating-value) / var(--pl-rating-max) * 100%),
+    var(--pl-rating-empty) 0
+  );
+  mask: $star left center / var(--pl-rating-size) var(--pl-rating-size) repeat-x;
+}
+
+// ── Interaktywne: gwiazdki to pola radio tworzone przez JS ────────────────
+.pl-rating-star {
+  appearance: none;
+  flex: none;
+  width: var(--pl-rating-size);
+  height: var(--pl-rating-size);
+  margin: 0;
+  padding: 0;
+  border: 0;
+  border-radius: var(--pl-radius-xs);
+  background: var(--pl-rating-empty);
+  mask: $star center / contain no-repeat;
+  cursor: pointer;
+  transition:
+    background-color var(--pl-dur-2) var(--pl-ease),
+    transform var(--pl-dur-3) var(--pl-ease-spring);
+
+  &.pl-active {
+    background: var(--pl-rating-color);
+  }
+
+  // Podgląd przy najechaniu — odrobinę jaśniejszy niż zatwierdzona ocena.
+  &.pl-rating-preview {
+    background: color-mix(in oklab, var(--pl-rating-color) 70%, var(--pl-surface));
+  }
+
+  &:hover {
+    transform: scale(1.18);
+  }
+
+  &:active {
+    transform: scale(0.9);
+  }
+
+  &.pl-rating-pop {
+    animation: pl-rating-pop var(--pl-dur-4) var(--pl-ease-spring) backwards;
+  }
+}
+
+// Maska ukrywa obrys fokusu, więc rysujemy go na kontenerze.
+.pl-rating:has(.pl-rating-star:focus-visible) {
+  outline: 2px solid var(--pl-focus, var(--pl-primary));
+  outline-offset: 4px;
+  border-radius: var(--pl-radius-xs);
+}
+
+.pl-rating-star:focus-visible {
+  outline: none;
+}
+
+// Pole „brak oceny" (0) — dostępne z klawiatury, niewidoczne.
+.pl-rating-zero {
+  @include visually-hidden;
+}
+
+.pl-rating.pl-disabled,
+.pl-rating-readonly {
+  .pl-rating-star {
+    cursor: default;
+    pointer-events: none;
+  }
+}
+
+.pl-rating.pl-disabled {
+  opacity: 0.5;
+}
+
+@keyframes pl-rating-pop {
+  0% {
+    transform: scale(0.4) rotate(-18deg);
+  }
+
+  60% {
+    transform: scale(1.3) rotate(6deg);
+  }
+
+  100% {
+    transform: none;
+  }
+}
+
+// ── Rozmiary i kolory ───────────────────────────────────────────────────
+.pl-rating-small {
+  --pl-rating-size: 1rem;
+}
+
+.pl-rating-large {
+  --pl-rating-size: 2rem;
+}
+
+.pl-rating-primary {
+  --pl-rating-color: var(--pl-primary);
+}
+
+.pl-rating-danger {
+  --pl-rating-color: var(--pl-danger);
+}
+
+.pl-rating-ink {
+  --pl-rating-color: var(--pl-text);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .pl-rating-star {
+    transition: none;
+    animation: none !important;
+  }
+}

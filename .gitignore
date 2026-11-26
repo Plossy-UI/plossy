@@ -1,0 +1,21 @@
+# Zależności
+node_modules/
+
+# Pliki generowane — powstają z `npm run dist` i `npm run docs`
+dist/
+docs/dist/
+docs/.astro/
+*.tgz
+plossy-docs.zip
+
+# Sekrety i ustawienia lokalne
+.env
+.env.*
+.npmrc
+
+# System i edytory
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/
+*.log

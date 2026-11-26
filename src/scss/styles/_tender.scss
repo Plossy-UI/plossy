@@ -1,0 +1,132 @@
+// Styl „tender" — czuły i ciepły: kremowo-różowa paleta, pastelowe plamy w tle,
+// szeryfowe nagłówki, zaokrąglenia, przyciski-pastylki z różową poświatą.
+@use 'engine' as *;
+
+@include preset('tender') {
+  --pl-spark: oklch(0.92 0.045 155);
+  --pl-on-spark: oklch(0.42 0.07 158);
+  --pl-radius-xs: 8px;
+  --pl-radius-sm: 12px;
+  --pl-radius-md: 16px;
+  --pl-radius-lg: 22px;
+  --pl-radius-xl: 32px;
+  --pl-shadow-scale: 1.5;
+  --pl-shadow-color: 0.62 0.13 30;
+  --pl-gloss: 0.4;
+  --pl-lift: 1.4;
+
+  --pl-font-sans: 'Nunito Variable', 'Nunito', ui-sans-serif, system-ui, sans-serif;
+  --pl-font-display: 'Playfair Display Variable', 'Playfair Display', Georgia, serif;
+  --pl-leading: 1.75;
+  --pl-heading-weight: 600;
+  --pl-heading-tracking: 0em;
+  --pl-heading-tracking-h1: -0.01em;
+  --pl-heading-tracking-h2: -0.005em;
+  --pl-heading-tracking-h5: 0em;
+  --pl-heading-tracking-h6: 0em;
+  --pl-display-weight: 600;
+  --pl-display-tracking: 0em;
+  --pl-control-weight: 700;
+  --pl-control-tracking: 0.03em;
+  --pl-control-h: 2.875rem;
+  --pl-control-h-lg: 3.4rem;
+  --pl-dur-3: 400ms;
+  --pl-dur-4: 620ms;
+
+  --pl-bg: oklch(0.985 0.012 55);
+  --pl-surface: oklch(1 0 0);
+  --pl-surface-raised: oklch(1 0 0);
+  --pl-muted: oklch(0.962 0.02 40);
+  --pl-muted-strong: oklch(0.935 0.03 35);
+  --pl-border: oklch(0.91 0.025 40);
+  --pl-border-strong: oklch(0.82 0.04 38);
+  --pl-text: oklch(0.32 0.03 45);
+  --pl-text-muted: oklch(0.48 0.03 45);
+  --pl-text-subtle: oklch(0.62 0.028 45);
+  --pl-ink: oklch(0.32 0.05 300);
+  --pl-on-ink: oklch(0.985 0.012 55);
+  --pl-secondary: oklch(0.34 0.07 285);
+  --pl-on-secondary: oklch(0.985 0.012 55);
+  --pl-success: oklch(0.6 0.09 158);
+  --pl-overlay: oklch(0.4 0.06 320 / 0.3);
+}
+
+@include preset-dark('tender') {
+  --pl-spark: oklch(0.4 0.05 158);
+  --pl-on-spark: oklch(0.93 0.05 155);
+  --pl-shadow-color: 0 0 0;
+  --pl-bg: oklch(0.21 0.025 320);
+  --pl-surface: oklch(0.25 0.028 320);
+  --pl-surface-raised: oklch(0.285 0.03 320);
+  --pl-muted: oklch(0.285 0.03 320);
+  --pl-muted-strong: oklch(0.33 0.035 320);
+  --pl-border: oklch(0.36 0.035 320);
+  --pl-border-strong: oklch(0.47 0.04 320);
+  --pl-text: oklch(0.945 0.02 50);
+  --pl-text-muted: oklch(0.78 0.03 45);
+  --pl-text-subtle: oklch(0.62 0.03 40);
+  --pl-ink: oklch(0.945 0.02 50);
+  --pl-on-ink: oklch(0.23 0.03 320);
+  --pl-secondary: oklch(0.945 0.02 50);
+  --pl-on-secondary: oklch(0.23 0.03 320);
+  --pl-overlay: oklch(0.1 0.03 320 / 0.6);
+}
+
+@include preset-accent('tender', 0.62, 0.1, 33);
+@include preset-accent-dark('tender', 0.62, 0.1, 33);
+
+// Pastelowe plamy w tle strony.
+[data-pl-style='tender'] body {
+  background-image:
+    radial-gradient(44rem 34rem at 4% 0%, color-mix(in oklab, oklch(0.88 0.08 60) 55%, transparent), transparent 62%),
+    radial-gradient(40rem 32rem at 100% 18%, color-mix(in oklab, oklch(0.86 0.07 305) 50%, transparent), transparent 60%),
+    radial-gradient(42rem 34rem at 85% 100%, color-mix(in oklab, oklch(0.88 0.06 160) 45%, transparent), transparent 60%),
+    radial-gradient(36rem 30rem at 10% 85%, color-mix(in oklab, oklch(0.87 0.07 340) 45%, transparent), transparent 60%);
+  background-attachment: fixed;
+}
+
+[data-pl-theme='dark'][data-pl-style='tender'] body {
+  background-image:
+    radial-gradient(44rem 34rem at 4% 0%, oklch(0.5 0.1 40 / 0.22), transparent 62%),
+    radial-gradient(40rem 32rem at 100% 18%, oklch(0.5 0.12 305 / 0.22), transparent 60%),
+    radial-gradient(42rem 34rem at 85% 100%, oklch(0.5 0.08 160 / 0.16), transparent 60%);
+}
+
+[data-pl-style='tender'] {
+  .pl-button {
+    --pl-button-radius: var(--pl-radius-pill);
+    --pl-button-px: 1.6em;
+  }
+
+  .pl-button-icon {
+    --pl-button-px: 0;
+  }
+
+  // Główny przycisk: przejście róż → granat z miękką poświatą.
+  .pl-button.pl-button-primary:not(.pl-button-soft, .pl-button-outline, .pl-button-ghost) {
+    background-image: linear-gradient(100deg, var(--pl-primary), oklch(0.36 0.09 285));
+    box-shadow: 0 8px 28px -6px color-mix(in oklab, var(--pl-primary) 65%, transparent);
+
+    &:hover {
+      box-shadow: 0 12px 34px -6px color-mix(in oklab, var(--pl-primary) 80%, transparent);
+    }
+  }
+
+  .pl-input,
+  .pl-select {
+    padding-inline: 1.15em;
+  }
+
+  // Wyróżnienia kursywą szeryfową.
+  h1 em,
+  h2 em,
+  blockquote {
+    font-family: var(--pl-font-display);
+    font-style: italic;
+    color: var(--pl-primary-text);
+  }
+
+  .pl-label {
+    letter-spacing: 0.08em;
+  }
+}

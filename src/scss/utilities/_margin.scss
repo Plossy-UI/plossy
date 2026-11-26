@@ -1,0 +1,71 @@
+// Margin — odstępy zewnętrzne.
+@use '../abstracts' as *;
+
+// Rozmiary: duże odstępy rosną płynnie razem z szerokością okna.
+$margin-sizes: (
+  '': var(--pl-space-5),
+  '-xsmall': var(--pl-space-2),
+  '-small': var(--pl-space-3),
+  '-medium': var(--pl-space-7),
+  '-large': clamp(var(--pl-space-8), 2.5rem + 3vw, 5rem),
+  '-xlarge': clamp(var(--pl-space-9), 3rem + 6vw, 9rem),
+);
+
+@each $name, $value in $margin-sizes {
+  // Jak w UIkit: margines dolny + górny, gdy element ma poprzednika.
+  .pl-margin#{$name} {
+    margin-bottom: $value;
+  }
+
+  * + .pl-margin#{$name} {
+    margin-top: $value !important;
+  }
+
+  .pl-margin#{$name}-top { margin-top: $value !important; }
+  .pl-margin#{$name}-bottom { margin-bottom: $value !important; }
+  .pl-margin#{$name}-left { margin-left: $value !important; }
+  .pl-margin#{$name}-right { margin-right: $value !important; }
+}
+
+// ── Auto i usuwanie (z wariantami responsywnymi) ────────────────────────
+@include responsive using ($s) {
+  .pl-margin-auto#{$s} {
+    margin-left: auto !important;
+    margin-right: auto !important;
+  }
+
+  .pl-margin-auto-left#{$s} { margin-left: auto !important; }
+  .pl-margin-auto-right#{$s} { margin-right: auto !important; }
+  .pl-margin-auto-top#{$s} { margin-top: auto !important; }
+  .pl-margin-auto-bottom#{$s} { margin-bottom: auto !important; }
+
+  .pl-margin-auto-vertical#{$s} {
+    margin-top: auto !important;
+    margin-bottom: auto !important;
+  }
+
+  .pl-margin-remove#{$s} { margin: 0 !important; }
+  .pl-margin-remove-top#{$s} { margin-top: 0 !important; }
+  .pl-margin-remove-bottom#{$s} { margin-bottom: 0 !important; }
+  .pl-margin-remove-left#{$s} { margin-left: 0 !important; }
+  .pl-margin-remove-right#{$s} { margin-right: 0 !important; }
+
+  .pl-margin-remove-vertical#{$s} {
+    margin-top: 0 !important;
+    margin-bottom: 0 !important;
+  }
+
+  .pl-margin-remove-horizontal#{$s} {
+    margin-left: 0 !important;
+    margin-right: 0 !important;
+  }
+}
+
+.pl-margin-remove-adjacent + *,
+.pl-margin-remove-first-child > :first-child {
+  margin-top: 0 !important;
+}
+
+.pl-margin-remove-last-child > :last-child {
+  margin-bottom: 0 !important;
+}

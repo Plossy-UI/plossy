@@ -1,0 +1,45 @@
+// Cover — media wypełniające cały pojemnik z zachowaniem proporcji.
+@use '../abstracts' as *;
+
+.pl-cover-container {
+  position: relative;
+  overflow: hidden;
+}
+
+.pl-cover {
+  position: absolute;
+  inset: 0;
+  box-sizing: border-box;
+  width: 100%;
+  height: 100%;
+  max-width: none;
+  object-fit: cover;
+  object-position: var(--pl-cover-position, center);
+  pointer-events: none;
+}
+
+// Punkt zaczepienia kadru.
+.pl-cover-top { --pl-cover-position: top; }
+.pl-cover-bottom { --pl-cover-position: bottom; }
+.pl-cover-left { --pl-cover-position: left; }
+.pl-cover-right { --pl-cover-position: right; }
+
+// iframe nie zna object-fit — skalujemy go jednostkami kontenera.
+// Pojemnik musi mieć wtedy określoną wysokość (height lub aspect-ratio).
+.pl-cover-container:has(> iframe.pl-cover) {
+  container-type: size;
+}
+
+iframe.pl-cover {
+  --pl-cover-ratio: calc(16 / 9);
+
+  inset: 50% auto auto 50%;
+  width: max(100cqw, 100cqh * var(--pl-cover-ratio));
+  height: max(100cqh, 100cqw / var(--pl-cover-ratio));
+  translate: -50% -50%;
+}
+
+// Treść nad mediami.
+.pl-cover-container > :not(.pl-cover, [class*='pl-position-'], [class*='pl-overlay']) {
+  position: relative;
+}

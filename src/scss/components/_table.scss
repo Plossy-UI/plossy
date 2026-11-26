@@ -1,0 +1,343 @@
+// Table
+@use '../abstracts' as *;
+
+.pl-table {
+  --pl-table-px: 1rem;
+  --pl-table-py: 0.85rem;
+
+  width: 100%;
+  margin: 0 0 1.1em;
+  border-collapse: collapse;
+  border-spacing: 0;
+  color: var(--pl-text);
+  font-variant-numeric: tabular-nums;
+
+  &:last-child {
+    margin-bottom: 0;
+  }
+
+  th,
+  td {
+    padding: var(--pl-table-py) var(--pl-table-px);
+    text-align: start;
+    vertical-align: top;
+  }
+
+  th {
+    font-weight: 600;
+  }
+
+  // Nagłówek: mała, techniczna etykieta.
+  thead th {
+    padding-block: 0.7rem;
+    border-bottom: 1px solid var(--pl-border-strong);
+    color: var(--pl-text-subtle);
+    font-family: var(--pl-font-mono);
+    font-size: var(--pl-text-xs);
+    font-weight: 500;
+    letter-spacing: 0.07em;
+    text-transform: uppercase;
+    vertical-align: bottom;
+    white-space: nowrap;
+  }
+
+  td {
+    color: var(--pl-text-muted);
+  }
+
+  tbody th {
+    color: var(--pl-text);
+  }
+
+  tbody tr {
+    @include transition('background-color', var(--pl-dur-1));
+  }
+
+  tfoot {
+    td,
+    th {
+      border-top: 1px solid var(--pl-border-strong);
+      color: var(--pl-text);
+      font-weight: 600;
+    }
+  }
+
+  caption {
+    padding: 0 var(--pl-table-px) var(--pl-space-3);
+    color: var(--pl-text-subtle);
+    font-size: var(--pl-text-sm);
+    text-align: start;
+  }
+
+  > :not(caption) > tr > :is(td, th) > :last-child {
+    margin-bottom: 0;
+  }
+}
+
+.pl-table-caption-bottom caption {
+  padding: var(--pl-space-3) var(--pl-table-px) 0;
+  caption-side: bottom;
+}
+
+// ── Linie i paski ───────────────────────────────────────────────────────
+.pl-table-divider {
+  > tr:not(:first-child),
+  > :not(:first-child) > tr,
+  > :first-child > tr:not(:first-child) {
+    border-top: 1px solid var(--pl-border);
+  }
+}
+
+.pl-table-striped {
+  > tr:nth-of-type(odd),
+  tbody tr:nth-of-type(odd) {
+    background: var(--pl-muted);
+  }
+
+  // Zaokrąglone końce pasków.
+  tbody td:first-child,
+  tbody th:first-child {
+    border-radius: var(--pl-radius-sm) 0 0 var(--pl-radius-sm);
+  }
+
+  tbody td:last-child,
+  tbody th:last-child {
+    border-radius: 0 var(--pl-radius-sm) var(--pl-radius-sm) 0;
+  }
+}
+
+.pl-table-hover {
+  > tr:hover,
+  tbody tr:hover {
+    background: color-mix(in oklab, var(--pl-primary) 6%, var(--pl-muted));
+  }
+}
+
+// Ramka wokół tabeli i między komórkami.
+.pl-table-bordered {
+  border: 1px solid var(--pl-border);
+
+  th,
+  td {
+    border: 1px solid var(--pl-border);
+  }
+}
+
+// Zaznaczony wiersz.
+.pl-table tr.pl-active,
+.pl-table tbody tr.pl-active:hover {
+  background: var(--pl-primary-soft);
+
+  td,
+  th {
+    color: var(--pl-text);
+  }
+
+  > :first-child {
+    box-shadow: inset 3px 0 0 var(--pl-primary);
+  }
+}
+
+// ── Rozmiary i wyrównanie ───────────────────────────────────────────────
+.pl-table-small {
+  --pl-table-px: 0.75rem;
+  --pl-table-py: 0.5rem;
+  font-size: var(--pl-text-sm);
+}
+
+.pl-table-large {
+  --pl-table-px: 1.25rem;
+  --pl-table-py: 1.25rem;
+}
+
+// Skrajne kolumny bez zewnętrznego odstępu — tabela równa się z tekstem.
+.pl-table-justify {
+  th:first-child,
+  td:first-child,
+  caption {
+    padding-left: 0;
+  }
+
+  th:last-child,
+  td:last-child {
+    padding-right: 0;
+  }
+}
+
+.pl-table-middle,
+.pl-table-middle td,
+.pl-table-middle th {
+  vertical-align: middle !important;
+}
+
+// ── Komórki ─────────────────────────────────────────────────────────────
+.pl-table-shrink {
+  width: 1px;
+  white-space: nowrap;
+}
+
+.pl-table-expand {
+  min-width: 10rem;
+  width: 100%;
+}
+
+.pl-table-nowrap {
+  white-space: nowrap;
+}
+
+.pl-table-numeric {
+  text-align: end !important;
+}
+
+// Cała komórka jest linkiem.
+.pl-table td.pl-table-link,
+.pl-table th.pl-table-link {
+  padding: 0;
+
+  > a {
+    display: block;
+    padding: var(--pl-table-py) var(--pl-table-px);
+    color: var(--pl-text);
+    font-weight: 540;
+    text-decoration: none;
+    @include transition('color', var(--pl-dur-2));
+
+    &:hover {
+      color: var(--pl-primary-text);
+    }
+
+    @include focus-visible(-2px);
+  }
+}
+
+// ── Sortowanie (wygląd) ─────────────────────────────────────────────────
+// <th aria-sort="ascending"><button class="pl-table-sort">Nazwa</button></th>
+.pl-table-sort {
+  @include button-reset;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5em;
+  color: inherit;
+  font: inherit;
+  letter-spacing: inherit;
+  text-transform: inherit;
+  @include transition('color', var(--pl-dur-2));
+
+  // Dwie strzałki: aktywny kierunek jest podświetlony.
+  &::after {
+    content: '';
+    flex: none;
+    width: 0.5rem;
+    height: 0.8rem;
+    background:
+      conic-gradient(from 135deg at 50% 0, currentColor 90deg, transparent 0) 50% 0 / 100% 38% no-repeat,
+      conic-gradient(from -45deg at 50% 100%, currentColor 90deg, transparent 0) 50% 100% / 100% 38% no-repeat;
+    opacity: 0.4;
+    transition:
+      opacity var(--pl-dur-2) var(--pl-ease),
+      transform var(--pl-dur-3) var(--pl-ease-spring);
+  }
+
+  &:hover {
+    color: var(--pl-text);
+
+    &::after {
+      opacity: 0.8;
+    }
+  }
+
+  @include focus-visible(4px);
+
+  &:focus-visible {
+    border-radius: var(--pl-radius-xs);
+  }
+}
+
+.pl-table th[aria-sort='ascending'],
+.pl-table th[aria-sort='descending'] {
+  color: var(--pl-text);
+
+  .pl-table-sort::after {
+    background: conic-gradient(from 135deg at 50% 0, var(--pl-primary) 90deg, transparent 0) 50% 50% / 100% 50%
+      no-repeat;
+    opacity: 1;
+  }
+}
+
+.pl-table th[aria-sort='descending'] .pl-table-sort::after {
+  transform: rotate(180deg);
+}
+
+// ── Przyklejony nagłówek ────────────────────────────────────────────────
+// Działa w przewijanym kontenerze (.pl-overflow-auto z wysokością) lub względem strony.
+.pl-table-sticky thead th {
+  position: sticky;
+  top: var(--pl-table-sticky-top, 0);
+  z-index: 1;
+  border-bottom: 0;
+  background: var(--pl-table-sticky-bg, var(--pl-surface));
+  box-shadow: inset 0 -1px 0 var(--pl-border-strong);
+}
+
+// ── Responsywna: poniżej breakpointu m komórki układają się w stos ──────
+@include down(m) {
+  .pl-table-responsive {
+    &,
+    tbody,
+    tfoot,
+    tr,
+    th,
+    td {
+      display: block;
+    }
+
+    thead {
+      display: none;
+    }
+
+    tr {
+      padding: var(--pl-table-py) 0;
+    }
+
+    th,
+    td {
+      width: auto !important;
+      max-width: none !important;
+      min-width: 0 !important;
+      padding-block: 0.3rem;
+      border-radius: 0 !important;
+      white-space: normal !important;
+      text-align: start !important;
+      overflow: visible !important;
+    }
+
+    // Etykieta kolumny: <td data-label="Status">…</td>
+    td[data-label],
+    th[data-label] {
+      display: grid;
+      grid-template-columns: minmax(6.5rem, 34%) 1fr;
+      gap: var(--pl-space-3);
+      align-items: baseline;
+
+      &::before {
+        content: attr(data-label);
+        color: var(--pl-text-subtle);
+        font-family: var(--pl-font-mono);
+        font-size: var(--pl-text-xs);
+        font-weight: 500;
+        letter-spacing: 0.07em;
+        text-transform: uppercase;
+      }
+    }
+
+    td.pl-table-link > a,
+    th.pl-table-link > a {
+      padding-block: 0.3rem;
+    }
+  }
+
+  .pl-table-responsive.pl-table-striped tr {
+    padding-inline: 0;
+    border-radius: var(--pl-radius-sm);
+  }
+}

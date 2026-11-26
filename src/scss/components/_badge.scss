@@ -1,0 +1,250 @@
+// Badge — licznik / kropka powiadomienia.
+@use '../abstracts' as *;
+
+.pl-badge {
+  --pl-tone: var(--pl-primary);
+  --pl-on-tone: var(--pl-on-primary);
+  --pl-tone-soft: var(--pl-primary-soft);
+  --pl-tone-text: var(--pl-primary-text);
+  --pl-badge-size: 1.25rem;
+  --pl-badge-ring: var(--pl-bg);
+
+  display: inline-flex;
+  flex: none;
+  align-items: center;
+  justify-content: center;
+  gap: 0.25em;
+  min-width: var(--pl-badge-size);
+  height: var(--pl-badge-size);
+  padding: 0 0.4em;
+  border-radius: var(--pl-radius-pill);
+  background: var(--pl-tone);
+  color: var(--pl-on-tone);
+  font-family: var(--pl-font-mono);
+  font-size: 0.6875rem;
+  font-weight: 600;
+  font-variant-numeric: tabular-nums;
+  line-height: 1;
+  letter-spacing: -0.01em;
+  text-decoration: none;
+  white-space: nowrap;
+  vertical-align: middle;
+
+  > .pl-icon,
+  > svg {
+    width: 0.85em;
+    height: 0.85em;
+  }
+
+  &:empty:not(.pl-badge-dot) {
+    display: none;
+  }
+}
+
+a.pl-badge {
+  @include transition('filter, transform', var(--pl-dur-2));
+  @include focus-visible;
+
+  &:hover {
+    filter: brightness(1.08);
+  }
+}
+
+@include tones('pl-badge');
+
+.pl-badge-secondary {
+  --pl-tone: var(--pl-ink);
+  --pl-on-tone: var(--pl-on-ink);
+  --pl-tone-soft: var(--pl-muted-strong);
+  --pl-tone-text: var(--pl-text);
+}
+
+.pl-badge-spark {
+  --pl-tone: var(--pl-spark);
+  --pl-on-tone: var(--pl-on-spark);
+  --pl-tone-soft: color-mix(in oklab, var(--pl-spark) 30%, var(--pl-surface));
+  --pl-tone-text: color-mix(in oklab, var(--pl-on-spark) 60%, var(--pl-text));
+}
+
+// ── Style ───────────────────────────────────────────────────────────────
+.pl-badge-soft {
+  background: var(--pl-tone-soft);
+  color: var(--pl-tone-text);
+}
+
+.pl-badge-outline {
+  background: transparent;
+  box-shadow: inset 0 0 0 1px color-mix(in oklab, var(--pl-tone) 50%, transparent);
+  color: var(--pl-tone-text);
+}
+
+// Mniej zaokrąglony (domyślnie pigułka).
+.pl-badge-rounded {
+  border-radius: var(--pl-radius-xs);
+}
+
+.pl-badge-pill {
+  border-radius: var(--pl-radius-pill);
+}
+
+// ── Rozmiary ────────────────────────────────────────────────────────────
+.pl-badge-small {
+  --pl-badge-size: 1rem;
+  padding: 0 0.3em;
+  font-size: 0.625rem;
+}
+
+.pl-badge-large {
+  --pl-badge-size: 1.625rem;
+  padding: 0 0.55em;
+  font-size: 0.8125rem;
+}
+
+// ── Kropka ──────────────────────────────────────────────────────────────
+.pl-badge-dot {
+  --pl-badge-size: 0.5rem;
+  position: relative;
+  width: var(--pl-badge-size);
+  min-width: 0;
+  padding: 0;
+  font-size: 0;
+
+  &.pl-badge-small { --pl-badge-size: 0.375rem; }
+  &.pl-badge-large { --pl-badge-size: 0.75rem; }
+}
+
+// Pulsująca obwódka — „coś się dzieje".
+.pl-badge-pulse {
+  position: relative;
+
+  &::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    border-radius: inherit;
+    background: var(--pl-tone);
+    animation: pl-badge-pulse 1.8s var(--pl-ease) infinite;
+    pointer-events: none;
+  }
+}
+
+.pl-badge-anchor > .pl-badge-pulse {
+  position: absolute;
+}
+
+@keyframes pl-badge-pulse {
+  0% {
+    transform: scale(1);
+    opacity: 0.65;
+  }
+  75%,
+  100% {
+    transform: scale(2.6);
+    opacity: 0;
+  }
+}
+
+.pl-badge:not(.pl-badge-dot).pl-badge-pulse::before {
+  animation-name: pl-badge-pulse-wide;
+}
+
+@keyframes pl-badge-pulse-wide {
+  0% {
+    transform: scale(1);
+    opacity: 0.55;
+  }
+  75%,
+  100% {
+    transform: scale(1.7, 1.9);
+    opacity: 0;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .pl-badge-pulse::before {
+    animation: none;
+    opacity: 0;
+  }
+}
+
+// ── Pozycjonowanie na rodzicu ───────────────────────────────────────────
+.pl-badge-anchor {
+  position: relative;
+  display: inline-flex;
+  flex: none;
+  vertical-align: middle;
+
+  > .pl-badge {
+    position: absolute;
+    top: 0;
+    right: 0;
+    z-index: 1;
+    box-shadow: 0 0 0 2px var(--pl-badge-ring);
+    transform: translate(40%, -40%);
+    pointer-events: none;
+  }
+
+  > .pl-badge-outline {
+    background: var(--pl-badge-ring);
+    box-shadow:
+      inset 0 0 0 1px color-mix(in oklab, var(--pl-tone) 50%, transparent),
+      0 0 0 2px var(--pl-badge-ring);
+  }
+
+  > .pl-badge-bottom-right {
+    top: auto;
+    bottom: 0;
+    transform: translate(40%, 40%);
+  }
+
+  > .pl-badge-top-left {
+    right: auto;
+    left: 0;
+    transform: translate(-40%, -40%);
+  }
+
+  > .pl-badge-bottom-left {
+    top: auto;
+    right: auto;
+    bottom: 0;
+    left: 0;
+    transform: translate(-40%, 40%);
+  }
+}
+
+// Dla okrągłych rodziców (awatar) — znaczek siedzi na obwodzie koła.
+.pl-badge-anchor-circle > .pl-badge {
+  top: 14.6%;
+  right: 14.6%;
+  transform: translate(50%, -50%);
+
+  &.pl-badge-bottom-right {
+    top: auto;
+    bottom: 14.6%;
+    transform: translate(50%, 50%);
+  }
+
+  &.pl-badge-top-left {
+    right: auto;
+    left: 14.6%;
+    transform: translate(-50%, -50%);
+  }
+
+  &.pl-badge-bottom-left {
+    top: auto;
+    right: auto;
+    bottom: 14.6%;
+    left: 14.6%;
+    transform: translate(-50%, 50%);
+  }
+}
+
+// Znaczek wewnątrz przycisku / pozycji nawigacji.
+.pl-button > .pl-badge {
+  margin-inline: 0.1em -0.25em;
+}
+
+.pl-button:is(.pl-button-primary, .pl-button-secondary, .pl-button-success, .pl-button-danger, .pl-button-info):not(.pl-button-soft, .pl-button-outline, .pl-button-ghost) > .pl-badge:not([class*='pl-badge-']) {
+  background: color-mix(in oklab, var(--pl-on-tone) 22%, transparent);
+  color: inherit;
+}

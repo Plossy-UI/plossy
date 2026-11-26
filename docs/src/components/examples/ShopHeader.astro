@@ -1,0 +1,264 @@
+---
+// Wspólny nagłówek sklepu „Lorem": pasek ogłoszeń, przyklejany navbar,
+// wyszukiwarka (modal), mini-koszyk i nawigacja mobilna (offcanvas).
+interface Props {
+  active?: 'sklep' | 'kategoria' | 'blog' | 'kontakt' | 'cms';
+}
+const { active } = Astro.props;
+
+const categories = [
+  { name: 'Oświetlenie', icon: 'lightbulb', items: ['Lampy stołowe', 'Lampy wiszące', 'Kinkiety', 'Świece i lampiony'] },
+  { name: 'Ceramika', icon: 'coffee', items: ['Wazony', 'Kubki i filiżanki', 'Talerze i misy', 'Donice'] },
+  { name: 'Tekstylia', icon: 'layers', items: ['Koce i pledy', 'Poduszki', 'Pościel lniana', 'Dywany'] },
+  { name: 'Meble', icon: 'box', items: ['Fotele', 'Stoliki', 'Regały', 'Krzesła'] },
+];
+
+const cart = [
+  { name: 'Lampa stołowa Mgła', variant: 'Dąb / len', qty: 1, price: '349,00 zł', img: '/img/photo-2.svg' },
+  { name: 'Wazon ceramiczny Otoczak', variant: 'Piaskowy, 24 cm', qty: 2, price: '258,00 zł', img: '/img/photo-5.svg' },
+  { name: 'Koc wełniany Szron', variant: '130 × 180 cm', qty: 1, price: '459,00 zł', img: '/img/photo-7.svg' },
+];
+---
+
+<div class="pl-background-secondary pl-light shop-announce">
+  <div class="pl-container pl-flex pl-flex-center pl-flex-middle pl-gap-small pl-text-small">
+    <span data-pl-icon="truck"></span>
+    <span>Darmowa dostawa od 299 zł <span class="pl-visible@s">· 30 dni na zwrot · wysyłka w 24 h</span></span>
+    <a class="pl-link-text pl-text-semibold pl-visible@m" href="/examples/cms/">Szczegóły</a>
+  </div>
+</div>
+
+<header class="pl-navbar-container shop-navbar" data-pl-sticky="cls-active: pl-navbar-glass pl-navbar-scrolled">
+  <div class="pl-container">
+    <nav class="pl-navbar" aria-label="Główna">
+      <div class="pl-navbar-left">
+        <button class="pl-navbar-toggle pl-hidden@m" type="button" aria-label="Otwórz menu" data-pl-toggle="#shop-nav"></button>
+        <a class="pl-navbar-logo" href="/examples/sklep/"><span class="pl-navbar-logo-mark"></span> Lorem</a>
+      </div>
+
+      <div class="pl-navbar-center pl-visible@m">
+        <ul class="pl-navbar-nav">
+          <li class:list={{ 'pl-active': active === 'sklep' }}><a href="/examples/sklep/">Sklep</a></li>
+          <li class:list={{ 'pl-active': active === 'kategoria' }}>
+            <a href="/examples/kategoria/">Kategorie <span class="pl-navbar-caret"></span></a>
+            <div class="pl-drop pl-navbar-dropdown shop-mega" data-pl-drop="mode: hover; pos: bottom-start; offset: 12">
+              <div class="pl-navbar-dropdown-grid">
+                {
+                  categories.map((cat) => (
+                    <ul class="pl-dropdown-nav">
+                      <li class="pl-nav-header">{cat.name}</li>
+                      {cat.items.map((item) => (
+                        <li>
+                          <a href="/examples/kategoria/">{item}</a>
+                        </li>
+                      ))}
+                    </ul>
+                  ))
+                }
+                <a class="pl-navbar-dropdown-feature" href="/examples/kategoria/">
+                  <span class="pl-label pl-label-spark pl-label-small pl-flex-self-top">Do −30%</span>
+                  <strong>Zimowe światło</strong>
+                  <span>Lampy, świece i wełna na długie wieczory.</span>
+                </a>
+              </div>
+            </div>
+          </li>
+          <li class:list={{ 'pl-active': active === 'blog' }}><a href="/examples/blog/">Blog</a></li>
+          <li class:list={{ 'pl-active': active === 'cms' }}><a href="/examples/cms/">O nas</a></li>
+          <li class:list={{ 'pl-active': active === 'kontakt' }}><a href="/examples/kontakt/">Kontakt</a></li>
+        </ul>
+      </div>
+
+      <div class="pl-navbar-right">
+        <button class="pl-button pl-button-ghost pl-button-icon" type="button" aria-label="Szukaj" data-pl-modal-open="#shop-search" data-pl-tooltip="title: Szukaj; pos: bottom">
+          <span data-pl-icon="search"></span>
+        </button>
+        <a class="pl-button pl-button-ghost pl-button-icon pl-visible@s" href="/examples/logowanie/" aria-label="Moje konto" data-pl-tooltip="title: Moje konto; pos: bottom">
+          <span data-pl-icon="user-round"></span>
+        </a>
+        <span class="pl-badge-anchor">
+          <button class="pl-button pl-button-ghost pl-button-icon" type="button" aria-label="Koszyk, 4 produkty" data-pl-offcanvas-open="#shop-cart">
+            <span data-pl-icon="shopping-bag"></span>
+          </button>
+          <span class="pl-badge pl-badge-primary pl-badge-small" data-shop-cart-count>4</span>
+        </span>
+      </div>
+    </nav>
+  </div>
+</header>
+
+<!-- Wyszukiwarka -->
+<dialog class="pl-modal" id="shop-search" data-pl-modal aria-label="Wyszukiwarka">
+  <div class="pl-modal-dialog">
+    <div class="pl-modal-body">
+      <form class="pl-search pl-search-large pl-search-block shop-search-form" role="search" action="/examples/kategoria/">
+        <span class="pl-search-icon" data-pl-icon="search"></span>
+        <input class="pl-search-input" type="search" name="q" placeholder="Szukaj lamp, ceramiki, tekstyliów…" aria-label="Szukaj w sklepie" autofocus />
+        <button class="pl-search-clear" type="reset" aria-label="Wyczyść"></button>
+        <kbd class="pl-search-kbd">Esc</kbd>
+      </form>
+
+      <p class="pl-text-eyebrow pl-margin-top pl-margin-small-bottom">Popularne</p>
+      <div class="pl-flex pl-flex-wrap pl-gap-xsmall">
+        <a class="pl-chip" href="/examples/kategoria/">lampa stołowa</a>
+        <a class="pl-chip" href="/examples/kategoria/">wazon</a>
+        <a class="pl-chip" href="/examples/kategoria/">koc wełniany</a>
+        <a class="pl-chip" href="/examples/kategoria/">pościel lniana</a>
+        <a class="pl-chip" href="/examples/kategoria/">fotel</a>
+      </div>
+
+      <p class="pl-text-eyebrow pl-margin-top pl-margin-small-bottom">Polecane</p>
+      <ul class="pl-list pl-list-divider pl-margin-remove-bottom">
+        {
+          cart.map((item) => (
+            <li>
+              <a class="pl-link-reset pl-flex pl-flex-middle pl-gap-small" href="/examples/produkt/">
+                <img class="pl-radius-sm pl-object-cover shop-thumb" src={item.img} alt="" width="48" height="48" />
+                <span class="pl-flex-1">
+                  <span class="pl-text-semibold pl-display-block">{item.name}</span>
+                  <span class="pl-text-meta">{item.variant}</span>
+                </span>
+                <span data-pl-icon="arrow-up-right" class="pl-text-muted"></span>
+              </a>
+            </li>
+          ))
+        }
+      </ul>
+    </div>
+  </div>
+</dialog>
+
+<!-- Mini-koszyk -->
+<dialog class="pl-offcanvas" id="shop-cart" data-pl-offcanvas="side: right" aria-label="Koszyk">
+  <div class="pl-offcanvas-bar">
+    <div class="pl-offcanvas-header">
+      <h2 class="pl-offcanvas-title">Twój koszyk <span class="pl-badge pl-badge-soft pl-badge-primary">4</span></h2>
+      <button class="pl-close" type="button" aria-label="Zamknij" data-pl-offcanvas-close></button>
+    </div>
+    <div class="pl-offcanvas-body">
+      <div class="pl-margin-bottom">
+        <div class="pl-flex pl-flex-between pl-text-small pl-margin-xsmall-bottom">
+          <span><strong>Masz darmową dostawę</strong> — próg 299 zł osiągnięty</span>
+          <span data-pl-icon="truck" class="pl-text-success"></span>
+        </div>
+        <progress class="pl-progress pl-progress-success pl-progress-small" value="100" max="100" aria-label="Postęp do darmowej dostawy"></progress>
+      </div>
+      <ul class="pl-list pl-list-divider">
+        {
+          cart.map((item) => (
+            <li>
+              <div class="pl-flex pl-flex-middle pl-gap-small">
+                <img class="pl-radius-md pl-object-cover shop-thumb shop-thumb-large" src={item.img} alt="" width="72" height="72" />
+                <div class="pl-flex-1">
+                  <a class="pl-link-heading pl-text-semibold" href="/examples/produkt/">
+                    {item.name}
+                  </a>
+                  <div class="pl-text-meta">{item.variant}</div>
+                  <div class="pl-flex pl-flex-between pl-flex-middle pl-margin-xsmall-top">
+                    <span class="pl-text-small pl-text-muted">Ilość: {item.qty}</span>
+                    <strong class="pl-text-tabular">{item.price}</strong>
+                  </div>
+                </div>
+              </div>
+            </li>
+          ))
+        }
+      </ul>
+    </div>
+    <div class="pl-offcanvas-footer">
+      <div class="pl-flex pl-flex-between pl-flex-middle shop-cart-total">
+        <span class="pl-text-muted">Suma częściowa</span>
+        <strong class="pl-text-large pl-text-tabular">1 066,00 zł</strong>
+      </div>
+      <a class="pl-button pl-button-primary pl-button-block" href="/examples/koszyk/">Przejdź do koszyka <span data-pl-icon="arrow-right"></span></a>
+      <button class="pl-button pl-button-ghost pl-button-block" type="button" data-pl-offcanvas-close>Kontynuuj zakupy</button>
+    </div>
+  </div>
+</dialog>
+
+<!-- Nawigacja mobilna -->
+<dialog class="pl-offcanvas" id="shop-nav" data-pl-offcanvas="side: left" aria-label="Menu">
+  <div class="pl-offcanvas-bar">
+    <div class="pl-offcanvas-header">
+      <a class="pl-logo" href="/examples/sklep/"><span class="pl-logo-mark"></span> Lorem</a>
+      <button class="pl-close" type="button" aria-label="Zamknij" data-pl-offcanvas-close></button>
+    </div>
+    <div class="pl-offcanvas-body">
+      <ul class="pl-nav pl-nav-default pl-nav-large" data-pl-nav>
+        <li class:list={{ 'pl-active': active === 'sklep' }}><a href="/examples/sklep/"><span data-pl-icon="home"></span> Sklep</a></li>
+        {
+          categories.map((cat) => (
+            <li class="pl-parent">
+              <a href="#">
+                <span data-pl-icon={cat.icon} /> {cat.name}
+              </a>
+              <ul class="pl-nav-sub">
+                {cat.items.map((item) => (
+                  <li>
+                    <a href="/examples/kategoria/">{item}</a>
+                  </li>
+                ))}
+              </ul>
+            </li>
+          ))
+        }
+        <li class="pl-nav-divider"></li>
+        <li class:list={{ 'pl-active': active === 'blog' }}><a href="/examples/blog/"><span data-pl-icon="book-open"></span> Blog</a></li>
+        <li class:list={{ 'pl-active': active === 'cms' }}><a href="/examples/cms/"><span data-pl-icon="leaf"></span> O nas</a></li>
+        <li class:list={{ 'pl-active': active === 'kontakt' }}><a href="/examples/kontakt/"><span data-pl-icon="mail"></span> Kontakt</a></li>
+      </ul>
+    </div>
+    <div class="pl-offcanvas-footer">
+      <a class="pl-button pl-button-secondary pl-button-block" href="/examples/logowanie/"><span data-pl-icon="user-round"></span> Zaloguj się</a>
+    </div>
+  </div>
+</dialog>
+
+<script>
+  // Wspólne „Dodaj do koszyka": dowolny element z data-shop-add="Nazwa produktu"
+  // pokazuje powiadomienie i podbija licznik przy ikonie koszyka.
+  document.addEventListener('click', (event) => {
+    const trigger = (event.target as Element).closest?.<HTMLElement>('[data-shop-add]');
+    if (!trigger) return;
+    const name = trigger.dataset.shopAdd || 'Produkt';
+    document.querySelectorAll<HTMLElement>('[data-shop-cart-count]').forEach((badge) => {
+      badge.textContent = String((parseInt(badge.textContent || '0', 10) || 0) + 1);
+      badge.classList.remove('pl-animation-spring');
+      void badge.offsetWidth;
+      badge.classList.add('pl-animation-spring');
+    });
+    (window as any).Plossy?.notification({
+      message: `<strong>${name}</strong> — dodano do koszyka`,
+      status: 'success',
+      timeout: 3000,
+    });
+  });
+</script>
+
+<style is:global>
+  /* Drobiazgi nagłówka sklepu, których nie ma w bibliotece. */
+  .shop-announce {
+    padding-block: var(--pl-space-2);
+  }
+  .shop-navbar {
+    z-index: var(--pl-z-navbar);
+  }
+  .shop-navbar .pl-navbar {
+    --pl-navbar-px: 0;
+  }
+  .shop-thumb {
+    flex: none;
+    width: 3rem;
+    height: 3rem;
+  }
+  .shop-thumb-large {
+    width: 4.5rem;
+    height: 4.5rem;
+  }
+  .shop-cart-total {
+    flex-basis: 100%;
+  }
+  .shop-search-form {
+    box-shadow: none;
+  }
+</style>

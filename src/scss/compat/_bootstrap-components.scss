@@ -1,0 +1,129 @@
+// Zgodność z Bootstrapem — aliasy klas komponentów (btn, card, form-control …).
+// Klasy Bootstrapa dziedziczą wygląd komponentów Plossy przez @extend.
+// Komponenty o innej strukturze HTML lub z własnym JS (modal, dropdown, navbar,
+// collapse, data-bs-*) nie są aliasowane — użyj odpowiedników pl-*.
+@use '../abstracts' as *;
+@use '../components/button';
+@use '../components/card';
+@use '../components/close';
+@use '../components/form';
+@use '../components/range';
+@use '../components/alert';
+@use '../components/label';
+@use '../components/table';
+@use '../components/list';
+@use '../components/spinner';
+
+// ── Przyciski ───────────────────────────────────────────────────────────
+.btn { @extend .pl-button !optional; }
+.btn-sm { @extend .pl-button-small !optional; }
+.btn-lg { @extend .pl-button-large !optional; }
+.btn-link { @extend .pl-button-link !optional; }
+.btn-group { @extend .pl-button-group !optional; }
+.btn-close { @extend .pl-close !optional; }
+.btn-light { @extend .pl-button-soft !optional; }
+.btn-dark { @extend .pl-button-secondary !optional; }
+
+@each $tone in $tones {
+  .btn-#{$tone} { @extend .pl-button-#{$tone} !optional; }
+
+  .btn-outline-#{$tone} {
+    @extend .pl-button-outline !optional;
+    @extend .pl-button-#{$tone} !optional;
+  }
+}
+
+.btn.active { @extend .pl-active !optional; }
+
+// ── Karty ───────────────────────────────────────────────────────────────
+.card { @extend .pl-card !optional; }
+.card-body { @extend .pl-card-body !optional; }
+.card-header { @extend .pl-card-header !optional; }
+.card-footer { @extend .pl-card-footer !optional; }
+.card-title { @extend .pl-card-title !optional; }
+.card-subtitle { @extend .pl-card-meta !optional; }
+.card-text { @extend .pl-card-text !optional; }
+
+.card-img-top,
+.card-img-bottom,
+.card-img {
+  display: block;
+  width: 100%;
+}
+
+.card-img-top { border-radius: calc(var(--pl-radius-lg) - 1px) calc(var(--pl-radius-lg) - 1px) 0 0; }
+.card-img-bottom { border-radius: 0 0 calc(var(--pl-radius-lg) - 1px) calc(var(--pl-radius-lg) - 1px); }
+.card-img { border-radius: calc(var(--pl-radius-lg) - 1px); }
+.card-link + .card-link { margin-left: 1rem; }
+
+// ── Formularze ──────────────────────────────────────────────────────────
+.form-control { @extend .pl-input !optional; }
+textarea.form-control { @extend .pl-textarea !optional; }
+.form-select { @extend .pl-select !optional; }
+.form-label,
+.col-form-label { @extend .pl-form-label !optional; }
+.form-text { @extend .pl-form-help !optional; }
+.form-range { @extend .pl-range !optional; }
+.form-control-sm,
+.form-select-sm { @extend .pl-form-small !optional; }
+.form-control-lg,
+.form-select-lg { @extend .pl-form-large !optional; }
+.form-floating { @extend .pl-form-floating !optional; }
+.input-group { @extend .pl-input-group !optional; }
+.input-group-text { @extend .pl-input-group-text !optional; }
+.is-invalid { @extend .pl-form-danger !optional; }
+.is-valid { @extend .pl-form-success !optional; }
+.invalid-feedback { @extend .pl-form-help !optional; color: var(--pl-danger-text); }
+.valid-feedback { @extend .pl-form-help !optional; color: var(--pl-success-text); }
+
+.form-check {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.6rem;
+  margin-bottom: 0.4rem;
+}
+
+.form-check-inline {
+  display: inline-flex;
+  margin-right: 1rem;
+}
+
+:not(.form-switch) > .form-check-input[type='checkbox'] { @extend .pl-checkbox !optional; }
+.form-check-input[type='radio'] { @extend .pl-radio !optional; }
+.form-switch .form-check-input { @extend .pl-switch !optional; }
+
+// ── Alerty, znaczki ─────────────────────────────────────────────────────
+.alert { @extend .pl-alert !optional; }
+.alert-heading { @extend .pl-alert-title !optional; }
+.alert-dismissible .btn-close { @extend .pl-alert-close !optional; }
+.alert-light { @extend .pl-alert !optional; }
+.alert-dark { @extend .pl-alert-secondary !optional; }
+
+@each $tone in $tones {
+  .alert-#{$tone} { @extend .pl-alert-#{$tone} !optional; }
+}
+
+.badge { @extend .pl-label !optional; }
+
+// ── Tabele, listy ───────────────────────────────────────────────────────
+.table { @extend .pl-table !optional; }
+.table-striped { @extend .pl-table-striped !optional; }
+.table-hover { @extend .pl-table-hover !optional; }
+.table-bordered { @extend .pl-table-bordered !optional; }
+.table-sm { @extend .pl-table-small !optional; }
+.table-responsive { overflow-x: auto; }
+
+.list-group { @extend .pl-list-group !optional; }
+.list-group-item { @extend .pl-list-group-item !optional; }
+.list-group-flush { @extend .pl-list-group-flush !optional; }
+.list-group-horizontal { @extend .pl-list-group-horizontal !optional; }
+.list-group-numbered { @extend .pl-list-group-numbered !optional; }
+
+// ── Spinnery ────────────────────────────────────────────────────────────
+.spinner-border { @extend .pl-spinner !optional; }
+.spinner-grow {
+  @extend .pl-spinner !optional;
+  @extend .pl-spinner-pulse !optional;
+}
+.spinner-border-sm,
+.spinner-grow-sm { @extend .pl-spinner-small !optional; }

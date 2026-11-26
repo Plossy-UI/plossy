@@ -1,0 +1,239 @@
+---
+import Base from '../layouts/Base.astro';
+import { getNav } from '../nav';
+import '../styles/home.scss';
+
+const nav = await getNav();
+const groups = nav.filter((group) => group.id !== 'start');
+const count = groups.reduce((sum, group) => sum + group.items.length, 0);
+
+const features = [
+  ['feather', 'zap', 'Zero zależności', 'Jeden plik CSS i jeden plik JS. Bez frameworka, bez kroku budowania, bez niespodzianek.'],
+  ['palette', 'palette', 'Tokeny zamiast nadpisań', 'Kolory, promienie, cienie i ruch to zmienne CSS. Własny akcent ustawisz trzema liczbami.'],
+  ['moon', 'moon', 'Ciemny motyw w cenie', 'Jeden atrybut na dowolnym elemencie — globalnie albo tylko dla wybranego fragmentu strony.'],
+  ['sparkles', 'sparkles', 'Ruch z charakterem', 'Sprężyste, lekkie animacje, które prowadzą wzrok. Wyłączają się same, gdy użytkownik tego chce.'],
+  ['shield-check', 'shield-check', 'Dostępność od początku', 'Klawiatura, fokus, role ARIA i natywne elementy tam, gdzie to możliwe.'],
+  ['puzzle', 'puzzle', 'Znasz Bootstrapa? Działa', 'Klasy narzędziowe i siatka Bootstrapa — d-flex, my-2, col-md-6 — są wbudowane.'],
+];
+---
+
+<Base home>
+  <main id="main" class="home">
+    <!-- Hero -->
+    <section class="home-hero">
+      <div class="home-hero-bg" aria-hidden="true"></div>
+      <div class="home-container">
+        <a class="home-pill" href="/docs/start/wprowadzenie/">
+          <span class="home-pill-dot"></span>
+          Wersja 0.1 · {count} komponentów
+          <span data-pl-icon="arrow-right"></span>
+        </a>
+        <h1 class="home-title">
+          Interfejsy, które mają <em>charakter</em>.
+        </h1>
+        <p class="home-lead">
+          Plossy to lekka biblioteka komponentów: czysty CSS oparty na tokenach, małe moduły JavaScript bez zależności i ruch, który
+          sprawia przyjemność.
+        </p>
+        <div class="home-actions">
+          <a class="pl-button pl-button-primary pl-button-large" href="/docs/start/wprowadzenie/">
+            Zacznij
+            <span class="pl-button-arrow" data-pl-icon="arrow-right"></span>
+          </a>
+          <a class="pl-button pl-button-large" href="/docs/elements/button/">Przeglądaj komponenty</a>
+        </div>
+        <p class="home-install">
+          <code>&lt;link rel="stylesheet" href="plossy.min.css"&gt;</code>
+        </p>
+      </div>
+
+      <!-- Kolaż żywych komponentów -->
+      <div class="home-container">
+        <div class="home-bento" data-pl-spotlight="target: > .home-tile">
+          <div class="home-tile home-tile-a">
+            <p class="home-tile-label">Przyciski</p>
+            <div class="home-row">
+              <button class="pl-button pl-button-primary" type="button">Zapisz</button>
+              <button class="pl-button" type="button">Anuluj</button>
+              <button class="pl-button pl-button-soft pl-button-primary" type="button">
+                <span data-pl-icon="sparkles"></span>
+                Ulepsz
+              </button>
+              <button class="pl-button pl-button-icon pl-button-ghost" type="button" aria-label="Więcej">
+                <span data-pl-icon="ellipsis"></span>
+              </button>
+            </div>
+          </div>
+
+          <div class="home-tile home-tile-b">
+            <p class="home-tile-label">Formularz</p>
+            <div class="pl-form-field">
+              <label class="pl-form-label" for="home-email">E-mail</label>
+              <input class="pl-input" id="home-email" type="email" placeholder="ty@firma.pl" />
+            </div>
+            <label class="home-switch">
+              <span>Powiadomienia</span>
+              <input class="pl-switch" type="checkbox" role="switch" checked />
+            </label>
+            <label class="home-switch">
+              <span>Tryb skupienia</span>
+              <input class="pl-switch" type="checkbox" role="switch" />
+            </label>
+          </div>
+
+          <div class="home-tile home-tile-c">
+            <p class="home-tile-label">Accordion</p>
+            <div class="pl-accordion pl-accordion-small" data-pl-accordion>
+              <div class="pl-accordion-item pl-open">
+                <button class="pl-accordion-title" type="button">Czy to jest darmowe?</button>
+                <div class="pl-accordion-content">Tak — licencja MIT, także w projektach komercyjnych.</div>
+              </div>
+              <div class="pl-accordion-item">
+                <button class="pl-accordion-title" type="button">Czy działa z Reactem?</button>
+                <div class="pl-accordion-content">Działa wszędzie, gdzie jest HTML.</div>
+              </div>
+              <div class="pl-accordion-item">
+                <button class="pl-accordion-title" type="button">A ciemny motyw?</button>
+                <div class="pl-accordion-content">Jeden atrybut: <code>data-pl-theme="dark"</code>.</div>
+              </div>
+            </div>
+          </div>
+
+          <div class="home-tile home-tile-d">
+            <p class="home-tile-label">Postęp</p>
+            <p class="home-stat"><span data-pl-counter="to: 86; suffix: %">86%</span></p>
+            <progress class="pl-progress" value="86" max="100"></progress>
+            <p class="home-tile-note">Wdrożenie systemu projektowego</p>
+          </div>
+
+          <div class="home-tile home-tile-e">
+            <p class="home-tile-label">Zespół</p>
+            <div class="pl-avatar-group">
+              <span class="pl-avatar"><img src="/img/avatar-1.svg" alt="" /></span>
+              <span class="pl-avatar"><img src="/img/avatar-2.svg" alt="" /></span>
+              <span class="pl-avatar"><img src="/img/avatar-3.svg" alt="" /></span>
+              <span class="pl-avatar"><img src="/img/avatar-4.svg" alt="" /></span>
+            </div>
+            <div class="home-row">
+              <span class="pl-label pl-label-success">Aktywny</span>
+              <span class="pl-label pl-label-warning">Oczekuje</span>
+              <span class="pl-label">Szkic</span>
+            </div>
+          </div>
+
+          <div class="home-tile home-tile-f">
+            <p class="home-tile-label">Powiadomienia</p>
+            <p class="home-tile-note">Kliknij, aby zobaczyć toast w akcji.</p>
+            <div class="home-row">
+              <button class="pl-button pl-button-small" type="button" data-pl-notification="message: Zmiany zostały zapisane; status: success">
+                Sukces
+              </button>
+              <button class="pl-button pl-button-small" type="button" data-pl-notification="message: Nie udało się połączyć; status: danger">
+                Błąd
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Cechy -->
+    <section class="home-section">
+      <div class="home-container">
+        <p class="home-eyebrow">Dlaczego Plossy</p>
+        <h2 class="home-h2">Mało kodu. Dużo dopracowania.</h2>
+        <div class="home-features" data-pl-spotlight="target: > .home-feature" data-pl-scrollspy="cls: pl-animation-slide-up; target: > .home-feature; delay: 70">
+          {
+            features.map(([, icon, title, text]) => (
+              <article class="home-feature">
+                <span class="pl-icon pl-icon-box pl-icon-primary" data-pl-icon={icon} />
+                <h3>{title}</h3>
+                <p>{text}</p>
+              </article>
+            ))
+          }
+        </div>
+      </div>
+    </section>
+
+    <!-- Jeden atrybut -->
+    <section class="home-section home-section-muted">
+      <div class="home-container home-split">
+        <div>
+          <p class="home-eyebrow">Jak to działa</p>
+          <h2 class="home-h2">Jeden atrybut i gotowe.</h2>
+          <p class="home-text">
+            Zachowanie dodajesz atrybutem <code>data-pl-*</code>. Komponent uruchomi się sam — także wtedy, gdy element trafi do dokumentu
+            później. Gdy potrzebujesz więcej, masz API i zdarzenia.
+          </p>
+          <ul class="home-checks">
+            <li><span data-pl-icon="check"></span> Opcje w czytelnej składni <code>klucz: wartość</code></li>
+            <li><span data-pl-icon="check"></span> Zdarzenia <code>pl:show</code>, <code>pl:hidden</code>, które można anulować</li>
+            <li><span data-pl-icon="check"></span> Własne komponenty na tej samej bazie</li>
+          </ul>
+          <a class="pl-button pl-button-text" href="/docs/start/javascript/">
+            Poznaj API
+            <span class="pl-button-arrow" data-pl-icon="arrow-right"></span>
+          </a>
+        </div>
+        <div class="home-code">
+          <div class="home-code-bar"><span></span><span></span><span></span><small>index.html</small></div>
+          <pre><code><span class="c-p">&lt;</span><span class="c-t">div</span> <span class="c-a">class</span>=<span class="c-s">"pl-accordion"</span> <span class="c-a c-hl">data-pl-accordion</span><span class="c-p">&gt;</span>
+  <span class="c-p">&lt;</span><span class="c-t">div</span> <span class="c-a">class</span>=<span class="c-s">"pl-accordion-item"</span><span class="c-p">&gt;</span>
+    <span class="c-p">&lt;</span><span class="c-t">button</span> <span class="c-a">class</span>=<span class="c-s">"pl-accordion-title"</span><span class="c-p">&gt;</span>
+      Pytanie
+    <span class="c-p">&lt;/</span><span class="c-t">button</span><span class="c-p">&gt;</span>
+    <span class="c-p">&lt;</span><span class="c-t">div</span> <span class="c-a">class</span>=<span class="c-s">"pl-accordion-content"</span><span class="c-p">&gt;</span>
+      Odpowiedź
+    <span class="c-p">&lt;/</span><span class="c-t">div</span><span class="c-p">&gt;</span>
+  <span class="c-p">&lt;/</span><span class="c-t">div</span><span class="c-p">&gt;</span>
+<span class="c-p">&lt;/</span><span class="c-t">div</span><span class="c-p">&gt;</span></code></pre>
+        </div>
+      </div>
+    </section>
+
+    <!-- Indeks komponentów -->
+    <section class="home-section">
+      <div class="home-container">
+        <p class="home-eyebrow">Biblioteka</p>
+        <h2 class="home-h2">{count} komponentów w {groups.length} grupach.</h2>
+        <div class="home-index">
+          {
+            groups.map((group) => (
+              <div class="home-index-group">
+                <h3>
+                  {group.label} <small>{group.items.length}</small>
+                </h3>
+                <ul>
+                  {group.items.map((item) => (
+                    <li>
+                      <a href={item.href}>{item.title}</a>
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            ))
+          }
+        </div>
+      </div>
+    </section>
+
+    <!-- CTA -->
+    <section class="home-container">
+      <div class="home-cta" data-pl-theme="dark">
+        <div class="home-cta-glow" aria-hidden="true"></div>
+        <h2>Zbuduj coś ładnego.</h2>
+        <p>Dołącz dwa pliki i zacznij od pierwszego komponentu.</p>
+        <a class="pl-button pl-button-primary pl-button-large" href="/docs/start/wprowadzenie/">
+          Otwórz dokumentację
+          <span class="pl-button-arrow" data-pl-icon="arrow-right"></span>
+        </a>
+      </div>
+    </section>
+
+    <footer class="home-footer home-container">
+      <span>Plossy · licencja MIT</span>
+      <span>Ikony: Lucide · Kroje: Geist, Bricolage Grotesque</span>
+    </footer>
+  </main>
+</Base>

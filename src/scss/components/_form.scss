@@ -1,0 +1,1258 @@
+// Form — pola tekstowe, select, checkbox, radio, switch, grupy, walidacja, układy
+@use '../abstracts' as *;
+
+// Maski znaczników (kolor maski nie ma znaczenia — liczy się tylko alfa).
+$check-mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16' fill='none' stroke='%23000' stroke-width='2.1' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='m3.6 8.4 2.9 2.9 5.9-6.4'/%3E%3C/svg%3E");
+$dash-mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16' fill='none' stroke='%23000' stroke-width='2.1' stroke-linecap='round'%3E%3Cpath d='M4 8h8'/%3E%3C/svg%3E");
+
+// ── Pola tekstowe ───────────────────────────────────────────────────────
+.pl-input,
+.pl-textarea,
+.pl-select,
+.pl-form-affix {
+  --pl-form-h: var(--pl-control-h);
+  --pl-form-px: 0.8rem;
+  --pl-form-radius: var(--pl-radius-md);
+  --pl-form-bg: var(--pl-surface);
+  --pl-form-border: var(--pl-border);
+  --pl-form-border-hover: var(--pl-border-strong);
+  --pl-form-accent: var(--pl-primary);
+  --pl-form-ring: var(--pl-ring);
+
+  display: block;
+  width: 100%;
+  max-width: 100%;
+  height: var(--pl-form-h);
+  padding: 0 var(--pl-form-px);
+  border: 1px solid var(--pl-form-border);
+  border-radius: var(--pl-form-radius);
+  background-color: var(--pl-form-bg);
+  box-shadow: var(--pl-shadow-xs);
+  color: var(--pl-text);
+  font-family: var(--pl-font-sans);
+  font-size: 0.9375rem;
+  line-height: 1.4;
+  letter-spacing: -0.003em;
+  appearance: none;
+  transition:
+    border-color var(--pl-dur-2) var(--pl-ease),
+    background-color var(--pl-dur-2) var(--pl-ease),
+    box-shadow var(--pl-dur-3) var(--pl-ease);
+
+  &::placeholder {
+    color: var(--pl-text-subtle);
+    opacity: 1;
+  }
+
+  &:hover {
+    border-color: var(--pl-form-border-hover);
+  }
+
+  &:focus,
+  &.pl-form-affix:focus-within {
+    outline: 0;
+    border-color: var(--pl-form-accent);
+    box-shadow: var(--pl-form-ring);
+  }
+
+  &:disabled,
+  &.pl-disabled {
+    border-color: var(--pl-border);
+    background-color: var(--pl-muted);
+    box-shadow: none;
+    color: var(--pl-text-subtle);
+    cursor: not-allowed;
+    opacity: 0.75;
+  }
+
+  &[readonly] {
+    border-color: var(--pl-border);
+    background-color: var(--pl-muted);
+    box-shadow: none;
+  }
+}
+
+.pl-textarea {
+  height: auto;
+  min-height: calc(var(--pl-form-h) * 2.2);
+  padding-block: 0.6rem;
+  line-height: 1.5;
+  resize: vertical;
+}
+
+// Select — własna strzałka rysowana gradientami (bierze kolor z tokenu).
+.pl-select {
+  --pl-select-chevron: var(--pl-text-muted);
+  padding-right: calc(var(--pl-form-px) + 1.5rem);
+  background-image:
+    linear-gradient(45deg, transparent calc(50% - 1.3px), var(--pl-select-chevron) calc(50% - 0.8px), var(--pl-select-chevron) calc(50% + 0.8px), transparent calc(50% + 1.3px)),
+    linear-gradient(135deg, transparent calc(50% - 1.3px), var(--pl-select-chevron) calc(50% - 0.8px), var(--pl-select-chevron) calc(50% + 0.8px), transparent calc(50% + 1.3px));
+  background-repeat: no-repeat;
+  background-size: 6px 6px;
+  background-position:
+    right calc(var(--pl-form-px) + 5.4px) top calc(50% + 1px),
+    right calc(var(--pl-form-px) + 0.4px) top calc(50% + 1px);
+  cursor: pointer;
+  text-overflow: ellipsis;
+
+  &:hover,
+  &:focus {
+    --pl-select-chevron: var(--pl-text);
+  }
+
+  &:disabled {
+    --pl-select-chevron: var(--pl-text-subtle);
+  }
+
+  &:invalid,
+  &:has(option[value='']:checked) {
+    color: var(--pl-text-subtle);
+  }
+
+  option,
+  optgroup {
+    background: var(--pl-surface-raised);
+    color: var(--pl-text);
+  }
+
+  &[multiple],
+  &[size]:not([size='1']) {
+    height: auto;
+    padding: 0.35rem;
+    background-image: none;
+    color: var(--pl-text);
+
+    option {
+      padding: 0.35rem 0.55rem;
+      border-radius: var(--pl-radius-xs);
+    }
+  }
+}
+
+// ── Typy natywne ────────────────────────────────────────────────────────
+.pl-input {
+  &[type='search']::-webkit-search-cancel-button,
+  &[type='search']::-webkit-search-decoration {
+    appearance: none;
+  }
+
+  &::-webkit-calendar-picker-indicator {
+    margin-right: -0.2rem;
+    padding: 0.25rem;
+    border-radius: var(--pl-radius-xs);
+    opacity: 0.55;
+    cursor: pointer;
+    transition: opacity var(--pl-dur-2) var(--pl-ease);
+  }
+
+  &::-webkit-calendar-picker-indicator:hover {
+    opacity: 1;
+  }
+
+  &::-webkit-datetime-edit {
+    padding: 0;
+  }
+
+  &::-webkit-datetime-edit-fields-wrapper {
+    padding: 0;
+  }
+
+  &:is([type='date'], [type='time'], [type='datetime-local'], [type='month'], [type='week']) {
+    min-width: 9.5rem;
+    font-variant-numeric: tabular-nums;
+  }
+
+  // Plik
+  &[type='file'] {
+    padding: 0 var(--pl-form-px) 0 0;
+    overflow: hidden;
+    color: var(--pl-text-muted);
+    line-height: calc(var(--pl-form-h) - 2px);
+    cursor: pointer;
+  }
+
+  &[type='file']::file-selector-button {
+    height: calc(var(--pl-form-h) - 2px);
+    margin: 0 0.8rem 0 0;
+    padding: 0 0.95rem;
+    border: 0;
+    border-right: 1px solid var(--pl-form-border);
+    background: var(--pl-muted);
+    color: var(--pl-text);
+    font: inherit;
+    font-weight: 540;
+    cursor: pointer;
+    transition: background-color var(--pl-dur-2) var(--pl-ease);
+  }
+
+  &[type='file']:hover::file-selector-button {
+    background: var(--pl-muted-strong);
+  }
+
+  // Kolor
+  &[type='color'] {
+    width: calc(var(--pl-form-h) * 1.5);
+    padding: 4px;
+    cursor: pointer;
+  }
+
+  &[type='color']::-webkit-color-swatch-wrapper {
+    padding: 0;
+  }
+
+  &[type='color']::-webkit-color-swatch {
+    border: 0;
+    border-radius: calc(var(--pl-form-radius) - 5px);
+  }
+
+  &[type='color']::-moz-color-swatch {
+    border: 0;
+    border-radius: calc(var(--pl-form-radius) - 5px);
+  }
+}
+
+// ── Checkbox i radio ────────────────────────────────────────────────────
+.pl-checkbox,
+.pl-radio {
+  --pl-check-size: 1.125rem;
+  --pl-form-accent: var(--pl-primary);
+  --pl-form-on-accent: var(--pl-on-primary);
+  --pl-form-ring: var(--pl-ring);
+
+  position: relative;
+  display: inline-block;
+  flex: none;
+  width: var(--pl-check-size);
+  height: var(--pl-check-size);
+  margin: 0;
+  border: 1px solid var(--pl-border-strong);
+  background: var(--pl-surface);
+  box-shadow: var(--pl-shadow-xs);
+  vertical-align: -0.2em;
+  appearance: none;
+  cursor: pointer;
+  transition:
+    background-color var(--pl-dur-2) var(--pl-ease),
+    border-color var(--pl-dur-2) var(--pl-ease),
+    box-shadow var(--pl-dur-3) var(--pl-ease),
+    transform var(--pl-dur-3) var(--pl-ease-spring);
+
+  &::after {
+    content: '';
+    position: absolute;
+    background: var(--pl-form-on-accent);
+  }
+
+  &:hover {
+    border-color: color-mix(in oklab, var(--pl-form-accent) 70%, var(--pl-border-strong));
+  }
+
+  &:active {
+    transform: scale(0.88);
+    transition-duration: var(--pl-dur-1);
+  }
+
+  &:focus-visible {
+    outline: 0;
+    border-color: var(--pl-form-accent);
+    box-shadow: var(--pl-form-ring);
+  }
+
+  &:checked,
+  &.pl-checkbox:indeterminate {
+    border-color: var(--pl-form-accent);
+    background: var(--pl-form-accent);
+    box-shadow:
+      inset 0 1px 0 oklch(1 0 0 / 0.16),
+      0 1px 2px color-mix(in oklab, var(--pl-form-accent) 40%, transparent);
+  }
+
+  &:checked:focus-visible,
+  &.pl-checkbox:indeterminate:focus-visible {
+    box-shadow: var(--pl-form-ring);
+  }
+
+  &:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+    transform: none;
+  }
+}
+
+.pl-checkbox {
+  border-radius: calc(var(--pl-check-size) * 0.3);
+
+  // Znacznik „rysuje się" od lewej i lekko się powiększa.
+  &::after {
+    inset: -1px;
+    mask: $check-mask center / 100% 100% no-repeat;
+    clip-path: inset(0 100% 0 0);
+    transform: scale(0.5) rotate(-8deg);
+    transition:
+      clip-path var(--pl-dur-2) var(--pl-ease),
+      transform var(--pl-dur-3) var(--pl-ease-spring);
+  }
+
+  &:checked::after,
+  &:indeterminate::after {
+    clip-path: inset(0);
+    transform: none;
+  }
+
+  &:indeterminate::after {
+    mask-image: $dash-mask;
+  }
+}
+
+.pl-radio {
+  border-radius: 50%;
+
+  // Kropka malowana gradientem ze środka — zawsze idealnie wyśrodkowana,
+  // także gdy rozmiar pola daje ułamkowe piksele.
+  &::after {
+    inset: 0;
+    border-radius: 50%;
+    background: radial-gradient(
+      circle closest-side,
+      var(--pl-form-on-accent) calc(44% - 0.5px),
+      transparent 44%
+    );
+    transform: scale(0);
+    transition: transform var(--pl-dur-3) var(--pl-ease-spring);
+  }
+
+  &:checked::after {
+    transform: scale(1);
+  }
+
+  // Bez połysku u góry i cienia pod spodem — na kole wyglądały jak krzywy pierścień.
+  &:checked:not(:focus-visible) {
+    box-shadow: none;
+  }
+}
+
+// ── Switch ──────────────────────────────────────────────────────────────
+.pl-switch {
+  --pl-switch-h: 1.375rem;
+  --pl-switch-w: calc(var(--pl-switch-h) * 1.75);
+  --pl-switch-gap: 2px;
+  --pl-switch-thumb: calc(var(--pl-switch-h) - var(--pl-switch-gap) * 2);
+  --pl-switch-stretch: 0px;
+  --pl-form-accent: var(--pl-primary);
+  --pl-form-ring: var(--pl-ring);
+
+  position: relative;
+  display: inline-block;
+  flex: none;
+  width: var(--pl-switch-w);
+  height: var(--pl-switch-h);
+  margin: 0;
+  border: 0;
+  border-radius: var(--pl-radius-pill);
+  background: var(--pl-border-strong);
+  box-shadow: inset 0 1px 2px oklch(0 0 0 / 0.08);
+  vertical-align: -0.3em;
+  appearance: none;
+  cursor: pointer;
+  transition:
+    background-color var(--pl-dur-3) var(--pl-ease),
+    box-shadow var(--pl-dur-3) var(--pl-ease);
+
+  &::before {
+    content: '';
+    position: absolute;
+    top: var(--pl-switch-gap);
+    left: var(--pl-switch-gap);
+    width: calc(var(--pl-switch-thumb) + var(--pl-switch-stretch));
+    height: var(--pl-switch-thumb);
+    border-radius: var(--pl-radius-pill);
+    background: oklch(1 0 0);
+    box-shadow:
+      0 1px 2px oklch(0 0 0 / 0.2),
+      0 2px 6px -1px oklch(0 0 0 / 0.16);
+    transition:
+      transform var(--pl-dur-4) var(--pl-ease-spring),
+      width var(--pl-dur-2) var(--pl-ease);
+  }
+
+  &:hover {
+    background: color-mix(in oklab, var(--pl-border-strong), var(--pl-text) 14%);
+  }
+
+  // Kciuk „rozciąga się" przy wciśnięciu.
+  &:active {
+    --pl-switch-stretch: calc(var(--pl-switch-h) * 0.22);
+  }
+
+  &:checked {
+    background: var(--pl-form-accent);
+
+    &::before {
+      transform: translateX(calc(var(--pl-switch-w) - var(--pl-switch-h) - var(--pl-switch-stretch)));
+    }
+
+    &:hover {
+      background: color-mix(in oklab, var(--pl-form-accent), var(--pl-mix-strong) 10%);
+    }
+  }
+
+  &:focus-visible {
+    outline: 0;
+    box-shadow:
+      inset 0 1px 2px oklch(0 0 0 / 0.08),
+      var(--pl-form-ring);
+  }
+
+  &:disabled {
+    --pl-switch-stretch: 0px;
+    opacity: 0.5;
+    cursor: not-allowed;
+  }
+}
+
+// ── Etykiety kontrolek wyboru ───────────────────────────────────────────
+.pl-form-check {
+  display: inline-flex;
+  align-items: flex-start;
+  gap: 0.6rem;
+  max-width: 100%;
+  color: var(--pl-text);
+  font-size: 0.9375rem;
+  line-height: 1.45;
+  cursor: pointer;
+  user-select: none;
+
+  > .pl-checkbox,
+  > .pl-radio {
+    margin-top: calc((1.45em - var(--pl-check-size)) / 2);
+  }
+
+  > .pl-switch {
+    margin-top: calc((1.45em - var(--pl-switch-h)) / 2);
+  }
+
+  &:has(:disabled) {
+    color: var(--pl-text-subtle);
+    cursor: not-allowed;
+  }
+}
+
+// Kontrolka po prawej, tekst po lewej (np. lista ustawień).
+.pl-form-check-reverse {
+  display: flex;
+  flex-direction: row-reverse;
+  justify-content: space-between;
+}
+
+.pl-form-check-body {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+}
+
+.pl-form-check-text {
+  color: var(--pl-text-muted);
+  font-size: var(--pl-text-sm);
+  font-weight: 400;
+}
+
+.pl-form-checks {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 0.6rem;
+
+  > .pl-form-check-reverse {
+    align-self: stretch;
+  }
+}
+
+.pl-form-checks-inline {
+  flex-flow: row wrap;
+  gap: 0.6rem 1.5rem;
+}
+
+// ── Opcje-karty (radio / checkbox) ──────────────────────────────────────
+.pl-form-card {
+  --pl-form-accent: var(--pl-primary);
+
+  position: relative;
+  display: flex;
+  align-items: flex-start;
+  gap: 0.75rem;
+  padding: 0.95rem 1.05rem;
+  border: 1px solid var(--pl-border);
+  border-radius: var(--pl-radius-lg);
+  background: var(--pl-surface);
+  box-shadow: var(--pl-shadow-xs);
+  cursor: pointer;
+  user-select: none;
+  transition:
+    border-color var(--pl-dur-2) var(--pl-ease),
+    background-color var(--pl-dur-2) var(--pl-ease),
+    box-shadow var(--pl-dur-3) var(--pl-ease),
+    transform var(--pl-dur-3) var(--pl-ease-spring);
+
+  > .pl-checkbox,
+  > .pl-radio,
+  > .pl-switch {
+    margin-top: 0.15rem;
+  }
+
+  &:hover {
+    border-color: var(--pl-border-strong);
+    box-shadow: var(--pl-shadow-sm);
+    transform: translateY(-1px);
+  }
+
+  &:active {
+    transform: scale(0.985);
+    transition-duration: var(--pl-dur-1);
+  }
+
+  &:has(:checked) {
+    border-color: var(--pl-form-accent);
+    background: color-mix(in oklab, var(--pl-form-accent) 6%, var(--pl-surface));
+    box-shadow: 0 0 0 1px var(--pl-form-accent);
+  }
+
+  &:has(:focus-visible) {
+    @include focus-ring;
+  }
+
+  &:has(:disabled) {
+    opacity: 0.55;
+    pointer-events: none;
+  }
+}
+
+.pl-form-card-flip {
+  flex-direction: row-reverse;
+  justify-content: space-between;
+}
+
+.pl-form-card-body {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  gap: 0.15rem;
+  min-width: 0;
+}
+
+.pl-form-card-title {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-weight: 560;
+  font-size: 0.9375rem;
+  line-height: 1.4;
+}
+
+.pl-form-card-text {
+  color: var(--pl-text-muted);
+  font-size: var(--pl-text-sm);
+  line-height: 1.45;
+}
+
+.pl-form-card-meta {
+  margin-left: auto;
+  color: var(--pl-text);
+  font-family: var(--pl-font-mono);
+  font-size: var(--pl-text-sm);
+  font-weight: 500;
+  white-space: nowrap;
+}
+
+// Kontrolka ukryta wizualnie — zaznaczenie pokazuje sama karta.
+.pl-form-card-plain > :is(.pl-checkbox, .pl-radio) {
+  @include visually-hidden;
+}
+
+// ── Tony, stany i rozmiary (na kontrolce) ───────────────────────────────
+@each $tone in $tones {
+  .pl-form-#{$tone} {
+    --pl-form-accent: var(--pl-#{$tone});
+    --pl-form-on-accent: var(--pl-on-#{$tone});
+    --pl-form-border: var(--pl-#{$tone});
+    --pl-form-border-hover: var(--pl-#{$tone});
+    --pl-form-ring: 0 0 0 3px color-mix(in oklab, var(--pl-#{$tone}) 22%, transparent);
+  }
+}
+
+.pl-form-small {
+  --pl-form-h: var(--pl-control-h-sm);
+  --pl-form-px: 0.65rem;
+  --pl-form-radius: var(--pl-radius-sm);
+  --pl-check-size: 1rem;
+  --pl-switch-h: 1.125rem;
+
+  &:is(.pl-input, .pl-textarea, .pl-select, .pl-form-affix) {
+    font-size: 0.8125rem;
+  }
+}
+
+.pl-form-large {
+  --pl-form-h: var(--pl-control-h-lg);
+  --pl-form-px: 1rem;
+  --pl-form-radius: calc(var(--pl-radius-md) * 1.17);
+  --pl-check-size: 1.375rem;
+  --pl-switch-h: 1.75rem;
+
+  &:is(.pl-input, .pl-textarea, .pl-select, .pl-form-affix) {
+    font-size: 1rem;
+  }
+}
+
+// Pole „gołe" — bez ramki, do edycji w miejscu.
+.pl-form-blank {
+  --pl-form-border: transparent;
+  --pl-form-border-hover: transparent;
+  --pl-form-bg: transparent;
+  box-shadow: none;
+
+  &:hover:not(:focus) {
+    background-color: var(--pl-muted);
+  }
+
+  &:focus {
+    background-color: var(--pl-surface);
+  }
+}
+
+.pl-form-width-xsmall { width: 5.5rem; }
+.pl-form-width-small { width: 9rem; }
+.pl-form-width-medium { width: 14rem; }
+.pl-form-width-large { width: 26rem; }
+
+// ── Ikona w polu ────────────────────────────────────────────────────────
+.pl-form-icon {
+  --pl-form-icon-w: var(--pl-control-h);
+
+  position: relative;
+  display: flex;
+  width: 100%;
+  max-width: 100%;
+
+  &:has(> .pl-form-small) {
+    --pl-form-icon-w: var(--pl-control-h-sm);
+  }
+
+  &:has(> .pl-form-large) {
+    --pl-form-icon-w: var(--pl-control-h-lg);
+  }
+
+  > :is(.pl-icon, [data-pl-icon], button, a) {
+    position: absolute;
+    top: 0;
+    left: 0;
+    z-index: 1;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: var(--pl-form-icon-w);
+    height: var(--pl-form-icon-w);
+    max-height: 100%;
+    color: var(--pl-text-subtle);
+    pointer-events: none;
+    transition:
+      color var(--pl-dur-2) var(--pl-ease),
+      transform var(--pl-dur-3) var(--pl-ease-spring);
+  }
+
+  > :is(.pl-icon, [data-pl-icon]) {
+    padding: calc((var(--pl-form-icon-w) - 1.125rem) / 2);
+  }
+
+  // Klikalna ikona (np. pokaż hasło, wyczyść).
+  > :is(button, a) {
+    @include button-reset;
+    position: absolute;
+    border-radius: var(--pl-radius-sm);
+    scale: 0.8;
+    pointer-events: auto;
+
+    &:hover {
+      color: var(--pl-text);
+      background: var(--pl-muted);
+    }
+
+    &:active {
+      transform: scale(0.9);
+    }
+
+    @include focus-visible(0);
+
+    > .pl-icon {
+      width: 1.4em;
+      height: 1.4em;
+    }
+  }
+
+  &:focus-within > :is(.pl-icon, [data-pl-icon]) {
+    color: var(--pl-primary);
+  }
+
+  &:not(.pl-form-icon-flip) > :is(.pl-icon, [data-pl-icon], button, a):not(.pl-form-icon-flip) ~ :is(.pl-input, .pl-select) {
+    padding-left: calc(var(--pl-form-icon-w) - 0.1rem);
+  }
+
+  &.pl-form-icon-flip > :is(.pl-icon, [data-pl-icon], button, a),
+  > .pl-form-icon-flip {
+    right: 0;
+    left: auto;
+  }
+
+  &.pl-form-icon-flip > .pl-input,
+  &:has(> .pl-form-icon-flip) > .pl-input {
+    padding-right: calc(var(--pl-form-icon-w) - 0.1rem);
+  }
+}
+
+// ── Prefiks / sufiks / przyciski wewnątrz pola ──────────────────────────
+.pl-form-affix {
+  display: flex;
+  align-items: center;
+  gap: 0.45rem;
+  cursor: text;
+
+  > .pl-input {
+    flex: 1;
+    min-width: 0;
+    height: 100%;
+    padding: 0;
+    border: 0;
+    border-radius: 0;
+    background: none;
+    box-shadow: none;
+    font-size: inherit;
+    opacity: 1;
+
+    &:focus {
+      box-shadow: none;
+    }
+  }
+
+  > .pl-icon,
+  > [data-pl-icon] {
+    width: 1.125rem;
+    height: 1.125rem;
+    color: var(--pl-text-subtle);
+  }
+
+  &:has(> .pl-input:disabled) {
+    background-color: var(--pl-muted);
+    box-shadow: none;
+    opacity: 0.75;
+    cursor: not-allowed;
+  }
+}
+
+.pl-form-prefix,
+.pl-form-suffix {
+  flex: none;
+  color: var(--pl-text-subtle);
+  white-space: nowrap;
+  user-select: none;
+}
+
+// Mały przycisk-ikona w polu (wyczyść, pokaż hasło).
+.pl-form-action,
+.pl-form-clear {
+  @include button-reset;
+  display: inline-flex;
+  flex: none;
+  align-items: center;
+  justify-content: center;
+  width: 1.625rem;
+  height: 1.625rem;
+  margin-inline: -0.2rem;
+  border-radius: var(--pl-radius-xs);
+  color: var(--pl-text-subtle);
+  transition:
+    color var(--pl-dur-2) var(--pl-ease),
+    background-color var(--pl-dur-2) var(--pl-ease),
+    opacity var(--pl-dur-2) var(--pl-ease),
+    visibility var(--pl-dur-2),
+    transform var(--pl-dur-3) var(--pl-ease-spring);
+
+  &:hover {
+    background: var(--pl-muted);
+    color: var(--pl-text);
+  }
+
+  &:active {
+    transform: scale(0.88);
+  }
+
+  @include focus-visible(0);
+
+  > .pl-icon {
+    width: 1.05rem;
+    height: 1.05rem;
+  }
+}
+
+// „X" rysowany w CSS; przycisk znika, gdy pole jest puste (wymaga placeholdera).
+.pl-form-clear {
+  position: relative;
+  border-radius: 50%;
+
+  &:empty::before,
+  &:empty::after {
+    content: '';
+    position: absolute;
+    width: 0.7rem;
+    height: 1.5px;
+    border-radius: 1px;
+    background: currentColor;
+    transform: rotate(45deg);
+  }
+
+  &:empty::after {
+    transform: rotate(-45deg);
+  }
+
+  .pl-input:placeholder-shown ~ & {
+    visibility: hidden;
+    opacity: 0;
+    transform: scale(0.5);
+  }
+}
+
+// ── Grupa pól ───────────────────────────────────────────────────────────
+.pl-input-group-text {
+  display: inline-flex;
+  flex: none;
+  align-items: center;
+  gap: 0.45rem;
+  padding: 0 0.8rem;
+  border: 1px solid var(--pl-border);
+  border-radius: var(--pl-input-group-radius, var(--pl-radius-md));
+  background: var(--pl-muted);
+  color: var(--pl-text-muted);
+  font-size: 0.9375rem;
+  white-space: nowrap;
+
+  > .pl-icon {
+    width: 1.125rem;
+    height: 1.125rem;
+  }
+}
+
+.pl-input-group {
+  position: relative;
+  display: flex;
+  align-items: stretch;
+  width: 100%;
+
+  > :is(.pl-input, .pl-select, .pl-form-affix, .pl-form-icon, .pl-form-floating) {
+    flex: 1 1 0%;
+    min-width: 0;
+  }
+
+  // Dodatek o szerokości treści (select) lub klasy .pl-form-width-* (input).
+  > .pl-input-group-addon {
+    flex: 0 0 auto;
+  }
+
+  > .pl-select.pl-input-group-addon:not([class*='pl-form-width-']) {
+    width: auto;
+  }
+
+  > .pl-button {
+    flex: none;
+    height: auto;
+    min-height: var(--pl-button-h);
+    box-shadow: var(--pl-shadow-xs);
+
+    &:hover,
+    &:active {
+      transform: none;
+    }
+  }
+
+  > :not(:first-child) {
+    margin-left: -1px;
+  }
+
+  // Wspólne zaokrąglenie: tylko skrajne rogi.
+  > :not(:first-child),
+  > :is(.pl-form-icon, .pl-form-floating):not(:first-child) > :is(.pl-input, .pl-select, .pl-textarea) {
+    border-start-start-radius: 0;
+    border-end-start-radius: 0;
+  }
+
+  > :not(:last-child),
+  > :is(.pl-form-icon, .pl-form-floating):not(:last-child) > :is(.pl-input, .pl-select, .pl-textarea) {
+    border-start-end-radius: 0;
+    border-end-end-radius: 0;
+  }
+
+  > :is(:hover, :focus, :focus-within, :focus-visible) {
+    z-index: 1;
+  }
+
+  > :is(:focus, :focus-within) {
+    z-index: 2;
+  }
+}
+
+.pl-input-group-small > .pl-input-group-text {
+  --pl-input-group-radius: var(--pl-radius-sm);
+  padding: 0 0.65rem;
+  font-size: 0.8125rem;
+}
+
+.pl-input-group-large > .pl-input-group-text {
+  --pl-input-group-radius: calc(var(--pl-radius-md) * 1.17);
+  padding: 0 1rem;
+  font-size: 1rem;
+}
+
+// ── Pływające etykiety ──────────────────────────────────────────────────
+.pl-form-floating {
+  --pl-floating-h: 3.5rem;
+  --pl-floating-px: 0.9rem;
+
+  position: relative;
+  display: block;
+  width: 100%;
+
+  > :is(.pl-input, .pl-select, .pl-textarea) {
+    --pl-form-px: var(--pl-floating-px);
+    height: var(--pl-floating-h);
+    padding-top: 1.35rem;
+    padding-bottom: 0.3rem;
+
+    &::placeholder {
+      color: transparent;
+      transition: color var(--pl-dur-2) var(--pl-ease);
+    }
+
+    &:focus::placeholder {
+      color: var(--pl-text-subtle);
+    }
+  }
+
+  > .pl-textarea {
+    height: auto;
+    min-height: 6.5rem;
+    padding-top: 1.55rem;
+  }
+
+  > label {
+    position: absolute;
+    top: 0;
+    left: calc(var(--pl-floating-px) + 1px);
+    right: var(--pl-floating-px);
+    display: flex;
+    align-items: center;
+    height: var(--pl-floating-h);
+    overflow: hidden;
+    color: var(--pl-text-muted);
+    font-size: 0.9375rem;
+    line-height: 1.2;
+    white-space: nowrap;
+    pointer-events: none;
+    transform-origin: left center;
+    transition:
+      transform var(--pl-dur-3) var(--pl-ease-spring),
+      color var(--pl-dur-2) var(--pl-ease);
+  }
+
+  // Etykieta w górze: fokus, wypełnione pole, select.
+  > :is(.pl-input, .pl-textarea):focus ~ label,
+  > :is(.pl-input, .pl-textarea):not(:placeholder-shown) ~ label,
+  > .pl-select ~ label {
+    transform: translateY(-0.68rem) scale(0.78);
+  }
+
+  > :is(.pl-input, .pl-textarea):autofill ~ label {
+    transform: translateY(-0.68rem) scale(0.78);
+  }
+
+  > :focus ~ label {
+    color: var(--pl-primary-text);
+  }
+
+  > .pl-form-danger ~ label {
+    color: var(--pl-danger-text);
+  }
+
+  > .pl-form-success ~ label {
+    color: var(--pl-success-text);
+  }
+
+  > :disabled ~ label {
+    color: var(--pl-text-subtle);
+  }
+}
+
+// ── Etykiety, podpowiedzi, komunikaty ───────────────────────────────────
+.pl-form-label {
+  display: block;
+  margin-bottom: 0.4rem;
+  color: var(--pl-text);
+  font-size: var(--pl-text-sm);
+  font-weight: 540;
+  line-height: 1.4;
+  letter-spacing: -0.003em;
+}
+
+// Gwiazdka pola wymaganego i dopisek „opcjonalne".
+.pl-form-required::after {
+  content: '*';
+  margin-left: 0.2em;
+  color: var(--pl-danger);
+  font-weight: 600;
+}
+
+.pl-form-optional {
+  margin-left: 0.4em;
+  color: var(--pl-text-subtle);
+  font-size: var(--pl-text-xs);
+  font-weight: 400;
+}
+
+.pl-form-help {
+  display: block;
+  margin: 0.4rem 0 0;
+  color: var(--pl-text-muted);
+  font-size: var(--pl-text-sm);
+  line-height: 1.45;
+
+  > .pl-icon {
+    width: 1em;
+    height: 1em;
+    margin-right: 0.3em;
+    vertical-align: -0.12em;
+  }
+}
+
+@each $tone in (danger, success, warning) {
+  .pl-form-help-#{$tone} {
+    color: var(--pl-#{$tone}-text);
+  }
+}
+
+// Podpowiedź + licznik w jednym wierszu.
+.pl-form-help-split {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 1rem;
+}
+
+.pl-form-count {
+  flex: none;
+  text-align: right;
+  margin-left: auto;
+  color: var(--pl-text-subtle);
+  font-family: var(--pl-font-mono);
+  font-size: var(--pl-text-xs);
+  font-variant-numeric: tabular-nums;
+  transition: color var(--pl-dur-2) var(--pl-ease);
+}
+
+.pl-form-count-warning {
+  color: var(--pl-warning-text);
+}
+
+.pl-form-count-danger {
+  color: var(--pl-danger-text);
+  font-weight: 600;
+}
+
+// ── Walidacja ───────────────────────────────────────────────────────────
+// Komunikat widoczny tylko przy błędnym polu (CSS, bez JS).
+.pl-form-feedback {
+  display: none;
+  margin: 0.4rem 0 0;
+  color: var(--pl-danger-text);
+  font-size: var(--pl-text-sm);
+  line-height: 1.45;
+}
+
+.pl-form-danger ~ .pl-form-feedback,
+.pl-form-field:has(.pl-form-danger) .pl-form-feedback,
+.pl-form-validate :user-invalid ~ .pl-form-feedback,
+.pl-form-validate .pl-form-field:has(:user-invalid) .pl-form-feedback {
+  display: block;
+}
+
+// Natywna walidacja — włączana klasą na formularzu.
+.pl-form-validate {
+  :is(.pl-input, .pl-textarea, .pl-select, .pl-checkbox, .pl-radio):user-invalid {
+    --pl-form-accent: var(--pl-danger);
+    --pl-form-on-accent: var(--pl-on-danger);
+    --pl-form-border: var(--pl-danger);
+    --pl-form-border-hover: var(--pl-danger);
+    --pl-form-ring: 0 0 0 3px color-mix(in oklab, var(--pl-danger) 22%, transparent);
+  }
+
+  :is(.pl-checkbox, .pl-radio):user-invalid {
+    border-color: var(--pl-danger);
+  }
+
+  :is(.pl-input, .pl-textarea, .pl-select):user-valid {
+    --pl-form-accent: var(--pl-success);
+    --pl-form-border: var(--pl-success);
+    --pl-form-border-hover: var(--pl-success);
+    --pl-form-ring: 0 0 0 3px color-mix(in oklab, var(--pl-success) 22%, transparent);
+  }
+}
+
+:is(.pl-checkbox, .pl-radio).pl-form-danger:not(:checked) {
+  border-color: var(--pl-danger);
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .pl-form-shake,
+  .pl-form-validate :is(.pl-input, .pl-textarea, .pl-select, .pl-checkbox, .pl-radio):user-invalid {
+    animation: pl-form-shake 0.42s var(--pl-ease);
+  }
+}
+
+@keyframes pl-form-shake {
+  0%, 100% { translate: 0; }
+  18% { translate: -6px; }
+  36% { translate: 5px; }
+  54% { translate: -4px; }
+  72% { translate: 2px; }
+  88% { translate: -1px; }
+}
+
+// ── Układy ──────────────────────────────────────────────────────────────
+.pl-form-field {
+  min-width: 0;
+
+  & + & {
+    margin-top: var(--pl-space-4);
+  }
+}
+
+.pl-form-stacked > * + * {
+  margin-top: var(--pl-space-4);
+}
+
+.pl-form-controls-text {
+  color: var(--pl-text);
+  font-size: 0.9375rem;
+  line-height: 1.45;
+}
+
+.pl-form-actions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.6rem;
+  margin-top: var(--pl-space-5);
+}
+
+// Etykieta w kolumnie obok kontrolek (od breakpointu m).
+.pl-form-horizontal {
+  --pl-form-label-w: 12rem;
+
+  > * + * {
+    margin-top: var(--pl-space-4);
+  }
+
+  @include up(m) {
+    > * + * {
+      margin-top: var(--pl-space-5);
+    }
+
+    .pl-form-field {
+      display: grid;
+      grid-template-columns: var(--pl-form-label-w) minmax(0, 1fr);
+      column-gap: var(--pl-space-5);
+      align-items: start;
+
+      > .pl-form-label {
+        grid-column: 1;
+        grid-row: 1 / span 4;
+        margin: 0;
+        padding-top: calc((var(--pl-control-h) - 1.4em) / 2);
+      }
+
+      > :not(.pl-form-label) {
+        grid-column: 2;
+      }
+
+      > :is(.pl-form-controls-text, .pl-form-check, .pl-form-checks) {
+        padding-top: calc((var(--pl-control-h) - 1.45em) / 2);
+      }
+    }
+
+    .pl-form-actions {
+      padding-left: calc(var(--pl-form-label-w) + var(--pl-space-5));
+    }
+  }
+}
+
+// Siatka pól.
+.pl-form-grid {
+  --pl-form-cols: 2;
+
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: var(--pl-space-4);
+
+  > .pl-form-field {
+    margin-top: 0;
+  }
+
+  @include up(s) {
+    grid-template-columns: repeat(var(--pl-form-cols), minmax(0, 1fr));
+    column-gap: var(--pl-space-4);
+
+    > .pl-form-span-2 { grid-column: span 2; }
+    > .pl-form-span-3 { grid-column: span 3; }
+    > .pl-form-span-full { grid-column: 1 / -1; }
+  }
+}
+
+.pl-form-grid-3 { --pl-form-cols: 3; }
+.pl-form-grid-4 { --pl-form-cols: 4; }
+.pl-form-grid-6 { --pl-form-cols: 6; }
+
+// Fieldset i legenda.
+.pl-fieldset {
+  min-width: 0;
+  margin: 0;
+  padding: 0;
+  border: 0;
+
+  & + & {
+    margin-top: var(--pl-space-6);
+    padding-top: var(--pl-space-5);
+    border-top: 1px solid var(--pl-border);
+  }
+
+  > .pl-legend + * {
+    margin-top: 0;
+  }
+}
+
+.pl-legend {
+  display: block;
+  width: 100%;
+  margin-bottom: var(--pl-space-4);
+  padding: 0;
+  color: var(--pl-text);
+  font-family: var(--pl-font-display);
+  font-size: var(--pl-text-lg);
+  font-weight: var(--pl-display-weight, 600);
+  line-height: 1.3;
+  letter-spacing: var(--pl-display-tracking, -0.015em);
+}
+
+.pl-legend-text {
+  display: block;
+  margin-top: 0.2rem;
+  color: var(--pl-text-muted);
+  font-family: var(--pl-font-sans);
+  font-size: var(--pl-text-sm);
+  font-weight: 400;
+  letter-spacing: 0;
+}

@@ -1,0 +1,238 @@
+// OTP — kod jednorazowy w osobnych polach
+@use '../abstracts' as *;
+
+.pl-otp {
+  --pl-otp-size: 3rem;
+  --pl-otp-gap: 0.5rem;
+  --pl-otp-radius: var(--pl-radius-md);
+  --pl-otp-accent: var(--pl-primary);
+
+  display: inline-flex;
+  align-items: center;
+  gap: var(--pl-otp-gap);
+  max-width: 100%;
+  vertical-align: middle;
+}
+
+.pl-otp-group {
+  display: flex;
+  gap: var(--pl-otp-gap);
+  min-width: 0;
+}
+
+// Pole źródłowe (trafia do formularza).
+.pl-otp-value {
+  @include visually-hidden;
+}
+
+.pl-otp-box {
+  appearance: none;
+  flex: 0 1 var(--pl-otp-size);
+  width: var(--pl-otp-size);
+  min-width: 0;
+  height: calc(var(--pl-otp-size) * 1.12);
+  margin: 0;
+  padding: 0;
+  border: 1px solid var(--pl-border-strong);
+  border-radius: var(--pl-otp-radius);
+  background: var(--pl-surface);
+  box-shadow: var(--pl-shadow-xs);
+  color: var(--pl-text);
+  caret-color: var(--pl-otp-accent);
+  font-family: var(--pl-font-display);
+  font-size: calc(var(--pl-otp-size) * 0.46);
+  font-weight: var(--pl-display-weight, 600);
+  font-variant-numeric: tabular-nums;
+  line-height: 1;
+  text-align: center;
+  text-transform: uppercase;
+  outline: 0;
+  transition:
+    border-color var(--pl-dur-2) var(--pl-ease),
+    background-color var(--pl-dur-2) var(--pl-ease),
+    box-shadow var(--pl-dur-2) var(--pl-ease),
+    color var(--pl-dur-2) var(--pl-ease),
+    transform var(--pl-dur-4) var(--pl-ease-spring);
+
+  &::selection {
+    background: transparent;
+  }
+
+  &:hover {
+    border-color: color-mix(in oklab, var(--pl-otp-accent) 45%, var(--pl-border-strong));
+  }
+
+  &:focus {
+    border-color: var(--pl-otp-accent);
+    box-shadow:
+      0 0 0 3px color-mix(in oklab, var(--pl-otp-accent) 22%, transparent),
+      var(--pl-shadow-sm);
+    transform: translateY(-3px) scale(1.04);
+  }
+
+  &.pl-otp-filled {
+    border-color: color-mix(in oklab, var(--pl-otp-accent) 40%, var(--pl-border-strong));
+    background: color-mix(in oklab, var(--pl-otp-accent) 5%, var(--pl-surface));
+  }
+
+  @media (prefers-reduced-motion: no-preference) {
+    &.pl-otp-pop {
+      animation: pl-otp-pop var(--pl-dur-4) var(--pl-ease-spring);
+    }
+  }
+
+  &:disabled {
+    opacity: 0.55;
+    background: var(--pl-muted);
+    cursor: not-allowed;
+  }
+}
+
+.pl-otp-separator {
+  flex: none;
+  width: 0.6rem;
+  height: 2px;
+  border-radius: 2px;
+  background: var(--pl-border-strong);
+}
+
+// ── Stany ───────────────────────────────────────────────────────────────
+.pl-otp-danger {
+  --pl-otp-accent: var(--pl-danger);
+
+  .pl-otp-box {
+    border-color: var(--pl-danger);
+    background: var(--pl-danger-soft);
+    color: var(--pl-danger-text);
+  }
+}
+
+.pl-otp-success {
+  --pl-otp-accent: var(--pl-success);
+
+  .pl-otp-box {
+    border-color: var(--pl-success);
+    background: var(--pl-success-soft);
+    color: var(--pl-success-text);
+  }
+
+  @media (prefers-reduced-motion: no-preference) {
+    .pl-otp-box {
+      animation: pl-otp-wave var(--pl-dur-4) var(--pl-ease-spring) backwards;
+      animation-delay: calc(var(--pl-otp-index, 0) * 45ms);
+    }
+  }
+}
+
+.pl-otp-shake {
+  animation: pl-otp-shake 420ms var(--pl-ease);
+}
+
+// ── Rozmiary i warianty ─────────────────────────────────────────────────
+.pl-otp-small {
+  --pl-otp-size: 2.4rem;
+  --pl-otp-gap: 0.375rem;
+  --pl-otp-radius: var(--pl-radius-sm);
+}
+
+.pl-otp-large {
+  --pl-otp-size: 3.75rem;
+  --pl-otp-gap: 0.625rem;
+  --pl-otp-radius: var(--pl-radius-lg);
+}
+
+// Podkreślenia zamiast ramek.
+.pl-otp-line {
+  .pl-otp-box {
+    border-width: 0 0 2px;
+    border-radius: 0;
+    background: transparent;
+    box-shadow: none;
+
+    &:focus {
+      box-shadow: 0 6px 10px -8px var(--pl-otp-accent);
+      transform: translateY(-2px);
+    }
+  }
+}
+
+// Pola złączone w jedną kontrolkę.
+.pl-otp-joined {
+  --pl-otp-gap: 0px;
+
+  .pl-otp-box {
+    border-radius: 0;
+    margin-left: -1px;
+
+    &:focus {
+      position: relative;
+      z-index: 1;
+      transform: none;
+    }
+
+    &:first-child {
+      margin-left: 0;
+      border-top-left-radius: var(--pl-otp-radius);
+      border-bottom-left-radius: var(--pl-otp-radius);
+    }
+
+    &:last-child {
+      border-top-right-radius: var(--pl-otp-radius);
+      border-bottom-right-radius: var(--pl-otp-radius);
+    }
+  }
+
+  .pl-otp-separator {
+    margin: 0 0.5rem;
+  }
+
+  .pl-otp-group {
+    gap: 0;
+  }
+}
+
+@keyframes pl-otp-pop {
+  0% {
+    transform: scale(0.86);
+  }
+
+  100% {
+    transform: none;
+  }
+}
+
+@keyframes pl-otp-wave {
+  0% {
+    transform: none;
+  }
+
+  40% {
+    transform: translateY(-6px);
+  }
+
+  100% {
+    transform: none;
+  }
+}
+
+@keyframes pl-otp-shake {
+  15% {
+    transform: translateX(-7px);
+  }
+
+  30% {
+    transform: translateX(6px);
+  }
+
+  45% {
+    transform: translateX(-5px);
+  }
+
+  60% {
+    transform: translateX(4px);
+  }
+
+  75% {
+    transform: translateX(-2px);
+  }
+}

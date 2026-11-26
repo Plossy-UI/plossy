@@ -1,0 +1,63 @@
+// Filter — filtrowanie / sortowanie elementów (animacje FLIP robi JS).
+@use '../abstracts' as *;
+
+[data-pl-filter-control] {
+  cursor: pointer;
+
+  &[role='button'] {
+    @include focus-visible;
+  }
+}
+
+// Licznik przy kontrolce, np. <span class="pl-filter-count">12</span>.
+.pl-filter-count {
+  display: inline-grid;
+  place-items: center;
+  min-width: 1.35rem;
+  height: 1.35rem;
+  margin-left: 0.4rem;
+  padding: 0 0.35rem;
+  border-radius: var(--pl-radius-pill);
+  font-family: var(--pl-font-mono);
+  font-size: 0.6875rem;
+  line-height: 1;
+  color: var(--pl-text-muted);
+  background: color-mix(in oklab, currentColor 12%, transparent);
+}
+
+// Pasek narzędzi nad listą: grupy kontrolek obok siebie.
+.pl-filter-bar {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--pl-space-3) var(--pl-space-5);
+  margin-bottom: var(--pl-space-5);
+}
+
+.pl-filter-label {
+  font-family: var(--pl-font-mono);
+  font-size: var(--pl-text-xs);
+  letter-spacing: 0.07em;
+  text-transform: uppercase;
+  color: var(--pl-text-subtle);
+}
+
+// Komunikat „brak wyników" — pokazywany przez JS, gdy nic nie pasuje.
+.pl-filter-empty {
+  padding: var(--pl-space-7) var(--pl-space-5);
+  border: 1px dashed var(--pl-border-strong);
+  border-radius: var(--pl-radius-lg);
+  text-align: center;
+  color: var(--pl-text-muted);
+
+  @media (prefers-reduced-motion: no-preference) {
+    animation: pl-filter-empty var(--pl-dur-3) var(--pl-ease) both;
+  }
+}
+
+@keyframes pl-filter-empty {
+  from {
+    opacity: 0;
+    transform: translateY(6px);
+  }
+}

@@ -1,0 +1,103 @@
+// Styl „toy" — zabawowy: pulchne kształty, kolorowe ramki, przyciski z „klockową" krawędzią,
+// która wciska się przy kliknięciu, żywy ruch.
+@use 'engine' as *;
+
+@include preset('toy') {
+  --pl-spark: oklch(0.88 0.15 165);
+  --pl-on-spark: oklch(0.25 0.06 165);
+  --pl-radius-xs: 10px;
+  --pl-radius-sm: 14px;
+  --pl-radius-md: 18px;
+  --pl-radius-lg: 26px;
+  --pl-radius-xl: 38px;
+  --pl-border-w: 2px;
+  --pl-shadow-scale: 0.6;
+  --pl-shadow-color: 0.4 0.12 295;
+  --pl-gloss: 0;
+  --pl-lift: 1;
+  --pl-press: 1;
+  --pl-heading-weight: 760;
+  --pl-heading-tracking: -0.03em;
+  --pl-display-weight: 720;
+  --pl-control-weight: 680;
+  --pl-control-h: 2.75rem;
+  --pl-control-h-sm: 2.2rem;
+  --pl-control-h-lg: 3.4rem;
+
+  --pl-bg: oklch(0.972 0.022 300);
+  --pl-surface: oklch(1 0 0);
+  --pl-surface-raised: oklch(1 0 0);
+  --pl-muted: oklch(0.945 0.04 300);
+  --pl-muted-strong: oklch(0.91 0.06 300);
+  --pl-border: oklch(0.87 0.06 298);
+  --pl-border-strong: oklch(0.76 0.1 296);
+  --pl-text: oklch(0.27 0.07 292);
+  --pl-text-muted: oklch(0.45 0.07 292);
+  --pl-text-subtle: oklch(0.6 0.06 292);
+  --pl-ink: oklch(0.27 0.07 292);
+  --pl-on-ink: oklch(0.98 0.02 300);
+  --pl-secondary: oklch(0.5 0.22 292);
+  --pl-on-secondary: oklch(0.99 0.01 300);
+}
+
+@include preset-dark('toy') {
+  --pl-shadow-color: 0 0 0;
+  --pl-bg: oklch(0.2 0.055 292);
+  --pl-surface: oklch(0.25 0.065 292);
+  --pl-surface-raised: oklch(0.285 0.07 292);
+  --pl-muted: oklch(0.285 0.07 292);
+  --pl-muted-strong: oklch(0.34 0.08 292);
+  --pl-border: oklch(0.38 0.09 292);
+  --pl-border-strong: oklch(0.5 0.11 292);
+  --pl-text: oklch(0.96 0.02 300);
+  --pl-text-muted: oklch(0.8 0.04 298);
+  --pl-text-subtle: oklch(0.65 0.05 296);
+  --pl-ink: oklch(0.96 0.02 300);
+  --pl-on-ink: oklch(0.22 0.06 292);
+  --pl-secondary: oklch(0.72 0.16 292);
+  --pl-on-secondary: oklch(0.2 0.06 292);
+}
+
+@include preset-accent('toy', 0.7, 0.18, 52, oklch(0.24 0.06 50));
+@include preset-accent-dark('toy', 0.66, 0.18, 52, oklch(0.2 0.05 50));
+
+[data-pl-style='toy'] {
+  .pl-button:not(.pl-button-ghost, .pl-button-text, .pl-button-link) {
+    --pl-toy-edge: var(--pl-border-strong);
+    box-shadow: 0 4px 0 var(--pl-toy-edge) !important;
+    transition-timing-function: var(--pl-ease-spring);
+
+    &:hover {
+      box-shadow: 0 6px 0 var(--pl-toy-edge) !important;
+      transform: translateY(-2px);
+    }
+
+    &:active {
+      box-shadow: 0 1px 0 var(--pl-toy-edge) !important;
+      transform: translateY(3px);
+    }
+  }
+
+  .pl-button:is(.pl-button-primary, .pl-button-secondary, .pl-button-success, .pl-button-warning, .pl-button-danger, .pl-button-info):not(.pl-button-soft, .pl-button-outline) {
+    --pl-toy-edge: color-mix(in oklab, var(--pl-tone), black 28%);
+  }
+
+  .pl-button-soft,
+  .pl-button-outline {
+    --pl-toy-edge: color-mix(in oklab, var(--pl-tone, var(--pl-border-strong)) 35%, var(--pl-surface));
+  }
+
+  .pl-button-group > .pl-button {
+    transform: none !important;
+  }
+
+  .pl-input,
+  .pl-textarea,
+  .pl-select {
+    border-width: 2px;
+  }
+
+  .pl-card-hover:hover {
+    transform: translateY(-5px) rotate(-0.6deg);
+  }
+}

@@ -1,0 +1,492 @@
+// Upload — strefa „przeciągnij i upuść" + lista plików
+@use '../abstracts' as *;
+
+.pl-upload {
+  --pl-upload-py: 2.25rem;
+  --pl-upload-px: 1.5rem;
+  --pl-upload-radius: var(--pl-radius-lg);
+  --pl-upload-accent: var(--pl-primary);
+
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: var(--pl-space-1);
+  padding: var(--pl-upload-py) var(--pl-upload-px);
+  border: 1.5px dashed var(--pl-border-strong);
+  border-radius: var(--pl-upload-radius);
+  background: var(--pl-surface);
+  color: var(--pl-text-muted);
+  font-size: var(--pl-text-sm);
+  text-align: center;
+  cursor: pointer;
+  transition:
+    border-color var(--pl-dur-2) var(--pl-ease),
+    background-color var(--pl-dur-3) var(--pl-ease),
+    box-shadow var(--pl-dur-3) var(--pl-ease),
+    transform var(--pl-dur-4) var(--pl-ease-spring);
+
+  &:hover {
+    border-color: color-mix(in oklab, var(--pl-upload-accent) 55%, var(--pl-border-strong));
+    background: color-mix(in oklab, var(--pl-upload-accent) 3%, var(--pl-surface));
+
+    .pl-upload-icon {
+      transform: translateY(-3px);
+      color: var(--pl-upload-accent);
+    }
+  }
+
+  // Plik nad strefą.
+  &.pl-upload-dragover {
+    border-color: var(--pl-upload-accent);
+    border-style: solid;
+    background: color-mix(in oklab, var(--pl-upload-accent) 8%, var(--pl-surface));
+    box-shadow:
+      0 0 0 4px color-mix(in oklab, var(--pl-upload-accent) 16%, transparent),
+      var(--pl-shadow-md);
+    transform: scale(1.012);
+
+    .pl-upload-icon {
+      color: var(--pl-on-primary);
+      background: var(--pl-upload-accent);
+      transform: translateY(-6px) scale(1.08);
+
+      &::after {
+        opacity: 1;
+        animation: pl-upload-pulse 1.1s var(--pl-ease) infinite;
+      }
+    }
+  }
+
+  &.pl-upload-invalid {
+    border-color: var(--pl-danger);
+    animation: pl-upload-shake var(--pl-dur-4) var(--pl-ease);
+  }
+
+  &.pl-disabled {
+    opacity: 0.55;
+    pointer-events: none;
+  }
+
+  input[type='file'] {
+    @include visually-hidden;
+  }
+}
+
+.pl-upload .pl-upload-icon {
+  position: relative;
+  display: grid;
+  place-items: center;
+  flex: none;
+  width: 3rem;
+  height: 3rem;
+  margin-bottom: var(--pl-space-2);
+  border-radius: var(--pl-radius-md);
+  background: var(--pl-muted);
+  color: var(--pl-text-muted);
+  font-size: 1.15rem;
+  transition:
+    transform var(--pl-dur-4) var(--pl-ease-spring),
+    color var(--pl-dur-2) var(--pl-ease),
+    background-color var(--pl-dur-2) var(--pl-ease);
+
+  > svg {
+    width: 1.35rem;
+    height: 1.35rem;
+  }
+
+  // Pierścień pulsujący podczas przeciągania.
+  &::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    border-radius: inherit;
+    border: 2px solid var(--pl-upload-accent);
+    opacity: 0;
+    pointer-events: none;
+  }
+}
+
+.pl-upload-text {
+  margin: 0;
+  color: var(--pl-text);
+  font-size: 0.9375rem;
+  font-weight: 520;
+  line-height: 1.45;
+}
+
+.pl-upload-hint {
+  margin: 0;
+  color: var(--pl-text-subtle);
+  font-size: var(--pl-text-xs);
+  font-family: var(--pl-font-mono);
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+
+.pl-upload-link {
+  position: relative;
+  color: var(--pl-primary-text);
+  font-weight: 560;
+  text-decoration: underline;
+  text-decoration-color: color-mix(in oklab, currentColor 35%, transparent);
+  text-underline-offset: 0.2em;
+  border-radius: var(--pl-radius-xs);
+  cursor: pointer;
+  @include transition('text-decoration-color, color');
+
+  &:hover {
+    text-decoration-color: currentColor;
+  }
+
+  &:focus-within {
+    @include focus-ring;
+  }
+}
+
+// ── Wariant kompaktowy (jeden wiersz) ───────────────────────────────────
+.pl-upload-small {
+  --pl-upload-py: 0.8rem;
+  --pl-upload-px: 1rem;
+  --pl-upload-radius: var(--pl-radius-md);
+  flex-direction: row;
+  justify-content: flex-start;
+  gap: var(--pl-space-3);
+  text-align: left;
+
+  .pl-upload-icon {
+    width: 2.25rem;
+    height: 2.25rem;
+    margin: 0;
+    border-radius: var(--pl-radius-sm);
+    font-size: 1rem;
+  }
+
+  .pl-upload-hint {
+    margin-left: auto;
+  }
+}
+
+.pl-upload-muted {
+  background: var(--pl-muted);
+  border-color: transparent;
+
+  .pl-upload-icon {
+    background: var(--pl-surface);
+    box-shadow: var(--pl-shadow-xs);
+  }
+}
+
+// ── Komunikat błędu ─────────────────────────────────────────────────────
+.pl-upload-error {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--pl-space-2);
+  margin: var(--pl-space-2) 0 0;
+  padding: 0.55rem 0.75rem;
+  border-radius: var(--pl-radius-sm);
+  background: var(--pl-danger-soft);
+  color: var(--pl-danger-text);
+  font-size: var(--pl-text-sm);
+  line-height: 1.45;
+
+  > svg {
+    flex: none;
+    width: 1.1em;
+    height: 1.1em;
+    margin-top: 0.15em;
+  }
+
+  @media (prefers-reduced-motion: no-preference) {
+    animation: pl-upload-in var(--pl-dur-3) var(--pl-ease-spring);
+  }
+}
+
+// ── Lista plików ────────────────────────────────────────────────────────
+.pl-upload-list {
+  display: grid;
+  gap: var(--pl-space-2);
+  margin: var(--pl-space-3) 0 0;
+  padding: 0;
+  list-style: none;
+
+  &:empty {
+    display: none;
+  }
+}
+
+.pl-upload-item {
+  position: relative;
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr) auto;
+  align-items: center;
+  column-gap: var(--pl-space-3);
+  padding: 0.55rem 0.6rem;
+  border: 1px solid var(--pl-border);
+  border-radius: var(--pl-radius-md);
+  background: var(--pl-surface);
+  box-shadow: var(--pl-shadow-xs);
+  overflow: hidden;
+  @include transition('border-color, box-shadow, opacity, transform', var(--pl-dur-3));
+
+  @media (prefers-reduced-motion: no-preference) {
+    animation: pl-upload-in var(--pl-dur-4) var(--pl-ease-spring) backwards;
+  }
+
+  &:hover {
+    border-color: var(--pl-border-strong);
+  }
+
+  &.pl-upload-item-leave {
+    opacity: 0;
+    transform: scale(0.96) translateX(8px);
+    transition-duration: var(--pl-dur-2);
+  }
+}
+
+.pl-upload-thumb {
+  display: grid;
+  place-items: center;
+  width: 2.5rem;
+  height: 2.5rem;
+  border-radius: var(--pl-radius-sm);
+  background: var(--pl-muted);
+  color: var(--pl-text-muted);
+  overflow: hidden;
+
+  > svg {
+    width: 1.15rem;
+    height: 1.15rem;
+  }
+
+  > img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+}
+
+.pl-upload-info {
+  display: grid;
+  min-width: 0;
+  line-height: 1.3;
+}
+
+.pl-upload-name {
+  @include truncate;
+  color: var(--pl-text);
+  font-size: var(--pl-text-sm);
+  font-weight: 540;
+}
+
+.pl-upload-meta {
+  @include truncate;
+  color: var(--pl-text-subtle);
+  font-size: var(--pl-text-xs);
+  font-variant-numeric: tabular-nums;
+}
+
+.pl-upload-remove {
+  @include button-reset;
+  display: grid;
+  place-items: center;
+  width: 1.75rem;
+  height: 1.75rem;
+  border-radius: var(--pl-radius-sm);
+  color: var(--pl-text-subtle);
+  transition:
+    color var(--pl-dur-2) var(--pl-ease),
+    background-color var(--pl-dur-2) var(--pl-ease),
+    transform var(--pl-dur-3) var(--pl-ease-spring);
+
+  > svg {
+    width: 0.95rem;
+    height: 0.95rem;
+  }
+
+  &:hover {
+    background: var(--pl-danger-soft);
+    color: var(--pl-danger-text);
+    transform: rotate(90deg);
+  }
+
+  &:active {
+    transform: rotate(90deg) scale(0.9);
+  }
+
+  @include focus-visible;
+}
+
+// Pasek postępu — cienka linia na dolnej krawędzi pozycji.
+.pl-upload-progress {
+  position: absolute;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  height: 3px;
+  background: var(--pl-muted-strong);
+  opacity: 0;
+  @include transition('opacity', var(--pl-dur-3));
+}
+
+.pl-upload-bar {
+  display: block;
+  width: 100%;
+  height: 100%;
+  border-radius: 0 3px 3px 0;
+  background: var(--pl-primary);
+  transform: scaleX(var(--pl-upload-value, 0));
+  transform-origin: left;
+  transition:
+    transform var(--pl-dur-3) var(--pl-ease),
+    background-color var(--pl-dur-2) var(--pl-ease);
+}
+
+.pl-upload-item-uploading {
+  .pl-upload-progress {
+    opacity: 1;
+  }
+
+  .pl-upload-meta {
+    color: var(--pl-primary-text);
+  }
+}
+
+.pl-upload-item-done {
+  .pl-upload-meta {
+    color: var(--pl-success-text);
+  }
+
+  .pl-upload-thumb::after {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+// Znaczek „gotowe" na miniaturze.
+.pl-upload-thumb {
+  position: relative;
+  overflow: visible;
+
+  > img {
+    border-radius: inherit;
+  }
+
+  &::after {
+    content: '';
+    position: absolute;
+    right: -0.3rem;
+    bottom: -0.3rem;
+    width: 0.95rem;
+    height: 0.95rem;
+    border: 2px solid var(--pl-surface);
+    border-radius: 50%;
+    background: var(--pl-success);
+    opacity: 0;
+    transform: scale(0);
+    transition:
+      transform var(--pl-dur-4) var(--pl-ease-spring),
+      opacity var(--pl-dur-2) var(--pl-ease);
+  }
+}
+
+.pl-upload-item-error {
+  border-color: var(--pl-danger-border);
+  background: var(--pl-danger-soft);
+
+  .pl-upload-meta {
+    color: var(--pl-danger-text);
+  }
+
+  .pl-upload-progress {
+    opacity: 1;
+  }
+
+  .pl-upload-bar {
+    background: var(--pl-danger);
+  }
+}
+
+// ── Lista jako siatka miniatur ──────────────────────────────────────────
+.pl-upload-list-grid {
+  grid-template-columns: repeat(auto-fill, minmax(8.5rem, 1fr));
+  gap: var(--pl-space-3);
+
+  .pl-upload-item {
+    grid-template-columns: minmax(0, 1fr);
+    row-gap: var(--pl-space-2);
+    padding: 0.45rem 0.45rem 0.65rem;
+  }
+
+  .pl-upload-thumb {
+    width: 100%;
+    height: auto;
+    aspect-ratio: 4 / 3;
+
+    > svg {
+      width: 1.6rem;
+      height: 1.6rem;
+    }
+
+    &::after {
+      right: 0.35rem;
+      bottom: 0.35rem;
+    }
+  }
+
+  .pl-upload-info {
+    padding: 0 0.2rem;
+  }
+
+  .pl-upload-remove {
+    position: absolute;
+    top: 0.7rem;
+    right: 0.7rem;
+    background: var(--pl-surface);
+    box-shadow: var(--pl-shadow-sm);
+    color: var(--pl-text-muted);
+
+    &:hover {
+      background: var(--pl-danger);
+      color: var(--pl-on-danger);
+    }
+  }
+}
+
+@keyframes pl-upload-in {
+  from {
+    opacity: 0;
+    transform: translateY(8px) scale(0.97);
+  }
+}
+
+@keyframes pl-upload-pulse {
+  from {
+    opacity: 0.7;
+    transform: scale(1);
+  }
+
+  to {
+    opacity: 0;
+    transform: scale(1.55);
+  }
+}
+
+@keyframes pl-upload-shake {
+  20% {
+    transform: translateX(-6px);
+  }
+
+  40% {
+    transform: translateX(5px);
+  }
+
+  60% {
+    transform: translateX(-3px);
+  }
+
+  80% {
+    transform: translateX(2px);
+  }
+}

@@ -1,0 +1,133 @@
+// Plossy — narzędzia Sass współdzielone przez wszystkie partiale.
+// Użycie:  @use '../abstracts' as *;
+@use 'sass:map';
+
+$breakpoints: (
+  s: 640px,
+  m: 960px,
+  l: 1200px,
+  xl: 1600px,
+) !default;
+
+$tones: primary, secondary, success, warning, danger, info !default;
+
+// Media query „od breakpointu w górę".
+@mixin up($bp) {
+  @media (min-width: map.get($breakpoints, $bp)) {
+    @content;
+  }
+}
+
+// Media query „poniżej breakpointu".
+@mixin down($bp) {
+  @media (max-width: (map.get($breakpoints, $bp) - 0.02px)) {
+    @content;
+  }
+}
+
+// Generuje @content w wersji bazowej oraz z sufiksami \@s \@m \@l \@xl.
+// Wewnątrz używaj zmiennej $suffix przez `using ($suffix)`.
+//   @include responsive using ($s) { .pl-hidden#{$s} { display: none !important; } }
+@mixin responsive {
+  @content ('');
+  @each $name, $value in $breakpoints {
+    @media (min-width: $value) {
+      @content ('\\@#{$name}');
+    }
+  }
+}
+
+// Klasy tonów: .{prefix}-primary, .{prefix}-success… ustawiają lokalne zmienne,
+// z których korzysta komponent:
+//   --pl-tone       kolor pełny
+//   --pl-on-tone    kolor tekstu na pełnym tle
+//   --pl-tone-soft  delikatne, zabarwione tło
+//   --pl-tone-text  czytelny, zabarwiony tekst (na tle strony / soft)
+@mixin tones($prefix) {
+  @each $tone in $tones {
+    .#{$prefix}-#{$tone} {
+      --pl-tone: var(--pl-#{$tone});
+      --pl-on-tone: var(--pl-on-#{$tone});
+      --pl-tone-soft: var(--pl-#{$tone}-soft);
+      --pl-tone-text: var(--pl-#{$tone}-text);
+    }
+  }
+}
+
+// Pierścień fokusu — jeden wygląd w całej bibliotece.
+@mixin focus-ring($offset: 2px) {
+  outline: 2px solid var(--pl-focus);
+  outline-offset: $offset;
+}
+
+@mixin focus-visible($offset: 2px) {
+  &:focus-visible {
+    @include focus-ring($offset);
+  }
+}
+
+// Powierzchnia „karta": tło, włosowa ramka, miękki cień.
+@mixin surface($radius: var(--pl-radius-lg), $shadow: var(--pl-shadow-sm)) {
+  background: var(--pl-surface);
+  border: var(--pl-border-w, 1px) solid var(--pl-border);
+  border-radius: $radius;
+  box-shadow: $shadow;
+}
+
+// Powierzchnia pływająca (drop, tooltip, popover, toast).
+// Zawiera reset stylów [popover] — elementy pływające trafiają do top-layer
+// i są pozycjonowane przez JS (position: fixed + left/top).
+@mixin floating-surface($radius: var(--pl-radius-md)) {
+  position: fixed;
+  inset: auto;
+  z-index: var(--pl-z-drop);
+  margin: 0;
+  width: max-content;
+  max-width: calc(100vw - 16px);
+  overflow: visible;
+  color: var(--pl-text);
+  background: var(--pl-surface-raised);
+  border: 1px solid var(--pl-border);
+  border-radius: $radius;
+  box-shadow: var(--pl-shadow-lg);
+}
+
+// Przejście z tokenami biblioteki.
+@mixin transition($props: all, $dur: var(--pl-dur-2), $ease: var(--pl-ease)) {
+  transition-property: #{$props};
+  transition-duration: $dur;
+  transition-timing-function: $ease;
+}
+
+// Reset przycisku.
+@mixin button-reset {
+  appearance: none;
+  margin: 0;
+  padding: 0;
+  border: 0;
+  background: none;
+  color: inherit;
+  font: inherit;
+  text-align: inherit;
+  cursor: pointer;
+}
+
+// Obcięcie tekstu wielokropkiem.
+@mixin truncate {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+// Ukrycie wizualne z zachowaniem dostępności.
+@mixin visually-hidden {
+  position: absolute !important;
+  width: 1px !important;
+  height: 1px !important;
+  padding: 0 !important;
+  margin: -1px !important;
+  overflow: hidden !important;
+  clip: rect(0, 0, 0, 0) !important;
+  white-space: nowrap !important;
+  border: 0 !important;
+}

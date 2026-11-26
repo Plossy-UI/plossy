@@ -1,0 +1,147 @@
+// Overlay — panel treści na obrazie. Pozycję nadają .pl-position-*, wejście .pl-transition-*.
+@use '../abstracts' as *;
+
+.pl-overlay {
+  --pl-overlay-p: 1.25rem;
+  padding: var(--pl-overlay-p);
+  color: var(--pl-text);
+
+  > :last-child {
+    margin-bottom: 0;
+  }
+
+  > :first-child {
+    margin-top: 0;
+  }
+}
+
+.pl-overlay-small {
+  --pl-overlay-p: 0.75rem;
+}
+
+.pl-overlay-large {
+  --pl-overlay-p: 2rem;
+}
+
+// ── Tła ─────────────────────────────────────────────────────────────────
+// Półprzezroczysta „szyba" w kolorze powierzchni.
+.pl-overlay-default {
+  background: color-mix(in oklab, var(--pl-surface) 70%, transparent);
+  backdrop-filter: blur(14px) saturate(1.4);
+  -webkit-backdrop-filter: blur(14px) saturate(1.4);
+}
+
+// Półprzezroczysty akcent.
+.pl-overlay-primary {
+  --pl-text: var(--pl-on-primary);
+  --pl-text-muted: color-mix(in oklab, var(--pl-on-primary) 80%, transparent);
+  --pl-text-subtle: color-mix(in oklab, var(--pl-on-primary) 62%, transparent);
+  --pl-border: color-mix(in oklab, var(--pl-on-primary) 22%, transparent);
+  background: color-mix(in oklab, var(--pl-primary) 82%, transparent);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  color: var(--pl-on-primary);
+}
+
+// Ciemne warianty mają stały, jasny tekst — niezależnie od motywu (leżą na zdjęciach).
+.pl-overlay-dark,
+.pl-overlay-gradient,
+.pl-overlay-gradient-top,
+.pl-overlay-gradient-primary {
+  --pl-text: oklch(1 0 0);
+  --pl-text-muted: oklch(1 0 0 / 0.8);
+  --pl-text-subtle: oklch(1 0 0 / 0.62);
+  --pl-border: oklch(1 0 0 / 0.2);
+  color: var(--pl-text);
+}
+
+.pl-overlay-dark {
+  background: oklch(0 0 0 / 0.56);
+  backdrop-filter: blur(6px);
+  -webkit-backdrop-filter: blur(6px);
+}
+
+// Gradient od dołu (podpisy pod zdjęciem) i od góry.
+.pl-overlay-gradient {
+  padding-top: calc(var(--pl-overlay-p) * 3);
+  background: linear-gradient(
+    to top,
+    oklch(0 0 0 / 0.72),
+    oklch(0 0 0 / 0.5) 35%,
+    oklch(0 0 0 / 0.16) 72%,
+    transparent
+  );
+}
+
+.pl-overlay-gradient-top {
+  padding-bottom: calc(var(--pl-overlay-p) * 3);
+  background: linear-gradient(
+    to bottom,
+    oklch(0 0 0 / 0.72),
+    oklch(0 0 0 / 0.5) 35%,
+    oklch(0 0 0 / 0.16) 72%,
+    transparent
+  );
+}
+
+.pl-overlay-gradient-primary {
+  padding-top: calc(var(--pl-overlay-p) * 3);
+  background: linear-gradient(
+    to top,
+    color-mix(in oklab, var(--pl-primary) 92%, transparent),
+    color-mix(in oklab, var(--pl-primary) 55%, transparent) 40%,
+    transparent
+  );
+}
+
+// Zaokrąglona, „pływająca" plakietka (z marginesem .pl-position-small).
+.pl-overlay-rounded {
+  border-radius: var(--pl-radius-md);
+}
+
+.pl-overlay :is(h1, h2, h3, h4, h5, h6) {
+  color: inherit;
+}
+
+// ── Ikona nakładki ──────────────────────────────────────────────────────
+.pl-overlay-icon {
+  --pl-overlay-icon-size: 3.25rem;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: var(--pl-overlay-icon-size);
+  height: var(--pl-overlay-icon-size);
+  border: 1px solid oklch(1 0 0 / 0.3);
+  border-radius: 50%;
+  background: oklch(0 0 0 / 0.36);
+  backdrop-filter: blur(12px) saturate(1.5);
+  -webkit-backdrop-filter: blur(12px) saturate(1.5);
+  box-shadow: 0 8px 24px -8px oklch(0 0 0 / 0.4);
+  color: oklch(1 0 0);
+  transition:
+    transform var(--pl-dur-4) var(--pl-ease-spring),
+    background-color var(--pl-dur-2) var(--pl-ease);
+
+  > svg,
+  > .pl-icon,
+  &.pl-icon > svg {
+    width: 1.35rem;
+    height: 1.35rem;
+  }
+
+  // Bez treści rysuje „+".
+  &:empty {
+    background:
+      linear-gradient(currentColor, currentColor) center / 1.1rem 1.5px no-repeat,
+      linear-gradient(currentColor, currentColor) center / 1.5px 1.1rem no-repeat,
+      oklch(0 0 0 / 0.36);
+  }
+}
+
+// Ikona lekko rośnie, gdy kursor jest nad całym kafelkiem.
+:is(.pl-transition-toggle, a, button):hover > .pl-overlay-icon,
+:is(.pl-transition-toggle, a, button):hover > .pl-overlay > .pl-overlay-icon,
+:is(.pl-transition-toggle, a, button):hover > * > .pl-overlay-icon {
+  transform: scale(1.1);
+  background-color: oklch(0 0 0 / 0.5);
+}

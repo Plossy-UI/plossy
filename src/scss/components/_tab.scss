@@ -1,0 +1,384 @@
+// Tab
+@use '../abstracts' as *;
+
+.pl-tab {
+  --pl-tab-px: 0.9rem;
+  --pl-tab-py: 0.7rem;
+  --pl-tab-line: 2px;
+  --pl-tab-color: var(--pl-primary);
+
+  position: relative;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0 0.25rem;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  // Linia bazowa rysowana cieniem — nie zmienia geometrii (ważne dla wskaźnika).
+  box-shadow: inset 0 -1px 0 var(--pl-border);
+
+  > li {
+    position: relative;
+    display: flex;
+  }
+
+  > li > a,
+  > li > button {
+    @include button-reset;
+    position: relative;
+    z-index: 1;
+    display: inline-flex;
+    flex: 1;
+    align-items: center;
+    gap: 0.5em;
+    padding: var(--pl-tab-py) var(--pl-tab-px);
+    color: var(--pl-text-muted);
+    font-size: 0.9375rem;
+    font-weight: 500;
+    line-height: 1.4;
+    letter-spacing: -0.006em;
+    text-decoration: none;
+    white-space: nowrap;
+    transition:
+      color var(--pl-dur-2) var(--pl-ease),
+      background-color var(--pl-dur-2) var(--pl-ease),
+      box-shadow var(--pl-dur-2) var(--pl-ease),
+      transform var(--pl-dur-3) var(--pl-ease-spring);
+
+    // Delikatne tło hover, odsunięte od linii.
+    &::before {
+      content: '';
+      position: absolute;
+      inset: 0.3rem 0.1rem 0.4rem;
+      z-index: -1;
+      border-radius: var(--pl-radius-sm);
+      background: var(--pl-muted);
+      opacity: 0;
+      transform: scale(0.9);
+      transition:
+        opacity var(--pl-dur-2) var(--pl-ease),
+        transform var(--pl-dur-3) var(--pl-ease-spring);
+    }
+
+    &:hover {
+      color: var(--pl-text);
+
+      &::before {
+        opacity: 1;
+        transform: none;
+      }
+    }
+
+    @include focus-visible(-3px);
+
+    &:focus-visible {
+      border-radius: var(--pl-radius-sm);
+    }
+
+    > .pl-icon,
+    > svg {
+      flex: none;
+      width: 1.15em;
+      height: 1.15em;
+    }
+  }
+
+  > li.pl-active > * {
+    color: var(--pl-text);
+    font-weight: 560;
+    // Bez JS: aktywna pozycja ma własną linię.
+    box-shadow: inset 0 calc(var(--pl-tab-line) * -1) 0 var(--pl-tab-color);
+  }
+
+  > li.pl-disabled > * {
+    opacity: 0.45;
+    pointer-events: none;
+  }
+
+  // Ze Switcherem: jedna linia przesuwa się pod aktywną pozycję.
+  &.pl-switcher-ready {
+    &::after {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: var(--pl-indicator-w, 0);
+      height: var(--pl-tab-line);
+      border-radius: var(--pl-tab-line) var(--pl-tab-line) 0 0;
+      background: var(--pl-tab-color);
+      transform: translate(
+        var(--pl-indicator-x, 0),
+        calc(var(--pl-indicator-y, 0px) + var(--pl-indicator-h, 0px) - var(--pl-tab-line))
+      );
+      transition:
+        transform var(--pl-dur-4) var(--pl-ease-spring),
+        width var(--pl-dur-4) var(--pl-ease-spring),
+        height var(--pl-dur-4) var(--pl-ease-spring);
+      pointer-events: none;
+    }
+
+    > li.pl-active > * {
+      box-shadow: none;
+    }
+  }
+}
+
+// ── Pozycja: zakładki pod treścią ───────────────────────────────────────
+.pl-tab-bottom {
+  box-shadow: inset 0 1px 0 var(--pl-border);
+
+  > li > a::before,
+  > li > button::before {
+    inset: 0.4rem 0.1rem 0.3rem;
+  }
+
+  > li.pl-active > * {
+    box-shadow: inset 0 var(--pl-tab-line) 0 var(--pl-tab-color);
+  }
+
+  &.pl-switcher-ready::after {
+    border-radius: 0 0 var(--pl-tab-line) var(--pl-tab-line);
+    transform: translate(var(--pl-indicator-x, 0), var(--pl-indicator-y, 0));
+  }
+}
+
+// ── Pionowe: z lewej / z prawej strony treści ───────────────────────────
+.pl-tab-left,
+.pl-tab-right {
+  flex-direction: column;
+  flex-wrap: nowrap;
+  gap: 0.125rem;
+
+  > li > a,
+  > li > button {
+    padding: 0.5rem var(--pl-tab-px);
+  }
+
+  > li > a::before,
+  > li > button::before {
+    inset: 0.1rem 0.35rem 0.1rem 0;
+  }
+
+  &.pl-switcher-ready::after {
+    width: var(--pl-tab-line);
+    height: var(--pl-indicator-h, 0);
+  }
+}
+
+.pl-tab-left {
+  box-shadow: inset -1px 0 0 var(--pl-border);
+
+  > li > a,
+  > li > button {
+    padding-left: 0.6rem;
+    padding-right: calc(var(--pl-tab-px) + 0.5rem);
+  }
+
+  > li.pl-active > * {
+    box-shadow: inset calc(var(--pl-tab-line) * -1) 0 0 var(--pl-tab-color);
+  }
+
+  &.pl-switcher-ready::after {
+    left: auto;
+    right: 0;
+    border-radius: var(--pl-tab-line) 0 0 var(--pl-tab-line);
+    transform: translateY(var(--pl-indicator-y, 0));
+  }
+}
+
+.pl-tab-right {
+  box-shadow: inset 1px 0 0 var(--pl-border);
+
+  > li > a,
+  > li > button {
+    padding-left: calc(var(--pl-tab-px) + 0.5rem);
+    padding-right: 0.6rem;
+  }
+
+  > li > a::before,
+  > li > button::before {
+    inset: 0.1rem 0 0.1rem 0.35rem;
+  }
+
+  > li.pl-active > * {
+    box-shadow: inset var(--pl-tab-line) 0 0 var(--pl-tab-color);
+  }
+
+  &.pl-switcher-ready::after {
+    border-radius: 0 var(--pl-tab-line) var(--pl-tab-line) 0;
+    transform: translateY(var(--pl-indicator-y, 0));
+  }
+}
+
+.pl-tab.pl-switcher-ready:is(.pl-tab-left, .pl-tab-right) > li.pl-active > * {
+  box-shadow: none;
+}
+
+// ── Pigułki i segmenty: wskaźnik jest tłem aktywnej pozycji ─────────────
+.pl-tab-pill,
+.pl-tab-segment {
+  --pl-tab-radius: var(--pl-radius-pill);
+  --pl-tab-indicator-bg: var(--pl-primary-soft);
+  --pl-tab-indicator-shadow: none;
+  --pl-tab-active: var(--pl-primary-text);
+
+  gap: 0.25rem;
+  box-shadow: none;
+
+  > li > a,
+  > li > button {
+    min-height: 2.25rem;
+    padding: 0.35rem 1rem;
+    border-radius: var(--pl-tab-radius);
+
+    &::before {
+      inset: 0;
+      border-radius: inherit;
+    }
+
+    &:active {
+      transform: scale(0.96);
+    }
+  }
+
+  > li.pl-active > * {
+    background: var(--pl-tab-indicator-bg);
+    box-shadow: var(--pl-tab-indicator-shadow);
+    color: var(--pl-tab-active);
+
+    &::before {
+      display: none;
+    }
+  }
+
+  &.pl-switcher-ready {
+    &::after {
+      width: var(--pl-indicator-w, 0);
+      height: var(--pl-indicator-h, 0);
+      border-radius: var(--pl-tab-radius);
+      background: var(--pl-tab-indicator-bg);
+      box-shadow: var(--pl-tab-indicator-shadow);
+      transform: translate(var(--pl-indicator-x, 0), var(--pl-indicator-y, 0));
+    }
+
+    > li.pl-active > * {
+      background: transparent;
+      box-shadow: none;
+    }
+  }
+
+  // W układzie pionowym wskaźnik zachowuje pełny rozmiar pozycji.
+  &:is(.pl-tab-left, .pl-tab-right) {
+    box-shadow: none;
+
+    > li > a,
+    > li > button {
+      padding: 0.35rem 1rem;
+    }
+
+    &.pl-switcher-ready::after {
+      right: auto;
+      left: 0;
+    }
+  }
+}
+
+.pl-tab.pl-switcher-ready:is(.pl-tab-pill, .pl-tab-segment) > li.pl-active > * {
+  background: transparent;
+  box-shadow: none;
+}
+
+// Segmenty: wspólne tło, biała „płytka" pod aktywną pozycją.
+.pl-tab-segment {
+  --pl-tab-radius: calc(var(--pl-radius-md) - 4px);
+  --pl-tab-indicator-bg: var(--pl-surface-raised);
+  --pl-tab-indicator-shadow: var(--pl-shadow-sm), inset 0 0 0 1px color-mix(in oklab, var(--pl-border) 70%, transparent);
+  --pl-tab-active: var(--pl-text);
+
+  display: inline-flex;
+  gap: 2px;
+  padding: 4px;
+  border-radius: var(--pl-radius-md);
+  background: var(--pl-muted);
+  box-shadow: inset 0 0 0 1px color-mix(in oklab, var(--pl-border) 60%, transparent);
+  vertical-align: middle;
+
+  &:is(.pl-tab-left, .pl-tab-right) {
+    box-shadow: inset 0 0 0 1px color-mix(in oklab, var(--pl-border) 60%, transparent);
+  }
+
+  > li > a,
+  > li > button {
+    min-height: 2rem;
+    padding: 0.25rem 0.9rem;
+    font-size: var(--pl-text-sm);
+  }
+
+  > li:not(.pl-active) > a::before,
+  > li:not(.pl-active) > button::before {
+    background: color-mix(in oklab, var(--pl-text) 6%, transparent);
+  }
+
+  &.pl-tab-fill {
+    display: flex;
+  }
+}
+
+// ── Modyfikatory ────────────────────────────────────────────────────────
+// Równe szerokości.
+.pl-tab-fill {
+  > li {
+    flex: 1 1 0;
+  }
+
+  > li > a,
+  > li > button {
+    justify-content: center;
+  }
+}
+
+.pl-tab-center {
+  justify-content: center;
+}
+
+.pl-tab-right-align {
+  justify-content: flex-end;
+}
+
+.pl-tab-small {
+  --pl-tab-px: 0.7rem;
+  --pl-tab-py: 0.5rem;
+
+  > li > a,
+  > li > button {
+    font-size: var(--pl-text-sm);
+  }
+}
+
+.pl-tab-large {
+  --pl-tab-px: 1.15rem;
+  --pl-tab-py: 0.9rem;
+
+  > li > a,
+  > li > button {
+    font-size: var(--pl-text-md);
+  }
+}
+
+// ── Wąskie ekrany: zakładki przewijają się w poziomie zamiast zawijać ────
+@media (max-width: 639.98px) {
+  .pl-tab:not(.pl-tab-left, .pl-tab-right, .pl-tab-wrap) {
+    flex-wrap: nowrap;
+    overflow-x: auto;
+    overscroll-behavior-x: contain;
+    scrollbar-width: none;
+
+    &::-webkit-scrollbar {
+      display: none;
+    }
+
+    > li {
+      flex: none;
+    }
+  }
+}

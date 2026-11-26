@@ -1,0 +1,159 @@
+// Totop — przycisk „do góry" z opcjonalnym pierścieniem postępu przewijania.
+@use '../abstracts' as *;
+
+$arrow: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23000' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M12 19V5'/%3E%3Cpath d='m6 11 6-6 6 6'/%3E%3C/svg%3E");
+
+.pl-totop {
+  --pl-totop-size: 2.75rem;
+  --pl-totop-progress: 0;
+  --pl-totop-ring: 2px;
+
+  position: relative;
+  display: inline-flex;
+  flex: none;
+  align-items: center;
+  justify-content: center;
+  width: var(--pl-totop-size);
+  height: var(--pl-totop-size);
+  padding: 0;
+  border: 1px solid var(--pl-border);
+  border-radius: 50%;
+  background: var(--pl-surface);
+  box-shadow: var(--pl-shadow-sm);
+  color: var(--pl-text-muted);
+  text-decoration: none;
+  cursor: pointer;
+  transition:
+    transform var(--pl-dur-4) var(--pl-ease-spring),
+    opacity var(--pl-dur-3) var(--pl-ease),
+    visibility var(--pl-dur-3),
+    background-color var(--pl-dur-2) var(--pl-ease),
+    border-color var(--pl-dur-2) var(--pl-ease),
+    color var(--pl-dur-2) var(--pl-ease),
+    box-shadow var(--pl-dur-3) var(--pl-ease);
+
+  // Strzałka rysowana w CSS, gdy element jest pusty.
+  &:empty::before {
+    content: '';
+    width: 1.15rem;
+    height: 1.15rem;
+    background: currentColor;
+    mask: $arrow center / contain no-repeat;
+    transition: transform var(--pl-dur-3) var(--pl-ease-spring);
+  }
+
+  > svg,
+  > .pl-icon {
+    width: 1.15rem;
+    height: 1.15rem;
+    transition: transform var(--pl-dur-3) var(--pl-ease-spring);
+  }
+
+  &:hover {
+    border-color: var(--pl-border-strong);
+    box-shadow: var(--pl-shadow-md);
+    color: var(--pl-text);
+    text-decoration: none;
+    transform: translateY(-2px);
+  }
+
+  &:active {
+    transform: scale(0.92);
+    transition-duration: var(--pl-dur-1);
+  }
+
+  @include focus-visible(3px);
+}
+
+// ── Tony ────────────────────────────────────────────────────────────────
+@include tones('pl-totop');
+
+.pl-totop:is(.pl-totop-primary, .pl-totop-secondary, .pl-totop-success, .pl-totop-warning, .pl-totop-danger, .pl-totop-info) {
+  border-color: transparent;
+  background: var(--pl-tone);
+  box-shadow:
+    inset 0 1px 0 oklch(1 0 0 / 0.16),
+    0 8px 20px -8px color-mix(in oklab, var(--pl-tone) 70%, transparent);
+  color: var(--pl-on-tone);
+
+  &:hover {
+    background: color-mix(in oklab, var(--pl-tone), var(--pl-mix-strong) 10%);
+    color: var(--pl-on-tone);
+  }
+}
+
+// ── Kształt i rozmiary ──────────────────────────────────────────────────
+.pl-totop-square {
+  border-radius: var(--pl-radius-md);
+}
+
+.pl-totop-small {
+  --pl-totop-size: 2.25rem;
+}
+
+.pl-totop-large {
+  --pl-totop-size: 3.5rem;
+  --pl-totop-ring: 3px;
+
+  &:empty::before,
+  > svg,
+  > .pl-icon {
+    width: 1.4rem;
+    height: 1.4rem;
+  }
+}
+
+// ── Przyklejony do rogu okna — pojawia się po przewinięciu (klasa .pl-active z JS) ──
+.pl-totop-fixed {
+  position: fixed;
+  right: var(--pl-totop-x, 1.5rem);
+  bottom: var(--pl-totop-y, 1.5rem);
+  z-index: var(--pl-z-sticky);
+  box-shadow: var(--pl-shadow-lg);
+
+  &:not(.pl-active) {
+    opacity: 0;
+    visibility: hidden;
+    pointer-events: none;
+    transform: translateY(1rem) scale(0.6);
+  }
+}
+
+.pl-totop-fixed.pl-totop-left {
+  right: auto;
+  left: var(--pl-totop-x, 1.5rem);
+}
+
+// ── Pierścień postępu przewijania (JS ustawia --pl-totop-progress: 0…1) ─
+.pl-totop-progress {
+  border-color: transparent;
+
+  &::after {
+    content: '';
+    position: absolute;
+    inset: -1px;
+    border-radius: inherit;
+    background: conic-gradient(
+      var(--pl-totop-ring-color, var(--pl-primary)) calc(var(--pl-totop-progress) * 360deg),
+      var(--pl-border) 0
+    );
+    mask: radial-gradient(
+      closest-side,
+      transparent calc(100% - var(--pl-totop-ring) - 0.5px),
+      #000 calc(100% - var(--pl-totop-ring))
+    );
+    pointer-events: none;
+  }
+}
+
+.pl-totop-progress:is(.pl-totop-primary, .pl-totop-secondary, .pl-totop-success, .pl-totop-warning, .pl-totop-danger, .pl-totop-info) {
+  --pl-totop-ring-color: var(--pl-spark);
+
+  &::after {
+    inset: -5px;
+    background: conic-gradient(
+      var(--pl-totop-ring-color) calc(var(--pl-totop-progress) * 360deg),
+      color-mix(in oklab, var(--pl-tone) 22%, transparent) 0
+    );
+  }
+}

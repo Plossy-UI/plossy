@@ -1,0 +1,101 @@
+// Transition — przejścia odsłaniane po najechaniu na kontener.
+// Wyzwalacze: :hover / :focus-within na .pl-transition-toggle,
+// klasa .pl-active na .pl-transition-toggle lub .pl-transition-active.
+@use '../abstracts' as *;
+
+// Selektor „stan odsłonięty" dla podanej klasy / selektora dziecka.
+@mixin shown($child) {
+  .pl-transition-toggle:hover #{$child},
+  .pl-transition-toggle:focus-within #{$child},
+  .pl-transition-toggle.pl-active #{$child},
+  .pl-transition-active.pl-active #{$child} {
+    @content;
+  }
+}
+
+.pl-transition-fade,
+[class*='pl-transition-scale'],
+[class*='pl-transition-slide'] {
+  --pl-transition-duration: var(--pl-dur-3);
+
+  opacity: 0;
+  transition:
+    opacity var(--pl-transition-duration) var(--pl-ease),
+    transform var(--pl-transition-duration) var(--pl-ease),
+    filter var(--pl-transition-duration) var(--pl-ease);
+}
+
+.pl-transition-slow {
+  --pl-transition-duration: calc(var(--pl-dur-4) * 1.4);
+}
+
+// Element widoczny cały czas — animuje się tylko transformacja.
+.pl-transition-opaque {
+  opacity: 1;
+}
+
+// ── Fade ────────────────────────────────────────────────────────────────
+@include shown('.pl-transition-fade') {
+  opacity: 1;
+}
+
+// ── Scale ───────────────────────────────────────────────────────────────
+.pl-transition-scale-up {
+  transform: scale(1);
+}
+
+.pl-transition-scale-down {
+  transform: scale(1.06);
+}
+
+@include shown('.pl-transition-scale-up') {
+  opacity: 1;
+  transform: scale(1.06);
+}
+
+@include shown('.pl-transition-scale-down') {
+  opacity: 1;
+  transform: scale(1);
+}
+
+// ── Slide ───────────────────────────────────────────────────────────────
+.pl-transition-slide-top { transform: translateY(-100%); }
+.pl-transition-slide-bottom { transform: translateY(100%); }
+.pl-transition-slide-left { transform: translateX(-100%); }
+.pl-transition-slide-right { transform: translateX(100%); }
+
+.pl-transition-slide-top-small { transform: translateY(-0.5rem); }
+.pl-transition-slide-bottom-small { transform: translateY(0.5rem); }
+.pl-transition-slide-left-small { transform: translateX(-0.5rem); }
+.pl-transition-slide-right-small { transform: translateX(0.5rem); }
+
+.pl-transition-slide-top-medium { transform: translateY(-3rem); }
+.pl-transition-slide-bottom-medium { transform: translateY(3rem); }
+.pl-transition-slide-left-medium { transform: translateX(-3rem); }
+.pl-transition-slide-right-medium { transform: translateX(3rem); }
+
+@include shown("[class*='pl-transition-slide']") {
+  opacity: 1;
+  transform: translate(0, 0);
+}
+
+// ── Dodatki ─────────────────────────────────────────────────────────────
+// Rozmycie, które ustępuje po najechaniu.
+.pl-transition-blur {
+  filter: blur(8px);
+  transition: filter var(--pl-transition-duration, var(--pl-dur-3)) var(--pl-ease);
+}
+
+@include shown('.pl-transition-blur') {
+  filter: blur(0);
+}
+
+// Kolejne dzieci wchodzą z opóźnieniem.
+@for $i from 1 through 5 {
+  .pl-transition-delay-#{$i} { transition-delay: #{$i * 60}ms; }
+}
+
+// Kontener z tabindex — obrys tylko dla klawiatury.
+.pl-transition-toggle {
+  -webkit-tap-highlight-color: transparent;
+}

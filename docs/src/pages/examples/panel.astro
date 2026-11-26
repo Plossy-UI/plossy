@@ -1,0 +1,682 @@
+---
+import Example from '../../layouts/Example.astro';
+
+// Nawigacja boczna renderowana dwa razy: w panelu bocznym i w offcanvasie.
+const navHtml = `
+<ul class="pl-nav pl-nav-pill" data-pl-nav>
+  <li class="pl-nav-header">Sklep</li>
+  <li class="pl-active"><a href="#"><span data-pl-icon="layout-dashboard"></span> Pulpit</a></li>
+  <li><a href="#zamowienia"><span data-pl-icon="shopping-bag"></span> Zamówienia <span class="pl-badge pl-badge-primary">12</span></a></li>
+  <li class="pl-parent">
+    <a href="#"><span data-pl-icon="package"></span> Produkty</a>
+    <ul class="pl-nav-sub">
+      <li><a href="#">Wszystkie produkty</a></li>
+      <li><a href="#">Stany magazynowe <span class="pl-nav-meta">3</span></a></li>
+      <li><a href="#">Kategorie</a></li>
+    </ul>
+  </li>
+  <li><a href="#"><span data-pl-icon="users"></span> Klienci</a></li>
+  <li class="pl-parent">
+    <a href="#"><span data-pl-icon="chart-bar"></span> Analityka <span class="pl-badge pl-badge-spark">Nowe</span></a>
+    <ul class="pl-nav-sub">
+      <li><a href="#sprzedaz">Sprzedaż</a></li>
+      <li><a href="#">Ruch na stronie</a></li>
+      <li><a href="#">Konwersje</a></li>
+    </ul>
+  </li>
+  <li class="pl-nav-header">Marketing</li>
+  <li><a href="#"><span data-pl-icon="percent"></span> Kody rabatowe</a></li>
+  <li><a href="#"><span data-pl-icon="mail"></span> Newsletter <span class="pl-nav-meta">2 szkice</span></a></li>
+  <li class="pl-nav-divider"></li>
+  <li><a href="#"><span data-pl-icon="settings"></span> Ustawienia</a></li>
+  <li><a href="/examples/sklep/"><span data-pl-icon="external-link"></span> Zobacz sklep</a></li>
+</ul>`;
+
+const kpis = [
+  { label: 'Przychód', icon: 'wallet', tone: 'primary', to: 128400, opts: "suffix: ' zł'", trend: '+12,4%', up: true, note: 'vs poprzednie 30 dni', pts: '0,22 12,18 24,20 36,12 48,14 60,6 72,9 84,2' },
+  { label: 'Zamówienia', icon: 'shopping-bag', tone: 'success', to: 1842, opts: '', trend: '+8,1%', up: true, note: '61 dziennie', pts: '0,20 12,16 24,18 36,14 48,9 60,11 72,5 84,4' },
+  { label: 'Średni koszyk', icon: 'receipt', tone: 'info', to: 214, opts: "suffix: ' zł'", trend: '+3,9%', up: true, note: 'cel: 220 zł', pts: '0,14 12,16 24,10 36,12 48,8 60,10 72,6 84,7' },
+  { label: 'Zwroty', icon: 'rotate-ccw', tone: 'warning', to: 2.1, opts: "decimals: 1; suffix: '%'", trend: '−0,4 pp', up: false, note: '37 zwrotów', pts: '0,6 12,9 24,7 36,12 48,11 60,15 72,14 84,19' },
+];
+
+const months = [
+  ['Gru', 62], ['Sty', 48], ['Lut', 54], ['Mar', 71], ['Kwi', 66], ['Maj', 83],
+  ['Cze', 78], ['Lip', 69], ['Sie', 74], ['Wrz', 91], ['Paź', 104], ['Lis', 128],
+];
+const maxMonth = 140;
+
+const statuses: Record<string, [string, string]> = {
+  paid: ['Opłacone', 'success'],
+  packing: ['Kompletowanie', 'warning'],
+  sent: ['Wysłane', 'info'],
+  refund: ['Zwrot', 'danger'],
+  new: ['Nowe', 'primary'],
+};
+
+const orders = [
+  { id: 10482, name: 'Karolina Bąk', mail: 'karolina@example.com', av: 4, date: '25 lis, 09:14', sort: 6, status: 'new', total: 807 },
+  { id: 10481, name: 'Jakub Sowa', mail: 'jakub@mielone.example', av: 5, date: '25 lis, 08:02', sort: 5, status: 'paid', total: 1960 },
+  { id: 10480, name: 'Zofia Rak', mail: 'zofia.rak@example.com', av: 6, date: '24 lis, 21:47', sort: 4, status: 'packing', total: 349 },
+  { id: 10479, name: 'Marek Nowak', mail: 'marek@fala.example', av: 2, date: '24 lis, 17:30', sort: 3, status: 'sent', total: 689 },
+  { id: 10478, name: 'Anna Kowalska', mail: 'anna@nordwind.example', av: 1, date: '24 lis, 12:05', sort: 2, status: 'sent', total: 1058 },
+  { id: 10477, name: 'Ewa Maj', mail: 'ewa.maj@example.com', av: 3, date: '23 lis, 19:41', sort: 1, status: 'refund', total: 189 },
+];
+
+const feed = [
+  { av: 4, name: 'Karolina Bąk', time: '2 min temu', text: 'złożyła zamówienie <strong>#10482</strong> na kwotę 807 zł.' },
+  { av: 2, name: 'Marek Nowak', time: '38 min temu', text: 'dodał opinię do produktu <strong>Stolik Lund</strong>: „Stoi równo jak od linijki".' },
+  { av: 3, name: 'Ewa Maj', time: '2 godz. temu', text: 'zgłosiła zwrot zamówienia <strong>#10477</strong> — wazon dotarł wyszczerbiony.' },
+  { av: 1, name: 'Anna Kowalska', time: 'wczoraj', text: 'zapisała się do newslettera z kodem <strong>LOREM10</strong>.' },
+];
+
+const tasks = [
+  { text: 'Odpowiedzieć na reklamację #10477', tag: 'Pilne', tone: 'danger', done: false },
+  { text: 'Uzupełnić stan: Pled Skog, kolor mech', tag: 'Magazyn', tone: 'warning', done: false },
+  { text: 'Zatwierdzić newsletter „Zimowe tekstylia"', tag: 'Marketing', tone: 'primary', done: true },
+  { text: 'Dodać zdjęcia kinkietu Halo', tag: 'Katalog', tone: 'info', done: false },
+  { text: 'Wysłać faktury zbiorcze za listopad', tag: 'Finanse', tone: 'success', done: true },
+];
+
+const team = [
+  { av: 1, name: 'Anna Kowalska', role: 'Obsługa klienta', status: 'online' },
+  { av: 2, name: 'Marek Nowak', role: 'Magazyn', status: 'online' },
+  { av: 3, name: 'Ewa Maj', role: 'Marketing', status: 'busy' },
+  { av: 5, name: 'Tomasz Zieliński', role: 'Logistyka', status: 'away' },
+  { av: 6, name: 'Zofia Rak', role: 'Księgowość', status: 'offline' },
+];
+
+const zl = (n: number) => `${n.toLocaleString('pl-PL').replace(/ /g, ' ')} zł`;
+---
+
+<Example title="Panel administracyjny" description="Pulpit sklepu: nawigacja boczna, KPI, wykres bez biblioteki, tabela zamówień, aktywność, zadania i modal — z komponentów Plossy.">
+  <div class="px-shell">
+    <!-- Panel boczny (od 960 px) -->
+    <aside class="px-side pl-visible@m" aria-label="Nawigacja panelu">
+      <a class="pl-logo pl-margin-small-bottom" href="/examples/panel/"><span class="pl-logo-mark"></span>Lorem</a>
+      <p class="pl-text-meta pl-margin-remove-top">Panel sprzedawcy</p>
+      <nav class="pl-margin-top" aria-label="Główna"><Fragment set:html={navHtml} /></nav>
+      <div class="pl-card pl-card-small pl-card-muted pl-margin-medium-top">
+        <div class="pl-card-body">
+          <div class="pl-progress-label"><span>Plan Pro</span><span>7,2 / 10 GB</span></div>
+          <div class="pl-progress-bar pl-progress-small" role="progressbar" aria-label="Wykorzystane miejsce" aria-valuenow="72" aria-valuemin="0" aria-valuemax="100" style="--pl-progress: 72"><div class="pl-progress-fill"></div></div>
+          <a class="pl-link-arrow pl-text-small pl-margin-small-top pl-display-inline-block" href="#">Zwiększ limit</a>
+        </div>
+      </div>
+    </aside>
+
+    <div class="px-main">
+      <!-- Pasek górny -->
+      <header class="pl-navbar-container pl-navbar-glass pl-navbar-sticky" data-pl-navbar>
+        <div class="pl-navbar">
+          <div class="pl-navbar-left">
+            <button class="pl-navbar-toggle pl-hidden@m" type="button" aria-label="Otwórz menu" data-pl-toggle="#px-menu"></button>
+            <form class="pl-search pl-search-navbar pl-visible@s" role="search" style="--pl-search-w: 17rem; --pl-search-w-focus: 22rem">
+              <span class="pl-search-icon" data-pl-icon="search"></span>
+              <input class="pl-search-input" type="search" placeholder="Szukaj zamówień, klientów…" aria-label="Szukaj" />
+              <kbd class="pl-search-kbd">Ctrl K</kbd>
+            </form>
+          </div>
+          <div class="pl-navbar-right">
+            <button class="pl-button pl-button-primary pl-button-small" type="button" data-pl-modal-open="#px-order"><span data-pl-icon="plus"></span> <span class="pl-visible@s">Nowe zamówienie</span></button>
+
+            <span class="pl-badge-anchor">
+              <button class="pl-button pl-button-ghost pl-button-icon pl-button-small" type="button" aria-label="Powiadomienia: 3 nowe"><span data-pl-icon="bell"></span></button>
+              <div class="pl-drop" data-pl-drop="mode: click; pos: bottom-end">
+                <div class="pl-flex pl-flex-middle pl-flex-between">
+                  <h2 class="pl-drop-title pl-margin-remove">Powiadomienia</h2>
+                  <button class="pl-button pl-button-text pl-button-small" type="button" data-toast="Oznaczono jako przeczytane" data-pl-drop-close>Oznacz wszystkie</button>
+                </div>
+                <ul class="pl-list-group pl-list-group-flush pl-list-group-small pl-margin-small-top">
+                  <li class="pl-list-group-item">
+                    <span class="pl-icon-box pl-icon-circle pl-icon-primary" data-pl-icon="shopping-bag"></span>
+                    <span class="pl-list-group-content"><span class="pl-list-group-title">Nowe zamówienie #10482</span><span class="pl-list-group-text">Karolina Bąk · 807 zł · 2 min temu</span></span>
+                  </li>
+                  <li class="pl-list-group-item">
+                    <span class="pl-icon-box pl-icon-circle pl-icon-warning" data-pl-icon="triangle-alert"></span>
+                    <span class="pl-list-group-content"><span class="pl-list-group-title">Niski stan magazynowy</span><span class="pl-list-group-text">Pled Skog, mech — zostały 3 szt.</span></span>
+                  </li>
+                  <li class="pl-list-group-item">
+                    <span class="pl-icon-box pl-icon-circle pl-icon-danger" data-pl-icon="rotate-ccw"></span>
+                    <span class="pl-list-group-content"><span class="pl-list-group-title">Zgłoszono zwrot #10477</span><span class="pl-list-group-text">Ewa Maj · 2 godz. temu</span></span>
+                  </li>
+                </ul>
+                <div class="pl-drop-footer">
+                  <a class="pl-link-arrow pl-text-small" href="#">Wszystkie powiadomienia</a>
+                </div>
+              </div>
+              <span class="pl-badge pl-badge-danger pl-badge-small">3</span>
+            </span>
+
+            <button class="pl-button pl-button-ghost pl-button-small px-user" type="button" aria-label="Menu użytkownika">
+              <span class="pl-avatar pl-avatar-small"><img src="/img/avatar-4.svg" alt="" /><span class="pl-avatar-status pl-avatar-status-online"></span></span>
+              <span class="pl-visible@l">Karolina</span>
+              <span data-pl-icon="chevron-down" class="pl-icon-small pl-visible@s"></span>
+            </button>
+            <div class="pl-drop pl-dropdown" data-pl-drop="mode: click; pos: bottom-end">
+              <ul class="pl-dropdown-nav">
+                <li class="pl-nav-header">karolina@lorem.example</li>
+                <li><a href="#"><span data-pl-icon="user"></span> Mój profil</a></li>
+                <li><a href="#"><span data-pl-icon="credit-card"></span> Rozliczenia <span class="pl-dropdown-meta">Pro</span></a></li>
+                <li><a href="#"><span data-pl-icon="life-buoy"></span> Pomoc</a></li>
+                <li class="pl-nav-divider"></li>
+                <li class="pl-dropdown-danger"><a href="/examples/logowanie/"><span data-pl-icon="log-out"></span> Wyloguj się</a></li>
+              </ul>
+            </div>
+          </div>
+        </div>
+      </header>
+
+      <main class="px-content">
+        <!-- Nagłówek strony -->
+        <div class="pl-flex pl-flex-bottom pl-flex-between pl-flex-wrap pl-gap-small">
+          <div>
+            <nav aria-label="Okruszki">
+              <ul class="pl-breadcrumb pl-breadcrumb-chevron pl-breadcrumb-small">
+                <li><a href="#">Lorem</a></li>
+                <li><a href="#">Sklep</a></li>
+                <li><span aria-current="page">Pulpit</span></li>
+              </ul>
+            </nav>
+            <h1 class="pl-text-3xl pl-margin-small-top pl-margin-remove-bottom">Dzień dobry, Karolino</h1>
+            <p class="pl-text-muted pl-margin-remove">Środa, 25 listopada · 12 zamówień czeka na wysyłkę</p>
+          </div>
+          <div class="pl-flex pl-flex-middle pl-flex-wrap pl-gap-small">
+            <ul class="pl-subnav pl-subnav-pill pl-subnav-small" data-pl-switcher="connect: #px-none" aria-label="Zakres dat">
+              <li><a href="#">7 dni</a></li>
+              <li class="pl-active"><a href="#">30 dni</a></li>
+              <li><a href="#">Kwartał</a></li>
+            </ul>
+            <button class="pl-button pl-button-small" type="button" data-toast="Raport CSV trafi na Twój e-mail"><span data-pl-icon="download"></span> Eksport</button>
+          </div>
+        </div>
+        <div class="pl-switcher" id="px-none" hidden><div></div><div></div><div></div></div>
+
+        <!-- KPI -->
+        <div class="pl-grid pl-grid-small pl-grid-match pl-child-width-1-1 pl-child-width-1-2@s pl-child-width-1-4@l pl-margin-medium-top" data-pl-scrollspy="cls: pl-animation-slide-up-small; target: > *; delay: 60">
+          {kpis.map((k) => (
+            <div>
+              <div class="pl-card pl-width-1-1">
+                <div class="pl-card-body">
+                  <div class="pl-flex pl-flex-middle pl-flex-between pl-gap-small">
+                    <span class="pl-flex pl-flex-middle pl-gap-xsmall pl-text-small pl-text-muted pl-text-nowrap"><span class={`pl-text-${k.tone}`} data-pl-icon={k.icon}></span> {k.label}</span>
+                    <span class={`pl-label pl-label-pill pl-label-${k.up ? 'success' : 'danger'}`}><span class="pl-icon-small" data-pl-icon={k.up ? 'trending-up' : 'trending-down'}></span> {k.trend}</span>
+                  </div>
+                  <div class="pl-text-3xl pl-text-display pl-text-semibold pl-text-nowrap pl-margin-small-top" data-pl-counter={`to: ${k.to}; ${k.opts}`}></div>
+                  <div class="pl-flex pl-flex-bottom pl-flex-between pl-gap-small">
+                    <span class="pl-text-meta">{k.note}</span>
+                    <svg class={`pl-text-${k.tone} pl-flex-none`} viewBox="0 0 84 24" width="84" height="24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points={k.pts}></polyline></svg>
+                  </div>
+                </div>
+              </div>
+            </div>
+          ))}
+        </div>
+
+        <!-- Wykres + zespół -->
+        <div class="pl-grid pl-grid-small pl-grid-match pl-margin-small-top">
+          <div class="pl-width-1-1 pl-width-2-3@l" id="sprzedaz">
+            <div class="pl-card pl-width-1-1">
+              <div class="pl-card-header pl-flex-wrap pl-gap-small">
+                <div>
+                  <h2 class="pl-card-title">Sprzedaż miesięczna</h2>
+                  <p class="pl-card-meta pl-margin-remove">Ostatnie 12 miesięcy · tys. zł</p>
+                </div>
+                <div class="pl-margin-auto-left pl-text-right">
+                  <div class="pl-text-xl pl-text-display pl-text-semibold">928 tys. zł</div>
+                  <div class="pl-text-meta"><span class="pl-text-success">+18%</span> rok do roku</div>
+                </div>
+              </div>
+              <div class="pl-card-body">
+                <div class="px-chart" role="img" aria-label="Wykres słupkowy sprzedaży: od 62 tys. zł w grudniu do 128 tys. zł w listopadzie">
+                  <div class="px-chart-grid" aria-hidden="true">
+                    {[140, 105, 70, 35, 0].map((v) => <span><i>{v}</i></span>)}
+                  </div>
+                  <div class="px-chart-bars">
+                    {months.map(([m, v], i) => (
+                      <div class={i === months.length - 1 ? 'px-now' : ''} data-pl-tooltip={`title: ${m}: ${v} tys. zł; pos: top`}>
+                        <span style={`--h: ${(Number(v) / maxMonth) * 100}`}></span>
+                        <small>{m}</small>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="pl-width-1-1 pl-width-1-3@l">
+            <div class="pl-card pl-width-1-1">
+              <div class="pl-card-header">
+                <h2 class="pl-card-title">Zespół</h2>
+                <span class="pl-label pl-label-dot pl-label-pulse pl-label-success pl-margin-auto-left">2 online</span>
+              </div>
+              <ul class="pl-list-group pl-list-group-flush">
+                {team.map((t) => (
+                  <li class="pl-list-group-item">
+                    <div class="pl-avatar-item">
+                      <span class="pl-avatar"><img src={`/img/avatar-${t.av}.svg`} alt="" /><span class={`pl-avatar-status pl-avatar-status-${t.status}`}></span></span>
+                      <span class="pl-avatar-text"><span class="pl-avatar-name">{t.name}</span><span class="pl-avatar-meta">{t.role}</span></span>
+                    </div>
+                    <button class="pl-icon-button pl-list-group-meta" type="button" aria-label={`Napisz do: ${t.name}`} data-pl-tooltip="Wiadomość" data-toast={`Otwarto rozmowę: ${t.name}`}><span data-pl-icon="message-circle"></span></button>
+                  </li>
+                ))}
+              </ul>
+            </div>
+          </div>
+        </div>
+
+        <!-- Zamówienia -->
+        <div class="pl-card pl-margin-small-top" id="zamowienia">
+          <div class="pl-card-header pl-flex-wrap pl-gap-small">
+            <div>
+              <h2 class="pl-card-title">Ostatnie zamówienia</h2>
+              <p class="pl-card-meta pl-margin-remove">Kliknij nagłówek kolumny, aby posortować</p>
+            </div>
+            <div class="pl-margin-auto-left pl-flex pl-gap-small">
+              <button class="pl-button pl-button-small" type="button"><span data-pl-icon="filter"></span> Filtry</button>
+              <button class="pl-button pl-button-small pl-button-primary pl-button-soft" type="button" data-pl-modal-open="#px-order"><span data-pl-icon="plus"></span> Dodaj</button>
+            </div>
+          </div>
+          <table class="pl-table pl-table-divider pl-table-hover pl-table-middle pl-table-responsive pl-margin-remove" id="px-orders">
+            <thead>
+              <tr>
+                <th><button class="pl-table-sort" type="button" data-sort="id">Zamówienie</button></th>
+                <th><button class="pl-table-sort" type="button" data-sort="name">Klient</button></th>
+                <th aria-sort="descending"><button class="pl-table-sort" type="button" data-sort="date">Data</button></th>
+                <th>Status</th>
+                <th class="pl-table-numeric"><button class="pl-table-sort" type="button" data-sort="total">Kwota</button></th>
+                <th class="pl-table-shrink"><span class="pl-visually-hidden">Akcje</span></th>
+              </tr>
+            </thead>
+            <tbody>
+              {orders.map((o) => (
+                <tr data-id={o.id} data-name={o.name} data-date={o.sort} data-total={o.total}>
+                  <td data-label="Zamówienie"><a class="pl-link-text pl-text-mono pl-text-small" href="#">#{o.id}</a></td>
+                  <td data-label="Klient">
+                    <div class="pl-avatar-item">
+                      <span class="pl-avatar pl-avatar-small"><img src={`/img/avatar-${o.av}.svg`} alt="" /></span>
+                      <span class="pl-avatar-text"><span class="pl-avatar-name">{o.name}</span><span class="pl-avatar-meta">{o.mail}</span></span>
+                    </div>
+                  </td>
+                  <td data-label="Data" class="pl-table-nowrap pl-text-muted">{o.date}</td>
+                  <td data-label="Status"><div><span class={`pl-label pl-label-dot pl-label-${statuses[o.status][1]}`}>{statuses[o.status][0]}</span></div></td>
+                  <td data-label="Kwota" class="pl-table-numeric pl-text-tabular pl-text-medium pl-table-nowrap">{zl(o.total)}</td>
+                  <td class="pl-table-shrink">
+                    <button class="pl-icon-button" type="button" aria-label={`Akcje zamówienia ${o.id}`}><span data-pl-icon="ellipsis"></span></button>
+                    <div class="pl-drop pl-dropdown" data-pl-drop="mode: click; pos: bottom-end">
+                      <ul class="pl-dropdown-nav">
+                        <li><a href="#"><span data-pl-icon="eye"></span> Szczegóły</a></li>
+                        <li><a href="#" data-toast={`Etykieta dla #${o.id} w kolejce druku`}><span data-pl-icon="truck"></span> Drukuj etykietę</a></li>
+                        <li><a href="#" data-toast={`Faktura #${o.id} wysłana do klienta`}><span data-pl-icon="receipt"></span> Wyślij fakturę</a></li>
+                        <li class="pl-nav-divider"></li>
+                        <li class="pl-dropdown-danger"><a href="#" data-cancel={o.id}><span data-pl-icon="ban"></span> Anuluj zamówienie</a></li>
+                      </ul>
+                    </div>
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+          <div class="pl-card-footer pl-flex-wrap pl-flex-middle pl-gap-small">
+            <span class="pl-text-meta">Pokazano 1–6 z 248</span>
+            <nav class="pl-margin-auto-left" aria-label="Stronicowanie zamówień">
+              <ul class="pl-pagination pl-pagination-small">
+                <li class="pl-disabled"><a href="#" aria-label="Poprzednia strona"><span class="pl-pagination-previous"></span></a></li>
+                <li class="pl-active"><a href="#" aria-current="page">1</a></li>
+                <li><a href="#">2</a></li>
+                <li><a href="#">3</a></li>
+                <li><span>…</span></li>
+                <li><a href="#">42</a></li>
+                <li><a href="#" aria-label="Następna strona"><span class="pl-pagination-next"></span></a></li>
+              </ul>
+            </nav>
+          </div>
+        </div>
+
+        <!-- Aktywność + zadania -->
+        <div class="pl-grid pl-grid-small pl-grid-match pl-child-width-1-1 pl-child-width-1-2@l pl-margin-small-top">
+          <div>
+            <div class="pl-card pl-width-1-1">
+              <div class="pl-card-header">
+                <h2 class="pl-card-title">Aktywność</h2>
+                <a class="pl-link-arrow pl-text-small pl-margin-auto-left" href="#">Cała historia</a>
+              </div>
+              <div class="pl-card-body">
+                <ul class="pl-comment-list pl-comment-list-small pl-comment-list-divider">
+                  {feed.map((f) => (
+                    <li>
+                      <article class="pl-comment">
+                        <header class="pl-comment-header">
+                          <img class="pl-comment-avatar" src={`/img/avatar-${f.av}.svg`} alt="" width="32" height="32" />
+                          <div>
+                            <h3 class="pl-comment-title">{f.name}</h3>
+                            <ul class="pl-comment-meta"><li>{f.time}</li></ul>
+                          </div>
+                        </header>
+                        <div class="pl-comment-body"><p set:html={f.text} /></div>
+                      </article>
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            </div>
+          </div>
+          <div>
+            <div class="pl-card pl-width-1-1">
+              <div class="pl-card-header">
+                <h2 class="pl-card-title">Zadania na dziś</h2>
+                <span class="pl-text-meta pl-margin-auto-left" id="px-tasks-count">2 z 5</span>
+              </div>
+              <div class="pl-card-body">
+                <div class="pl-progress-bar pl-progress-success" id="px-tasks-bar" role="progressbar" aria-label="Postęp zadań" aria-valuenow="40" aria-valuemin="0" aria-valuemax="100" style="--pl-progress: 40"><div class="pl-progress-fill"></div></div>
+                <div class="pl-list-group pl-list-group-flush pl-margin-small-top" id="px-tasks">
+                  {tasks.map((t) => (
+                    <label class="pl-list-group-item">
+                      <input class="pl-checkbox pl-form-success" type="checkbox" checked={t.done} />
+                      <span class="pl-list-group-content"><span class="pl-list-group-title">{t.text}</span></span>
+                      <span class={`pl-label pl-label-small pl-label-${t.tone}`}>{t.tag}</span>
+                    </label>
+                  ))}
+                </div>
+              </div>
+              <div class="pl-card-footer">
+                <form class="pl-flex pl-gap-small pl-width-1-1" id="px-task-form">
+                  <input class="pl-input pl-form-small pl-flex-1" type="text" placeholder="Dodaj zadanie…" aria-label="Nowe zadanie" required />
+                  <button class="pl-button pl-button-small" type="submit"><span data-pl-icon="plus"></span> Dodaj</button>
+                </form>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <p class="pl-text-meta pl-text-center pl-margin-medium-top">Lorem · panel sprzedawcy · przykład zbudowany z Plossy</p>
+      </main>
+    </div>
+  </div>
+
+  <!-- Nawigacja mobilna -->
+  <dialog class="pl-offcanvas" id="px-menu" data-pl-offcanvas="side: left">
+    <div class="pl-offcanvas-bar">
+      <div class="pl-offcanvas-header">
+        <span class="pl-offcanvas-title pl-logo"><span class="pl-logo-mark"></span>Lorem</span>
+        <button class="pl-close" type="button" aria-label="Zamknij" data-pl-offcanvas-close></button>
+      </div>
+      <div class="pl-offcanvas-body">
+        <form class="pl-search pl-search-default pl-search-block pl-margin-bottom" role="search">
+          <span class="pl-search-icon" data-pl-icon="search"></span>
+          <input class="pl-search-input" type="search" placeholder="Szukaj…" aria-label="Szukaj" />
+        </form>
+        <Fragment set:html={navHtml} />
+      </div>
+    </div>
+  </dialog>
+
+  <!-- Modal: nowe zamówienie -->
+  <dialog class="pl-modal pl-modal-scroll" id="px-order" data-pl-modal>
+    <form class="pl-modal-dialog" id="px-order-form">
+      <div class="pl-modal-header">
+        <div>
+          <p class="pl-modal-eyebrow">Zamówienie ręczne</p>
+          <h2 class="pl-modal-title">Nowe zamówienie</h2>
+        </div>
+        <button class="pl-close" type="button" aria-label="Zamknij" data-pl-modal-close></button>
+      </div>
+      <div class="pl-modal-body">
+        <div class="pl-form-grid">
+          <div class="pl-form-field">
+            <label class="pl-form-label pl-form-required" for="px-o-name">Klient</label>
+            <div class="pl-form-icon">
+              <span data-pl-icon="user"></span>
+              <input class="pl-input" id="px-o-name" name="name" type="text" placeholder="Imię i nazwisko" required />
+            </div>
+          </div>
+          <div class="pl-form-field">
+            <label class="pl-form-label" for="px-o-mail">E-mail</label>
+            <div class="pl-form-icon">
+              <span data-pl-icon="mail"></span>
+              <input class="pl-input" id="px-o-mail" type="email" placeholder="klient@example.com" />
+            </div>
+          </div>
+          <div class="pl-form-field">
+            <label class="pl-form-label pl-form-required" for="px-o-product">Produkt</label>
+            <select class="pl-select" id="px-o-product" name="product">
+              <option value="429">Lampa stołowa Arko — 429 zł</option>
+              <option value="189">Wazon Fjell — 189 zł</option>
+              <option value="349">Pled Skog — 349 zł</option>
+              <option value="529">Krzesło Nord — 529 zł</option>
+            </select>
+          </div>
+          <div class="pl-form-field">
+            <label class="pl-form-label" for="px-o-qty">Ilość</label>
+            <input class="pl-input" id="px-o-qty" name="qty" type="number" min="1" max="20" value="1" />
+          </div>
+          <div class="pl-form-field pl-form-span-full">
+            <span class="pl-form-label">Dostawa</span>
+            <div class="pl-grid pl-grid-small pl-grid-match pl-child-width-1-1 pl-child-width-1-3@s" role="radiogroup" aria-label="Dostawa">
+              {[['Kurier', '1–2 dni · 18 zł', true], ['Paczkomat', '1–2 dni · 12 zł', false], ['Odbiór osobisty', 'Gdańsk · 0 zł', false]].map(([title, text, on]) => (
+                <div>
+                  <label class="pl-form-card">
+                    <input class="pl-radio" type="radio" name="delivery" checked={on as boolean} />
+                    <span class="pl-form-card-body"><span class="pl-form-card-title">{title}</span><span class="pl-form-card-text">{text}</span></span>
+                  </label>
+                </div>
+              ))}
+            </div>
+          </div>
+          <div class="pl-form-field pl-form-span-full">
+            <label class="pl-form-label" for="px-o-note">Uwagi <span class="pl-form-optional">opcjonalne</span></label>
+            <textarea class="pl-textarea" id="px-o-note" rows="2" placeholder="Np. zapakować na prezent" data-pl-autosize></textarea>
+          </div>
+          <label class="pl-form-check pl-form-span-full">
+            <input class="pl-switch" type="checkbox" role="switch" checked />
+            Wyślij klientowi potwierdzenie e-mailem
+          </label>
+        </div>
+      </div>
+      <div class="pl-modal-footer">
+        <button class="pl-button pl-button-ghost" type="button" data-pl-modal-close>Anuluj</button>
+        <button class="pl-button pl-button-primary" type="submit"><span data-pl-icon="check"></span> Utwórz zamówienie</button>
+      </div>
+    </form>
+  </dialog>
+
+  <style is:global>
+    /* Szkielet aplikacji: panel boczny + treść. */
+    .px-shell {
+      min-height: 100svh;
+    }
+    .px-side {
+      padding: 1.25rem 1rem 5rem;
+      border-right: 1px solid var(--pl-border);
+      background: var(--pl-surface);
+    }
+    .px-content {
+      padding: 1.5rem 1rem 5rem;
+    }
+    .px-user {
+      gap: 0.5rem;
+      padding-inline: 0.35rem;
+    }
+    @media (min-width: 960px) {
+      .px-shell {
+        display: grid;
+        grid-template-columns: 16.5rem minmax(0, 1fr);
+      }
+      .px-side {
+        position: sticky;
+        top: 0;
+        height: 100svh;
+        overflow-y: auto;
+      }
+      .px-content {
+        padding: 2rem 2rem 4rem;
+      }
+    }
+
+    /* Wykres słupkowy: czysty CSS na tokenach. */
+    .px-chart {
+      position: relative;
+      height: 15rem;
+      padding-left: 2rem;
+    }
+    .px-chart-grid {
+      position: absolute;
+      inset: 0 0 1.5rem 2rem;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+    }
+    .px-chart-grid > span {
+      position: relative;
+      border-top: 1px dashed var(--pl-border);
+    }
+    .px-chart-grid > span:last-child {
+      border-top-style: solid;
+      border-top-color: var(--pl-border-strong);
+    }
+    .px-chart-grid i {
+      position: absolute;
+      right: calc(100% + 0.5rem);
+      top: -0.6em;
+      color: var(--pl-text-subtle);
+      font: 0.6875rem / 1.2 var(--pl-font-mono);
+      font-style: normal;
+    }
+    .px-chart-bars {
+      position: relative;
+      display: flex;
+      align-items: stretch;
+      gap: clamp(0.25rem, 1.2vw, 0.9rem);
+      height: 100%;
+    }
+    .px-chart-bars > div {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      justify-content: flex-end;
+      align-items: center;
+      min-width: 0;
+    }
+    .px-chart-bars span {
+      width: 100%;
+      max-width: 2.5rem;
+      height: calc(var(--h) * 1%);
+      border-radius: var(--pl-radius-xs) var(--pl-radius-xs) 0 0;
+      background: color-mix(in oklab, var(--pl-primary) 30%, var(--pl-surface));
+      transform-origin: bottom;
+      transition: background-color var(--pl-dur-2) var(--pl-ease), transform var(--pl-dur-3) var(--pl-ease-spring);
+    }
+    .px-chart-bars > div:hover span,
+    .px-chart-bars > .px-now span {
+      background: var(--pl-primary);
+    }
+    .px-chart-bars > div:hover span {
+      transform: scaleY(1.03);
+    }
+    .px-chart-bars small {
+      flex: 0 0 1.5rem;
+      display: flex;
+      align-items: flex-end;
+      color: var(--pl-text-muted);
+      font: 0.6875rem / 1 var(--pl-font-mono);
+    }
+    @media (prefers-reduced-motion: no-preference) {
+      .px-chart-bars span {
+        animation: px-grow var(--pl-dur-4) var(--pl-ease-spring) backwards;
+      }
+      @keyframes px-grow {
+        from {
+          transform: scaleY(0);
+        }
+      }
+    }
+    @media (max-width: 639px) {
+      .px-chart-bars > div:nth-child(odd) small {
+        visibility: hidden;
+      }
+    }
+    #px-tasks input:checked ~ .pl-list-group-content {
+      color: var(--pl-text-subtle);
+      text-decoration: line-through;
+    }
+  </style>
+
+  <script is:inline>
+    (() => {
+      const toast = (message, status = 'success', title = '') => window.Plossy.notification({ message, status, title });
+
+      document.addEventListener('click', (event) => {
+        const el = event.target.closest('[data-toast]');
+        if (el) toast(el.dataset.toast, 'primary');
+
+        const cancel = event.target.closest('[data-cancel]');
+        if (cancel) {
+          window.Plossy.modal.confirm(`Anulować zamówienie #${cancel.dataset.cancel}?`).then((ok) => {
+            if (!ok) return;
+            const row = document.querySelector(`#px-orders tr[data-id="${cancel.dataset.cancel}"]`);
+            const label = row && row.querySelector('.pl-label');
+            if (label) {
+              label.className = 'pl-label pl-label-dot';
+              label.textContent = 'Anulowane';
+            }
+            toast(`Zamówienie #${cancel.dataset.cancel} anulowane`, 'warning');
+          });
+        }
+
+        // Sortowanie tabeli po kliknięciu nagłówka.
+        const sort = event.target.closest('#px-orders .pl-table-sort');
+        if (sort) {
+          const th = sort.closest('th');
+          const dir = th.getAttribute('aria-sort') === 'ascending' ? 'descending' : 'ascending';
+          th.closest('tr').querySelectorAll('th').forEach((cell) => cell.removeAttribute('aria-sort'));
+          th.setAttribute('aria-sort', dir);
+          const key = sort.dataset.sort;
+          const body = document.querySelector('#px-orders tbody');
+          const rows = [...body.rows].sort((a, b) => {
+            const x = a.dataset[key];
+            const y = b.dataset[key];
+            const diff = key === 'name' ? x.localeCompare(y, 'pl') : Number(x) - Number(y);
+            return dir === 'ascending' ? diff : -diff;
+          });
+          body.append(...rows);
+        }
+      });
+
+      // Zadania: postęp liczony z zaznaczonych pól.
+      const updateTasks = () => {
+        const boxes = [...document.querySelectorAll('#px-tasks input[type="checkbox"]')];
+        const done = boxes.filter((box) => box.checked).length;
+        const pct = boxes.length ? Math.round((done / boxes.length) * 100) : 0;
+        const bar = document.getElementById('px-tasks-bar');
+        bar.style.setProperty('--pl-progress', pct);
+        bar.setAttribute('aria-valuenow', pct);
+        document.getElementById('px-tasks-count').textContent = `${done} z ${boxes.length}`;
+        return done === boxes.length;
+      };
+      document.addEventListener('change', (event) => {
+        if (!event.target.closest('#px-tasks')) return;
+        if (updateTasks()) toast('Wszystkie zadania na dziś zrobione', 'success', 'Brawo!');
+      });
+
+      document.addEventListener('submit', (event) => {
+        if (event.target.id === 'px-task-form') {
+          const input = event.target.querySelector('input');
+          const item = document.createElement('label');
+          item.className = 'pl-list-group-item pl-animation-slide-up-small';
+          item.innerHTML = '<input class="pl-checkbox pl-form-success" type="checkbox"><span class="pl-list-group-content"><span class="pl-list-group-title"></span></span><span class="pl-label pl-label-small">Nowe</span>';
+          item.querySelector('.pl-list-group-title').textContent = input.value;
+          document.getElementById('px-tasks').append(item);
+          input.value = '';
+          updateTasks();
+        }
+
+        if (event.target.id === 'px-order-form') {
+          const data = new FormData(event.target);
+          const total = Number(data.get('product')) * Number(data.get('qty') || 1);
+          window.Plossy.modal('#px-order').hide();
+          toast(`${data.get('name')} · ${total.toLocaleString('pl-PL')} zł`, 'success', 'Zamówienie utworzone');
+          event.target.reset();
+        }
+      });
+    })();
+  </script>
+</Example>

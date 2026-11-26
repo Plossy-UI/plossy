@@ -1,0 +1,50 @@
+// Container — wyśrodkowana kolumna treści o ograniczonej szerokości.
+@use '../abstracts' as *;
+
+.pl-container {
+  --pl-container-pad: var(--pl-space-4);
+
+  display: flow-root;
+  // content-box: max-width opisuje szerokość samej treści, bez marginesów bocznych.
+  box-sizing: content-box;
+  max-width: var(--pl-container-max, var(--pl-container));
+  margin-inline: auto;
+  padding-inline: var(--pl-container-pad);
+
+  @include up(s) {
+    --pl-container-pad: var(--pl-space-5);
+  }
+
+  @include up(m) {
+    --pl-container-pad: 2.5rem;
+  }
+}
+
+// Zagnieżdżony kontener nie dokłada drugiego marginesu.
+.pl-container .pl-container {
+  padding-inline: 0;
+}
+
+// ── Szerokości ──────────────────────────────────────────────────────────
+.pl-container-xsmall { --pl-container-max: 720px; }
+.pl-container-small { --pl-container-max: 900px; }
+.pl-container-large { --pl-container-max: 1400px; }
+.pl-container-xlarge { --pl-container-max: 1600px; }
+.pl-container-expand { --pl-container-max: none; }
+
+// ── Element dochodzący do krawędzi ekranu ───────────────────────────────
+// Znosi boczny margines kontenera po wybranej stronie (np. zdjęcie „na spad").
+.pl-container-item-padding-remove-left,
+.pl-container-item-padding-remove {
+  margin-left: calc(-1 * var(--pl-container-pad));
+}
+
+.pl-container-item-padding-remove-right,
+.pl-container-item-padding-remove {
+  margin-right: calc(-1 * var(--pl-container-pad));
+}
+
+// Kontener bez bocznych marginesów (np. wewnątrz karty).
+.pl-container-padding-remove {
+  padding-inline: 0;
+}

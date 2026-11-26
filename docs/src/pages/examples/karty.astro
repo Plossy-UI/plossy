@@ -1,0 +1,828 @@
+---
+import Example from '../../layouts/Example.astro';
+
+const sections = [
+  ['produkty', 'Produkty'],
+  ['artykuly', 'Artykuły'],
+  ['cennik', 'Cennik'],
+  ['zespol', 'Zespół'],
+  ['statystyki', 'Statystyki'],
+  ['opinie', 'Opinie'],
+  ['funkcje', 'Funkcje'],
+  ['obrazy', 'Obrazy'],
+  ['aktywnosc', 'Aktywność'],
+  ['bento', 'Bento'],
+  ['szklo', 'Szkło'],
+  ['szkielety', 'Szkielety'],
+];
+
+const products = [
+  { img: 1, name: 'Lampa stołowa Arko', meta: 'Mosiądz szczotkowany', price: '429 zł', old: '', label: 'Nowość', tone: 'spark' },
+  { img: 2, name: 'Wazon Fjell', meta: 'Ceramika szkliwiona', price: '189 zł', old: '239 zł', label: '−20%', tone: 'danger' },
+  { img: 3, name: 'Pled Skog', meta: 'Wełna merino · 130 × 180', price: '349 zł', old: '', label: '', tone: '' },
+  { img: 4, name: 'Krzesło Nord', meta: 'Dąb olejowany', price: '529 zł', old: '', label: 'Bestseller', tone: 'primary' },
+];
+
+const posts = [
+  { img: 5, cat: 'Poradnik', time: '6 min', title: 'Jak dobrać światło do małego salonu', text: 'Trzy warstwy oświetlenia, które sprawią, że wnętrze wyda się większe i cieplejsze.', author: 'Marta Wolska', av: 2, date: '18 lis 2026' },
+  { img: 6, cat: 'Inspiracje', time: '4 min', title: 'Ceramika, która starzeje się pięknie', text: 'O szkliwach reaktywnych, drobnych niedoskonałościach i naczyniach na lata.', author: 'Piotr Lis', av: 3, date: '12 lis 2026' },
+  { img: 7, cat: 'Za kulisami', time: '8 min', title: 'Z wizytą w tkalni pod Bergen', text: 'Jak powstaje pled Skog — od runa po ostatni ścieg wykańczający brzeg.', author: 'Ewa Maj', av: 4, date: '3 lis 2026' },
+];
+
+const plans = [
+  { name: 'Start', desc: 'Dla freelancerów i małych projektów.', m: 0, y: 0, cta: 'Zacznij za darmo', features: ['3 projekty', '2 osoby w zespole', 'Tablice i listy zadań', 'Wsparcie e-mail'], hot: false },
+  { name: 'Zespół', desc: 'Dla rosnących zespołów produktowych.', m: 49, y: 39, cta: 'Wypróbuj 14 dni', features: ['Projekty bez limitu', 'Do 25 osób', 'Oś czasu i obciążenie', 'Automatyzacje', 'Wsparcie priorytetowe'], hot: true },
+  { name: 'Firma', desc: 'Dla organizacji z wieloma działami.', m: 129, y: 99, cta: 'Porozmawiajmy', features: ['Wszystko z planu Zespół', 'SSO i role niestandardowe', 'Dziennik audytu', 'Opiekun wdrożenia'], hot: false },
+];
+
+const team = [
+  { av: 1, name: 'Anna Kowalska', role: 'Projektantka produktu', status: 'online', tags: ['Figma', 'Badania'] },
+  { av: 2, name: 'Marek Nowak', role: 'Lider inżynierii', status: 'busy', tags: ['TypeScript', 'API'] },
+  { av: 3, name: 'Ewa Maj', role: 'Menedżerka produktu', status: 'away', tags: ['Strategia', 'Dane'] },
+  { av: 5, name: 'Tomasz Zieliński', role: 'Inżynier frontendu', status: 'online', tags: ['CSS', 'A11y'] },
+];
+
+const stats = [
+  { label: 'Przychód', icon: 'wallet', tone: 'primary', to: 128400, opts: "suffix: ' zł'", trend: '+12,4%', up: true, goal: 78, pts: '0,22 12,18 24,20 36,12 48,14 60,6 72,9 84,2' },
+  { label: 'Zamówienia', icon: 'shopping-bag', tone: 'success', to: 1842, opts: '', trend: '+8,1%', up: true, goal: 64, pts: '0,20 12,16 24,18 36,14 48,9 60,11 72,5 84,4' },
+  { label: 'Konwersja', icon: 'target', tone: 'info', to: 4.8, opts: "decimals: 1; suffix: '%'", trend: '+0,6 pp', up: true, goal: 48, pts: '0,14 12,16 24,10 36,12 48,8 60,10 72,6 84,7' },
+  { label: 'Zwroty', icon: 'rotate-ccw', tone: 'warning', to: 37, opts: '', trend: '−3,2%', up: false, goal: 22, pts: '0,6 12,9 24,7 36,12 48,11 60,15 72,14 84,19' },
+];
+
+const quotes = [
+  { av: 4, name: 'Karolina Bąk', role: 'Architektka wnętrz, Gdynia', text: 'Lampa Arko dotarła w dwa dni, zapakowana jak prezent. Światło jest ciepłe i miękkie — dokładnie takie, jak na zdjęciach.', stars: 5 },
+  { av: 5, name: 'Jakub Sowa', role: 'Właściciel kawiarni Mielone', text: 'Zamówiliśmy czterdzieści kubków z serii Fjell. Po roku codziennego zmywania wyglądają jak nowe. Goście pytają, skąd są.', stars: 5 },
+  { av: 6, name: 'Zofia Rak', role: 'Stała klientka', text: 'Wymiana pledu na inny kolor zajęła jedną wiadomość. Rzadko spotyka się tak ludzką obsługę w sklepie internetowym.', stars: 4 },
+];
+
+const features = [
+  { icon: 'zap', tone: 'primary', title: 'Błyskawiczny start', text: 'Jeden plik CSS i jeden skrypt. Komponenty inicjalizują się same z atrybutów.' },
+  { icon: 'palette', tone: 'success', title: 'Motywy i akcenty', text: 'Jasny i ciemny motyw oraz akcenty kolorystyczne oparte na tokenach.' },
+  { icon: 'shield-check', tone: 'info', title: 'Dostępność', text: 'Role ARIA, obsługa klawiatury i widoczny fokus w każdym komponencie.' },
+  { icon: 'layers', tone: 'warning', title: 'Warstwy bez bólu', text: 'Modale, dropy i podpowiedzi korzystają z top-layer — bez wojen o z-index.' },
+  { icon: 'move', tone: 'danger', title: 'Fizyczne gesty', text: 'Slidery z bezwładnością i sprężystym dociąganiem, które czują palec.' },
+  { icon: 'puzzle', tone: 'primary', title: 'Zero zależności', text: 'Czysty JavaScript w modułach ES. Bierzesz tylko to, czego potrzebujesz.' },
+];
+
+const gallery = [
+  { img: 8, eyebrow: 'Kolekcja', title: 'Jesienne światło', text: '12 produktów' },
+  { img: 2, eyebrow: 'Ceramika', title: 'Seria Fjell', text: '24 produkty' },
+  { img: 6, eyebrow: 'Tekstylia', title: 'Wełna i len', text: '18 produktów' },
+];
+
+const activity = [
+  { icon: 'shopping-bag', tone: 'primary', title: 'Nowe zamówienie #10482', text: 'Lampa Arko × 1, Wazon Fjell × 2', time: '2 min' },
+  { icon: 'message-circle', tone: 'info', title: 'Karolina dodała opinię', text: '„Światło jest ciepłe i miękkie…"', time: '14 min' },
+  { icon: 'truck', tone: 'success', title: 'Paczka #10471 doręczona', text: 'Odebrana w punkcie w Gdyni', time: '1 godz.' },
+  { icon: 'triangle-alert', tone: 'warning', title: 'Niski stan magazynowy', text: 'Pled Skog, kolor mech — zostały 3 szt.', time: '3 godz.' },
+];
+
+const stars = (n: number) => Array.from({ length: 5 }, (_, i) => i < n);
+---
+
+<Example title="Karty" description="Galeria wzorców kart zbudowanych z komponentów Plossy: produkty, artykuły, cenniki, statystyki, bento i inne.">
+  <header class="pl-navbar-container pl-navbar-glass pl-navbar-sticky" data-pl-navbar>
+    <nav class="pl-navbar" aria-label="Wzorce">
+      <div class="pl-navbar-left">
+        <a class="pl-navbar-logo" href="/examples/"><span class="pl-navbar-logo-mark"></span> Wzorce</a>
+        <ul class="pl-navbar-nav pl-visible@s">
+          <li class="pl-active"><a href="/examples/karty/">Karty</a></li>
+          <li><a href="/examples/slidery/">Slidery</a></li>
+          <li><a href="/examples/landing/">Landing</a></li>
+          <li><a href="/examples/panel/">Panel</a></li>
+        </ul>
+      </div>
+      <div class="pl-navbar-right">
+        <span class="pl-navbar-item pl-text-meta pl-visible@m">12 grup · 40+ kart</span>
+        <button class="pl-button pl-button-small" type="button">Spis treści <span data-pl-icon="chevron-down"></span></button>
+        <div class="pl-drop pl-dropdown" data-pl-drop="mode: click; pos: bottom-end">
+          <ul class="pl-dropdown-nav">
+            {sections.map(([id, label]) => <li><a href={`#${id}`}>{label}</a></li>)}
+          </ul>
+        </div>
+      </div>
+    </nav>
+  </header>
+
+  <main>
+    <!-- Nagłówek strony -->
+    <section class="pl-section pl-background-dots pl-background-fade">
+      <div class="pl-container pl-container-small pl-text-center" data-pl-scrollspy="cls: pl-animation-slide-up-small; target: > *; delay: 80">
+        <p class="pl-heading-eyebrow pl-heading-eyebrow-center">Wzorce interfejsu</p>
+        <h1 class="pl-heading-medium pl-text-balance">Karty na <span class="pl-heading-mark">każdą okazję</span></h1>
+        <p class="pl-text-lead pl-text-muted pl-text-balance">Dwanaście grup gotowych wzorców — od kart produktu po interaktywne bento. Wszystko z klas Plossy, bez dodatkowego CSS.</p>
+        <div class="pl-chip-group pl-flex-center pl-margin-medium-top">
+          {sections.map(([id, label]) => <a class="pl-chip" href={`#${id}`}>{label}</a>)}
+        </div>
+      </div>
+    </section>
+
+    <!-- 1. Produkty -->
+    <section class="pl-section pl-section-small" id="produkty">
+      <div class="pl-container">
+        <p class="pl-heading-eyebrow">01 · Sklep</p>
+        <h2>Karty produktu</h2>
+        <p class="pl-text-muted">Cztery style: klasyczny, z nakładką, poziomy i kompaktowy.</p>
+
+        <h3 class="pl-text-eyebrow pl-margin-medium-top">Klasyczna</h3>
+        <div class="pl-grid pl-child-width-1-1 pl-grid-match pl-child-width-1-2@s pl-child-width-1-4@l pl-margin-small-top" data-pl-scrollspy="cls: pl-animation-slide-up-small; target: > *; delay: 70">
+          {products.map((p) => (
+            <div>
+              <article class="pl-card pl-card-hover pl-visible-toggle">
+                {p.label && <span class={`pl-card-badge pl-label pl-label-${p.tone}`}>{p.label}</span>}
+                <figure class="pl-card-media pl-image pl-ratio-4-3"><img src={`/img/photo-${p.img}.svg`} alt="" loading="lazy" /></figure>
+                <div class="pl-card-body">
+                  <p class="pl-card-meta">{p.meta}</p>
+                  <h4 class="pl-card-title"><a class="pl-link-heading pl-card-stretch" href="/examples/produkt/">{p.name}</a></h4>
+                  <div class="pl-flex pl-flex-middle pl-flex-between pl-margin-small-top">
+                    <p class="pl-margin-remove">
+                      <strong class="pl-text-lg pl-text-display">{p.price}</strong>
+                      {p.old && <s class="pl-text-meta pl-margin-small-left">{p.old}</s>}
+                    </p>
+                    <button class="pl-button pl-button-primary pl-button-soft pl-button-icon pl-button-small pl-position-relative pl-position-z-index" type="button" aria-label={`Dodaj do koszyka: ${p.name}`} data-add={p.name} data-pl-tooltip="Do koszyka"><span data-pl-icon="shopping-bag"></span></button>
+                  </div>
+                </div>
+              </article>
+            </div>
+          ))}
+        </div>
+
+        <div class="pl-grid pl-margin-medium-top">
+          <div class="pl-width-1-1 pl-width-1-2@m">
+            <h3 class="pl-text-eyebrow">Z nakładką</h3>
+            <div class="pl-grid pl-grid-small pl-child-width-1-2 pl-margin-small-top">
+              {products.slice(0, 2).map((p) => (
+                <div>
+                  <a class="pl-image pl-image-rounded pl-image-zoom pl-ratio-3-4 pl-transition-toggle" href="/examples/produkt/">
+                    <img src={`/img/photo-${p.img + 4}.svg`} alt="" loading="lazy" />
+                    <span class="pl-position-top-left pl-position-small pl-label pl-label-solid pl-label-secondary">{p.meta.split(' ')[0]}</span>
+                    <div class="pl-overlay pl-overlay-gradient pl-position-bottom">
+                      <h4 class="pl-margin-remove">{p.name}</h4>
+                      <p class="pl-margin-remove">{p.price}</p>
+                      <p class="pl-margin-small-top pl-margin-remove-bottom pl-transition-slide-bottom-small"><span class="pl-button pl-button-small pl-button-pill">Zobacz produkt <span class="pl-button-arrow" data-pl-icon="arrow-right"></span></span></p>
+                    </div>
+                  </a>
+                </div>
+              ))}
+            </div>
+          </div>
+          <div class="pl-width-1-1 pl-width-1-2@m">
+            <h3 class="pl-text-eyebrow">Pozioma</h3>
+            <article class="pl-card pl-card-horizontal pl-card-hover pl-margin-small-top">
+              <figure class="pl-card-media"><img src="/img/photo-3.svg" alt="" loading="lazy" /></figure>
+              <div class="pl-card-body">
+                <p class="pl-card-meta">Tekstylia · dostępny od ręki</p>
+                <h4 class="pl-card-title">Pled Skog, kolor mech</h4>
+                <p class="pl-card-text pl-text-clamp-2">Gęsto tkana wełna merino z ręcznie wykańczanym brzegiem. Ciepły, ale nie gryzie.</p>
+                <div class="pl-flex pl-flex-middle pl-gap-small pl-margin-small-top">
+                  <strong class="pl-text-lg pl-text-display">349 zł</strong>
+                  <span class="pl-label pl-label-success pl-label-dot">W magazynie</span>
+                </div>
+              </div>
+            </article>
+
+            <h3 class="pl-text-eyebrow pl-margin-medium-top">Kompaktowa</h3>
+            <div class="pl-grid pl-child-width-1-1 pl-grid-small pl-child-width-1-2@s pl-margin-small-top">
+              {products.slice(0, 4).map((p) => (
+                <div>
+                  <div class="pl-card pl-card-small pl-card-outline pl-hover-lift">
+                    <div class="pl-card-body pl-flex pl-flex-middle pl-gap-small">
+                      <img class="pl-image-rounded-small pl-object-cover pl-flex-none" src={`/img/photo-${p.img}.svg`} alt="" width="52" height="52" style="width: 3.25rem; height: 3.25rem" />
+                      <div class="pl-flex-1 pl-text-truncate">
+                        <div class="pl-text-medium pl-text-truncate">{p.name}</div>
+                        <div class="pl-text-meta">{p.price}</div>
+                      </div>
+                      <button class="pl-icon-button" type="button" aria-label={`Dodaj: ${p.name}`} data-add={p.name}><span data-pl-icon="plus"></span></button>
+                    </div>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 2. Artykuły -->
+    <section class="pl-section pl-section-small pl-section-muted" id="artykuly">
+      <div class="pl-container">
+        <p class="pl-heading-eyebrow">02 · Treści</p>
+        <h2>Karty artykułów</h2>
+        <p class="pl-text-muted">Wpis wyróżniony obok listy zwykłych kart — z autorem, kategorią i czasem czytania.</p>
+
+        <div class="pl-grid pl-child-width-1-1 pl-grid-match pl-child-width-1-3@m pl-margin-medium-top" data-pl-scrollspy="cls: pl-animation-slide-up-small; target: > *; delay: 80">
+          {posts.map((p) => (
+            <div>
+              <article class="pl-card pl-card-hover">
+                <figure class="pl-card-media pl-image pl-ratio-16-9"><img src={`/img/photo-${p.img}.svg`} alt="" loading="lazy" /></figure>
+                <div class="pl-card-body">
+                  <p class="pl-flex pl-flex-middle pl-gap-small pl-margin-remove">
+                    <span class="pl-label pl-label-primary">{p.cat}</span>
+                    <span class="pl-text-meta"><span data-pl-icon="clock" class="pl-icon-small"></span> {p.time} czytania</span>
+                  </p>
+                  <h3 class="pl-card-title pl-margin-small-top"><a class="pl-link-heading pl-card-stretch" href="/examples/wpis/">{p.title}</a></h3>
+                  <p class="pl-card-text pl-text-clamp-2">{p.text}</p>
+                </div>
+                <div class="pl-card-footer">
+                  <div class="pl-avatar-item">
+                    <span class="pl-avatar pl-avatar-small"><img src={`/img/avatar-${p.av}.svg`} alt="" /></span>
+                    <span class="pl-avatar-text">
+                      <span class="pl-avatar-name">{p.author}</span>
+                      <span class="pl-avatar-meta">{p.date}</span>
+                    </span>
+                  </div>
+                  <span class="pl-margin-auto-left pl-text-muted" data-pl-icon="arrow-up-right"></span>
+                </div>
+              </article>
+            </div>
+          ))}
+        </div>
+
+        <article class="pl-card pl-card-horizontal pl-card-secondary pl-margin-medium-top kx-wide">
+          <div class="pl-card-body pl-card-large">
+            <p class="pl-text-eyebrow">Temat miesiąca</p>
+            <h3 class="pl-card-title pl-text-2xl">Dom, który oddycha: przewodnik po naturalnych materiałach</h3>
+            <p class="pl-card-text">Len, wełna, dąb i kamionka — jak je łączyć, pielęgnować i dlaczego z wiekiem tylko zyskują.</p>
+            <p class="pl-margin-remove-bottom"><a class="pl-button pl-button-primary pl-button-pill" href="/examples/wpis/">Czytaj przewodnik <span class="pl-button-arrow" data-pl-icon="arrow-right"></span></a></p>
+          </div>
+          <figure class="pl-card-media pl-visible@s"><img src="/img/photo-8.svg" alt="" loading="lazy" /></figure>
+        </article>
+      </div>
+    </section>
+
+    <!-- 3. Cennik -->
+    <section class="pl-section pl-section-small" id="cennik">
+      <div class="pl-container">
+        <div class="pl-text-center">
+          <p class="pl-heading-eyebrow pl-heading-eyebrow-center">03 · Sprzedaż</p>
+          <h2>Karty cennika</h2>
+          <p class="pl-text-muted">Trzy plany, wyróżniony środkowy i przełącznik okresu rozliczenia.</p>
+          <label class="pl-form-check pl-margin-small-top">
+            <span class="pl-text-medium">Miesięcznie</span>
+            <input class="pl-switch" type="checkbox" role="switch" data-billing aria-label="Rozliczenie roczne" />
+            <span class="pl-text-medium">Rocznie</span>
+            <span class="pl-label pl-label-spark pl-label-pill">−20%</span>
+          </label>
+        </div>
+
+        <div class="pl-grid pl-child-width-1-1 pl-grid-match pl-grid-middle pl-child-width-1-3@m pl-margin-medium-top" data-pl-scrollspy="cls: pl-animation-slide-up-small; target: > *; delay: 90">
+          {plans.map((p) => (
+            <div>
+              <div class={`pl-card ${p.hot ? 'pl-card-accent pl-box-shadow-large kx-hot' : ''}`} data-pl-spotlight={p.hot ? '' : undefined}>
+                {p.hot && <span class="pl-card-badge pl-label pl-label-solid pl-label-primary pl-label-pill">Najczęściej wybierany</span>}
+                <div class={`pl-card-body ${p.hot ? 'pl-card-large' : ''}`}>
+                  <h3 class="pl-card-title">{p.name}</h3>
+                  <p class="pl-card-meta">{p.desc}</p>
+                  <p class="pl-margin-small-top pl-margin-remove-bottom">
+                    <span class="pl-text-4xl pl-text-display pl-text-semibold pl-text-tabular" data-pl-counter={`to: ${p.m}; duration: 500`} data-m={p.m} data-y={p.y}>{p.m}</span>
+                    <span class="pl-text-muted"> zł / os. mies.</span>
+                  </p>
+                  <p class="pl-text-meta" data-billing-note>płatne co miesiąc</p>
+                  <a class={`pl-button pl-button-block ${p.hot ? 'pl-button-primary' : ''}`} href="#">{p.cta}</a>
+                  <ul class="pl-list pl-list-check pl-margin-top pl-margin-remove-bottom">
+                    {p.features.map((f) => <li>{f}</li>)}
+                  </ul>
+                </div>
+              </div>
+            </div>
+          ))}
+        </div>
+      </div>
+    </section>
+
+    <!-- 4. Zespół -->
+    <section class="pl-section pl-section-small pl-section-muted" id="zespol">
+      <div class="pl-container">
+        <p class="pl-heading-eyebrow">04 · Ludzie</p>
+        <h2>Karty profilu i zespołu</h2>
+        <p class="pl-text-muted">Awatar ze statusem, rola, umiejętności i szybkie akcje.</p>
+
+        <div class="pl-grid pl-child-width-1-1 pl-grid-match pl-child-width-1-2@s pl-child-width-1-4@l pl-margin-medium-top" data-pl-scrollspy="cls: pl-animation-scale-up; target: > *; delay: 70">
+          {team.map((t) => (
+            <div>
+              <div class="pl-card pl-card-hover pl-text-center">
+                <div class="pl-card-body">
+                  <span class="pl-avatar pl-avatar-xlarge pl-avatar-ring">
+                    <img src={`/img/avatar-${t.av}.svg`} alt="" />
+                    <span class={`pl-avatar-status pl-avatar-status-${t.status}`}></span>
+                  </span>
+                  <h3 class="pl-card-title pl-margin-small-top">{t.name}</h3>
+                  <p class="pl-card-meta">{t.role}</p>
+                  <div class="pl-chip-group pl-flex-center pl-margin-small-top">
+                    {t.tags.map((tag) => <span class="pl-chip pl-chip-small">{tag}</span>)}
+                  </div>
+                </div>
+                <div class="pl-card-footer pl-flex-center">
+                  <ul class="pl-iconnav">
+                    <li><a href="#" aria-label="Napisz e-mail" data-pl-tooltip="E-mail"><span data-pl-icon="mail"></span></a></li>
+                    <li><a href="#" aria-label="Wiadomość" data-pl-tooltip="Wiadomość"><span data-pl-icon="message-circle"></span></a></li>
+                    <li><a href="#" aria-label="Zadzwoń" data-pl-tooltip="Telefon"><span data-pl-icon="phone"></span></a></li>
+                  </ul>
+                </div>
+              </div>
+            </div>
+          ))}
+        </div>
+
+        <div class="pl-card pl-margin-medium-top">
+          <div class="pl-card-body pl-flex pl-flex-middle pl-flex-wrap pl-gap-medium">
+            <div class="pl-avatar-group pl-avatar-group-expand">
+              {[1, 2, 3, 4, 5].map((n) => <span class="pl-avatar pl-avatar-large"><img src={`/img/avatar-${n}.svg`} alt="" /></span>)}
+              <span class="pl-avatar pl-avatar-large pl-avatar-more">+12</span>
+            </div>
+            <div class="pl-flex-1" style="min-width: 14rem">
+              <h3 class="pl-card-title">Zespół produktowy</h3>
+              <p class="pl-card-meta pl-margin-remove">17 osób · 4 strefy czasowe · 6 otwartych rekrutacji</p>
+            </div>
+            <a class="pl-button pl-button-primary" href="#"><span data-pl-icon="user-plus"></span> Zaproś osobę</a>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 5. Statystyki -->
+    <section class="pl-section pl-section-small" id="statystyki">
+      <div class="pl-container">
+        <p class="pl-heading-eyebrow">05 · Dane</p>
+        <h2>Karty statystyk i KPI</h2>
+        <p class="pl-text-muted">Liczniki startują po wejściu w widok; pod spodem trend, mini wykres i postęp celu.</p>
+
+        <div class="pl-grid pl-child-width-1-1 pl-grid-match pl-child-width-1-2@s pl-child-width-1-4@l pl-margin-medium-top">
+          {stats.map((s) => (
+            <div>
+              <div class="pl-card">
+                <div class="pl-card-body">
+                  <div class="pl-flex pl-flex-middle pl-flex-between">
+                    <span class={`pl-icon-box pl-icon-${s.tone}`} data-pl-icon={s.icon}></span>
+                    <span class={`pl-label pl-label-pill pl-label-${s.up ? 'success' : 'danger'}`}><span class="pl-icon-small" data-pl-icon={s.up ? 'trending-up' : 'trending-down'}></span> {s.trend}</span>
+                  </div>
+                  <p class="pl-card-meta pl-margin-small-top">{s.label}</p>
+                  <div class="pl-flex pl-flex-bottom pl-flex-between pl-gap-small">
+                    <span class="pl-text-3xl pl-text-display pl-text-semibold" data-pl-counter={`to: ${s.to}; ${s.opts}`}></span>
+                    <svg class={`pl-text-${s.tone} pl-flex-none`} viewBox="0 0 84 24" width="84" height="24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points={s.pts}></polyline></svg>
+                  </div>
+                  <div class="pl-progress-label pl-margin-small-top"><span>Cel miesiąca</span><span>{s.goal}%</span></div>
+                  <div class={`pl-progress-bar pl-progress-small pl-progress-${s.tone}`} role="progressbar" aria-label={`Cel: ${s.label}`} aria-valuenow={s.goal} aria-valuemin="0" aria-valuemax="100" style={`--pl-progress: ${s.goal}`}>
+                    <div class="pl-progress-fill"></div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          ))}
+        </div>
+
+        <div class="pl-grid pl-child-width-1-1 pl-grid-match pl-child-width-1-3@m pl-margin-top">
+          <div>
+            <div class="pl-tile pl-tile-primary pl-tile-rounded">
+              <p class="pl-text-eyebrow">Aktywni klienci</p>
+              <p class="pl-text-5xl pl-text-display pl-text-semibold pl-margin-remove" data-pl-counter="to: 24800; duration: 2000"></p>
+              <p class="pl-margin-small-top pl-margin-remove-bottom">o 3 120 więcej niż w poprzednim kwartale</p>
+            </div>
+          </div>
+          <div>
+            <div class="pl-card">
+              <div class="pl-card-body pl-flex pl-flex-middle pl-gap-medium">
+                <div class="pl-progress-ring pl-progress-large pl-progress-success" role="progressbar" aria-label="Zadowolenie klientów" aria-valuenow="92" aria-valuemin="0" aria-valuemax="100" style="--pl-progress: 92">92%</div>
+                <div>
+                  <h3 class="pl-card-title">Zadowolenie</h3>
+                  <p class="pl-card-meta pl-margin-remove">Średnia z 1 284 ankiet po zakupie</p>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div>
+            <div class="pl-card pl-card-muted">
+              <div class="pl-card-body">
+                <p class="pl-card-meta">Źródła ruchu</p>
+                <div class="pl-progress-bar pl-progress-large pl-margin-small-top" role="img" aria-label="Wyszukiwarka 46%, bezpośrednie 28%, newsletter 16%, inne 10%">
+                  <div class="pl-progress-fill" style="--pl-progress: 46"></div>
+                  <div class="pl-progress-fill pl-progress-success" style="--pl-progress: 28"></div>
+                  <div class="pl-progress-fill pl-progress-warning" style="--pl-progress: 16"></div>
+                </div>
+                <ul class="pl-list pl-list-collapse pl-text-small pl-margin-small-top pl-margin-remove-bottom">
+                  <li class="pl-flex pl-flex-between"><span><span class="pl-badge pl-badge-dot pl-badge-primary"></span> Wyszukiwarka</span><span class="pl-text-tabular">46%</span></li>
+                  <li class="pl-flex pl-flex-between"><span><span class="pl-badge pl-badge-dot pl-badge-success"></span> Wejścia bezpośrednie</span><span class="pl-text-tabular">28%</span></li>
+                  <li class="pl-flex pl-flex-between"><span><span class="pl-badge pl-badge-dot pl-badge-warning"></span> Newsletter</span><span class="pl-text-tabular">16%</span></li>
+                </ul>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 6. Opinie -->
+    <section class="pl-section pl-section-small pl-section-muted" id="opinie">
+      <div class="pl-container">
+        <p class="pl-heading-eyebrow">06 · Zaufanie</p>
+        <h2>Karty opinii</h2>
+        <p class="pl-text-muted">Cytat, ocena w gwiazdkach i podpis autora.</p>
+
+        <div class="pl-grid pl-child-width-1-1 pl-grid-match pl-child-width-1-3@m pl-margin-medium-top" data-pl-scrollspy="cls: pl-animation-slide-up-small; target: > *; delay: 80">
+          {quotes.map((q, i) => (
+            <div>
+              <figure class={`pl-card ${i === 1 ? 'pl-card-primary' : ''}`}>
+                <div class="pl-card-body">
+                  <div class="pl-flex pl-flex-middle pl-flex-between">
+                    <span class="pl-flex" role="img" aria-label={`Ocena ${q.stars} na 5`}>
+                      {stars(q.stars).map((on) => <span class={on ? (i === 1 ? '' : 'pl-text-warning') : 'pl-text-subtle'} data-pl-icon="name: star; stroke: 2"></span>)}
+                    </span>
+                    <span class="pl-icon-large" data-pl-icon="quote" style="opacity: 0.25"></span>
+                  </div>
+                  <p class="pl-text-lg pl-margin-small-top pl-margin-remove-bottom">{q.text}</p>
+                </div>
+                <figcaption class="pl-card-footer">
+                  <div class="pl-avatar-item">
+                    <span class="pl-avatar"><img src={`/img/avatar-${q.av}.svg`} alt="" /></span>
+                    <span class="pl-avatar-text">
+                      <span class="pl-avatar-name">{q.name}</span>
+                      <span class="pl-avatar-meta">{q.role}</span>
+                    </span>
+                  </div>
+                </figcaption>
+              </figure>
+            </div>
+          ))}
+        </div>
+      </div>
+    </section>
+
+    <!-- 7. Funkcje -->
+    <section class="pl-section pl-section-small" id="funkcje">
+      <div class="pl-container">
+        <p class="pl-heading-eyebrow">07 · Marketing</p>
+        <h2>Karty funkcji ze spotlightem</h2>
+        <p class="pl-text-muted">Najedź kursorem — poświata podąża za wskaźnikiem, w dolnym rzędzie rozświetla samą ramkę.</p>
+
+        <div class="pl-grid pl-child-width-1-1 pl-grid-match pl-child-width-1-2@s pl-child-width-1-3@m pl-margin-medium-top" data-pl-spotlight="target: > div > .pl-card">
+          {features.map((f, i) => (
+            <div>
+              <div class={`pl-card ${i > 2 ? 'pl-spotlight-border pl-card-outline' : ''}`}>
+                <div class="pl-card-body">
+                  <span class={`pl-icon-box pl-icon-${f.tone}`} data-pl-icon={f.icon}></span>
+                  <h3 class="pl-card-title pl-margin-top">{f.title}</h3>
+                  <p class="pl-card-text">{f.text}</p>
+                  <a class="pl-link-arrow pl-text-small" href="#">Dowiedz się więcej</a>
+                </div>
+              </div>
+            </div>
+          ))}
+        </div>
+      </div>
+    </section>
+
+    <!-- 8. Obrazy -->
+    <section class="pl-section pl-section-small pl-section-muted" id="obrazy">
+      <div class="pl-container">
+        <p class="pl-heading-eyebrow">08 · Media</p>
+        <h2>Karty obrazu z nakładką</h2>
+        <p class="pl-text-muted">Gradient, panel wjeżdżający od dołu, szklana plakietka i ikona powiększenia — wszystko na przejściach hover / fokus.</p>
+
+        <div class="pl-grid pl-child-width-1-1 pl-child-width-1-3@m pl-margin-medium-top">
+          {gallery.map((g, i) => (
+            <div>
+              <a class="pl-image pl-image-rounded pl-image-zoom pl-ratio-4-3 pl-ratio-3-4@m pl-transition-toggle pl-box-shadow-hover-large" href="/examples/kategoria/">
+                <img src={`/img/photo-${g.img}.svg`} alt="" loading="lazy" />
+                {i === 0 && (
+                  <div class="pl-overlay pl-overlay-gradient pl-position-bottom">
+                    <p class="pl-text-eyebrow pl-margin-remove">{g.eyebrow}</p>
+                    <h3 class="pl-margin-remove">{g.title}</h3>
+                    <p class="pl-margin-remove pl-transition-slide-bottom-small">{g.text} <span data-pl-icon="arrow-right"></span></p>
+                  </div>
+                )}
+                {i === 1 && (
+                  <Fragment>
+                    <span class="pl-overlay-icon pl-position-center pl-transition-scale-up"></span>
+                    <div class="pl-overlay pl-overlay-default pl-position-bottom pl-transition-slide-bottom">
+                      <p class="pl-text-eyebrow pl-margin-remove">{g.eyebrow}</p>
+                      <h3 class="pl-margin-remove">{g.title}</h3>
+                    </div>
+                  </Fragment>
+                )}
+                {i === 2 && (
+                  <Fragment>
+                    <div class="pl-overlay pl-overlay-primary pl-position-cover pl-transition-fade pl-flex pl-flex-center pl-flex-middle pl-text-center">
+                      <div>
+                        <h3 class="pl-margin-remove pl-transition-slide-top-small">{g.title}</h3>
+                        <p class="pl-margin-remove pl-transition-slide-bottom-small">{g.text}</p>
+                      </div>
+                    </div>
+                    <div class="pl-overlay pl-overlay-default pl-overlay-small pl-overlay-rounded pl-position-bottom-left pl-position-small">
+                      <strong>{g.eyebrow}</strong>
+                    </div>
+                  </Fragment>
+                )}
+              </a>
+            </div>
+          ))}
+        </div>
+      </div>
+    </section>
+
+    <!-- 9. Aktywność -->
+    <section class="pl-section pl-section-small" id="aktywnosc">
+      <div class="pl-container">
+        <p class="pl-heading-eyebrow">09 · Aplikacja</p>
+        <h2>Karty powiadomień i aktywności</h2>
+        <p class="pl-text-muted">Strumień zdarzeń, powiadomienie z akcjami i karta zaproszenia.</p>
+
+        <div class="pl-grid pl-margin-medium-top">
+          <div class="pl-width-1-1 pl-width-3-5@m">
+            <div class="pl-card">
+              <div class="pl-card-header">
+                <h3 class="pl-card-title">Ostatnia aktywność</h3>
+                <span class="pl-label pl-label-dot pl-label-pulse pl-label-success pl-margin-auto-left">Na żywo</span>
+              </div>
+              <ul class="pl-list-group pl-list-group-flush">
+                {activity.map((a) => (
+                  <li class="pl-list-group-item">
+                    <span class={`pl-icon-box pl-icon-circle pl-icon-${a.tone}`} data-pl-icon={a.icon}></span>
+                    <span class="pl-list-group-content">
+                      <span class="pl-list-group-title">{a.title}</span>
+                      <span class="pl-list-group-text">{a.text}</span>
+                    </span>
+                    <span class="pl-list-group-meta">{a.time}</span>
+                  </li>
+                ))}
+              </ul>
+              <div class="pl-card-footer">
+                <a class="pl-link-arrow pl-text-small" href="#">Cała historia</a>
+              </div>
+            </div>
+          </div>
+          <div class="pl-width-1-1 pl-width-2-5@m">
+            <div class="pl-alert pl-alert-accent pl-alert-primary pl-alert-spark" data-pl-alert>
+              <span class="pl-alert-icon pl-alert-icon-box" data-pl-icon="sparkles"></span>
+              <div class="pl-alert-body">
+                <h3 class="pl-alert-title">Nowa wersja panelu</h3>
+                <p>Raporty sprzedaży ładują się teraz trzy razy szybciej.</p>
+                <div class="pl-alert-actions">
+                  <button class="pl-button pl-button-small pl-button-primary" type="button">Zobacz zmiany</button>
+                  <button class="pl-button pl-button-small pl-button-ghost pl-alert-close" type="button">Później</button>
+                </div>
+              </div>
+            </div>
+
+            <div class="pl-card pl-margin-top">
+              <div class="pl-card-body">
+                <div class="pl-avatar-item">
+                  <span class="pl-badge-anchor pl-badge-anchor-circle">
+                    <span class="pl-avatar pl-avatar-large"><img src="/img/avatar-6.svg" alt="" /></span>
+                    <span class="pl-badge pl-badge-primary"><span class="pl-icon-small" data-pl-icon="user-plus"></span></span>
+                  </span>
+                  <span class="pl-avatar-text">
+                    <span class="pl-avatar-name">Zofia Rak zaprasza Cię do projektu</span>
+                    <span class="pl-avatar-meta">„Katalog wiosna 2027" · 8 osób</span>
+                  </span>
+                </div>
+                <div class="pl-flex pl-gap-small pl-margin-top">
+                  <button class="pl-button pl-button-primary pl-flex-1" type="button" data-toast="Dołączono do projektu „Katalog wiosna 2027”">Dołącz</button>
+                  <button class="pl-button pl-flex-1" type="button">Odrzuć</button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 10. Bento -->
+    <section class="pl-section pl-section-small pl-section-muted" id="bento">
+      <div class="pl-container">
+        <p class="pl-heading-eyebrow">10 · Układ</p>
+        <h2>Interaktywne bento</h2>
+        <p class="pl-text-muted">Mozaika CSS Grid z kaflami o różnych rozpiętościach. Każdy kafel reaguje: spotlight, licznik, przełącznik, mini wykres.</p>
+
+        <div class="pl-bento pl-grid-small pl-margin-medium-top" data-pl-spotlight="target: > .pl-card" data-pl-scrollspy="cls: pl-animation-scale-up; target: > *; delay: 60">
+          <div class="pl-card pl-span-2 pl-row-span-2 pl-background-aurora">
+            <div class="pl-card-body pl-flex pl-flex-column pl-flex-between">
+              <span class="pl-label pl-label-spark pl-label-pill pl-width-max-content">Tydzień 47</span>
+              <div>
+                <p class="pl-text-5xl pl-text-display pl-text-semibold pl-margin-remove" data-pl-counter="to: 86400; suffix: ' zł'"></p>
+                <p class="pl-text-muted pl-margin-remove">sprzedaż w tym tygodniu — najlepszy wynik od początku roku</p>
+                <div class="kx-bars pl-margin-top" role="img" aria-label="Sprzedaż dzienna: poniedziałek 42%, wtorek 58%, środa 51%, czwartek 73%, piątek 88%, sobota 100%, niedziela 64%">
+                  {[42, 58, 51, 73, 88, 100, 64].map((h, i) => <span style={`--h: ${h}`} data-pl-tooltip={`${['Pn', 'Wt', 'Śr', 'Cz', 'Pt', 'Sb', 'Nd'][i]}: ${Math.round(h * 180)} zł`}></span>)}
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="pl-card">
+            <div class="pl-card-body">
+              <span class="pl-icon-box pl-icon-success" data-pl-icon="leaf"></span>
+              <p class="pl-card-meta pl-margin-small-top">Paczki bez plastiku</p>
+              <p class="pl-text-3xl pl-text-display pl-text-semibold pl-margin-remove" data-pl-counter="to: 98; suffix: '%'"></p>
+            </div>
+          </div>
+          <div class="pl-card pl-card-secondary">
+            <div class="pl-card-body pl-flex pl-flex-column pl-flex-between">
+              <label class="pl-form-check pl-form-check-reverse">
+                <input class="pl-switch pl-form-success" type="checkbox" role="switch" checked data-shop-switch />
+                <span class="pl-text-medium">Sklep otwarty</span>
+              </label>
+              <p class="pl-margin-remove pl-text-small" data-shop-state>Przyjmujemy zamówienia. Wysyłka w 24 h.</p>
+            </div>
+          </div>
+          <div class="pl-card pl-span-2">
+            <div class="pl-card-body pl-flex pl-flex-middle pl-gap-medium">
+              <div class="pl-progress-ring pl-progress-large" role="progressbar" aria-label="Realizacja celu kwartalnego" aria-valuenow="72" aria-valuemin="0" aria-valuemax="100" style="--pl-progress: 72">72%</div>
+              <div class="pl-flex-1">
+                <h3 class="pl-card-title">Cel kwartalny</h3>
+                <p class="pl-card-meta pl-margin-remove">432 tys. z 600 tys. zł · zostało 38 dni</p>
+                <div class="pl-avatar-group pl-margin-small-top">
+                  {[1, 3, 5].map((n) => <span class="pl-avatar pl-avatar-small"><img src={`/img/avatar-${n}.svg`} alt="" /></span>)}
+                  <span class="pl-avatar pl-avatar-small pl-avatar-more">+4</span>
+                </div>
+              </div>
+            </div>
+          </div>
+          <a class="pl-image pl-image-zoom pl-transition-toggle pl-radius-lg pl-span-2" href="/examples/kategoria/">
+            <img class="pl-position-cover pl-width-1-1 pl-height-1-1 pl-object-cover" src="/img/photo-7.svg" alt="" loading="lazy" />
+            <div class="pl-overlay pl-overlay-gradient pl-position-bottom">
+              <p class="pl-text-eyebrow pl-margin-remove">Nowa kolekcja</p>
+              <h3 class="pl-margin-remove">Zimowe tekstylia <span class="pl-transition-slide-left-small" data-pl-icon="arrow-right"></span></h3>
+            </div>
+          </a>
+          <div class="pl-card">
+            <div class="pl-card-body">
+              <p class="pl-card-meta">Ocena sklepu</p>
+              <p class="pl-text-3xl pl-text-display pl-text-semibold pl-margin-remove"><span data-pl-counter="to: 4.9; decimals: 1"></span><span class="pl-text-muted pl-text-lg"> / 5</span></p>
+              <span class="pl-flex pl-text-warning" aria-hidden="true">{[1, 2, 3, 4, 5].map(() => <span data-pl-icon="name: star; stroke: 2"></span>)}</span>
+            </div>
+          </div>
+          <a class="pl-tile pl-tile-primary pl-tile-rounded pl-flex pl-flex-column pl-flex-between" href="/examples/sklep/">
+            <span class="pl-icon-large" data-pl-icon="arrow-up-right"></span>
+            <strong class="pl-text-lg">Przejdź do sklepu</strong>
+          </a>
+        </div>
+      </div>
+    </section>
+
+    <!-- 11. Szkło -->
+    <section class="pl-section pl-section-small" id="szklo">
+      <div class="pl-container">
+        <p class="pl-heading-eyebrow">11 · Efekty</p>
+        <h2>Szklana karta na zorzy</h2>
+        <p class="pl-text-muted">Animowane tło <code>.pl-background-aurora</code> i powierzchnia <code>.pl-glass</code>, która rozmywa to, co pod spodem.</p>
+
+        <div class="pl-background-aurora pl-background-aurora-strong pl-background-surface pl-border pl-radius-xl pl-padding-large pl-overflow-hidden pl-margin-medium-top">
+          <div class="pl-grid pl-child-width-1-1 pl-grid-middle pl-child-width-1-2@m">
+            <div>
+              <div class="pl-glass pl-radius-lg pl-padding pl-box-shadow-large" data-pl-scrollspy="cls: pl-animation-blur">
+                <div class="pl-flex pl-flex-middle pl-flex-between">
+                  <span class="pl-logo"><span class="pl-logo-mark"></span>Lorem</span>
+                  <span class="pl-label pl-label-pill pl-label-spark">Klub</span>
+                </div>
+                <p class="pl-text-eyebrow pl-margin-medium-top pl-margin-remove-bottom">Saldo punktów</p>
+                <p class="pl-text-4xl pl-text-display pl-text-semibold pl-margin-remove" data-pl-counter="to: 2480"></p>
+                <div class="pl-progress-label pl-margin-top"><span>Do poziomu Złotego</span><span>520 pkt</span></div>
+                <div class="pl-progress-bar pl-progress-spark" role="progressbar" aria-label="Postęp do poziomu Złotego" aria-valuenow="83" aria-valuemin="0" aria-valuemax="100" style="--pl-progress: 83">
+                  <div class="pl-progress-fill"></div>
+                </div>
+                <div class="pl-flex pl-flex-middle pl-flex-between pl-margin-top">
+                  <div class="pl-avatar-item">
+                    <span class="pl-avatar pl-avatar-small"><img src="/img/avatar-4.svg" alt="" /></span>
+                    <span class="pl-avatar-text"><span class="pl-avatar-name">Karolina Bąk</span><span class="pl-avatar-meta">w klubie od 2023</span></span>
+                  </div>
+                  <span class="pl-text-mono pl-text-small pl-text-muted">•••• 4821</span>
+                </div>
+              </div>
+            </div>
+            <div>
+              <div class="pl-glass pl-glass-subtle pl-radius-lg pl-padding">
+                <h3>Wymień punkty na nagrody</h3>
+                <ul class="pl-list pl-list-check pl-list-primary">
+                  <li>Darmowa dostawa — 400 pkt</li>
+                  <li>Rabat 50 zł — 1 000 pkt</li>
+                  <li>Świeca Skog w prezencie — 1 800 pkt</li>
+                </ul>
+                <a class="pl-button pl-button-secondary pl-button-pill" href="#">Zobacz katalog nagród <span class="pl-button-arrow" data-pl-icon="arrow-right"></span></a>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 12. Szkielety -->
+    <section class="pl-section pl-section-small pl-section-muted" id="szkielety">
+      <div class="pl-container">
+        <div class="pl-flex pl-flex-bottom pl-flex-between pl-flex-wrap pl-gap-small">
+          <div>
+            <p class="pl-heading-eyebrow">12 · Stany</p>
+            <h2>Karty-szkielety</h2>
+            <p class="pl-text-muted pl-margin-remove">Zarys treści na czas ładowania. Przycisk podmienia szkielety na gotowe karty.</p>
+          </div>
+          <button class="pl-button" type="button" data-pl-toggle="target: .kx-swap"><span data-pl-icon="refresh-cw"></span> Przełącz ładowanie</button>
+        </div>
+
+        <div class="pl-grid pl-child-width-1-1 pl-grid-match pl-child-width-1-3@m pl-margin-medium-top">
+          {posts.map((p, i) => (
+            <div>
+              <div class="pl-card kx-swap" aria-hidden="true">
+                <div class={`pl-skeleton pl-skeleton-rect ${i === 1 ? 'pl-skeleton-pulse' : ''}`} style="border-radius: 0"></div>
+                <div class="pl-card-body">
+                  <div class="pl-skeleton pl-skeleton-title"></div>
+                  <div class="pl-skeleton-group">
+                    <div class="pl-skeleton pl-skeleton-text"></div>
+                    <div class="pl-skeleton pl-skeleton-text"></div>
+                    <div class="pl-skeleton pl-skeleton-text"></div>
+                  </div>
+                </div>
+                <div class="pl-card-footer pl-flex-middle pl-gap-small">
+                  <div class="pl-skeleton pl-skeleton-circle" style="--pl-skeleton-size: 2rem"></div>
+                  <div class="pl-skeleton pl-skeleton-text pl-width-small pl-margin-remove"></div>
+                  <div class="pl-skeleton pl-skeleton-button pl-margin-auto-left"></div>
+                </div>
+              </div>
+              <article class="pl-card kx-swap pl-animation-fade" hidden>
+                <figure class="pl-card-media pl-image pl-ratio-16-9"><img src={`/img/photo-${p.img}.svg`} alt="" loading="lazy" /></figure>
+                <div class="pl-card-body">
+                  <h3 class="pl-card-title">{p.title}</h3>
+                  <p class="pl-card-text pl-text-clamp-3">{p.text}</p>
+                </div>
+                <div class="pl-card-footer pl-flex-middle pl-gap-small">
+                  <span class="pl-avatar pl-avatar-small"><img src={`/img/avatar-${p.av}.svg`} alt="" /></span>
+                  <span class="pl-text-small">{p.author}</span>
+                  <a class="pl-button pl-button-small pl-margin-auto-left" href="/examples/wpis/">Czytaj</a>
+                </div>
+              </article>
+            </div>
+          ))}
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer class="pl-section pl-section-xsmall pl-border-top">
+    <div class="pl-container pl-flex pl-flex-between pl-flex-wrap pl-gap-small pl-text-meta">
+      <span>Wzorce kart · zbudowane z Plossy</span>
+      <span><a class="pl-link-muted" href="/examples/slidery/">Slidery</a> · <a class="pl-link-muted" href="/examples/landing/">Landing</a> · <a class="pl-link-muted" href="/examples/panel/">Panel</a></span>
+    </div>
+  </footer>
+
+  <style is:global>
+    section[id] {
+      scroll-margin-top: 4.5rem;
+    }
+    /* Mini wykres słupkowy w kaflu bento. */
+    .kx-bars {
+      display: flex;
+      align-items: flex-end;
+      gap: 0.4rem;
+      height: 4.5rem;
+    }
+    .kx-bars > span {
+      flex: 1;
+      height: calc(var(--h) * 1%);
+      border-radius: var(--pl-radius-xs) var(--pl-radius-xs) 2px 2px;
+      background: color-mix(in oklab, var(--pl-primary) 35%, transparent);
+      transition: background-color var(--pl-dur-2) var(--pl-ease), transform var(--pl-dur-3) var(--pl-ease-spring);
+      transform-origin: bottom;
+    }
+    .kx-bars > span:hover {
+      background: var(--pl-primary);
+      transform: scaleY(1.06);
+    }
+    /* Wyróżniony plan lekko wystaje ponad sąsiadów. */
+    @media (min-width: 960px) {
+      .kx-hot {
+        margin-block: -0.75rem;
+      }
+    }
+    @media (max-width: 639px) {
+      .kx-wide {
+        flex-direction: column;
+      }
+    }
+  </style>
+
+  <script is:inline>
+    document.addEventListener('click', (event) => {
+      const add = event.target.closest('[data-add]');
+      if (add) {
+        window.Plossy.notification({ title: 'Dodano do koszyka', message: add.dataset.add, status: 'success', timeout: 2600 });
+      }
+      const toast = event.target.closest('[data-toast]');
+      if (toast) window.Plossy.notification({ message: toast.dataset.toast, status: 'primary' });
+    });
+
+    document.addEventListener('change', (event) => {
+      const billing = event.target.closest('[data-billing]');
+      if (billing) {
+        const yearly = billing.checked;
+        document.querySelectorAll('[data-m][data-y]').forEach((el) => {
+          window.Plossy.counter(el).start(Number(yearly ? el.dataset.y : el.dataset.m));
+        });
+        document.querySelectorAll('[data-billing-note]').forEach((el) => {
+          el.textContent = yearly ? 'płatne raz w roku — dwa miesiące gratis' : 'płatne co miesiąc';
+        });
+      }
+      const shop = event.target.closest('[data-shop-switch]');
+      if (shop) {
+        document.querySelector('[data-shop-state]').textContent = shop.checked
+          ? 'Przyjmujemy zamówienia. Wysyłka w 24 h.'
+          : 'Przerwa urlopowa — zamówienia wstrzymane.';
+      }
+    });
+  </script>
+</Example>

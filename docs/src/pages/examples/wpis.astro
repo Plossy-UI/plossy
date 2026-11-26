@@ -1,0 +1,480 @@
+---
+import Example from '../../layouts/Example.astro';
+import ShopHeader from '../../components/examples/ShopHeader.astro';
+import ShopFooter from '../../components/examples/ShopFooter.astro';
+
+const gallery = [
+  { photo: 2, caption: 'Salon: lampa stojąca przy fotelu i dwie świece na parapecie.' },
+  { photo: 8, caption: 'Kuchnia: listwa pod szafkami w barwie 2700 K.' },
+  { photo: 4, caption: 'Sypialnia: kinkiet z lnianym abażurem zamiast lampy sufitowej.' },
+  { photo: 1, caption: 'Przedpokój: lustro naprzeciw okna podwaja światło dzienne.' },
+  { photo: 6, caption: 'Jadalnia: lampa Fjord zawieszona 65 cm nad blatem.' },
+  { photo: 7, caption: 'Pracownia: światło zadaniowe ustawione z lewej strony biurka.' },
+];
+
+const related = [
+  { photo: 2, cat: 'Światło', title: 'Trzy warstwy światła, czyli jak oświetlić salon', time: 7 },
+  { photo: 8, cat: 'Światło', title: 'Barwa światła: 2700 czy 3000 kelwinów?', time: 4 },
+  { photo: 3, cat: 'Wnętrza', title: 'Sypialnia bez niebieskiego światła', time: 5 },
+  { photo: 1, cat: 'Wnętrza', title: 'Małe mieszkanie po skandynawsku', time: 6 },
+  { photo: 4, cat: 'Pielęgnacja', title: 'Len po pięciu latach prania. Co się z nim dzieje?', time: 5 },
+];
+
+const share = [
+  { icon: 'link', label: 'Kopiuj link', action: 'copy' },
+  { icon: 'mail', label: 'Wyślij e-mailem', action: 'mail' },
+  { icon: 'share-2', label: 'Udostępnij', action: 'share' },
+  { icon: 'bookmark', label: 'Zapisz na później', action: 'save' },
+];
+---
+
+<Example title="Zimowe światło — Dziennik Lorem" description="Pojedynczy wpis bloga: nagłówek artykułu, bogata typografia, galeria w lightboksie, komentarze i powiązane wpisy.">
+  <div class="wpis-progress" aria-hidden="true"><span></span></div>
+  <ShopHeader active="blog" />
+
+  <main>
+    <!-- Nagłówek artykułu -->
+    <section class="pl-section pl-section-remove-bottom">
+      <div class="pl-container pl-container-small">
+        <nav aria-label="Okruszki">
+          <ul class="pl-breadcrumb pl-breadcrumb-small pl-breadcrumb-chevron">
+            <li><a href="/examples/sklep/">Lorem</a></li>
+            <li><a href="/examples/blog/">Dziennik</a></li>
+            <li><a href="/examples/blog/">Światło</a></li>
+            <li><span aria-current="page">Zimowe światło</span></li>
+          </ul>
+        </nav>
+
+        <header class="pl-margin-medium-top" data-pl-scrollspy="cls: pl-animation-slide-up; target: > *; delay: 90">
+          <a class="pl-heading-eyebrow pl-link-reset" href="/examples/blog/">Światło</a>
+          <h1 class="pl-heading-medium pl-text-balance">Zimowe światło. Jak urządzić dom na najciemniejsze miesiące</h1>
+          <p class="pl-text-lead">Od listopada do lutego słońce zachodzi przed szesnastą. Skandynawowie mają na to sposób od stuleci — i nie chodzi o mocniejsze żarówki.</p>
+
+          <div class="pl-flex pl-flex-between pl-flex-middle pl-flex-wrap pl-gap-medium pl-margin-medium-top">
+            <div class="pl-avatar-item">
+              <span class="pl-avatar pl-avatar-large pl-avatar-ring"><img src="/img/avatar-2.svg" alt=""></span>
+              <span class="pl-avatar-text">
+                <span class="pl-avatar-name">Mikołaj Sarna</span>
+                <span class="pl-avatar-meta"><time datetime="2026-11-24">24 listopada 2026</time> · 11 min czytania</span>
+              </span>
+            </div>
+            <ul class="pl-iconnav pl-iconnav-bar pl-iconnav-pill" aria-label="Udostępnij artykuł">
+              {share.map((item) => (
+                <li><a href="#" aria-label={item.label} data-wpis-share={item.action} data-pl-tooltip={`title: ${item.label}; pos: bottom`}><span data-pl-icon={item.icon}></span></a></li>
+              ))}
+            </ul>
+          </div>
+        </header>
+      </div>
+
+      <div class="pl-container pl-margin-large-top">
+        <figure class="pl-image pl-image-rounded pl-ratio-4-3 pl-ratio-16-9@s pl-ratio-21-9@m pl-margin-remove" data-pl-scrollspy="cls: pl-animation-scale-up">
+          <img src="/img/photo-5.svg" alt="Stół w jadalni oświetlony nisko zawieszoną lampą" width="1200" height="800" data-pl-parallax="y: -24,24; scale: 1.25,1.25">
+          <figcaption class="pl-image-caption pl-image-caption-chip">Jadalnia w pracowni, godz. 15:40</figcaption>
+        </figure>
+      </div>
+    </section>
+
+    <!-- Treść -->
+    <section class="pl-section" id="wpis-tresc">
+      <div class="pl-container">
+        <article class="pl-article pl-article-center">
+          <p class="pl-article-dropcap">Grudniowe popołudnie w Gdańsku trwa mniej więcej tyle, ile dobra kawa. O piętnastej robi się szaro, pół godziny później — ciemno. Przez lata walczyliśmy z tym tak jak wszyscy: zapalając górne światło i udając, że nadal jest dzień. Dopiero zima spędzona w Göteborgu pokazała nam, że można inaczej. Zamiast udawać dzień, lepiej dobrze urządzić wieczór.</p>
+          <p>Szwedzi nazywają to <em>mys</em>, Duńczycy <em>hygge</em>, ale za modnymi słowami stoi bardzo praktyczna wiedza: gdzie postawić lampę, na jakiej wysokości i z jaką żarówką. Zebraliśmy ją w kilku zasadach, które stosujemy we własnych domach i w obu showroomach.</p>
+
+          <h2 id="wiele-zrodel">Wiele małych źródeł zamiast jednego dużego</h2>
+          <p>Lampa pod sufitem oświetla pokój równo — i właśnie dlatego jest w nim płasko jak w poczekalni. Oko lubi kontrast: jasną plamę na stole, półcień w kącie, ciepły blask na ścianie. W typowym salonie warto mieć <strong>od pięciu do siedmiu</strong> punktów światła, każdy słabszy, niż podpowiada intuicja.</p>
+          <ul>
+            <li><strong>Światło ogólne</strong> — rozproszone, najlepiej odbite od sufitu lub ściany. Włączane rzadko.</li>
+            <li><strong>Światło zadaniowe</strong> — nad stołem, blatem, przy fotelu do czytania. Skupione i jaśniejsze.</li>
+            <li><strong>Światło nastrojowe</strong> — małe lampki, świece, podświetlona półka. To ono robi wieczór.</li>
+          </ul>
+
+          <blockquote class="pl-article-quote">
+            <p>Dobrze oświetlony pokój to taki, w którym nie widać żarówek — widać tylko to, co oświetlają.</p>
+            <footer>Mikołaj Sarna</footer>
+          </blockquote>
+
+          <h2 id="nisko">Im niżej, tym cieplej</h2>
+          <p>Światło padające z góry kojarzy nam się z południem i pracą. Światło z wysokości oczu i niżej — z zachodem słońca i ogniskiem. Wieczorem warto więc „obniżyć" pokój: zgasić sufit, zapalić lampę stojącą, kinkiet i lampkę na komodzie.</p>
+
+          <figure class="pl-article-figure pl-article-figure-wide">
+            <img src="/img/photo-3.svg" alt="Lampa wisząca nisko nad drewnianym stołem" width="1200" height="800" loading="lazy">
+            <figcaption>Lampa nad stołem powinna wisieć 60–70 cm nad blatem — oświetla talerze, nie twarze.</figcaption>
+          </figure>
+
+          <p>Dla lamp wiszących nad stołem mamy prostą regułę, którą sprawdziliśmy na kilkudziesięciu jadalniach:</p>
+          <div class="pl-overflow-x-auto pl-margin-medium">
+            <table class="pl-table pl-table-divider pl-table-small">
+              <thead>
+                <tr><th>Stół</th><th>Średnica klosza</th><th class="pl-table-numeric">Wysokość nad blatem</th></tr>
+              </thead>
+              <tbody>
+                <tr><td>Okrągły, 90–110 cm</td><td>35–45 cm</td><td class="pl-table-numeric">60 cm</td></tr>
+                <tr><td>Prostokątny, 160 cm</td><td>2 × 30 cm</td><td class="pl-table-numeric">65 cm</td></tr>
+                <tr><td>Prostokątny, 200+ cm</td><td>3 × 25 cm</td><td class="pl-table-numeric">70 cm</td></tr>
+              </tbody>
+            </table>
+          </div>
+
+          <h2 id="barwa">Barwa: 2700 K i ani kelwina więcej</h2>
+          <p>Zimne światło hamuje wydzielanie melatoniny i sprawia, że o dwudziestej drugiej wciąż czujemy się jak w biurze. W pokojach dziennych i sypialni wybieraj żarówki o barwie <span class="pl-text-highlight">2700 K lub cieplejszej</span>, a tam, gdzie to możliwe — ściemnialne.</p>
+
+          <div class="pl-article-note">
+            <strong>Na co patrzeć na opakowaniu</strong>
+            Oprócz barwy (K) sprawdź współczynnik oddawania barw: CRI 90 lub wyższy. Przy niższym drewno wygląda szaro, a jedzenie — nieapetycznie.
+          </div>
+
+          <h2 id="galeria">Sześć pomieszczeń, sześć pomysłów</h2>
+          <p>Poniżej kilka ujęć z naszych domów i z showroomu na Powiślu. Kliknij zdjęcie, aby je powiększyć.</p>
+          <div class="pl-grid pl-grid-small pl-child-width-1-2 pl-child-width-1-3@s pl-margin-medium" data-pl-lightbox="thumbs: true">
+            {gallery.map((item) => (
+              <div>
+                <a class="pl-image pl-image-rounded-small pl-image-zoom pl-ratio-1-1 pl-cursor-zoom-in" href={`/img/photo-${item.photo}.svg`} data-caption={item.caption}>
+                  <img src={`/img/photo-${item.photo}.svg`} alt={item.caption} loading="lazy">
+                </a>
+              </div>
+            ))}
+          </div>
+
+          <h2 id="na-poczatek">Od czego zacząć</h2>
+          <p>Nie trzeba wymieniać wszystkiego naraz. Jeśli masz zrobić tej zimy tylko trzy rzeczy, niech to będą te:</p>
+          <ol>
+            <li>Wymień żarówki w salonie i sypialni na ciepłe, 2700 K, z CRI 90+.</li>
+            <li>Dostaw jedną lampę na wysokości oczu w miejscu, gdzie siadasz wieczorem.</li>
+            <li>Przez tydzień nie zapalaj górnego światła po zmroku — i zobacz, co się zmieni.</li>
+          </ol>
+          <p>A jeśli chcesz zobaczyć to wszystko na żywo, w każdy piątek po piętnastej gasimy w pracowni świetlówki. Zostaje dwanaście lamp, kawa i pierniki.</p>
+
+          <footer class="pl-article-footer">
+            <div class="pl-chip-group">
+              <a class="pl-chip pl-chip-small" href="/examples/blog/">#światło</a>
+              <a class="pl-chip pl-chip-small" href="/examples/blog/">#żarówki</a>
+              <a class="pl-chip pl-chip-small" href="/examples/blog/">#salon</a>
+              <a class="pl-chip pl-chip-small" href="/examples/blog/">#hygge</a>
+            </div>
+            <button class="pl-button pl-button-soft pl-button-small" type="button" id="wpis-like"><span data-pl-icon="heart"></span> <span data-wpis-likes>128</span></button>
+          </footer>
+        </article>
+      </div>
+    </section>
+
+    <!-- Autor + sąsiednie wpisy -->
+    <section class="pl-section pl-section-remove-top">
+      <div class="pl-container pl-container-xsmall">
+        <div class="pl-card pl-card-muted">
+          <div class="pl-card-body">
+            <div class="pl-flex pl-flex-column pl-flex-row@s pl-gap-medium">
+              <span class="pl-avatar pl-avatar-xlarge pl-avatar-ring-spark pl-flex-none"><img src="/img/avatar-2.svg" alt="Mikołaj Sarna"></span>
+              <div>
+                <p class="pl-text-eyebrow pl-margin-remove">Autor</p>
+                <h2 class="pl-card-title pl-margin-remove">Mikołaj Sarna</h2>
+                <p class="pl-card-text pl-margin-small-top">Współzałożyciel Lorem. Z wykształcenia inżynier, z zamiłowania szklarz. Projektuje nasze lampy i od dziesięciu lat przekonuje ludzi do gaszenia górnego światła.</p>
+                <div class="pl-flex pl-flex-middle pl-flex-wrap pl-gap-small">
+                  <a class="pl-button pl-button-small pl-button-primary" href="/examples/blog/">Wszystkie wpisy autora</a>
+                  <a class="pl-button pl-button-small pl-button-ghost" href="/examples/kontakt/"><span data-pl-icon="mail"></span> Napisz</a>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <nav class="pl-margin-medium-top" aria-label="Sąsiednie wpisy">
+          <ul class="pl-pager">
+            <li>
+              <a href="/examples/wpis/">
+                <span class="pl-pager-label">Poprzedni</span>
+                <span class="pl-pager-title">Trzy warstwy światła, czyli jak oświetlić salon</span>
+              </a>
+            </li>
+            <li>
+              <a href="/examples/wpis/">
+                <span class="pl-pager-label">Następny</span>
+                <span class="pl-pager-title">Len po pięciu latach prania</span>
+              </a>
+            </li>
+          </ul>
+        </nav>
+      </div>
+    </section>
+
+    <!-- Komentarze -->
+    <section class="pl-section pl-section-muted" id="komentarze">
+      <div class="pl-container pl-container-xsmall">
+        <div class="pl-flex pl-flex-between pl-flex-middle pl-flex-wrap pl-gap-small">
+          <h2 class="pl-heading-small pl-margin-remove">Komentarze <span class="pl-badge pl-badge-soft pl-badge-primary pl-badge-large" data-wpis-count>4</span></h2>
+          <ul class="pl-subnav pl-subnav-pill pl-subnav-small" data-pl-switcher="connect: #wpis-sort-dummy">
+            <li class="pl-active"><a href="#">Najnowsze</a></li>
+            <li><a href="#">Najlepsze</a></li>
+          </ul>
+        </div>
+        <div class="pl-switcher" id="wpis-sort-dummy" hidden><div></div><div></div></div>
+
+        <ul class="pl-comment-list pl-margin-medium-top" id="wpis-comments">
+          <li>
+            <article class="pl-comment">
+              <header class="pl-comment-header">
+                <img class="pl-comment-avatar" src="/img/avatar-5.svg" alt="" width="40" height="40">
+                <div>
+                  <h3 class="pl-comment-title">Agata Reszka</h3>
+                  <ul class="pl-comment-meta"><li>2 dni temu</li><li>Klientka od 2022</li></ul>
+                </div>
+              </header>
+              <div class="pl-comment-body">
+                <p>Zgasiliśmy górne światło na tydzień, tak jak radzicie. Dzieci protestowały przez pierwszy wieczór, a teraz same proszą o „lampkowy tryb". Dziękuję za tabelkę z wysokościami — nasza lampa wisiała o 20 cm za wysoko.</p>
+              </div>
+              <div class="pl-comment-actions">
+                <button class="pl-comment-action" type="button" data-wpis-vote><span data-pl-icon="thumbs-up"></span> <span>14</span></button>
+                <button class="pl-comment-action" type="button" data-wpis-reply="Agata Reszka"><span data-pl-icon="message-circle"></span> Odpowiedz</button>
+              </div>
+            </article>
+            <ul>
+              <li>
+                <article class="pl-comment pl-comment-primary">
+                  <header class="pl-comment-header">
+                    <img class="pl-comment-avatar" src="/img/avatar-2.svg" alt="" width="40" height="40">
+                    <div>
+                      <h3 class="pl-comment-title">Mikołaj Sarna <span class="pl-comment-badge">Autor</span></h3>
+                      <ul class="pl-comment-meta"><li>2 dni temu</li></ul>
+                    </div>
+                  </header>
+                  <div class="pl-comment-body">
+                    <p>„Lampkowy tryb" — kradnę to określenie! 20 cm robi ogromną różnicę, szczególnie przy okrągłym stole.</p>
+                  </div>
+                  <div class="pl-comment-actions">
+                    <button class="pl-comment-action" type="button" data-wpis-vote><span data-pl-icon="thumbs-up"></span> <span>6</span></button>
+                  </div>
+                </article>
+              </li>
+            </ul>
+          </li>
+          <li>
+            <article class="pl-comment">
+              <header class="pl-comment-header">
+                <img class="pl-comment-avatar" src="/img/avatar-4.svg" alt="" width="40" height="40">
+                <div>
+                  <h3 class="pl-comment-title">Paweł Olszyna</h3>
+                  <ul class="pl-comment-meta"><li>3 dni temu</li></ul>
+                </div>
+              </header>
+              <div class="pl-comment-body">
+                <p>A co z kuchnią? Przy krojeniu potrzebuję jednak mocnego światła, a 2700 K wydaje mi się za żółte nad blatem.</p>
+              </div>
+              <div class="pl-comment-actions">
+                <button class="pl-comment-action" type="button" data-wpis-vote><span data-pl-icon="thumbs-up"></span> <span>3</span></button>
+                <button class="pl-comment-action" type="button" data-wpis-reply="Paweł Olszyna"><span data-pl-icon="message-circle"></span> Odpowiedz</button>
+              </div>
+            </article>
+            <ul>
+              <li>
+                <article class="pl-comment">
+                  <header class="pl-comment-header">
+                    <img class="pl-comment-avatar" src="/img/avatar-3.svg" alt="" width="40" height="40">
+                    <div>
+                      <h3 class="pl-comment-title">Hanna Wrzos <span class="pl-comment-badge">Lorem</span></h3>
+                      <ul class="pl-comment-meta"><li>3 dni temu</li></ul>
+                    </div>
+                  </header>
+                  <div class="pl-comment-body">
+                    <p>Nad blatem roboczym spokojnie można dać 3000 K — to światło zadaniowe. Ważne, żeby dało się je włączać osobno i żeby nie świeciło w oczy osobom przy stole.</p>
+                  </div>
+                  <div class="pl-comment-actions">
+                    <button class="pl-comment-action" type="button" data-wpis-vote><span data-pl-icon="thumbs-up"></span> <span>9</span></button>
+                  </div>
+                </article>
+              </li>
+            </ul>
+          </li>
+        </ul>
+
+        <!-- Formularz komentarza -->
+        <div class="pl-card pl-margin-large-top">
+          <div class="pl-card-body">
+            <h3 class="pl-card-title">Dodaj komentarz</h3>
+            <form class="pl-form-grid pl-margin-top" id="wpis-form" data-pl-form-validate novalidate>
+              <div class="pl-form-field">
+                <label class="pl-form-label pl-form-required" for="w-name">Imię</label>
+                <input class="pl-input" id="w-name" name="name" type="text" required minlength="2" autocomplete="given-name">
+              </div>
+              <div class="pl-form-field">
+                <label class="pl-form-label pl-form-required" for="w-email">E-mail</label>
+                <input class="pl-input" id="w-email" name="email" type="email" required autocomplete="email">
+                <p class="pl-form-help">Nie będzie widoczny publicznie.</p>
+              </div>
+              <div class="pl-form-field pl-form-span-full">
+                <label class="pl-form-label pl-form-required" for="w-text">Komentarz</label>
+                <textarea class="pl-textarea" id="w-text" name="text" rows="3" required minlength="10" maxlength="600" data-pl-char-count data-pl-autosize placeholder="Co u Ciebie sprawdza się zimą?"></textarea>
+                <div class="pl-form-help pl-form-help-split">
+                  <span>Bądźmy dla siebie mili.</span>
+                  <span class="pl-form-count"></span>
+                </div>
+              </div>
+              <div class="pl-form-actions pl-form-span-full">
+                <button class="pl-button pl-button-primary" type="submit">Opublikuj komentarz</button>
+                <label class="pl-form-check"><input class="pl-checkbox" type="checkbox" name="notify"> Powiadom mnie o odpowiedziach</label>
+              </div>
+            </form>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Powiązane wpisy -->
+    <section class="pl-section pl-section-large">
+      <div class="pl-container">
+        <div class="pl-flex pl-flex-between pl-flex-bottom pl-flex-wrap pl-gap-small pl-margin-medium-bottom">
+          <div>
+            <p class="pl-heading-eyebrow">Czytaj dalej</p>
+            <h2 class="pl-heading-small pl-margin-remove">Powiązane wpisy</h2>
+          </div>
+          <a class="pl-button pl-button-text" href="/examples/blog/">Cały dziennik <span class="pl-button-arrow" data-pl-icon="arrow-right"></span></a>
+        </div>
+        <div class="pl-slider" data-pl-slider="finite: true" aria-label="Powiązane wpisy">
+          <div class="pl-slider-container pl-slider-container-offset">
+            <ul class="pl-slider-items pl-slider-cols-1 pl-slider-cols-2@s pl-slider-cols-3@m">
+              {related.map((post) => (
+                <li>
+                  <article class="pl-card pl-card-hover">
+                    <div class="pl-card-media"><img src={`/img/photo-${post.photo}.svg`} alt="" width="1200" height="800" loading="lazy" draggable="false"></div>
+                    <div class="pl-card-body">
+                      <p class="pl-card-meta">{post.cat} · {post.time} min czytania</p>
+                      <h3 class="pl-card-title"><a class="pl-link-heading pl-card-stretch" href="/examples/wpis/">{post.title}</a></h3>
+                    </div>
+                  </article>
+                </li>
+              ))}
+            </ul>
+          </div>
+          <div class="pl-slider-arrows">
+            <ul class="pl-slider-nav pl-dotnav"></ul>
+            <button class="pl-slidenav-previous pl-slidenav-small" type="button" aria-label="Poprzednie" data-pl-slider-item="previous"></button>
+            <button class="pl-slidenav-next pl-slidenav-small" type="button" aria-label="Następne" data-pl-slider-item="next"></button>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <ShopFooter />
+  <a href="#" class="pl-totop pl-totop-fixed pl-totop-progress" data-pl-totop></a>
+</Example>
+
+<script>
+  const api = () => (window as any).Plossy;
+
+  // Pasek postępu czytania — liczony względem treści artykułu.
+  const bar = document.querySelector<HTMLElement>('.wpis-progress > span');
+  const body = document.querySelector<HTMLElement>('#wpis-tresc');
+  const progress = () => {
+    if (!bar || !body) return;
+    const rect = body.getBoundingClientRect();
+    const total = rect.height - window.innerHeight * 0.6;
+    const done = Math.min(1, Math.max(0, (window.innerHeight * 0.4 - rect.top) / total));
+    bar.style.transform = `scaleX(${done})`;
+  };
+  window.addEventListener('scroll', () => requestAnimationFrame(progress), { passive: true });
+  window.addEventListener('resize', progress);
+  progress();
+
+  // Udostępnianie.
+  document.querySelectorAll<HTMLElement>('[data-wpis-share]').forEach((link) => {
+    link.addEventListener('click', async () => {
+      const action = link.dataset.wpisShare;
+      if (action === 'copy') {
+        try { await navigator.clipboard.writeText(location.href); } catch {}
+        api().notification({ message: 'Link skopiowany do schowka.', status: 'success', icon: 'clipboard-check', timeout: 2500 });
+      } else if (action === 'save') {
+        const saved = link.parentElement!.classList.toggle('pl-active');
+        api().notification({ message: saved ? 'Zapisano na liście „Do przeczytania".' : 'Usunięto z listy.', timeout: 2500 });
+      } else {
+        api().notification({ message: 'W wersji demonstracyjnej udostępnianie jest wyłączone.', status: 'info', timeout: 2500 });
+      }
+    });
+  });
+
+  // Polubienia artykułu i komentarzy.
+  const like = document.querySelector<HTMLElement>('#wpis-like');
+  like?.addEventListener('click', () => {
+    const on = like.classList.toggle('pl-button-danger');
+    const counter = like.querySelector('[data-wpis-likes]')!;
+    counter.textContent = String(128 + (on ? 1 : 0));
+  });
+
+  const comments = document.querySelector<HTMLElement>('#wpis-comments');
+  comments?.addEventListener('click', (event) => {
+    const target = event.target as HTMLElement;
+    const vote = target.closest<HTMLElement>('[data-wpis-vote]');
+    if (vote) {
+      const count = vote.querySelector('span:last-child')!;
+      const on = vote.classList.toggle('pl-active');
+      count.textContent = String(Number(count.textContent) + (on ? 1 : -1));
+    }
+    const reply = target.closest<HTMLElement>('[data-wpis-reply]');
+    if (reply) {
+      const field = document.querySelector<HTMLTextAreaElement>('#w-text')!;
+      field.value = `@${reply.dataset.wpisReply} `;
+      field.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      field.focus({ preventScroll: true });
+      field.dispatchEvent(new Event('input', { bubbles: true }));
+    }
+  });
+
+  // Nowy komentarz trafia na górę listy.
+  const form = document.querySelector<HTMLFormElement>('#wpis-form');
+  form?.addEventListener('pl:valid', (event) => {
+    (event as CustomEvent).detail.originalEvent?.preventDefault();
+    const data = new FormData(form);
+    const item = document.createElement('li');
+    item.className = 'pl-animation-slide-up';
+    item.innerHTML = `
+      <article class="pl-comment">
+        <header class="pl-comment-header">
+          <span class="pl-comment-avatar pl-avatar pl-avatar-primary"></span>
+          <div>
+            <h3 class="pl-comment-title"></h3>
+            <ul class="pl-comment-meta"><li>przed chwilą</li><li>Czeka na moderację</li></ul>
+          </div>
+        </header>
+        <div class="pl-comment-body"><p></p></div>
+      </article>`;
+    const name = String(data.get('name')).trim();
+    item.querySelector('.pl-avatar')!.textContent = name.slice(0, 1).toUpperCase();
+    item.querySelector('.pl-comment-title')!.textContent = name;
+    item.querySelector('.pl-comment-body p')!.textContent = String(data.get('text')).trim();
+    comments?.prepend(item);
+
+    const count = document.querySelector('[data-wpis-count]')!;
+    count.textContent = String(Number(count.textContent) + 1);
+    form.reset();
+    api().formValidate?.(form)?.reset();
+    api().charCount?.('#w-text')?.update();
+    api().autosize?.('#w-text')?.update();
+    api().notification({ title: 'Dziękujemy!', message: 'Komentarz pojawi się publicznie po akceptacji.', status: 'success' });
+    item.scrollIntoView({ behavior: 'smooth', block: 'center' });
+  });
+</script>
+
+<style>
+  /* Cienki pasek postępu czytania nad nagłówkiem. */
+  .wpis-progress {
+    position: fixed;
+    inset: 0 0 auto;
+    z-index: calc(var(--pl-z-navbar, 1000) + 1);
+    height: 3px;
+    pointer-events: none;
+  }
+
+  .wpis-progress > span {
+    display: block;
+    height: 100%;
+    background: linear-gradient(90deg, var(--pl-primary), var(--pl-spark));
+    transform: scaleX(0);
+    transform-origin: left;
+    transition: transform var(--pl-dur-1) linear;
+  }
+
+  .pl-article h2[id],
+  #komentarze {
+    scroll-margin-top: 6rem;
+  }
+</style>

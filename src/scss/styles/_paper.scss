@@ -1,0 +1,76 @@
+// Styl „paper" — namacalny: ziarnisty papier, ziemiste barwy, miękkie ciepłe cienie,
+// delikatne zaokrąglenia i miękki szeryf w nagłówkach.
+@use 'engine' as *;
+
+$noise: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='220' height='220'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='3' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 .35 0 0 0 0 .25 0 0 0 0 .15 0 0 0 .22 0'/%3E%3C/filter%3E%3Crect width='220' height='220' filter='url(%23n)'/%3E%3C/svg%3E");
+
+@include preset('paper') {
+  --pl-spark: oklch(0.83 0.12 85);
+  --pl-on-spark: oklch(0.28 0.05 70);
+  --pl-radius-xs: 3px;
+  --pl-radius-sm: 4px;
+  --pl-radius-md: 6px;
+  --pl-radius-lg: 9px;
+  --pl-radius-xl: 14px;
+  --pl-shadow-scale: 1.25;
+  --pl-shadow-color: 0.35 0.07 60;
+  --pl-gloss: 0.5;
+
+  --pl-font-display: 'Fraunces Variable', 'Fraunces', Georgia, serif;
+  --pl-heading-weight: 560;
+  --pl-heading-tracking: -0.02em;
+  --pl-display-weight: 560;
+  --pl-display-tracking: -0.012em;
+  --pl-control-weight: 560;
+
+  --pl-bg: oklch(0.94 0.022 80);
+  --pl-surface: oklch(0.972 0.016 84);
+  --pl-surface-raised: oklch(0.98 0.014 84);
+  --pl-muted: oklch(0.912 0.028 78);
+  --pl-muted-strong: oklch(0.875 0.034 76);
+  --pl-border: oklch(0.845 0.034 74);
+  --pl-border-strong: oklch(0.74 0.045 70);
+  --pl-text: oklch(0.3 0.035 55);
+  --pl-text-muted: oklch(0.47 0.035 58);
+  --pl-text-subtle: oklch(0.6 0.03 62);
+  --pl-ink: oklch(0.3 0.035 55);
+  --pl-on-ink: oklch(0.96 0.02 84);
+  --pl-secondary: oklch(0.34 0.04 55);
+  --pl-success: oklch(0.55 0.1 140);
+  --pl-info: oklch(0.56 0.08 225);
+}
+
+@include preset-dark('paper') {
+  --pl-shadow-color: 0 0 0;
+  --pl-bg: oklch(0.2 0.018 60);
+  --pl-surface: oklch(0.235 0.02 60);
+  --pl-surface-raised: oklch(0.27 0.022 60);
+  --pl-muted: oklch(0.27 0.022 60);
+  --pl-muted-strong: oklch(0.32 0.026 60);
+  --pl-border: oklch(0.34 0.028 62);
+  --pl-border-strong: oklch(0.44 0.034 64);
+  --pl-text: oklch(0.925 0.028 84);
+  --pl-text-muted: oklch(0.74 0.03 80);
+  --pl-text-subtle: oklch(0.58 0.028 76);
+  --pl-ink: oklch(0.925 0.028 84);
+  --pl-on-ink: oklch(0.22 0.02 60);
+  --pl-secondary: oklch(0.925 0.028 84);
+  --pl-on-secondary: oklch(0.22 0.02 60);
+}
+
+@include preset-accent('paper', 0.55, 0.13, 42);
+@include preset-accent-dark('paper', 0.6, 0.13, 45);
+
+// Faktura papieru: na stronie i na powierzchniach.
+[data-pl-style='paper'] body,
+[data-pl-style='paper'] :is(.pl-card:not(.pl-card-primary, .pl-card-secondary, .pl-card-ghost), .pl-tile-default, .pl-modal-dialog, .pl-offcanvas-bar, .pl-drop) {
+  background-image: $noise;
+}
+
+[data-pl-style='paper'] {
+  .pl-input,
+  .pl-textarea,
+  .pl-select {
+    box-shadow: inset 0 1px 2px oklch(0.35 0.07 60 / 0.1);
+  }
+}

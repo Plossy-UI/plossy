@@ -1,0 +1,347 @@
+// Nav
+@use '../abstracts' as *;
+
+.pl-nav,
+:where(.pl-nav) ul {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.pl-nav {
+  --pl-nav-px: 0.75rem;
+  --pl-nav-py: 0.5rem;
+  --pl-nav-radius: var(--pl-radius-sm);
+  --pl-nav-gap: 2px;
+
+  display: flex;
+  flex-direction: column;
+  gap: var(--pl-nav-gap);
+
+  li > a {
+    position: relative;
+    display: flex;
+    align-items: center;
+    gap: 0.65em;
+    padding: var(--pl-nav-py) var(--pl-nav-px);
+    border-radius: var(--pl-nav-radius);
+    color: var(--pl-text-muted);
+    font-size: 0.9375rem;
+    font-weight: 500;
+    line-height: 1.4;
+    text-decoration: none;
+    transition:
+      color var(--pl-dur-2) var(--pl-ease),
+      background-color var(--pl-dur-2) var(--pl-ease),
+      transform var(--pl-dur-3) var(--pl-ease-spring);
+
+    @include focus-visible(-2px);
+  }
+
+  li > a > .pl-icon,
+  li > a > svg {
+    flex: none;
+    width: 1.15em;
+    height: 1.15em;
+    opacity: 0.75;
+    transition:
+      opacity var(--pl-dur-2) var(--pl-ease),
+      transform var(--pl-dur-3) var(--pl-ease-spring);
+  }
+
+  li > a:hover > .pl-icon,
+  li.pl-active > a > .pl-icon {
+    opacity: 1;
+  }
+
+  // Znaczek / licznik dosunięty do prawej.
+  li > a > .pl-badge,
+  li > a > .pl-label,
+  li > a > .pl-nav-meta {
+    margin-left: auto;
+  }
+
+  li.pl-disabled > a {
+    opacity: 0.45;
+    pointer-events: none;
+  }
+}
+
+.pl-nav-meta {
+  color: var(--pl-text-subtle);
+  font-family: var(--pl-font-mono);
+  font-size: var(--pl-text-xs);
+  font-weight: 400;
+}
+
+// ── Nagłówek i separator (działają też w .pl-dropdown-nav) ──────────────
+.pl-nav-header {
+  padding: 0.5rem 0.75rem 0.3rem;
+  color: var(--pl-text-subtle);
+  font-family: var(--pl-font-mono);
+  font-size: 0.6875rem;
+  font-weight: 500;
+  line-height: 1.4;
+  letter-spacing: 0.07em;
+  text-transform: uppercase;
+  list-style: none;
+
+  &:not(:first-child) {
+    margin-top: 0.75rem;
+  }
+}
+
+.pl-nav-divider {
+  height: 1px;
+  margin: 0.4rem 0.25rem;
+  padding: 0;
+  border: 0;
+  background: var(--pl-border);
+  list-style: none;
+}
+
+// ── Styl domyślny ───────────────────────────────────────────────────────
+.pl-nav-default {
+  > li > a {
+    // Wskaźnik aktywnej pozycji — pionowa kreska, która „wyrasta".
+    &::before {
+      content: '';
+      position: absolute;
+      top: 50%;
+      left: 0;
+      width: 3px;
+      height: 1.1em;
+      margin-top: -0.55em;
+      border-radius: var(--pl-radius-pill);
+      background: var(--pl-primary);
+      opacity: 0;
+      transform: scaleY(0);
+      transition:
+        transform var(--pl-dur-4) var(--pl-ease-spring),
+        opacity var(--pl-dur-2) var(--pl-ease);
+    }
+
+    &:hover {
+      background: var(--pl-muted);
+      color: var(--pl-text);
+    }
+
+    &:active {
+      background: var(--pl-muted-strong);
+    }
+  }
+
+  > li.pl-active > a {
+    background: var(--pl-muted);
+    color: var(--pl-text);
+    font-weight: 560;
+
+    &::before {
+      opacity: 1;
+      transform: scaleY(1);
+    }
+  }
+}
+
+// ── Styl „pill" ─────────────────────────────────────────────────────────
+.pl-nav-pill {
+  --pl-nav-radius: var(--pl-radius-pill);
+  --pl-nav-px: 0.95rem;
+
+  > li > a {
+    &:hover {
+      background: var(--pl-muted);
+      color: var(--pl-text);
+    }
+
+    &:active {
+      transform: scale(0.98);
+    }
+  }
+
+  > li.pl-active > a {
+    background: var(--pl-ink);
+    color: var(--pl-on-ink);
+    box-shadow: var(--pl-shadow-sm);
+
+    .pl-nav-meta {
+      color: inherit;
+      opacity: 0.7;
+    }
+  }
+}
+
+// ── Styl „primary" — duża typografia ────────────────────────────────────
+.pl-nav-primary {
+  --pl-nav-px: 0rem;
+  --pl-nav-py: 0.2rem;
+  --pl-nav-gap: 0.1rem;
+
+  > li > a {
+    font-family: var(--pl-font-display);
+    font-size: var(--pl-text-2xl);
+    font-weight: var(--pl-display-weight, 600);
+    line-height: 1.25;
+    letter-spacing: var(--pl-display-tracking, -0.028em);
+    color: var(--pl-text-subtle);
+
+    // Iskra przed aktywną pozycją.
+    &::before {
+      content: '';
+      flex: none;
+      width: 0;
+      height: 0.32em;
+      margin-right: -0.65em;
+      border-radius: 50%;
+      background: var(--pl-spark);
+      box-shadow: 0 0 0 1px color-mix(in oklab, var(--pl-on-spark) 25%, transparent);
+      opacity: 0;
+      transform: scale(0);
+      transition:
+        transform var(--pl-dur-4) var(--pl-ease-spring),
+        opacity var(--pl-dur-2) var(--pl-ease),
+        width var(--pl-dur-3) var(--pl-ease),
+        margin var(--pl-dur-3) var(--pl-ease);
+    }
+
+    &:hover {
+      color: var(--pl-text);
+      transform: translateX(0.2em);
+    }
+  }
+
+  > li.pl-active > a {
+    color: var(--pl-text);
+
+    &::before {
+      width: 0.32em;
+      margin-right: -0.25em;
+      opacity: 1;
+      transform: scale(1);
+    }
+  }
+
+  .pl-nav-sub {
+    font-family: var(--pl-font-sans);
+  }
+}
+
+// ── Pozycje nadrzędne i podmenu ─────────────────────────────────────────
+.pl-nav .pl-parent > a::after {
+  content: '';
+  flex: none;
+  width: 0.42em;
+  height: 0.42em;
+  margin: -0.2em 0.2em 0 auto;
+  border: solid currentColor;
+  border-width: 0 1.5px 1.5px 0;
+  opacity: 0.6;
+  transform: rotate(45deg);
+  transition: transform var(--pl-dur-4) var(--pl-ease-spring);
+}
+
+.pl-nav .pl-parent > a:has(> .pl-badge, > .pl-label, > .pl-nav-meta)::after {
+  margin-left: 0;
+}
+
+.pl-nav .pl-parent.pl-open > a::after {
+  transform: translateY(0.2em) rotate(-135deg);
+}
+
+.pl-nav-sub {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: 1px;
+  margin: 0.2rem 0 0.35rem calc(var(--pl-nav-px, 0.75rem) + 0.55em);
+  padding: 0 0 0 0.6rem;
+  border-left: 1px solid var(--pl-border);
+
+  &[hidden] {
+    display: none;
+  }
+
+  li > a {
+    padding: 0.32rem 0.65rem;
+    font-size: var(--pl-text-sm);
+    font-weight: 450;
+    letter-spacing: 0;
+
+    &:hover {
+      color: var(--pl-text);
+    }
+  }
+
+  // Aktywna pozycja podświetla fragment linii prowadzącej.
+  li > a::before {
+    content: '';
+    position: absolute;
+    top: 0.3rem;
+    bottom: 0.3rem;
+    left: calc(-0.6rem - 1px);
+    width: 1px;
+    background: var(--pl-primary);
+    transform: scaleY(0);
+    transition: transform var(--pl-dur-3) var(--pl-ease-spring);
+  }
+
+  li.pl-active > a {
+    color: var(--pl-primary-text);
+    font-weight: 540;
+
+    &::before {
+      transform: scaleY(1);
+    }
+  }
+}
+
+// ── Modyfikatory ────────────────────────────────────────────────────────
+.pl-nav-center {
+  text-align: center;
+
+  li > a {
+    justify-content: center;
+  }
+
+  > li > a > .pl-badge,
+  > li > a > .pl-label,
+  > li > a > .pl-nav-meta {
+    margin-left: 0;
+  }
+
+  .pl-parent > a::after {
+    margin-left: 0;
+  }
+
+  .pl-nav-sub {
+    margin-left: 0;
+    padding-left: 0;
+    border-left: 0;
+
+    li > a::before {
+      display: none;
+    }
+  }
+
+  &.pl-nav-primary > li > a:hover {
+    transform: none;
+  }
+}
+
+.pl-nav-small {
+  --pl-nav-py: 0.35rem;
+  --pl-nav-px: 0.6rem;
+
+  li > a {
+    font-size: var(--pl-text-sm);
+  }
+}
+
+.pl-nav-large {
+  --pl-nav-py: 0.7rem;
+  --pl-nav-px: 0.95rem;
+
+  li > a {
+    font-size: var(--pl-text-md);
+  }
+}

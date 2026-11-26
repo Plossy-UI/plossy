@@ -1,0 +1,234 @@
+// Text — typografia: rozmiary, wagi, kolory, wyrównanie, efekty.
+@use '../abstracts' as *;
+
+// ── Style ───────────────────────────────────────────────────────────────
+.pl-text-lead {
+  font-size: var(--pl-text-xl);
+  line-height: 1.5;
+  letter-spacing: -0.012em;
+  color: var(--pl-text-muted);
+  text-wrap: pretty;
+}
+
+.pl-text-meta {
+  font-size: var(--pl-text-sm);
+  line-height: 1.45;
+  color: var(--pl-text-muted);
+
+  a {
+    color: inherit;
+  }
+
+  a:hover {
+    color: var(--pl-text);
+  }
+}
+
+// Mała etykieta techniczna nad nagłówkiem.
+.pl-text-eyebrow {
+  font-family: var(--pl-font-mono);
+  font-size: var(--pl-text-xs);
+  font-weight: 500;
+  line-height: 1.4;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--pl-text-muted);
+}
+
+.pl-text-display {
+  font-family: var(--pl-font-display) !important;
+  font-weight: var(--pl-display-weight, 620);
+  line-height: var(--pl-leading-tight);
+  letter-spacing: var(--pl-display-tracking, -0.03em);
+  text-wrap: balance;
+}
+
+.pl-text-mono {
+  font-family: var(--pl-font-mono) !important;
+  font-feature-settings: normal;
+}
+
+.pl-text-sans {
+  font-family: var(--pl-font-sans) !important;
+}
+
+.pl-text-tabular {
+  font-variant-numeric: tabular-nums !important;
+}
+
+// ── Rozmiary ────────────────────────────────────────────────────────────
+.pl-text-small { font-size: var(--pl-text-sm) !important; line-height: 1.5; }
+.pl-text-default { font-size: var(--pl-text-md) !important; line-height: var(--pl-leading); }
+.pl-text-large { font-size: var(--pl-text-lg) !important; line-height: 1.55; }
+
+@each $size in xs, sm, md, lg, xl {
+  .pl-text-#{$size} { font-size: var(--pl-text-#{$size}) !important; }
+}
+
+@each $size in 2xl, 3xl, 4xl, 5xl {
+  .pl-text-#{$size} {
+    font-size: var(--pl-text-#{$size}) !important;
+    line-height: var(--pl-leading-tight);
+  }
+}
+
+// ── Wagi i styl ─────────────────────────────────────────────────────────
+.pl-text-light { font-weight: 300 !important; }
+.pl-text-normal { font-weight: 400 !important; }
+.pl-text-medium { font-weight: 520 !important; }
+.pl-text-semibold { font-weight: 620 !important; }
+.pl-text-bold { font-weight: 720 !important; }
+.pl-text-lighter { font-weight: lighter !important; }
+.pl-text-bolder { font-weight: bolder !important; }
+.pl-text-italic { font-style: italic !important; }
+
+// ── Transformacje i dekoracje ───────────────────────────────────────────
+.pl-text-capitalize { text-transform: capitalize !important; }
+.pl-text-uppercase { text-transform: uppercase !important; }
+.pl-text-lowercase { text-transform: lowercase !important; }
+.pl-text-transform-none { text-transform: none !important; }
+
+.pl-text-decoration-none { text-decoration: none !important; }
+
+.pl-text-underline {
+  text-decoration: underline !important;
+  text-decoration-thickness: 1px !important;
+  text-underline-offset: 0.22em;
+}
+
+.pl-text-line-through { text-decoration: line-through !important; }
+
+.pl-text-tight { letter-spacing: -0.03em !important; }
+.pl-text-wide { letter-spacing: 0.07em !important; }
+
+// ── Kolory ──────────────────────────────────────────────────────────────
+.pl-text-muted { color: var(--pl-text-muted) !important; }
+.pl-text-subtle { color: var(--pl-text-subtle) !important; }
+.pl-text-emphasis { color: var(--pl-text) !important; }
+
+@each $tone in $tones {
+  .pl-text-#{$tone} { color: var(--pl-#{$tone}-text) !important; }
+}
+
+// ── Wyrównanie ──────────────────────────────────────────────────────────
+@include responsive using ($s) {
+  .pl-text-left#{$s} { text-align: left !important; }
+  .pl-text-right#{$s} { text-align: right !important; }
+  .pl-text-center#{$s} { text-align: center !important; }
+}
+
+.pl-text-justify {
+  text-align: justify !important;
+  hyphens: auto;
+}
+
+.pl-text-top { vertical-align: top !important; }
+.pl-text-middle { vertical-align: middle !important; }
+.pl-text-bottom { vertical-align: bottom !important; }
+.pl-text-baseline { vertical-align: baseline !important; }
+
+// ── Zawijanie ───────────────────────────────────────────────────────────
+.pl-text-nowrap { white-space: nowrap !important; }
+
+.pl-text-truncate {
+  max-width: 100%;
+  overflow: hidden !important;
+  text-overflow: ellipsis !important;
+  white-space: nowrap !important;
+}
+
+th.pl-text-truncate,
+td.pl-text-truncate {
+  max-width: 0;
+}
+
+.pl-text-break {
+  overflow-wrap: anywhere !important;
+  word-break: break-word;
+}
+
+th.pl-text-break,
+td.pl-text-break {
+  word-break: break-all;
+}
+
+.pl-text-balance { text-wrap: balance !important; }
+.pl-text-pretty { text-wrap: pretty !important; }
+
+@each $lines in 1, 2, 3, 4 {
+  .pl-text-clamp-#{$lines} {
+    display: -webkit-box !important;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: $lines;
+    line-clamp: $lines;
+    overflow: hidden !important;
+  }
+}
+
+// ── Efekty — podpis Plossy ────────────────────────────────────────────────
+// Gradient akcent → iskra. Koniec gradientu jest domieszany kolorem tekstu,
+// żeby limonka pozostała czytelna na jasnym i ciemnym tle.
+.pl-text-gradient {
+  --pl-text-gradient-from: var(--pl-primary);
+  --pl-text-gradient-to: color-mix(in oklab, var(--pl-spark) 72%, var(--pl-text));
+
+  background-image: linear-gradient(100deg, var(--pl-text-gradient-from), var(--pl-text-gradient-to));
+  background-image: linear-gradient(100deg in oklch, var(--pl-text-gradient-from) 5%, var(--pl-text-gradient-to) 95%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  color: var(--pl-primary-text);
+  // Żeby nie ucinało dolnych wydłużeń liter przy ciasnej interlinii.
+  padding-bottom: 0.08em;
+  -webkit-box-decoration-break: clone;
+  box-decoration-break: clone;
+}
+
+// Gradient w ruchu — powolne „przelewanie" barw.
+.pl-text-gradient-animated {
+  background-size: 220% 100%;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .pl-text-gradient-animated {
+    animation: pl-text-gradient 6s var(--pl-ease-in-out) infinite alternate;
+  }
+}
+
+@keyframes pl-text-gradient {
+  to {
+    background-position: 100% 0;
+  }
+}
+
+// Podkreślenie „zakreślaczem" w kolorze iskry.
+.pl-text-highlight {
+  --pl-text-highlight-color: var(--pl-spark);
+
+  padding-inline: 0.12em;
+  margin-inline: -0.12em;
+  border-radius: 0.2em;
+  background-image: linear-gradient(
+    transparent 62%,
+    color-mix(in oklab, var(--pl-text-highlight-color) 78%, transparent) 62%,
+    color-mix(in oklab, var(--pl-text-highlight-color) 78%, transparent) 92%,
+    transparent 92%
+  );
+  background-repeat: no-repeat;
+  background-size: 100% 100%;
+  -webkit-box-decoration-break: clone;
+  box-decoration-break: clone;
+}
+
+// Wariant rysowany: zakreślenie „wjeżdża" od lewej, gdy element dostanie
+// klasę .pl-active lub po najechaniu na rodzica .pl-text-highlight-toggle.
+.pl-text-highlight-draw {
+  background-size: 0% 100%;
+  transition: background-size var(--pl-dur-4) var(--pl-ease);
+}
+
+.pl-text-highlight-draw.pl-active,
+.pl-text-highlight-toggle:hover .pl-text-highlight-draw,
+.pl-text-highlight-toggle:focus-within .pl-text-highlight-draw {
+  background-size: 100% 100%;
+}

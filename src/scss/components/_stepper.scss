@@ -1,0 +1,425 @@
+// Stepper
+@use '../abstracts' as *;
+
+.pl-stepper {
+  --pl-stepper-size: 2rem;
+  --pl-stepper-gap: 0.75rem;
+  --pl-stepper-line: 2px;
+  --pl-stepper-color: var(--pl-primary);
+  --pl-stepper-on-color: var(--pl-on-primary);
+
+  display: flex;
+  width: 100%;
+  align-items: flex-start;
+  gap: var(--pl-stepper-gap);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  counter-reset: pl-stepper;
+
+  > li {
+    position: relative;
+    display: flex;
+    flex: 1 1 0;
+    align-items: flex-start;
+    gap: var(--pl-stepper-gap);
+    min-width: 0;
+    counter-increment: pl-stepper;
+    color: var(--pl-text-muted);
+
+    // Łącznik do następnego kroku — wypełnia się po ukończeniu.
+    &::after {
+      content: '';
+      flex: 1 1 1.5rem;
+      min-width: 1.5rem;
+      height: var(--pl-stepper-line);
+      margin-top: calc((var(--pl-stepper-size) - var(--pl-stepper-line)) / 2);
+      border-radius: var(--pl-radius-pill);
+      background:
+        linear-gradient(var(--pl-stepper-color), var(--pl-stepper-color)) left top / 0% 100% no-repeat,
+        var(--pl-border);
+      transition: background-size var(--pl-dur-4) var(--pl-ease);
+    }
+
+    &:last-child {
+      flex: 0 0 auto;
+
+      &::after {
+        display: none;
+      }
+    }
+  }
+
+  > li.pl-complete::after {
+    background-size: 100% 100%, auto;
+  }
+
+  // Cały krok może być linkiem / przyciskiem.
+  > li > a,
+  > li > button {
+    @include button-reset;
+    display: flex;
+    align-items: flex-start;
+    gap: var(--pl-stepper-gap);
+    min-width: 0;
+    border-radius: var(--pl-radius-sm);
+    color: inherit;
+    text-decoration: none;
+
+    @include focus-visible(4px);
+
+    &:hover .pl-stepper-marker {
+      transform: scale(1.08);
+    }
+
+    &:hover .pl-stepper-title {
+      color: var(--pl-primary-text);
+    }
+  }
+}
+
+// ── Znacznik (kółko z numerem) ──────────────────────────────────────────
+.pl-stepper-marker {
+  position: relative;
+  display: inline-flex;
+  flex: none;
+  align-items: center;
+  justify-content: center;
+  width: var(--pl-stepper-size);
+  height: var(--pl-stepper-size);
+  border: 1.5px solid var(--pl-border-strong);
+  border-radius: 50%;
+  background: var(--pl-surface);
+  color: var(--pl-text-muted);
+  font-family: var(--pl-font-mono);
+  font-size: calc(var(--pl-stepper-size) * 0.4);
+  font-weight: 500;
+  line-height: 1;
+  font-variant-numeric: tabular-nums;
+  transition:
+    background-color var(--pl-dur-3) var(--pl-ease),
+    border-color var(--pl-dur-3) var(--pl-ease),
+    color var(--pl-dur-3) var(--pl-ease),
+    box-shadow var(--pl-dur-3) var(--pl-ease),
+    transform var(--pl-dur-3) var(--pl-ease-spring);
+
+  // Pusty znacznik numeruje się sam.
+  &:empty::before {
+    content: counter(pl-stepper);
+  }
+
+  > .pl-icon,
+  > svg {
+    width: 1.3em;
+    height: 1.3em;
+  }
+}
+
+.pl-stepper-content {
+  display: flex;
+  flex-direction: column;
+  gap: 0.1rem;
+  min-width: 0;
+  min-height: var(--pl-stepper-size);
+  justify-content: center;
+}
+
+.pl-stepper-title {
+  color: var(--pl-text-muted);
+  font-size: 0.9375rem;
+  font-weight: 540;
+  line-height: 1.3;
+  letter-spacing: -0.006em;
+  white-space: nowrap;
+  transition: color var(--pl-dur-2) var(--pl-ease);
+}
+
+.pl-stepper-description {
+  color: var(--pl-text-subtle);
+  font-size: var(--pl-text-xs);
+  line-height: 1.4;
+}
+
+// ── Stany ───────────────────────────────────────────────────────────────
+.pl-stepper > li.pl-active {
+  .pl-stepper-marker {
+    border-color: var(--pl-stepper-color);
+    color: var(--pl-stepper-color);
+    box-shadow: 0 0 0 4px color-mix(in oklab, var(--pl-stepper-color) 18%, transparent);
+  }
+
+  .pl-stepper-title {
+    color: var(--pl-text);
+    font-weight: 600;
+  }
+
+  .pl-stepper-description {
+    color: var(--pl-text-muted);
+  }
+}
+
+.pl-stepper > li.pl-complete {
+  .pl-stepper-marker {
+    border-color: var(--pl-stepper-color);
+    background: var(--pl-stepper-color);
+    color: var(--pl-stepper-on-color);
+
+    // „Ptaszek" zamiast numeru.
+    &:empty::before {
+      content: '';
+      width: 0.34em;
+      height: 0.68em;
+      margin-top: -0.14em;
+      border: solid currentColor;
+      border-width: 0 0.14em 0.14em 0;
+      font-size: calc(var(--pl-stepper-size) * 0.5);
+      transform: rotate(45deg);
+    }
+  }
+
+  .pl-stepper-title {
+    color: var(--pl-text);
+  }
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .pl-stepper > li.pl-complete .pl-stepper-marker:empty::before {
+    animation: pl-stepper-check var(--pl-dur-4) var(--pl-ease-spring) both;
+  }
+}
+
+@keyframes pl-stepper-check {
+  from {
+    opacity: 0;
+    transform: rotate(45deg) scale(0.3);
+  }
+}
+
+.pl-stepper > li.pl-error {
+  .pl-stepper-marker {
+    border-color: var(--pl-danger);
+    background: var(--pl-danger-soft);
+    color: var(--pl-danger-text);
+
+    &:empty::before {
+      content: '!';
+      font-weight: 700;
+    }
+  }
+
+  &.pl-active .pl-stepper-marker {
+    box-shadow: 0 0 0 4px color-mix(in oklab, var(--pl-danger) 18%, transparent);
+  }
+
+  .pl-stepper-title {
+    color: var(--pl-danger-text);
+  }
+}
+
+.pl-stepper > li.pl-disabled {
+  opacity: 0.5;
+  pointer-events: none;
+}
+
+// ── Układ: etykiety pod znacznikami ─────────────────────────────────────
+.pl-stepper-stacked {
+  gap: 0;
+
+  > li,
+  > li:last-child {
+    flex: 1 1 0;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.6rem;
+    text-align: center;
+  }
+
+  > li > a,
+  > li > button {
+    flex-direction: column;
+    align-items: center;
+    gap: 0.6rem;
+    text-align: center;
+  }
+
+  > li::after {
+    position: absolute;
+    top: 0;
+    left: calc(50% + var(--pl-stepper-size) / 2 + 0.5rem);
+    width: calc(100% - var(--pl-stepper-size) - 1rem);
+    min-width: 0;
+  }
+
+  .pl-stepper-content {
+    min-height: 0;
+    align-items: center;
+    padding: 0 0.5rem;
+  }
+
+  .pl-stepper-title {
+    white-space: normal;
+  }
+}
+
+// ── Układ pionowy ───────────────────────────────────────────────────────
+.pl-stepper-vertical {
+  flex-direction: column;
+  gap: 0;
+
+  > li,
+  > li:last-child {
+    flex: none;
+    width: 100%;
+    padding-bottom: 1.5rem;
+  }
+
+  > li:last-child {
+    padding-bottom: 0;
+  }
+
+  > li::after {
+    position: absolute;
+    top: calc(var(--pl-stepper-size) + 0.35rem);
+    bottom: 0.35rem;
+    left: calc((var(--pl-stepper-size) - var(--pl-stepper-line)) / 2);
+    width: var(--pl-stepper-line);
+    min-width: 0;
+    height: auto;
+    margin: 0;
+    background:
+      linear-gradient(var(--pl-stepper-color), var(--pl-stepper-color)) left top / 100% 0% no-repeat,
+      var(--pl-border);
+  }
+
+  .pl-stepper-title {
+    white-space: normal;
+  }
+
+  .pl-stepper-description {
+    font-size: var(--pl-text-sm);
+  }
+
+  // Dodatkowa treść kroku (formularz, przyciski…).
+  .pl-stepper-body {
+    margin-top: 0.6rem;
+    color: var(--pl-text);
+    font-size: var(--pl-text-sm);
+  }
+}
+
+// ── Wariant: kropki ─────────────────────────────────────────────────────
+.pl-stepper-dots {
+  --pl-stepper-size: 0.75rem;
+  --pl-stepper-gap: 0.5rem;
+
+  .pl-stepper-marker {
+    font-size: 0;
+    background: var(--pl-border-strong);
+    border-color: transparent;
+
+    &::before,
+    &:empty::before {
+      content: none !important;
+    }
+
+    > * {
+      display: none;
+    }
+  }
+
+  > li.pl-active .pl-stepper-marker {
+    background: var(--pl-stepper-color);
+    border-color: transparent;
+    transform: scale(1.15);
+  }
+
+  > li.pl-complete .pl-stepper-marker {
+    background: var(--pl-stepper-color);
+  }
+
+  > li.pl-error .pl-stepper-marker {
+    background: var(--pl-danger);
+    border-color: transparent;
+  }
+
+  .pl-stepper-content {
+    min-height: 0;
+  }
+
+  .pl-stepper-title {
+    font-size: var(--pl-text-sm);
+  }
+
+  &:not(.pl-stepper-stacked, .pl-stepper-vertical) {
+    align-items: center;
+
+    > li,
+    > li > a,
+    > li > button {
+      align-items: center;
+    }
+
+    > li::after {
+      margin-top: 0;
+    }
+  }
+
+  &.pl-stepper-stacked > li {
+    gap: 0.5rem;
+  }
+
+  &.pl-stepper-vertical > li {
+    padding-bottom: 1.1rem;
+
+    .pl-stepper-marker {
+      margin-top: 0.3rem;
+    }
+
+    &::after {
+      top: calc(var(--pl-stepper-size) + 0.6rem);
+      bottom: 0;
+    }
+  }
+}
+
+// ── Rozmiary i kolory ───────────────────────────────────────────────────
+.pl-stepper-small:not(.pl-stepper-dots) {
+  --pl-stepper-size: 1.5rem;
+  --pl-stepper-gap: 0.5rem;
+
+  .pl-stepper-title {
+    font-size: var(--pl-text-sm);
+  }
+}
+
+.pl-stepper-large:not(.pl-stepper-dots) {
+  --pl-stepper-size: 2.75rem;
+  --pl-stepper-gap: 1rem;
+
+  .pl-stepper-title {
+    font-family: var(--pl-font-display);
+    font-size: var(--pl-text-lg);
+    letter-spacing: var(--pl-display-tracking, -0.015em);
+  }
+
+  .pl-stepper-description {
+    font-size: var(--pl-text-sm);
+  }
+}
+
+.pl-stepper-success {
+  --pl-stepper-color: var(--pl-success);
+  --pl-stepper-on-color: var(--pl-on-success);
+}
+
+.pl-stepper-ink {
+  --pl-stepper-color: var(--pl-ink);
+  --pl-stepper-on-color: var(--pl-on-ink);
+}
+
+// Na wąskich ekranach układ poziomy pokazuje opis tylko aktywnego kroku.
+@include down(s) {
+  .pl-stepper:not(.pl-stepper-vertical, .pl-stepper-stacked, .pl-stepper-dots) > li:not(.pl-active) .pl-stepper-content {
+    @include visually-hidden;
+  }
+}

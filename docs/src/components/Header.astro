@@ -1,0 +1,81 @@
+---
+import { styles } from '../styles';
+
+interface Props {
+  home?: boolean;
+}
+const { home = false } = Astro.props;
+const accents = [
+  ['iris', 'Iris'],
+  ['moss', 'Moss'],
+  ['coral', 'Coral'],
+  ['ocean', 'Ocean'],
+  ['plum', 'Plum'],
+  ['ink', 'Ink'],
+];
+---
+
+<header class="docs-header" transition:name="docs-header" transition:animate="none">
+  <div class="docs-header-inner">
+    {
+      !home && (
+        <button class="docs-icon-btn docs-menu-btn" type="button" data-docs-menu aria-label="Menu">
+          <span data-pl-icon="menu" />
+        </button>
+      )
+    }
+    <a class="docs-logo" href="/" aria-label="Plossy — strona główna">
+      <span class="docs-logo-text">plossy<span class="docs-logo-dot">.</span></span>
+      <span class="docs-logo-version">0.1</span>
+    </a>
+
+    <nav class="docs-topnav" aria-label="Główna">
+      <a href="/docs/start/wprowadzenie/">Dokumentacja</a>
+      <a href="/docs/elements/button/">Komponenty</a>
+      <a href="/examples/">Przykłady</a>
+      <a href="/docs/start/motywy/">Motywy</a>
+    </nav>
+
+    <button class="docs-search-btn" type="button" data-docs-search-open>
+      <span data-pl-icon="search"></span>
+      <span class="docs-search-btn-label">Szukaj…</span>
+      <kbd>Ctrl</kbd><kbd>K</kbd>
+    </button>
+
+    <button class="docs-style-btn" type="button" aria-label="Styl">
+      <span data-pl-icon="palette"></span>
+      <span data-docs-style-label>Soft</span>
+      <span data-pl-icon="chevron-down"></span>
+    </button>
+    <div class="pl-drop pl-dropdown docs-style-drop" data-pl-drop="mode: click; pos: bottom-end">
+      <ul class="pl-dropdown-nav">
+        <li class="pl-nav-header">Styl</li>
+        {
+          styles.map((style) => (
+            <li>
+              <a href="#" data-docs-style={style.id}>
+                <span>
+                  {style.label}
+                  <small>{style.text}</small>
+                </span>
+              </a>
+            </li>
+          ))
+        }
+      </ul>
+    </div>
+
+    <div class="docs-accents" role="group" aria-label="Kolor akcentu">
+      {
+        accents.map(([id, label]) => (
+          <button type="button" class="docs-accent" data-docs-accent={id} data-pl-accent={id} title={label} aria-label={`Akcent ${label}`} />
+        ))
+      }
+    </div>
+
+    <button class="docs-icon-btn" type="button" data-docs-theme aria-label="Przełącz motyw">
+      <span class="docs-theme-sun" data-pl-icon="sun"></span>
+      <span class="docs-theme-moon" data-pl-icon="moon"></span>
+    </button>
+  </div>
+</header>

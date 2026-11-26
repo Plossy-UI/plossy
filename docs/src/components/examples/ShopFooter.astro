@@ -1,0 +1,147 @@
+---
+// Wspólna stopka sklepu „Lorem": newsletter, kolumny linków,
+// płatności i dostawa, social media, prawa autorskie, przycisk „do góry".
+const columns = [
+  {
+    title: 'Sklep',
+    links: [
+      ['Nowości', '/examples/kategoria/'],
+      ['Oświetlenie', '/examples/kategoria/'],
+      ['Ceramika', '/examples/kategoria/'],
+      ['Tekstylia', '/examples/kategoria/'],
+      ['Meble', '/examples/kategoria/'],
+    ],
+  },
+  {
+    title: 'Pomoc',
+    links: [
+      ['Dostawa i płatności', '/examples/cms/'],
+      ['Zwroty i reklamacje', '/examples/cms/'],
+      ['Status zamówienia', '/examples/logowanie/'],
+      ['Najczęstsze pytania', '/examples/cms/'],
+      ['Kontakt', '/examples/kontakt/'],
+    ],
+  },
+  {
+    title: 'Lorem',
+    links: [
+      ['O nas', '/examples/cms/'],
+      ['Blog', '/examples/blog/'],
+      ['Pracownie i rzemieślnicy', '/examples/cms/'],
+      ['Showroom w Gdyni', '/examples/kontakt/'],
+      ['Regulamin', '/examples/cms/'],
+    ],
+  },
+];
+const payments = ['BLIK', 'Visa', 'Mastercard', 'Przelewy24', 'PayPo'];
+const carriers = ['InPost', 'DPD', 'DHL'];
+---
+
+<footer class="shop-footer">
+  <div class="pl-section pl-section-small pl-section-muted">
+    <div class="pl-container">
+      <div class="pl-grid pl-grid-large pl-flex-middle">
+        <div class="pl-width-1-1 pl-width-1-2@m">
+          <p class="pl-text-eyebrow pl-margin-remove-bottom">Newsletter</p>
+          <h2 class="pl-heading-small pl-margin-small-top pl-margin-remove-bottom">10% na pierwsze zamówienie</h2>
+          <p class="pl-text-muted pl-margin-small-top pl-margin-remove-bottom">Raz w miesiącu: nowe kolekcje, historie z pracowni i przedsprzedaże. Bez spamu.</p>
+        </div>
+        <div class="pl-width-1-1 pl-width-1-2@m">
+          <form class="pl-input-group pl-input-group-large" data-shop-newsletter>
+            <span class="pl-input-group-text"><span data-pl-icon="mail"></span></span>
+            <input class="pl-input" type="email" name="email" placeholder="twoj@email.pl" aria-label="Adres e-mail" required />
+            <button class="pl-button pl-button-primary" type="submit">Zapisz się</button>
+          </form>
+          <p class="pl-text-meta pl-margin-small-top pl-margin-remove-bottom">Zapisując się, akceptujesz <a class="pl-link-muted pl-text-underline" href="/examples/cms/">politykę prywatności</a>. Wypiszesz się jednym kliknięciem.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="pl-section pl-background-secondary pl-light">
+    <div class="pl-container">
+      <div class="pl-grid pl-grid-large">
+        <div class="pl-width-1-1 pl-width-1-3@m">
+          <a class="pl-logo" href="/examples/sklep/"><span class="pl-logo-mark"></span> Lorem</a>
+          <p class="pl-text-muted pl-margin-top shop-footer-about">Skandynawskie przedmioty do domu — lampy, ceramika, tekstylia i meble z małych pracowni. Projektowane, żeby zostały na lata.</p>
+          <ul class="pl-iconnav pl-margin-top" aria-label="Media społecznościowe">
+            <li><a href="#" aria-label="Instagram" data-pl-tooltip="Instagram"><span data-pl-icon="camera"></span></a></li>
+            <li><a href="#" aria-label="Pinterest" data-pl-tooltip="Pinterest"><span data-pl-icon="bookmark"></span></a></li>
+            <li><a href="#" aria-label="YouTube" data-pl-tooltip="YouTube"><span data-pl-icon="play"></span></a></li>
+            <li><a href="#" aria-label="Facebook" data-pl-tooltip="Facebook"><span data-pl-icon="thumbs-up"></span></a></li>
+          </ul>
+        </div>
+        {
+          columns.map((col) => (
+            <div class="pl-width-1-2 pl-width-1-3@s pl-width-1-6@m">
+              <h3 class="pl-text-eyebrow">{col.title}</h3>
+              <ul class="pl-list pl-margin-small-top">
+                {col.links.map(([label, href]) => (
+                  <li>
+                    <a class="pl-link-muted" href={href}>
+                      {label}
+                    </a>
+                  </li>
+                ))}
+              </ul>
+            </div>
+          ))
+        }
+        <div class="pl-width-1-2 pl-width-1-1@s pl-width-1-6@m">
+          <h3 class="pl-text-eyebrow">Kontakt</h3>
+          <ul class="pl-list pl-margin-small-top pl-text-muted">
+            <li><a class="pl-link-muted" href="tel:+48585550142">58 555 01 42</a></li>
+            <li><a class="pl-link-muted pl-text-break" href="/examples/kontakt/">hej@lorem.example</a></li>
+            <li>pon.–pt. 9:00–17:00</li>
+          </ul>
+        </div>
+      </div>
+
+      <hr class="pl-divider pl-margin-medium-top" />
+
+      <div class="pl-grid pl-grid-small pl-flex-middle pl-margin-top">
+        <div class="pl-width-1-1 pl-width-expand@m">
+          <div class="pl-flex pl-flex-wrap pl-flex-middle pl-gap-xsmall">
+            <span class="pl-text-meta shop-footer-caption"><span data-pl-icon="credit-card"></span> Płatności</span>
+            {payments.map((name) => <span class="pl-label pl-label-outline pl-label-small">{name}</span>)}
+            <span class="pl-text-meta shop-footer-caption shop-footer-caption-next"><span data-pl-icon="truck"></span> Dostawa</span>
+            {carriers.map((name) => <span class="pl-label pl-label-outline pl-label-small">{name}</span>)}
+          </div>
+        </div>
+        <div class="pl-width-1-1 pl-width-auto@m">
+          <p class="pl-text-meta pl-margin-remove">© 2027 Lorem sp. z o.o. · ul. Morska 14, Gdynia</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <a href="#" class="pl-totop pl-totop-fixed pl-totop-progress" data-pl-totop="offset: 500"></a>
+</footer>
+
+<script>
+  // Demonstracyjny zapis do newslettera — tylko powiadomienie.
+  document.querySelectorAll<HTMLFormElement>('[data-shop-newsletter]').forEach((form) => {
+    form.addEventListener('submit', () => {
+      (window as any).Plossy?.notification({
+        message: 'Dziękujemy! Kod −10% jest już w drodze na Twoją skrzynkę.',
+        status: 'success',
+        timeout: 4000,
+      });
+      form.reset();
+    });
+  });
+</script>
+
+<style is:global>
+  .shop-footer-about {
+    max-width: 22rem;
+  }
+  .shop-footer-caption {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.35rem;
+  }
+  .shop-footer-caption-next {
+    margin-left: var(--pl-space-3);
+  }
+</style>

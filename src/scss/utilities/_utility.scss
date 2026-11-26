@@ -1,0 +1,340 @@
+// Utility — drobne narzędzia: panele, floaty, obiekty, ramki, cienie, szkło…
+@use '../abstracts' as *;
+
+// ── Panel ───────────────────────────────────────────────────────────────
+.pl-panel {
+  display: flow-root;
+  position: relative;
+  box-sizing: border-box;
+
+  > :last-child {
+    margin-bottom: 0;
+  }
+}
+
+.pl-panel-scrollable {
+  height: 11rem;
+  padding: var(--pl-space-3) var(--pl-space-4);
+  border: 1px solid var(--pl-border);
+  border-radius: var(--pl-radius-md);
+  background: var(--pl-surface);
+  overflow: auto;
+  resize: both;
+  overscroll-behavior: contain;
+
+  > :last-child {
+    margin-bottom: 0;
+  }
+}
+
+// ── Floaty ──────────────────────────────────────────────────────────────
+.pl-clearfix {
+  display: flow-root !important;
+}
+
+.pl-float-left { float: left !important; }
+.pl-float-right { float: right !important; }
+.pl-float-none { float: none !important; }
+
+[class*='pl-float-'] {
+  max-width: 100%;
+}
+
+// ── Overflow ────────────────────────────────────────────────────────────
+.pl-overflow-hidden { overflow: hidden !important; }
+.pl-overflow-visible { overflow: visible !important; }
+
+.pl-overflow-auto {
+  overflow: auto !important;
+  -webkit-overflow-scrolling: touch;
+
+  > :last-child {
+    margin-bottom: 0;
+  }
+}
+
+.pl-overflow-x-auto {
+  overflow-x: auto !important;
+  overflow-y: hidden !important;
+}
+
+// ── Resize ──────────────────────────────────────────────────────────────
+.pl-resize,
+.pl-resize-vertical,
+.pl-resize-horizontal {
+  overflow: auto;
+}
+
+.pl-resize { resize: both !important; }
+.pl-resize-vertical { resize: vertical !important; }
+.pl-resize-horizontal { resize: horizontal !important; }
+
+// ── Display ─────────────────────────────────────────────────────────────
+.pl-display-block { display: block !important; }
+.pl-display-inline { display: inline !important; }
+.pl-display-inline-block { display: inline-block !important; }
+.pl-display-contents { display: contents !important; }
+
+// Kontener „inline" — np. do pozycjonowania nakładek na obrazie.
+.pl-inline {
+  display: inline-block;
+  position: relative;
+  max-width: 100%;
+  vertical-align: middle;
+  -webkit-backface-visibility: hidden;
+}
+
+// ── Media ───────────────────────────────────────────────────────────────
+.pl-responsive-width {
+  box-sizing: border-box;
+  max-width: 100% !important;
+  height: auto;
+}
+
+.pl-responsive-height {
+  box-sizing: border-box;
+  max-width: none;
+  max-height: 100%;
+  width: auto;
+}
+
+@each $fit in cover, contain, fill, none, scale-down {
+  .pl-object-#{$fit} { object-fit: $fit !important; }
+}
+
+$object-positions: (
+  'top-left': 0 0,
+  'top-center': 50% 0,
+  'top-right': 100% 0,
+  'center-left': 0 50%,
+  'center-center': 50% 50%,
+  'center-right': 100% 50%,
+  'bottom-left': 0 100%,
+  'bottom-center': 50% 100%,
+  'bottom-right': 100% 100%,
+);
+
+@each $name, $value in $object-positions {
+  .pl-object-position-#{$name} { object-position: $value !important; }
+}
+
+// ── Zaokrąglenia ────────────────────────────────────────────────────────
+.pl-border-rounded { border-radius: var(--pl-radius-md) !important; }
+.pl-border-circle { border-radius: 50% !important; }
+.pl-border-pill { border-radius: var(--pl-radius-pill) !important; }
+.pl-radius-none { border-radius: 0 !important; }
+
+@each $size in xs, sm, md, lg, xl {
+  .pl-radius-#{$size} { border-radius: var(--pl-radius-#{$size}) !important; }
+}
+
+// ── Ramki ───────────────────────────────────────────────────────────────
+.pl-border { border: 1px solid var(--pl-border) !important; }
+.pl-border-top { border-top: 1px solid var(--pl-border) !important; }
+.pl-border-bottom { border-bottom: 1px solid var(--pl-border) !important; }
+.pl-border-left { border-left: 1px solid var(--pl-border) !important; }
+.pl-border-right { border-right: 1px solid var(--pl-border) !important; }
+.pl-border-strong { border-color: var(--pl-border-strong) !important; }
+.pl-border-dashed { border-style: dashed !important; }
+.pl-border-remove { border: 0 !important; }
+
+@each $tone in $tones {
+  .pl-border-#{$tone} { border-color: var(--pl-#{$tone}-border) !important; }
+}
+
+// ── Cienie ──────────────────────────────────────────────────────────────
+$shadows: (
+  'small': var(--pl-shadow-sm),
+  'medium': var(--pl-shadow-md),
+  'large': var(--pl-shadow-lg),
+  'xlarge': var(--pl-shadow-xl),
+);
+
+@each $name, $value in $shadows {
+  .pl-box-shadow-#{$name} { box-shadow: $value !important; }
+}
+
+[class*='pl-box-shadow-hover'] {
+  transition:
+    box-shadow var(--pl-dur-3) var(--pl-ease),
+    transform var(--pl-dur-3) var(--pl-ease-spring);
+}
+
+@each $name, $value in $shadows {
+  .pl-box-shadow-hover-#{$name}:hover,
+  .pl-box-shadow-hover-#{$name}:focus-visible { box-shadow: $value !important; }
+}
+
+.pl-box-shadow-remove { box-shadow: none !important; }
+
+// Uniesienie przy hoverze — dobrze łączy się z .pl-box-shadow-hover-*.
+.pl-hover-lift {
+  transition:
+    box-shadow var(--pl-dur-3) var(--pl-ease),
+    transform var(--pl-dur-3) var(--pl-ease-spring);
+
+  &:hover {
+    transform: translateY(-3px);
+  }
+
+  &:active {
+    transform: scale(0.98);
+  }
+}
+
+// Miękki cień „pod" elementem (rozmyta elipsa).
+.pl-box-shadow-bottom {
+  display: inline-block;
+  position: relative;
+  z-index: 0;
+  max-width: 100%;
+  vertical-align: middle;
+
+  &::after {
+    content: '';
+    position: absolute;
+    inset: auto 6% -1.4rem;
+    z-index: -1;
+    height: 1.6rem;
+    border-radius: 100%;
+    background: oklch(var(--pl-shadow-color) / calc(var(--pl-shadow-strength) * 0.28));
+    filter: blur(16px);
+    pointer-events: none;
+  }
+}
+
+// ── Szkło — podpis Plossy ─────────────────────────────────────────────────
+.pl-glass {
+  --pl-glass-opacity: 58%;
+  --pl-glass-blur: 18px;
+
+  border: 1px solid color-mix(in oklab, var(--pl-text) 10%, transparent);
+  background-color: color-mix(in oklab, var(--pl-surface) var(--pl-glass-opacity), transparent);
+  -webkit-backdrop-filter: blur(var(--pl-glass-blur)) saturate(1.7);
+  backdrop-filter: blur(var(--pl-glass-blur)) saturate(1.7);
+  box-shadow:
+    inset 0 1px 0 oklch(1 0 0 / 0.14),
+    var(--pl-shadow-md);
+}
+
+.pl-glass-subtle { --pl-glass-opacity: 34%; --pl-glass-blur: 12px; }
+.pl-glass-strong { --pl-glass-opacity: 78%; --pl-glass-blur: 28px; }
+
+// Bez backdrop-filter szkło musi pozostać czytelne.
+@supports not ((backdrop-filter: blur(1px)) or (-webkit-backdrop-filter: blur(1px))) {
+  .pl-glass {
+    background-color: color-mix(in oklab, var(--pl-surface) 94%, transparent);
+  }
+}
+
+// ── Typografia ──────────────────────────────────────────────────────────
+.pl-dropcap::first-letter,
+.pl-dropcap > p:first-of-type::first-letter {
+  float: left;
+  margin: 0.06em 0.12em 0 0;
+  font-family: var(--pl-font-display);
+  font-size: 3.6em;
+  font-weight: var(--pl-display-weight, 640);
+  line-height: 0.82;
+  letter-spacing: var(--pl-display-tracking, -0.03em);
+  color: var(--pl-primary-text);
+}
+
+.pl-logo {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5em;
+  font-family: var(--pl-font-display);
+  font-size: var(--pl-text-xl);
+  font-weight: var(--pl-display-weight, 640);
+  line-height: 1;
+  letter-spacing: var(--pl-display-tracking, -0.03em);
+  color: var(--pl-text);
+  text-decoration: none;
+  transition: opacity var(--pl-dur-2) var(--pl-ease);
+
+  &:hover {
+    color: var(--pl-text);
+    text-decoration: none;
+    opacity: 0.78;
+  }
+
+  > :where(img, svg, video) {
+    display: block;
+    height: 1.3em;
+    width: auto;
+  }
+}
+
+// Znaczek-iskra przy logo: <span class="pl-logo-mark"></span>
+.pl-logo-mark {
+  flex: none;
+  width: 0.62em;
+  height: 0.62em;
+  border-radius: 50%;
+  background: var(--pl-spark);
+  box-shadow: 0 0 0 0.2em color-mix(in oklab, var(--pl-spark) 30%, transparent);
+}
+
+// ── Stany i interakcje ──────────────────────────────────────────────────
+.pl-disabled {
+  opacity: 0.5;
+  pointer-events: none !important;
+  cursor: default;
+}
+
+.pl-drag,
+.pl-drag * {
+  cursor: grabbing;
+}
+
+.pl-drag {
+  user-select: none;
+  touch-action: none;
+}
+
+.pl-drag iframe {
+  pointer-events: none;
+}
+
+.pl-cursor-pointer { cursor: pointer !important; }
+.pl-cursor-default { cursor: default !important; }
+.pl-cursor-grab { cursor: grab !important; }
+.pl-cursor-help { cursor: help !important; }
+.pl-cursor-not-allowed { cursor: not-allowed !important; }
+.pl-cursor-zoom-in { cursor: zoom-in !important; }
+
+.pl-user-select-none { user-select: none !important; }
+.pl-user-select-all { user-select: all !important; }
+.pl-pointer-events-none { pointer-events: none !important; }
+
+// ── Mieszanie ───────────────────────────────────────────────────────────
+@each $mode in multiply, screen, overlay, darken, lighten, color-dodge, color-burn, hard-light, soft-light, difference, exclusion, hue, saturation, color, luminosity {
+  .pl-blend-#{$mode} { mix-blend-mode: $mode !important; }
+}
+
+// ── Transformacje ───────────────────────────────────────────────────────
+.pl-transform-center {
+  transform: translate(-50%, -50%);
+}
+
+$origins: (
+  'top-left': 0 0,
+  'top-center': 50% 0,
+  'top-right': 100% 0,
+  'center-left': 0 50%,
+  'center-right': 100% 50%,
+  'bottom-left': 0 100%,
+  'bottom-center': 50% 100%,
+  'bottom-right': 100% 100%,
+);
+
+@each $name, $value in $origins {
+  .pl-transform-origin-#{$name} { transform-origin: $value !important; }
+}
+
+// ── Dostępność ──────────────────────────────────────────────────────────
+.pl-visually-hidden,
+.pl-visually-hidden-focusable:not(:focus):not(:focus-within) {
+  @include visually-hidden;
+}

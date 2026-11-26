@@ -1,0 +1,682 @@
+---
+import Example from '../../layouts/Example.astro';
+
+const nav = [
+  ['#funkcje', 'Funkcje'],
+  ['#jak-to-dziala', 'Jak to działa'],
+  ['#cennik', 'Cennik'],
+  ['#opinie', 'Opinie'],
+  ['#faq', 'FAQ'],
+];
+
+const board = [
+  {
+    title: 'Do zrobienia', count: 4, tone: '',
+    tasks: [
+      { title: 'Makiety ekranu płatności', tag: 'Design', tone: 'primary', av: 1, progress: 0 },
+      { title: 'Wywiady z pięcioma klientami', tag: 'Badania', tone: 'info', av: 3, progress: 0 },
+    ],
+  },
+  {
+    title: 'W toku', count: 3, tone: 'warning',
+    tasks: [
+      { title: 'Integracja z kalendarzem', tag: 'Backend', tone: 'warning', av: 2, progress: 64 },
+      { title: 'Nowy onboarding zespołu', tag: 'Produkt', tone: 'success', av: 5, progress: 38 },
+    ],
+  },
+  {
+    title: 'Gotowe', count: 12, tone: 'success',
+    tasks: [
+      { title: 'Eksport raportu do PDF', tag: 'Frontend', tone: 'danger', av: 4, progress: 100 },
+      { title: 'Tryb ciemny w aplikacji', tag: 'Design', tone: 'primary', av: 6, progress: 100 },
+    ],
+  },
+];
+
+const logos = [['leaf', 'Nordwind'], ['droplet', 'Studio Fala'], ['flame', 'Brzask'], ['compass', 'Halny'], ['sun', 'Bursztyn'], ['box', 'Kamień & Len']];
+
+const steps = [
+  { icon: 'folder-open', title: 'Załóż przestrzeń', text: 'Zaimportuj zadania z arkusza, Trello albo Jiry. Lorem sam rozpozna osoby, terminy i etykiety.' },
+  { icon: 'calendar', title: 'Zaplanuj sprint', text: 'Przeciągnij zadania na oś czasu. Zobaczysz od razu, kto ma za dużo, a kto wolne moce.' },
+  { icon: 'rocket', title: 'Dowoźcie spokojnie', text: 'Automatyczne podsumowania w poniedziałek rano i przypomnienia tylko wtedy, gdy coś utknie.' },
+];
+
+const showcase = [
+  {
+    tab: 'Oś czasu', icon: 'calendar', img: 1, title: 'Cały kwartał na jednym ekranie',
+    text: 'Zależności między zadaniami rysują się same. Przesuń jedno, a reszta planu dopasuje się bez ręcznych poprawek.',
+    points: ['Kamienie milowe i zależności', 'Widok tygodnia, miesiąca i kwartału', 'Udostępnianie klientom linkiem'],
+    stat: '−31%', statLabel: 'opóźnionych zadań',
+  },
+  {
+    tab: 'Obciążenie', icon: 'activity', img: 7, title: 'Nikt nie tonie po cichu',
+    text: 'Lorem liczy godziny z zadań i urlopów. Przeciążenie widać na czerwono, zanim ktoś zdąży się wypalić.',
+    points: ['Pojemność na osobę i zespół', 'Urlopy i święta z kalendarza', 'Sugestie przesunięć'],
+    stat: '4,2 h', statLabel: 'mniej nadgodzin tygodniowo',
+  },
+  {
+    tab: 'Automatyzacje', icon: 'zap', img: 4, title: 'Rutyna robi się sama',
+    text: 'Reguły „gdy — to" przypisują osoby, zmieniają statusy i wysyłają podsumowania do Slacka.',
+    points: ['Ponad 40 gotowych przepisów', 'Wyzwalacze czasowe i zdarzeniowe', 'Dziennik każdego uruchomienia'],
+    stat: '1 200', statLabel: 'kliknięć mniej miesięcznie',
+  },
+  {
+    tab: 'Raporty', icon: 'chart-bar', img: 5, title: 'Odpowiedzi zamiast tabel',
+    text: 'Tempo zespołu, czas cyklu i przewidywana data końca — w raportach, które rozumie także zarząd.',
+    points: ['Prognoza terminu zakończenia', 'Eksport do PDF i arkusza', 'Cotygodniowy e-mail z wnioskami'],
+    stat: '93%', statLabel: 'trafności prognoz',
+  },
+];
+
+const stats = [
+  { to: 2400, opts: "suffix: '+'", label: 'zespołów planuje w Lorem' },
+  { to: 18, opts: "suffix: ' mln'", label: 'zadań zamkniętych w 2026 roku' },
+  { to: 99.98, opts: "decimals: 2; suffix: '%'", label: 'dostępności usługi' },
+  { to: 4.9, opts: 'decimals: 1', label: 'średnia ocena w sklepach z aplikacjami' },
+];
+
+const plans = [
+  { name: 'Start', desc: 'Dla freelancerów i małych projektów.', m: 0, y: 0, cta: 'Zacznij za darmo', features: ['3 projekty', '2 osoby w zespole', 'Tablice i listy zadań', 'Wsparcie e-mail'], hot: false },
+  { name: 'Zespół', desc: 'Dla rosnących zespołów produktowych.', m: 49, y: 39, cta: 'Wypróbuj 14 dni', features: ['Projekty bez limitu', 'Do 25 osób', 'Oś czasu i obciążenie', 'Automatyzacje', 'Wsparcie priorytetowe'], hot: true },
+  { name: 'Firma', desc: 'Dla organizacji z wieloma działami.', m: 129, y: 99, cta: 'Porozmawiajmy', features: ['Wszystko z planu Zespół', 'SSO i role niestandardowe', 'Dziennik audytu', 'Opiekun wdrożenia'], hot: false },
+];
+
+const quotes = [
+  { av: 1, name: 'Anna Kowalska', role: 'Head of Product, Nordwind', text: 'Po miesiącu z Lorem przestaliśmy robić poniedziałkowe statusy. Wszystko widać na osi czasu, zanim ktokolwiek zapyta.' },
+  { av: 2, name: 'Marek Nowak', role: 'CTO, Studio Fala', text: 'Widok obciążenia uratował nam dwa wdrożenia. Pierwszy raz widzę narzędzie, które uczciwie liczy urlopy.' },
+  { av: 3, name: 'Ewa Maj', role: 'COO, Brzask', text: 'Wdrożenie zajęło jedno popołudnie. Import z arkusza rozpoznał osiemdziesiąt procent zadań bez poprawek.' },
+  { av: 5, name: 'Tomasz Zieliński', role: 'Lider zespołu, Halny', text: 'Automatyzacje zdjęły z nas całą biurokrację wokół sprintów. Zostało samo planowanie i praca.' },
+];
+
+const faq = [
+  ['Czy mogę korzystać z Lorem za darmo?', 'Tak. Plan Start jest bezpłatny bez limitu czasu — dla dwóch osób i trzech projektów. Nie prosimy o kartę przy rejestracji.'],
+  ['Jak wygląda przeniesienie danych z innego narzędzia?', 'Importujemy z plików CSV, Trello, Asany i Jiry. Kreator pokazuje podgląd przed zapisaniem, a historię zadań i komentarze przenosimy w całości.'],
+  ['Gdzie przechowywane są nasze dane?', 'W centrach danych w Unii Europejskiej (Frankfurt i Warszawa). Kopie zapasowe wykonujemy co godzinę i szyfrujemy w spoczynku.'],
+  ['Czy mogę zmienić plan w trakcie okresu rozliczeniowego?', 'W każdej chwili. Różnicę rozliczamy proporcjonalnie — przy przejściu na niższy plan nadpłata wraca jako środki na kolejne faktury.'],
+  ['Czy oferujecie zniżki dla organizacji non-profit?', 'Tak, fundacje i uczelnie dostają plan Zespół za połowę ceny. Wystarczy napisać do nas z adresu w domenie organizacji.'],
+];
+
+const footer = [
+  ['Produkt', ['Funkcje', 'Cennik', 'Integracje', 'Dziennik zmian']],
+  ['Firma', ['O nas', 'Kariera', 'Blog', 'Kontakt']],
+  ['Zasoby', ['Centrum pomocy', 'Dokumentacja API', 'Status usługi', 'Szablony']],
+];
+---
+
+<Example title="Lorem — landing SaaS" description="Strona produktu SaaS: hero z makietą aplikacji, bento funkcji, cennik, opinie i FAQ — zbudowane z komponentów Plossy.">
+  <header class="pl-navbar-container pl-navbar-floating pl-navbar-sticky" data-pl-navbar>
+    <nav class="pl-navbar" aria-label="Główna">
+      <div class="pl-navbar-left">
+        <a class="pl-navbar-logo" href="#top"><span class="pl-navbar-logo-mark"></span> Lorem</a>
+      </div>
+      <div class="pl-navbar-center pl-visible@m">
+        <ul class="pl-navbar-nav" data-pl-scrollspy-nav="closest: li; scroll: true; offset: 90; overflow: false">
+          {nav.map(([href, label]) => <li><a href={href}>{label}</a></li>)}
+        </ul>
+      </div>
+      <div class="pl-navbar-right">
+        <a class="pl-button pl-button-ghost pl-button-small pl-button-pill pl-visible@s" href="/examples/logowanie/">Zaloguj się</a>
+        <a class="pl-button pl-button-primary pl-button-small pl-button-pill" href="#cennik">Wypróbuj</a>
+        <button class="pl-navbar-toggle pl-hidden@m" type="button" aria-label="Otwórz menu" data-pl-toggle="#lx-menu"></button>
+      </div>
+    </nav>
+  </header>
+
+  <dialog class="pl-offcanvas" id="lx-menu" data-pl-offcanvas="side: right">
+    <div class="pl-offcanvas-bar">
+      <div class="pl-offcanvas-header">
+        <span class="pl-offcanvas-title pl-logo"><span class="pl-logo-mark"></span>Lorem</span>
+        <button class="pl-close" type="button" aria-label="Zamknij" data-pl-offcanvas-close></button>
+      </div>
+      <div class="pl-offcanvas-body">
+        <ul class="pl-nav pl-nav-primary">
+          {nav.map(([href, label]) => <li><a href={href}>{label}</a></li>)}
+        </ul>
+      </div>
+      <div class="pl-offcanvas-footer">
+        <a class="pl-button pl-button-block" href="/examples/logowanie/">Zaloguj się</a>
+        <a class="pl-button pl-button-primary pl-button-block" href="#cennik">Wypróbuj za darmo</a>
+      </div>
+    </div>
+  </dialog>
+
+  <main id="top">
+    <!-- Hero -->
+    <section class="pl-section pl-background-aurora pl-overflow-hidden lx-hero">
+      <div class="pl-position-cover pl-background-dots pl-background-fade pl-position-z-index-negative" aria-hidden="true"></div>
+      <div class="pl-container">
+        <div class="pl-container-small pl-margin-auto pl-text-center" data-pl-scrollspy="cls: pl-animation-slide-up-small; target: > *; delay: 90">
+          <p>
+            <a class="pl-chip" href="#funkcje">
+              <span class="pl-label pl-label-spark pl-label-pill pl-label-small">Nowość</span>
+              <span class="pl-chip-label">Oś czasu z zależnościami</span>
+              <span data-pl-icon="arrow-right" class="pl-icon-small"></span>
+            </a>
+          </p>
+          <h1 class="pl-heading-large pl-text-balance">Planowanie pracy zespołu <span class="pl-text-gradient pl-text-gradient-animated">bez chaosu</span></h1>
+          <p class="pl-text-lead pl-text-muted pl-text-balance pl-container-xsmall pl-margin-auto">Lorem łączy zadania, oś czasu i obciążenie ludzi w jednym spokojnym widoku. Mniej statusów, więcej dowiezionych rzeczy.</p>
+          <p class="pl-flex pl-flex-center pl-flex-wrap pl-gap-small pl-margin-medium-top">
+            <a class="pl-button pl-button-primary pl-button-large pl-button-pill" href="#cennik">Zacznij za darmo <span class="pl-button-arrow" data-pl-icon="arrow-right"></span></a>
+            <a class="pl-button pl-button-large pl-button-pill" href="#jak-to-dziala"><span data-pl-icon="play"></span> Zobacz, jak działa</a>
+          </p>
+          <div class="pl-flex pl-flex-center pl-flex-middle pl-flex-wrap pl-gap-small pl-margin-top">
+            <div class="pl-avatar-group">
+              {[1, 2, 3, 4].map((n) => <span class="pl-avatar pl-avatar-small"><img src={`/img/avatar-${n}.svg`} alt="" /></span>)}
+            </div>
+            <span class="pl-text-small pl-text-muted">Ponad <strong class="pl-text-emphasis">2 400 zespołów</strong> · bez karty · 14 dni planu Zespół gratis</span>
+          </div>
+        </div>
+
+        <!-- Makieta produktu -->
+        <div class="pl-card pl-box-shadow-xlarge pl-margin-large-top pl-overflow-hidden" data-pl-scrollspy="cls: pl-animation-scale-up" aria-label="Podgląd aplikacji Lorem" role="img">
+          <div class="pl-card-header pl-flex-middle pl-gap-small">
+            <span class="pl-flex pl-gap-xsmall" aria-hidden="true">
+              <span class="pl-badge pl-badge-dot pl-badge-danger"></span>
+              <span class="pl-badge pl-badge-dot pl-badge-warning"></span>
+              <span class="pl-badge pl-badge-dot pl-badge-success"></span>
+            </span>
+            <span class="pl-text-small pl-text-medium pl-margin-small-left pl-text-truncate">Sprint 47 · Aplikacja mobilna</span>
+            <ul class="pl-subnav pl-subnav-pill pl-subnav-small pl-margin-auto-left pl-visible@s">
+              <li class="pl-active"><a href="#">Tablica</a></li>
+              <li><a href="#">Oś czasu</a></li>
+              <li><a href="#">Obciążenie</a></li>
+            </ul>
+            <div class="pl-avatar-group pl-visible@m">
+              {[5, 6, 1].map((n) => <span class="pl-avatar pl-avatar-small"><img src={`/img/avatar-${n}.svg`} alt="" /></span>)}
+              <span class="pl-avatar pl-avatar-small pl-avatar-more">+4</span>
+            </div>
+          </div>
+          <div class="pl-flex">
+            <aside class="pl-padding-small pl-border-right pl-visible@m lx-side">
+              <ul class="pl-nav pl-nav-pill pl-nav-small">
+                <li class="pl-nav-header">Przestrzeń</li>
+                <li class="pl-active"><a href="#"><span data-pl-icon="layout-dashboard"></span> Sprint 47 <span class="pl-badge pl-badge-primary pl-badge-small">19</span></a></li>
+                <li><a href="#"><span data-pl-icon="calendar"></span> Plan kwartału</a></li>
+                <li><a href="#"><span data-pl-icon="users"></span> Zespół</a></li>
+                <li><a href="#"><span data-pl-icon="chart-line"></span> Raporty</a></li>
+                <li class="pl-nav-header">Projekty</li>
+                <li><a href="#"><span class="pl-text-success" data-pl-icon="hash"></span> Aplikacja mobilna</a></li>
+                <li><a href="#"><span class="pl-text-warning" data-pl-icon="hash"></span> Strona www</a></li>
+                <li><a href="#"><span class="pl-text-info" data-pl-icon="hash"></span> Panel klienta</a></li>
+              </ul>
+            </aside>
+            <div class="pl-flex-1 pl-padding-small pl-background-muted">
+              <div class="pl-grid pl-grid-small pl-child-width-1-1 pl-child-width-1-3@s">
+                {board.map((col, ci) => (
+                  <div class={ci === 2 ? 'pl-visible@s' : ''}>
+                    <div class="pl-flex pl-flex-middle pl-gap-xsmall pl-margin-small-bottom">
+                      <span class={`pl-badge pl-badge-dot ${col.tone ? `pl-badge-${col.tone}` : ''}`}></span>
+                      <strong class="pl-text-small">{col.title}</strong>
+                      <span class="pl-text-meta">{col.count}</span>
+                      <span class="pl-margin-auto-left pl-text-muted pl-icon-small" data-pl-icon="plus"></span>
+                    </div>
+                    {col.tasks.map((t, ti) => (
+                      <div class={`pl-card pl-card-small pl-hover-lift ${ti ? 'pl-margin-small-top' : ''} ${ci === 1 && ti === 0 ? 'pl-animation-float' : ''}`}>
+                        <div class="pl-card-body">
+                          <span class={`pl-label pl-label-small pl-label-${t.tone}`}>{t.tag}</span>
+                          <p class="pl-text-small pl-text-medium pl-margin-small-top pl-margin-small-bottom">{t.title}</p>
+                          {t.progress > 0 && t.progress < 100 && (
+                            <div class={`pl-progress-bar pl-progress-small pl-progress-${t.tone} pl-margin-small-bottom`} style={`--pl-progress: ${t.progress}`}><div class="pl-progress-fill"></div></div>
+                          )}
+                          <div class="pl-flex pl-flex-middle pl-flex-between">
+                            <span class="pl-avatar pl-avatar-xsmall"><img src={`/img/avatar-${t.av}.svg`} alt="" /></span>
+                            <span class="pl-text-meta">
+                              {t.progress === 100 ? <span class="pl-text-success" data-pl-icon="circle-check"></span> : <Fragment><span class="pl-icon-small" data-pl-icon="message-square"></span> {ci + ti + 2}</Fragment>}
+                            </span>
+                          </div>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                ))}
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Logotypy -->
+    <section class="pl-section pl-section-xsmall">
+      <div class="pl-container pl-text-center">
+        <p class="pl-text-eyebrow pl-text-muted">Zaufały nam zespoły produktowe z całej Polski</p>
+        <div class="pl-flex pl-flex-center pl-flex-middle pl-flex-wrap lx-logos pl-margin-top pl-text-subtle" data-pl-scrollspy="cls: pl-animation-fade; target: > *; delay: 60">
+          {logos.map(([icon, name]) => (
+            <span class="pl-flex pl-flex-middle pl-gap-xsmall"><span class="pl-icon-large" data-pl-icon={icon}></span><span class="pl-text-display pl-text-lg pl-text-semibold pl-text-nowrap">{name}</span></span>
+          ))}
+        </div>
+      </div>
+    </section>
+
+    <!-- Funkcje: bento -->
+    <section class="pl-section" id="funkcje">
+      <div class="pl-container">
+        <div class="pl-container-small pl-margin-auto pl-text-center">
+          <p class="pl-heading-eyebrow pl-heading-eyebrow-center">Funkcje</p>
+          <h2 class="pl-heading-small pl-text-balance">Wszystko, czego potrzeba, żeby plan <span class="pl-heading-mark">trzymał się rzeczywistości</span></h2>
+        </div>
+
+        <div class="pl-bento pl-bento-3 pl-margin-large-top lx-bento" data-pl-spotlight="target: > .pl-card" data-pl-scrollspy="cls: pl-animation-slide-up-small; target: > *; delay: 70">
+          <div class="pl-card pl-span-2">
+            <div class="pl-card-body pl-flex pl-flex-column pl-flex-between">
+              <div>
+                <span class="pl-icon-box pl-icon-primary" data-pl-icon="calendar"></span>
+                <h3 class="pl-card-title pl-margin-top">Oś czasu, która sama się układa</h3>
+                <p class="pl-card-text">Zależności, kamienie milowe i urlopy w jednym widoku. Zmieniasz termin — reszta planu przesuwa się za nim.</p>
+              </div>
+              <div class="lx-gantt pl-margin-top" aria-hidden="true">
+                <span class="pl-label pl-label-primary" style="--s: 1; --e: 5">Makiety</span>
+                <span class="pl-label pl-label-success" style="--s: 4; --e: 9">Implementacja</span>
+                <span class="pl-label pl-label-warning" style="--s: 8; --e: 11">Testy</span>
+                <span class="pl-label pl-label-spark" style="--s: 11; --e: 13">Premiera</span>
+              </div>
+            </div>
+          </div>
+          <div class="pl-card pl-row-span-2">
+            <div class="pl-card-body">
+              <span class="pl-icon-box pl-icon-warning" data-pl-icon="activity"></span>
+              <h3 class="pl-card-title pl-margin-top">Obciążenie zespołu</h3>
+              <p class="pl-card-text">Widzisz, kto ma za dużo, zanim zrobi się nerwowo.</p>
+              <ul class="pl-list pl-list-large pl-margin-top pl-margin-remove-bottom">
+                {[['Anna', 1, 72, 'primary'], ['Marek', 2, 104, 'danger'], ['Ewa', 3, 58, 'success'], ['Tomek', 5, 86, 'warning']].map(([name, av, load, tone]) => (
+                  <li>
+                    <div class="pl-flex pl-flex-middle pl-gap-small">
+                      <span class="pl-avatar pl-avatar-small"><img src={`/img/avatar-${av}.svg`} alt="" /></span>
+                      <div class="pl-flex-1">
+                        <div class="pl-progress-label"><span>{name}</span><span>{load}%</span></div>
+                        <div class={`pl-progress-bar pl-progress-small pl-progress-${tone}`} style={`--pl-progress: ${Math.min(Number(load), 100)}`}><div class="pl-progress-fill"></div></div>
+                      </div>
+                    </div>
+                  </li>
+                ))}
+              </ul>
+            </div>
+          </div>
+          <div class="pl-card">
+            <div class="pl-card-body">
+              <span class="pl-icon-box pl-icon-success" data-pl-icon="zap"></span>
+              <h3 class="pl-card-title pl-margin-top">Automatyzacje</h3>
+              <p class="pl-card-text">Reguły „gdy — to" bez linijki kodu.</p>
+              <label class="pl-form-check pl-form-check-reverse pl-margin-small-top">
+                <input class="pl-switch pl-form-success" type="checkbox" role="switch" checked />
+                <span class="pl-text-small">Przypisz recenzenta po zmianie statusu</span>
+              </label>
+              <label class="pl-form-check pl-form-check-reverse pl-margin-small-top">
+                <input class="pl-switch pl-form-success" type="checkbox" role="switch" />
+                <span class="pl-text-small">Poniedziałkowe podsumowanie na Slacku</span>
+              </label>
+            </div>
+          </div>
+          <div class="pl-card lx-dark" data-pl-theme="dark">
+            <div class="pl-card-body pl-flex pl-flex-column pl-flex-between">
+              <div>
+                <span class="pl-icon-box pl-icon-solid pl-icon-primary" data-pl-icon="shield-check"></span>
+                <h3 class="pl-card-title pl-margin-top">Bezpieczeństwo klasy korporacyjnej</h3>
+              </div>
+              <div class="pl-chip-group pl-margin-top">
+                <span class="pl-chip pl-chip-small">SSO</span>
+                <span class="pl-chip pl-chip-small">RODO</span>
+                <span class="pl-chip pl-chip-small">ISO 27001</span>
+                <span class="pl-chip pl-chip-small">Dane w UE</span>
+              </div>
+            </div>
+          </div>
+          <div class="pl-card">
+            <div class="pl-card-body">
+              <span class="pl-icon-box pl-icon-info" data-pl-icon="puzzle"></span>
+              <h3 class="pl-card-title pl-margin-top">60+ integracji</h3>
+              <p class="pl-card-text">Slack, GitHub, Figma, Kalendarz Google i otwarte API.</p>
+              <div class="pl-flex pl-gap-small pl-margin-top pl-text-muted">
+                {['git-branch', 'message-square', 'calendar', 'mail', 'cloud'].map((i) => <span class="pl-icon-box pl-icon-circle" data-pl-icon={i}></span>)}
+              </div>
+            </div>
+          </div>
+          <div class="pl-card pl-span-2 pl-background-aurora">
+            <div class="pl-card-body pl-flex pl-flex-middle pl-flex-wrap pl-gap-medium">
+              <div class="pl-progress-ring pl-progress-large pl-progress-success" role="progressbar" aria-label="Trafność prognoz" aria-valuenow="93" aria-valuemin="0" aria-valuemax="100" style="--pl-progress: 93">93%</div>
+              <div class="pl-flex-1" style="min-width: 14rem">
+                <h3 class="pl-card-title">Prognozy, którym można ufać</h3>
+                <p class="pl-card-text pl-margin-remove">Lorem uczy się tempa zespołu i podaje realną datę końca projektu — z trafnością 93% na dwa tygodnie przed terminem.</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Jak to działa -->
+    <section class="pl-section pl-section-muted" id="jak-to-dziala">
+      <div class="pl-container">
+        <div class="pl-grid pl-grid-large pl-child-width-1-1">
+          <div class="pl-width-1-3@m">
+            <div class="pl-position-sticky lx-sticky">
+              <p class="pl-heading-eyebrow">Jak to działa</p>
+              <h2 class="pl-heading-small">Od arkusza do planu w jedno popołudnie</h2>
+              <p class="pl-text-muted">Bez szkoleń i konsultantów. Trzy kroki dzielą Cię od pierwszego sprintu.</p>
+              <a class="pl-button pl-button-secondary pl-button-pill" href="#cennik">Załóż przestrzeń <span class="pl-button-arrow" data-pl-icon="arrow-right"></span></a>
+            </div>
+          </div>
+          <div class="pl-width-2-3@m">
+            <ol class="pl-stepper pl-stepper-vertical pl-stepper-large" data-pl-scrollspy="cls: pl-animation-slide-left-small; target: > li; delay: 120">
+              {steps.map((s, i) => (
+                <li class={i === 0 ? 'pl-complete' : i === 1 ? 'pl-active' : ''}>
+                  <span class="pl-stepper-marker"><span data-pl-icon={s.icon}></span></span>
+                  <div class="pl-stepper-content">
+                    <span class="pl-text-eyebrow pl-text-muted">Krok 0{i + 1}</span>
+                    <span class="pl-stepper-title pl-text-xl">{s.title}</span>
+                    <span class="pl-stepper-description">{s.text}</span>
+                    <div class="pl-stepper-body">
+                      {i === 0 && (
+                        <div class="pl-chip-group">
+                          <span class="pl-chip"><span data-pl-icon="table"></span> Arkusz CSV</span>
+                          <span class="pl-chip"><span data-pl-icon="layout-list"></span> Trello</span>
+                          <span class="pl-chip"><span data-pl-icon="layers"></span> Jira</span>
+                        </div>
+                      )}
+                      {i === 1 && (
+                        <div class="pl-card pl-card-small">
+                          <div class="pl-card-body pl-flex pl-flex-middle pl-flex-wrap pl-gap-small">
+                            <span class="pl-icon-box pl-icon-warning pl-icon-circle pl-visible@s" data-pl-icon="triangle-alert"></span>
+                            <span class="pl-flex-1 pl-text-small" style="min-width: 12rem"><strong>Marek ma 104% obciążenia</strong> w tygodniu 48. Przesunąć „Integrację z kalendarzem" na Ewę?</span>
+                            <button class="pl-button pl-button-small pl-button-primary" type="button" data-toast="Zadanie przesunięte na Ewę">Przesuń</button>
+                          </div>
+                        </div>
+                      )}
+                      {i === 2 && (
+                        <div class="pl-alert pl-alert-success pl-alert-small">
+                          <span class="pl-alert-icon" data-pl-icon="circle-check"></span>
+                          <div class="pl-alert-body">Sprint 46 zamknięty: 19 z 21 zadań, tempo +8% do średniej.</div>
+                        </div>
+                      )}
+                    </div>
+                  </div>
+                </li>
+              ))}
+            </ol>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Prezentacja w zakładkach -->
+    <section class="pl-section">
+      <div class="pl-container">
+        <div class="pl-text-center">
+          <p class="pl-heading-eyebrow pl-heading-eyebrow-center">Widoki</p>
+          <h2 class="pl-heading-small">Jeden plan, cztery perspektywy</h2>
+        </div>
+        <div class="pl-overflow-x-auto pl-margin-medium-top">
+          <ul class="pl-tab pl-tab-pill pl-tab-center" data-pl-switcher="connect: #lx-showcase; animation: pl-animation-slide-left-small, pl-animation-slide-right-small">
+            {showcase.map((s, i) => <li class={i === 0 ? 'pl-active' : ''}><a href="#"><span data-pl-icon={s.icon}></span> {s.tab}</a></li>)}
+          </ul>
+        </div>
+        <div class="pl-switcher pl-margin-medium-top" id="lx-showcase">
+          {showcase.map((s, i) => (
+            <div class={i === 0 ? 'pl-active' : ''}>
+              <div class="pl-grid pl-grid-large pl-grid-middle pl-child-width-1-1 pl-child-width-1-2@m">
+                <div>
+                  <h3 class="pl-text-3xl">{s.title}</h3>
+                  <p class="pl-text-lead pl-text-muted">{s.text}</p>
+                  <ul class="pl-list pl-list-check pl-list-primary">
+                    {s.points.map((p) => <li>{p}</li>)}
+                  </ul>
+                  <a class="pl-link-arrow" href="#">Dowiedz się więcej</a>
+                </div>
+                <div>
+                  <div class="pl-image pl-image-rounded pl-ratio-4-3 pl-box-shadow-large">
+                    <img src={`/img/photo-${s.img}.svg`} alt="" loading="lazy" />
+                    <div class="pl-glass pl-radius-lg pl-padding-small pl-position-bottom-left pl-position-small">
+                      <div class="pl-text-3xl pl-text-display pl-text-semibold">{s.stat}</div>
+                      <div class="pl-text-small">{s.statLabel}</div>
+                    </div>
+                    <span class="pl-label pl-label-solid pl-label-secondary pl-label-pill pl-position-top-right pl-position-small"><span data-pl-icon={s.icon} class="pl-icon-small"></span> {s.tab}</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+          ))}
+        </div>
+      </div>
+    </section>
+
+    <!-- Liczby -->
+    <section class="pl-section pl-section-small pl-section-muted">
+      <div class="pl-container">
+        <div class="pl-grid pl-grid-divider pl-child-width-1-2 pl-child-width-1-4@m pl-text-center">
+          {stats.map((s) => (
+            <div>
+              <div class="pl-text-5xl pl-text-display pl-text-semibold" data-pl-counter={`to: ${s.to}; ${s.opts}`}></div>
+              <p class="pl-text-muted pl-text-small pl-text-balance">{s.label}</p>
+            </div>
+          ))}
+        </div>
+      </div>
+    </section>
+
+    <!-- Cennik -->
+    <section class="pl-section" id="cennik">
+      <div class="pl-container">
+        <div class="pl-text-center">
+          <p class="pl-heading-eyebrow pl-heading-eyebrow-center">Cennik</p>
+          <h2 class="pl-heading-small">Prosto: płacisz za osoby, nie za funkcje</h2>
+          <label class="pl-form-check pl-margin-small-top">
+            <span class="pl-text-medium">Miesięcznie</span>
+            <input class="pl-switch" type="checkbox" role="switch" data-billing aria-label="Rozliczenie roczne" />
+            <span class="pl-text-medium">Rocznie</span>
+            <span class="pl-label pl-label-spark pl-label-pill">−20%</span>
+          </label>
+        </div>
+
+        <div class="pl-grid pl-grid-match pl-grid-middle pl-child-width-1-1 pl-child-width-1-3@m pl-margin-large-top" data-pl-scrollspy="cls: pl-animation-slide-up-small; target: > *; delay: 90">
+          {plans.map((p) => (
+            <div>
+              <div class={`pl-card pl-width-1-1 ${p.hot ? 'pl-card-accent pl-box-shadow-large lx-hot' : ''}`} data-pl-spotlight={p.hot ? '' : undefined}>
+                {p.hot && <span class="pl-card-badge pl-label pl-label-solid pl-label-primary pl-label-pill">Najczęściej wybierany</span>}
+                <div class={`pl-card-body ${p.hot ? 'pl-card-large' : ''}`}>
+                  <h3 class="pl-card-title">{p.name}</h3>
+                  <p class="pl-card-meta">{p.desc}</p>
+                  <p class="pl-margin-small-top pl-margin-remove-bottom">
+                    <span class="pl-text-4xl pl-text-display pl-text-semibold pl-text-tabular" data-pl-counter={`to: ${p.m}; duration: 500`} data-m={p.m} data-y={p.y}>{p.m}</span>
+                    <span class="pl-text-muted"> zł / os. mies.</span>
+                  </p>
+                  <p class="pl-text-meta" data-billing-note>płatne co miesiąc</p>
+                  <a class={`pl-button pl-button-block pl-button-pill ${p.hot ? 'pl-button-primary' : ''}`} href="#" data-toast={`Wybrano plan ${p.name}`}>{p.cta}</a>
+                  <ul class="pl-list pl-list-check pl-margin-top pl-margin-remove-bottom">
+                    {p.features.map((f) => <li>{f}</li>)}
+                  </ul>
+                </div>
+              </div>
+            </div>
+          ))}
+        </div>
+        <p class="pl-text-center pl-text-meta pl-margin-medium-top">Ceny netto. Fundacje i uczelnie: −50% na plan Zespół.</p>
+      </div>
+    </section>
+
+    <!-- Opinie -->
+    <section class="pl-section pl-section-muted pl-overflow-hidden" id="opinie">
+      <div class="pl-container">
+        <div class="pl-flex pl-flex-bottom pl-flex-between pl-gap-small">
+          <div>
+            <p class="pl-heading-eyebrow">Opinie</p>
+            <h2 class="pl-heading-small pl-margin-remove">Zespoły, które odzyskały poniedziałki</h2>
+          </div>
+        </div>
+        <div class="pl-slider pl-margin-medium-top" data-pl-slider="autoplay: true; autoplay-interval: 5000" aria-label="Opinie klientów">
+          <div class="pl-slider-container pl-slider-container-offset">
+            <ul class="pl-slider-items pl-slider-cols-1 pl-slider-cols-2@m pl-slider-cols-3@l">
+              {quotes.map((q) => (
+                <li>
+                  <figure class="pl-card pl-height-1-1">
+                    <div class="pl-card-body">
+                      <span class="pl-flex pl-text-warning" role="img" aria-label="Ocena 5 na 5">{[1, 2, 3, 4, 5].map(() => <span data-pl-icon="name: star; stroke: 2"></span>)}</span>
+                      <p class="pl-text-lg pl-margin-top pl-margin-remove-bottom">{q.text}</p>
+                    </div>
+                    <figcaption class="pl-card-footer">
+                      <div class="pl-avatar-item">
+                        <span class="pl-avatar"><img src={`/img/avatar-${q.av}.svg`} alt="" /></span>
+                        <span class="pl-avatar-text">
+                          <span class="pl-avatar-name">{q.name}</span>
+                          <span class="pl-avatar-meta">{q.role}</span>
+                        </span>
+                      </div>
+                    </figcaption>
+                  </figure>
+                </li>
+              ))}
+            </ul>
+          </div>
+          <div class="pl-slider-arrows">
+            <ul class="pl-slider-nav pl-dotnav"></ul>
+            <button class="pl-slidenav-previous pl-slidenav-small" type="button" aria-label="Poprzednia opinia" data-pl-slider-item="previous"></button>
+            <button class="pl-slidenav-next pl-slidenav-small" type="button" aria-label="Następna opinia" data-pl-slider-item="next"></button>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- FAQ -->
+    <section class="pl-section" id="faq">
+      <div class="pl-container pl-container-small">
+        <div class="pl-text-center">
+          <p class="pl-heading-eyebrow pl-heading-eyebrow-center">FAQ</p>
+          <h2 class="pl-heading-small">Najczęstsze pytania</h2>
+        </div>
+        <div class="pl-accordion pl-accordion-card pl-margin-medium-top" data-pl-accordion>
+          {faq.map(([q, a], i) => (
+            <div class={`pl-accordion-item ${i === 0 ? 'pl-open' : ''}`}>
+              <button class="pl-accordion-title" type="button">{q}</button>
+              <div class="pl-accordion-content"><p>{a}</p></div>
+            </div>
+          ))}
+        </div>
+        <p class="pl-text-center pl-text-muted pl-margin-medium-top">Nie ma tu Twojego pytania? <a class="pl-link-arrow" href="/examples/kontakt/">Napisz do nas</a></p>
+      </div>
+    </section>
+
+    <!-- Końcowe CTA: lokalnie ciemny blok -->
+    <section class="pl-section pl-section-remove-top">
+      <div class="pl-container">
+        <div class="pl-background-default pl-background-aurora pl-background-aurora-strong pl-radius-xl pl-overflow-hidden pl-text-center lx-cta lx-dark" data-pl-theme="dark">
+          <div data-pl-scrollspy="cls: pl-animation-slide-up-small; target: > *; delay: 90">
+            <p class="pl-heading-eyebrow pl-heading-eyebrow-center">14 dni planu Zespół gratis</p>
+            <h2 class="pl-heading-medium pl-text-balance">Zaplanuj następny sprint <span class="pl-text-gradient">w spokoju</span></h2>
+            <p class="pl-text-lead pl-text-muted pl-container-xsmall pl-margin-auto">Załóż przestrzeń w dwie minuty. Bez karty, bez zobowiązań — z importem dotychczasowych zadań.</p>
+            <form class="pl-flex pl-flex-center pl-flex-wrap pl-gap-small pl-margin-medium-top" data-cta-form>
+              <div class="pl-form-icon lx-cta-input">
+                <span data-pl-icon="mail"></span>
+                <input class="pl-input pl-form-large" type="email" placeholder="adres@firma.pl" aria-label="Służbowy adres e-mail" required />
+              </div>
+              <button class="pl-button pl-button-primary pl-button-large" type="submit">Zacznij za darmo</button>
+            </form>
+            <p class="pl-text-meta pl-margin-top">Dołączając, akceptujesz regulamin i politykę prywatności.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer class="pl-section pl-section-small pl-border-top">
+    <div class="pl-container">
+      <div class="pl-grid pl-grid-large pl-child-width-1-2 pl-child-width-1-5@m">
+        <div class="pl-width-1-1 pl-width-2-5@m">
+          <a class="pl-logo" href="#top"><span class="pl-logo-mark"></span>Lorem</a>
+          <p class="pl-text-muted pl-text-small pl-margin-small-top" style="max-width: 20rem">Spokojne planowanie pracy zespołu. Robione w Gdańsku przez czternaście osób, które nie lubią statusów.</p>
+          <ul class="pl-iconnav pl-margin-small-top">
+            <li><a href="#" aria-label="E-mail"><span data-pl-icon="mail"></span></a></li>
+            <li><a href="#" aria-label="Społeczność"><span data-pl-icon="message-circle"></span></a></li>
+            <li><a href="#" aria-label="Kod źródłowy integracji"><span data-pl-icon="git-branch"></span></a></li>
+          </ul>
+        </div>
+        {footer.map(([title, links]) => (
+          <div>
+            <h3 class="pl-text-eyebrow">{title}</h3>
+            <ul class="pl-list pl-text-small pl-margin-small-top">
+              {(links as string[]).map((l) => <li><a class="pl-link-muted" href="#">{l}</a></li>)}
+            </ul>
+          </div>
+        ))}
+      </div>
+      <hr class="pl-divider" />
+      <div class="pl-flex pl-flex-between pl-flex-wrap pl-gap-small pl-text-meta">
+        <span>© 2026 Lorem sp. z o.o. · Wszystkie prawa zastrzeżone</span>
+        <span class="pl-flex pl-flex-middle pl-gap-xsmall"><span class="pl-badge pl-badge-dot pl-badge-success pl-badge-pulse"></span> Wszystkie systemy działają</span>
+      </div>
+    </div>
+  </footer>
+
+  <style is:global>
+    section[id] {
+      scroll-margin-top: 5rem;
+    }
+    /* Pływający pasek leży na sekcji hero. */
+    .lx-hero {
+      margin-top: -4.25rem;
+      padding-top: calc(var(--pl-section-py, 5rem) + 4.25rem);
+    }
+    .lx-side {
+      flex: 0 0 13.5rem;
+    }
+    .lx-logos {
+      gap: 1rem 2.5rem;
+    }
+    .lx-sticky {
+      top: 6rem;
+    }
+    /* Miniaturowy wykres Gantta w kaflu bento. */
+    .lx-gantt {
+      display: grid;
+      grid-template-columns: repeat(12, 1fr);
+      gap: 0.4rem 0;
+      padding: 0.75rem;
+      border-radius: var(--pl-radius-md);
+      background: repeating-linear-gradient(90deg, transparent 0 calc(100% / 12 - 1px), var(--pl-border) calc(100% / 12 - 1px) calc(100% / 12)) var(--pl-muted);
+    }
+    .lx-gantt > * {
+      grid-column: var(--s) / var(--e);
+      justify-content: flex-start;
+      overflow: hidden;
+    }
+    @media (min-width: 960px) {
+      .lx-hot {
+        margin-block: -0.75rem;
+      }
+    }
+    /* Lokalny motyw ciemny: tokeny zmienia atrybut, kolor tekstu trzeba odziedziczyć na nowo. */
+    .lx-cta {
+      padding: clamp(2.5rem, 7vw, 5.5rem) 1.5rem;
+    }
+    .lx-dark {
+      color: var(--pl-text);
+    }
+    .lx-cta-input {
+      flex: 0 1 20rem;
+    }
+  </style>
+
+  <script is:inline>
+    document.addEventListener('click', (event) => {
+      const toast = event.target.closest('[data-toast]');
+      if (toast) window.Plossy.notification({ message: toast.dataset.toast, status: 'success' });
+    });
+
+    document.addEventListener('change', (event) => {
+      const billing = event.target.closest('[data-billing]');
+      if (!billing) return;
+      const yearly = billing.checked;
+      document.querySelectorAll('[data-m][data-y]').forEach((el) => {
+        window.Plossy.counter(el).start(Number(yearly ? el.dataset.y : el.dataset.m));
+      });
+      document.querySelectorAll('[data-billing-note]').forEach((el) => {
+        el.textContent = yearly ? 'płatne raz w roku — dwa miesiące gratis' : 'płatne co miesiąc';
+      });
+    });
+
+    document.addEventListener('submit', (event) => {
+      const form = event.target.closest('[data-cta-form]');
+      if (!form) return;
+      window.Plossy.notification({ title: 'Sprawdź skrzynkę', message: 'Wysłaliśmy link do założenia przestrzeni.', status: 'success' });
+      form.reset();
+    });
+  </script>
+</Example>

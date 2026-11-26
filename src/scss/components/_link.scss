@@ -1,0 +1,168 @@
+// Link — warianty odnośników i animowane linki „podpisowe".
+@use '../abstracts' as *;
+
+// Maska strzałki (kształt; kolor pochodzi z currentColor).
+$arrow: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23000' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M5 12h14'/%3E%3Cpath d='m13 6 6 6-6 6'/%3E%3C/svg%3E");
+
+// ── Podkreślenie rosnące od lewej ───────────────────────────────────────
+.pl-link-underline,
+.pl-link-toggle .pl-link-underline {
+  --pl-link-line: 1.5px;
+  padding-bottom: 0.12em;
+  background-image: linear-gradient(currentColor, currentColor);
+  background-repeat: no-repeat;
+  // W spoczynku kreska „zwija się" w prawo, przy hoverze rośnie od lewej.
+  background-position: 100% 100%;
+  background-size: 0% var(--pl-link-line);
+  color: var(--pl-text);
+  text-decoration: none;
+  transition:
+    background-size var(--pl-dur-3) var(--pl-ease),
+    color var(--pl-dur-2) var(--pl-ease);
+}
+
+.pl-link-underline:hover,
+.pl-link-underline:focus-visible,
+.pl-link-underline.pl-active,
+.pl-link-toggle:hover .pl-link-underline,
+.pl-link-toggle:focus-visible .pl-link-underline {
+  background-position: 0% 100%;
+  background-size: 100% var(--pl-link-line);
+  text-decoration: none;
+}
+
+// ── Strzałka, która „ucieka" przy hoverze ───────────────────────────────
+.pl-link-arrow,
+.pl-link-toggle .pl-link-arrow {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4em;
+  color: var(--pl-primary-text);
+  font-weight: 540;
+  text-decoration: none;
+
+  &::after {
+    content: '';
+    flex: none;
+    width: 1.05em;
+    height: 1.05em;
+    background: currentColor;
+    mask: $arrow center / contain no-repeat;
+    transition: transform var(--pl-dur-3) var(--pl-ease-spring);
+  }
+}
+
+.pl-link-arrow:hover,
+.pl-link-toggle:hover .pl-link-arrow {
+  text-decoration: none;
+
+  &::after {
+    transform: translateX(0.3em);
+  }
+}
+
+// Strzałka wstecz (przed tekstem).
+.pl-link-arrow.pl-link-arrow-left,
+.pl-link-toggle .pl-link-arrow.pl-link-arrow-left {
+  flex-direction: row-reverse;
+
+  &::after {
+    transform: scaleX(-1);
+  }
+}
+
+.pl-link-arrow.pl-link-arrow-left:hover::after,
+.pl-link-toggle:hover .pl-link-arrow.pl-link-arrow-left::after {
+  transform: scaleX(-1) translateX(0.3em);
+}
+
+// ── Limonkowy zakreślacz ────────────────────────────────────────────────
+.pl-link-highlight,
+.pl-link-toggle .pl-link-highlight {
+  margin-inline: -0.15em;
+  padding: 0.05em 0.15em;
+  border-radius: 0.2em;
+  background-image: linear-gradient(var(--pl-spark), var(--pl-spark));
+  background-repeat: no-repeat;
+  background-position: 0 92%;
+  background-size: 100% 0.32em;
+  box-decoration-break: clone;
+  -webkit-box-decoration-break: clone;
+  color: var(--pl-text);
+  text-decoration: none;
+  transition:
+    background-size var(--pl-dur-3) var(--pl-ease),
+    color var(--pl-dur-2) var(--pl-ease);
+}
+
+.pl-link-highlight:hover,
+.pl-link-highlight:focus-visible,
+.pl-link-toggle:hover .pl-link-highlight,
+.pl-link-toggle:focus-visible .pl-link-highlight {
+  background-size: 100% 100%;
+  color: var(--pl-on-spark);
+  text-decoration: none;
+}
+
+// ── Warianty kolorystyczne (na końcu — wygrywają z kolorem linków animowanych) ──
+.pl-link-muted,
+.pl-link-toggle .pl-link-muted {
+  color: var(--pl-text-muted);
+  text-decoration-color: transparent;
+}
+
+a.pl-link-muted:hover,
+.pl-link-toggle:hover .pl-link-muted,
+.pl-link-toggle:focus-visible .pl-link-muted {
+  color: var(--pl-text);
+  text-decoration-color: color-mix(in oklab, currentColor 40%, transparent);
+}
+
+.pl-link-text,
+.pl-link-toggle .pl-link-text {
+  color: var(--pl-text);
+  text-decoration-color: color-mix(in oklab, currentColor 25%, transparent);
+}
+
+a.pl-link-text:hover,
+.pl-link-toggle:hover .pl-link-text,
+.pl-link-toggle:focus-visible .pl-link-text {
+  color: var(--pl-primary-text);
+  text-decoration-color: currentColor;
+}
+
+.pl-link-heading,
+.pl-link-toggle .pl-link-heading {
+  color: inherit;
+  text-decoration: none;
+  @include transition('color', var(--pl-dur-2));
+}
+
+a.pl-link-heading:hover,
+.pl-link-toggle:hover .pl-link-heading,
+.pl-link-toggle:focus-visible .pl-link-heading {
+  color: var(--pl-primary-text);
+  text-decoration: none;
+}
+
+.pl-link-reset,
+.pl-link-reset:hover {
+  color: inherit;
+  text-decoration: none;
+}
+
+// Kontener-link: sam nie wygląda jak link, ale uruchamia hover linków w środku.
+.pl-link-toggle {
+  color: inherit;
+  text-decoration: none;
+
+  &:hover {
+    text-decoration: none;
+  }
+
+  @include focus-visible(4px);
+
+  &:focus-visible {
+    border-radius: var(--pl-radius-xs);
+  }
+}

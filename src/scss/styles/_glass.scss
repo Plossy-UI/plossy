@@ -1,0 +1,84 @@
+// Styl „glass" — głębia: półprzezroczyste, rozmyte powierzchnie na świetlistym tle,
+// duże zaokrąglenia i miękka poświata.
+@use 'engine' as *;
+
+@include preset('glass') {
+  --pl-radius-xs: 8px;
+  --pl-radius-sm: 12px;
+  --pl-radius-md: 16px;
+  --pl-radius-lg: 24px;
+  --pl-radius-xl: 34px;
+  --pl-shadow-scale: 1.35;
+  --pl-shadow-color: 0.35 0.12 285;
+  --pl-lift: 1.4;
+  --pl-heading-weight: 600;
+
+  --pl-bg: oklch(0.93 0.045 285);
+  --pl-surface: oklch(1 0 0 / 0.36);
+  --pl-surface-raised: oklch(1 0 0 / 0.72);
+  // Krawędź i połysk szkła (jaśniejsze niż zwykła ramka).
+  --pl-glass-edge: oklch(1 0 0 / 0.75);
+  --pl-glass-shine: oklch(1 0 0 / 0.55);
+  --pl-glass-glow: 1;
+  --pl-muted: oklch(0.55 0.1 285 / 0.08);
+  --pl-muted-strong: oklch(0.55 0.1 285 / 0.14);
+  --pl-border: oklch(0.55 0.1 285 / 0.16);
+  --pl-border-strong: oklch(0.5 0.08 285 / 0.3);
+  --pl-text: oklch(0.24 0.04 285);
+  --pl-text-muted: oklch(0.44 0.04 285);
+  --pl-text-subtle: oklch(0.58 0.035 285);
+  --pl-overlay: oklch(0.3 0.08 285 / 0.3);
+}
+
+@include preset-dark('glass') {
+  --pl-shadow-color: 0 0 0;
+  --pl-bg: oklch(0.155 0.035 285);
+  --pl-surface: oklch(1 0 0 / 0.07);
+  --pl-glass-edge: oklch(1 0 0 / 0.18);
+  --pl-glass-shine: oklch(1 0 0 / 0.14);
+  --pl-glass-glow: 0.8;
+  --pl-surface-raised: oklch(0.26 0.045 285 / 0.82);
+  --pl-muted: oklch(1 0 0 / 0.07);
+  --pl-muted-strong: oklch(1 0 0 / 0.12);
+  --pl-border: oklch(1 0 0 / 0.14);
+  --pl-border-strong: oklch(1 0 0 / 0.26);
+  --pl-text: oklch(0.96 0.015 285);
+  --pl-text-muted: oklch(0.78 0.025 285);
+  --pl-text-subtle: oklch(0.62 0.03 285);
+  --pl-overlay: oklch(0.08 0.03 285 / 0.6);
+}
+
+// Świetliste tło strony: kolorowe plamy rozłożone po całym oknie (nie tylko w rogach),
+// żeby szkło miało co rozmywać także w połowie przewijanej strony.
+[data-pl-style='glass'] body {
+  background-image:
+    radial-gradient(52rem 38rem at 8% -6%, color-mix(in oklab, var(--pl-primary) calc(62% * var(--pl-glass-glow)), transparent), transparent 66%),
+    radial-gradient(44rem 34rem at 98% 8%, color-mix(in oklab, var(--pl-spark) calc(58% * var(--pl-glass-glow)), transparent), transparent 64%),
+    radial-gradient(40rem 30rem at 78% 58%, color-mix(in oklab, var(--pl-primary) calc(34% * var(--pl-glass-glow)), transparent), transparent 66%),
+    radial-gradient(42rem 32rem at 14% 62%, color-mix(in oklab, var(--pl-info) calc(44% * var(--pl-glass-glow)), transparent), transparent 66%),
+    radial-gradient(50rem 36rem at 55% 108%, color-mix(in oklab, var(--pl-spark) calc(40% * var(--pl-glass-glow)), transparent), transparent 66%);
+  background-attachment: fixed;
+}
+
+[data-pl-style='glass'] {
+  :is(
+      .pl-card, .pl-tile, .pl-drop, .pl-popover, .pl-modal-dialog, .pl-offcanvas-bar, .pl-notification,
+      .pl-navbar-container, .pl-input, .pl-textarea, .pl-select, .pl-list-group, .pl-alert, .pl-accordion-card > .pl-accordion-item,
+      .pl-button:not(.pl-button-ghost, .pl-button-text, .pl-button-link)
+    ) {
+    backdrop-filter: blur(22px) saturate(1.9);
+  }
+
+  // Szklana krawędź — jaśniejsza u góry.
+  :is(.pl-card, .pl-modal-dialog, .pl-drop, .pl-popover, .pl-notification) {
+    background-image: linear-gradient(160deg, var(--pl-glass-shine), oklch(1 0 0 / 0) 48%);
+  }
+
+  // Jasna krawędź tafli zamiast zwykłej ramki.
+  :is(
+      .pl-card:not(.pl-card-primary, .pl-card-secondary, .pl-card-ghost),
+      .pl-tile-default, .pl-modal-dialog, .pl-drop, .pl-popover, .pl-notification, .pl-navbar-container, .pl-list-group, .pl-offcanvas-bar
+    ) {
+    border-color: var(--pl-glass-edge);
+  }
+}

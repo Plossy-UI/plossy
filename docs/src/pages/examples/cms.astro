@@ -1,0 +1,376 @@
+---
+import Example from '../../layouts/Example.astro';
+import ShopHeader from '../../components/examples/ShopHeader.astro';
+import ShopFooter from '../../components/examples/ShopFooter.astro';
+
+const toc = [
+  { id: 'filozofia', label: 'Filozofia' },
+  { id: 'pracownia', label: 'Pracownia' },
+  { id: 'materialy', label: 'Materiały' },
+  { id: 'historia', label: 'Historia' },
+  { id: 'liczby', label: 'W liczbach' },
+  { id: 'zespol', label: 'Zespół' },
+  { id: 'wartosci', label: 'Wartości' },
+  { id: 'regulamin', label: 'Regulamin' },
+];
+
+const history = [
+  { year: '2014', title: 'Stół w garażu', text: 'Ida i Mikołaj toczą pierwsze kubki w wynajętym garażu na gdańskiej Oruni. Sprzedają je na targach rzemiosła.' },
+  { year: '2016', title: 'Pierwsza lampa', text: 'Powstaje lampa Fjord z dmuchanego szkła. Trafia do trzech kawiarni w Trójmieście i… na listę oczekujących.' },
+  { year: '2018', title: 'Pracownia w stoczni', text: 'Przeprowadzka do hali po dawnej modelarni. Do zespołu dołączają tkaczka i stolarz.' },
+  { year: '2021', title: 'Sklep internetowy', text: 'Ruszamy z wysyłką do całej Europy. Każda paczka jest pakowana bez plastiku.' },
+  { year: '2024', title: 'Showroom w Warszawie', text: 'Otwieramy drugie miejsce, w którym można dotknąć każdej rzeczy przed zakupem.' },
+  { year: '2026', title: 'Program „Drugie życie"', text: 'Odkupujemy i odnawiamy nasze meble. Naprawy ceramiki i lamp robimy bezpłatnie.' },
+];
+
+const team = [
+  { name: 'Ida Lindqvist', role: 'Założycielka, ceramika', avatar: 1, bio: 'Toczy na kole od dwudziestu lat. Odpowiada za każdy nowy kształt.' },
+  { name: 'Mikołaj Sarna', role: 'Założyciel, szkło i światło', avatar: 2, bio: 'Inżynier z zamiłowania do lamp. Projektuje oprawy i dobiera źródła światła.' },
+  { name: 'Hanna Wrzos', role: 'Tkaniny', avatar: 3, bio: 'Prowadzi krosna i współpracę z przędzalnią lnu na Warmii.' },
+  { name: 'Borys Klon', role: 'Stolarnia', avatar: 4, bio: 'Dąb, jesion i cierpliwość. Nie uznaje wkrętów tam, gdzie wystarczy czop.' },
+  { name: 'Lena Maj', role: 'Obsługa klienta', avatar: 5, bio: 'Odpowiada na każdą wiadomość osobiście — zwykle w ciągu kilku godzin.' },
+  { name: 'Tymon Brzeski', role: 'Logistyka', avatar: 6, bio: 'Pilnuje, żeby paczki docierały całe i bez grama folii.' },
+];
+
+const values = [
+  { icon: 'leaf', tone: 'success', title: 'Naturalne surowce', text: 'Glina, len, wełna, szkło i lite drewno z certyfikowanych upraw. Bez oklein i tworzyw udających coś innego.' },
+  { icon: 'pencil', tone: 'primary', title: 'Projekt przed trendem', text: 'Nie robimy kolekcji sezonowych. Rzecz zostaje w ofercie tak długo, jak długo jest potrzebna.' },
+  { icon: 'shield-check', tone: 'info', title: '10 lat gwarancji', text: 'Na meble i oprawy lamp. Jeśli coś się zużyje, naprawiamy — wymiana to ostateczność.' },
+  { icon: 'package', tone: 'warning', title: 'Paczka bez plastiku', text: 'Karton z recyklingu, wypełnienie z wełny drzewnej i papierowa taśma. Wszystko trafia do jednego kosza.' },
+  { icon: 'users', tone: 'danger', title: 'Uczciwa praca', text: 'Wszystko powstaje w Polsce, w naszej pracowni lub u rzemieślników, których znamy po imieniu.' },
+  { icon: 'heart', tone: 'secondary', title: 'Drugie życie', text: 'Odkupujemy używane meble Lorem, odnawiamy je i sprzedajemy ponownie w niższej cenie.' },
+];
+
+const legal = [
+  {
+    id: 'par-1',
+    title: 'Postanowienia ogólne',
+    items: [
+      'Sklep internetowy Lorem, dostępny pod adresem lorem.example, prowadzony jest przez Lorem sp. z o.o. z siedzibą w Gdańsku, ul. Stoczniowa 14, 80-001 Gdańsk.',
+      'Regulamin określa zasady składania zamówień, dostawy, płatności, odstąpienia od umowy oraz postępowania reklamacyjnego.',
+      'Warunkiem złożenia zamówienia jest zapoznanie się z regulaminem i akceptacja jego postanowień.',
+    ],
+  },
+  {
+    id: 'par-2',
+    title: 'Zamówienia i płatności',
+    items: [
+      'Zamówienia można składać całą dobę, przez wszystkie dni w roku. Realizacja odbywa się w dni robocze.',
+      'Ceny podane w sklepie są cenami brutto, wyrażonymi w złotych polskich, i zawierają podatek VAT.',
+      'Kupujący może wybrać płatność kartą, szybkim przelewem, BLIK-iem lub przelewem tradycyjnym. Zamówienie nieopłacone w ciągu 5 dni zostaje anulowane.',
+      'Produkty wykonywane na zamówienie wymagają przedpłaty w wysokości 30% wartości.',
+    ],
+  },
+  {
+    id: 'par-3',
+    title: 'Dostawa',
+    items: [
+      'Dostawa jest realizowana na terenie Unii Europejskiej za pośrednictwem firm kurierskich, a w przypadku mebli — przez własny transport z wniesieniem.',
+      'Termin wysyłki produktów dostępnych od ręki wynosi do 2 dni roboczych. Termin dla produktów na zamówienie podany jest na karcie produktu.',
+      'Dostawa zamówień o wartości powyżej 400 zł jest bezpłatna na terenie Polski.',
+    ],
+  },
+  {
+    id: 'par-4',
+    title: 'Zwroty i reklamacje',
+    items: [
+      'Konsument może odstąpić od umowy w terminie 30 dni od otrzymania przesyłki, bez podawania przyczyny.',
+      'Prawo odstąpienia nie przysługuje w odniesieniu do produktów wykonanych według indywidualnej specyfikacji kupującego.',
+      'Reklamacje rozpatrujemy w ciągu 14 dni od dnia zgłoszenia. O decyzji informujemy drogą elektroniczną.',
+      'Zwrot płatności następuje tą samą metodą, jaką opłacono zamówienie, nie później niż 14 dni od otrzymania zwracanego towaru.',
+    ],
+  },
+];
+---
+
+<Example title="O nas — Lorem" description="Strona tekstowa CMS: artykuł ze spisem treści, historia marki, liczniki, zespół, wartości i regulamin.">
+  <ShopHeader active="cms" />
+
+  <main>
+    <!-- Hero -->
+    <section class="pl-section pl-section-large pl-section-remove-bottom">
+      <div class="pl-container">
+        <nav aria-label="Okruszki" class="pl-margin-medium-bottom">
+          <ul class="pl-breadcrumb pl-breadcrumb-small">
+            <li><a href="/examples/sklep/">Lorem</a></li>
+            <li><span aria-current="page">O nas</span></li>
+          </ul>
+        </nav>
+        <div class="pl-grid pl-grid-large pl-grid-bottom" data-pl-scrollspy="cls: pl-animation-slide-up; target: > *; delay: 120">
+          <div class="pl-width-1-1 pl-width-2-3@m">
+            <p class="pl-heading-eyebrow">O nas · od 2014 roku</p>
+            <h1 class="pl-heading-medium pl-margin-remove-bottom">Rzeczy, które <span class="pl-heading-mark">zostają</span> w domu na lata</h1>
+          </div>
+          <div class="pl-width-1-1 pl-width-1-3@m">
+            <p class="pl-text-lead pl-margin-remove">Lorem to mała pracownia z Gdańska. Robimy lampy, ceramikę, tkaniny i meble — powoli, z naturalnych materiałów i w krótkich seriach.</p>
+          </div>
+        </div>
+        <div class="pl-image pl-image-rounded pl-ratio-4-3 pl-ratio-16-9@s pl-ratio-21-9@m pl-margin-large-top" data-pl-scrollspy="cls: pl-animation-scale-up">
+          <img src="/img/photo-3.svg" alt="Wnętrze pracowni Lorem" width="1200" height="800" data-pl-parallax="y: -24,24; scale: 1.25,1.25">
+          <div class="pl-overlay pl-overlay-default pl-overlay-rounded pl-position-bottom-left pl-position-small pl-visible@s">
+            <p class="pl-text-eyebrow pl-margin-remove">Pracownia</p>
+            <p class="pl-margin-remove pl-text-medium">Stocznia Gdańska, hala 14</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Spis treści + artykuł -->
+    <section class="pl-section">
+      <div class="pl-container">
+        <div class="pl-grid pl-grid-large">
+          <aside class="pl-width-1-4@m pl-visible@m">
+            <div data-pl-sticky="offset: 96; end: parent; media: @m">
+              <p class="pl-text-eyebrow">Na tej stronie</p>
+              <ul class="pl-nav pl-nav-default" data-pl-scrollspy-nav="closest: li; scroll: true; offset: 96">
+                {toc.map((item) => (
+                  <li><a href={`#${item.id}`}>{item.label}</a></li>
+                ))}
+              </ul>
+              <hr class="pl-divider pl-divider-compact">
+              <a class="pl-button pl-button-soft pl-button-primary pl-button-small pl-button-block" href="/examples/kontakt/">
+                <span data-pl-icon="mail"></span> Napisz do nas
+              </a>
+            </div>
+          </aside>
+
+          <div class="pl-width-1-1 pl-width-3-4@m">
+            <article class="pl-article pl-article-wide">
+              <h2 id="filozofia">Mniej rzeczy, lepsze rzeczy</h2>
+              <p class="pl-article-lead">Wierzymy, że dom nie potrzebuje wielu przedmiotów — potrzebuje dobrych. Takich, które starzeją się ładnie, dają się naprawić i nie nudzą się po jednym sezonie.</p>
+              <p class="pl-article-dropcap">Zaczęło się od kubka. Ida przez pół roku szukała takiego, który dobrze leży w dłoni, nie parzy i nie udaje niczego, czym nie jest. Nie znalazła, więc utoczyła go sama. Potem przyszły kolejne: dla sąsiadów, dla znajomych, dla kawiarni za rogiem. Dziś w pracowni pracuje czternaście osób, ale zasada została ta sama — robimy tylko to, czego sami używalibyśmy codziennie.</p>
+              <p>Skandynawskie wzornictwo jest dla nas nie tyle stylem, co sposobem myślenia: funkcja przed ozdobą, światło przed kolorem, materiał przed wykończeniem. Dlatego nasze szkliwa są matowe, drewno olejowane, a len gnieciony — bo tak wygląda naprawdę.</p>
+
+              <blockquote class="pl-article-quote">
+                <p>Dobra rzecz to taka, o której po roku już się nie myśli. Po prostu jest i robi swoje.</p>
+                <footer>Ida Lindqvist, założycielka</footer>
+              </blockquote>
+
+              <h2 id="pracownia">Pracownia</h2>
+              <p>Pracujemy w hali po dawnej modelarni Stoczni Gdańskiej. Pod jednym dachem mieszczą się trzy piece ceramiczne, stolarnia, dwa krosna i mały piec szklarski. Można nas odwiedzić w każdy piątek — oprowadzamy, pokazujemy i częstujemy kawą.</p>
+
+              <figure class="pl-article-figure">
+                <img src="/img/photo-6.svg" alt="Stanowisko toczenia ceramiki" width="1200" height="800" loading="lazy">
+                <figcaption>Stanowisko toczenia — każdy kubek przechodzi przez ręce co najmniej czterech osób.</figcaption>
+              </figure>
+
+              <h3>Jak powstaje nowa rzecz</h3>
+              <ol class="pl-list pl-list-decimal pl-list-primary">
+                <li><strong>Potrzeba.</strong> Zaczynamy od pytania, czego brakuje nam w domu — nie od rysunku.</li>
+                <li><strong>Prototyp.</strong> Pierwsze sztuki trafiają do naszych mieszkań na co najmniej trzy miesiące.</li>
+                <li><strong>Poprawki.</strong> Zmieniamy uchwyty, proporcje, grubość ścianek — zwykle kilka razy.</li>
+                <li><strong>Krótka seria.</strong> Dopiero wtedy rzecz trafia do sklepu, w liczbie, którą jesteśmy w stanie zrobić dobrze.</li>
+              </ol>
+
+              <div class="pl-alert pl-alert-primary pl-alert-accent">
+                <span class="pl-alert-icon pl-alert-icon-box"><span data-pl-icon="calendar"></span></span>
+                <div class="pl-alert-body">
+                  <h4 class="pl-alert-title">Otwarte piątki</h4>
+                  <p>W każdy piątek między 14:00 a 18:00 pracownia jest otwarta dla gości. Nie trzeba się zapisywać — wystarczy przyjść.</p>
+                </div>
+              </div>
+
+              <h2 id="materialy">Materiały</h2>
+              <p>Każdy materiał kupujemy możliwie blisko i możliwie bezpośrednio. Wiemy, z której kopalni pochodzi glina i na którym polu rósł len.</p>
+
+              <div class="pl-overflow-x-auto pl-margin-medium">
+                <table class="pl-table pl-table-divider pl-table-hover">
+                  <thead>
+                    <tr><th>Materiał</th><th>Pochodzenie</th><th>Zastosowanie</th><th class="pl-table-numeric">Odległość</th></tr>
+                  </thead>
+                  <tbody>
+                    <tr><td><strong>Glina kamionkowa</strong></td><td>Bolesławiec</td><td>Naczynia, klosze</td><td class="pl-table-numeric">520 km</td></tr>
+                    <tr><td><strong>Len</strong></td><td>Warmia</td><td>Obrusy, pościel, zasłony</td><td class="pl-table-numeric">160 km</td></tr>
+                    <tr><td><strong>Wełna</strong></td><td>Podhale</td><td>Pledy, dywany</td><td class="pl-table-numeric">680 km</td></tr>
+                    <tr><td><strong>Dąb i jesion</strong></td><td>Kaszuby</td><td>Meble, podstawy lamp</td><td class="pl-table-numeric">70 km</td></tr>
+                    <tr><td><strong>Szkło sodowe</strong></td><td>Krosno</td><td>Klosze, wazony</td><td class="pl-table-numeric">740 km</td></tr>
+                  </tbody>
+                </table>
+              </div>
+
+              <!-- wrapper: .pl-article > ul > li nadpisuje wcięcie .pl-list-check -->
+              <div class="pl-margin-medium">
+              <ul class="pl-list pl-list-check pl-list-primary">
+                <li>Szkliwa bez ołowiu i kadmu, bezpieczne w kontakcie z żywnością.</li>
+                <li>Drewno z lasów z certyfikatem FSC, olejowane woskiem twardym.</li>
+                <li>Tkaniny z certyfikatem OEKO-TEX Standard 100.</li>
+              </ul>
+              </div>
+
+              <div class="pl-article-note">
+                <strong>Warto wiedzieć</strong>
+                Naturalne materiały różnią się między sobą. Odcień szkliwa, rysunek słojów i splot lnu mogą odbiegać od zdjęć — to cecha, nie wada.
+              </div>
+
+              <h3>Lorem w skrócie</h3>
+              <dl class="pl-description-list pl-description-list-horizontal pl-description-list-divider">
+                <dt>Rok założenia</dt>
+                <dd>2014</dd>
+                <dt>Siedziba</dt>
+                <dd>ul. Stoczniowa 14, 80-001 Gdańsk</dd>
+                <dt>Showroomy</dt>
+                <dd>Gdańsk, Warszawa</dd>
+                <dt>Zespół</dt>
+                <dd>14 osób, w tym 9 rzemieślników</dd>
+                <dt>Wysyłka</dt>
+                <dd>Cała Unia Europejska, neutralna klimatycznie</dd>
+              </dl>
+
+              <h2 id="historia">Historia</h2>
+              <p>Dwanaście lat w sześciu punktach — od garażu na Oruni do dwóch showroomów.</p>
+              <ol class="pl-stepper pl-stepper-vertical pl-stepper-ink cms-history" data-pl-scrollspy="cls: pl-animation-slide-left-small; target: > li; delay: 100">
+                {history.map((step, index) => (
+                  <li class={index === history.length - 1 ? 'pl-active' : 'pl-complete'}>
+                    <span class="pl-stepper-marker"><span data-pl-icon={index === history.length - 1 ? 'sparkles' : 'check'}></span></span>
+                    <div class="pl-stepper-content">
+                      <span class="pl-text-eyebrow">{step.year}</span>
+                      <span class="pl-stepper-title">{step.title}</span>
+                      <span class="pl-stepper-description">{step.text}</span>
+                    </div>
+                  </li>
+                ))}
+              </ol>
+            </article>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Liczniki -->
+    <section class="pl-section pl-section-secondary" id="liczby">
+      <div class="pl-container">
+        <div class="pl-grid pl-grid-large pl-grid-divider pl-child-width-1-2 pl-child-width-1-4@m pl-text-center" data-pl-scrollspy="cls: pl-animation-slide-up; target: > *; delay: 100">
+          <div>
+            <div class="pl-heading-medium pl-text-tabular" data-pl-counter="to: 12; suffix: ' lat'"></div>
+            <p class="pl-text-muted pl-margin-small-top">pracy przy jednym stole</p>
+          </div>
+          <div>
+            <div class="pl-heading-medium pl-text-tabular" data-pl-counter="48200"></div>
+            <p class="pl-text-muted pl-margin-small-top">wysłanych paczek</p>
+          </div>
+          <div>
+            <div class="pl-heading-medium pl-text-tabular" data-pl-counter="to: 98.4; decimals: 1; suffix: %"></div>
+            <p class="pl-text-muted pl-margin-small-top">zadowolonych klientów</p>
+          </div>
+          <div>
+            <div class="pl-heading-medium pl-text-tabular" data-pl-counter="to: 0; from: 100; suffix: ' g'"></div>
+            <p class="pl-text-muted pl-margin-small-top">plastiku w paczce</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Zespół -->
+    <section class="pl-section pl-section-large" id="zespol">
+      <div class="pl-container">
+        <div class="pl-width-2xlarge">
+          <p class="pl-heading-eyebrow">Zespół</p>
+          <h2 class="pl-heading-small">Ludzie, którzy stoją za każdą rzeczą</h2>
+          <p class="pl-text-lead">Jest nas czternaścioro. Poznaj sześć osób, z którymi najpewniej będziesz mieć kontakt.</p>
+        </div>
+        <div class="pl-grid pl-grid-match pl-child-width-1-1 pl-child-width-1-2@s pl-child-width-1-3@m pl-margin-large-top" data-pl-scrollspy="cls: pl-animation-slide-up; target: > *; delay: 80">
+          {team.map((person) => (
+            <div>
+              <div class="pl-card pl-card-hover">
+                <div class="pl-card-body">
+                  <div class="pl-flex pl-flex-middle pl-gap-medium">
+                    <span class="pl-avatar pl-avatar-xlarge pl-avatar-ring"><img src={`/img/avatar-${person.avatar}.svg`} alt={person.name}></span>
+                    <div>
+                      <h3 class="pl-card-title pl-margin-remove">{person.name}</h3>
+                      <p class="pl-card-meta pl-margin-remove">{person.role}</p>
+                    </div>
+                  </div>
+                  <p class="pl-card-text pl-margin-top">{person.bio}</p>
+                </div>
+              </div>
+            </div>
+          ))}
+        </div>
+      </div>
+    </section>
+
+    <!-- Wartości -->
+    <section class="pl-section pl-section-large pl-section-muted" id="wartosci">
+      <div class="pl-container">
+        <div class="pl-text-center pl-width-2xlarge pl-margin-auto">
+          <p class="pl-heading-eyebrow pl-heading-eyebrow-center">Wartości</p>
+          <h2 class="pl-heading-small">Sześć zasad, których się trzymamy</h2>
+        </div>
+        <div class="pl-grid pl-grid-large pl-child-width-1-1 pl-child-width-1-2@s pl-child-width-1-3@m pl-margin-large-top" data-pl-scrollspy="cls: pl-animation-slide-up; target: > *; delay: 80">
+          {values.map((value) => (
+            <div>
+              <span class={`pl-icon-box pl-icon-${value.tone}`} data-pl-icon={value.icon}></span>
+              <h3 class="pl-text-lg pl-margin-top pl-margin-small-bottom">{value.title}</h3>
+              <p class="pl-text-muted pl-margin-remove">{value.text}</p>
+            </div>
+          ))}
+        </div>
+      </div>
+    </section>
+
+    <!-- Regulamin: zwykła typografia CMS -->
+    <section class="pl-section pl-section-large" id="regulamin">
+      <div class="pl-container pl-container-small">
+        <p class="pl-heading-eyebrow pl-heading-eyebrow-line">Dokumenty</p>
+        <h2 class="pl-heading-small">Regulamin sklepu</h2>
+        <p class="pl-text-meta">Wersja 4.2 · obowiązuje od 1 września 2026 r.</p>
+
+        <ul class="pl-subnav pl-subnav-divider pl-margin-medium-top pl-visible@s" aria-label="Paragrafy">
+          {legal.map((part, index) => (
+            <li><a href={`#${part.id}`}>§ {index + 1}. {part.title}</a></li>
+          ))}
+        </ul>
+        <hr class="pl-divider">
+
+        <div class="cms-legal">
+          {legal.map((part, index) => (
+            <section id={part.id} class="pl-margin-medium-top">
+              <h3 class="pl-text-xl"><a class="pl-link-heading" href={`#${part.id}`}><span class="pl-text-subtle pl-text-mono">§ {index + 1}</span> {part.title}</a></h3>
+              <ol class="pl-list pl-list-decimal pl-list-muted pl-list-large">
+                {part.items.map((item) => <li>{item}</li>)}
+              </ol>
+            </section>
+          ))}
+        </div>
+
+        <div class="pl-alert pl-alert-info pl-margin-large-top">
+          <span class="pl-alert-icon"><span data-pl-icon="info"></span></span>
+          <div class="pl-alert-body">
+            <p>Szukasz <a href="#">polityki prywatności</a> lub <a href="#">formularza zwrotu</a>? Oba dokumenty możesz pobrać w formacie PDF.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- CTA -->
+    <section class="pl-section pl-section-remove-top">
+      <div class="pl-container">
+        <div class="pl-tile pl-tile-primary pl-tile-large pl-tile-rounded pl-background-aurora pl-text-center" data-pl-scrollspy="cls: pl-animation-scale-up">
+          <h2 class="pl-heading-small pl-text-balance">Zobacz, co robimy — z bliska</h2>
+          <p class="pl-text-lead pl-width-xlarge pl-margin-auto">Wpadnij do showroomu albo zacznij od sklepu. Na pierwsze zamówienie dajemy darmową dostawę.</p>
+          <div class="pl-flex pl-flex-center pl-flex-wrap pl-gap-small pl-margin-medium-top">
+            <a class="pl-button pl-button-secondary pl-button-large" href="/examples/kategoria/">Przejdź do sklepu <span class="pl-button-arrow" data-pl-icon="arrow-right"></span></a>
+            <a class="pl-button pl-button-ghost pl-button-large" href="/examples/kontakt/">Odwiedź showroom</a>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <ShopFooter />
+  <a href="#" class="pl-totop pl-totop-fixed pl-totop-progress" data-pl-totop></a>
+</Example>
+
+<style>
+  /* Kotwice nie chowają się pod przyklejonym nagłówkiem. */
+  .pl-article :is(h2, h3)[id],
+  #liczby,
+  .cms-legal section {
+    scroll-margin-top: 6rem;
+  }
+
+  .cms-history {
+    --pl-stepper-size: 2.25rem;
+    margin-top: var(--pl-space-5);
+  }
+</style>

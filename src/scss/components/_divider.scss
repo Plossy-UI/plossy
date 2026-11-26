@@ -1,0 +1,126 @@
+// Divider — linie oddzielające treść.
+@use '../abstracts' as *;
+
+.pl-divider,
+[class*='pl-divider-'] {
+  --pl-divider-color: var(--pl-border);
+  --pl-divider-gap: var(--pl-space-5);
+}
+
+.pl-divider {
+  height: 0;
+  margin: var(--pl-divider-gap) 0;
+  border: 0;
+  border-top: 1px solid var(--pl-divider-color);
+}
+
+// ── Ornament: iskra na środku linii ─────────────────────────────────────
+.pl-divider-icon {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  height: 1.25rem;
+  margin: var(--pl-divider-gap) 0;
+  border: 0;
+  // Kropka z miękką poświatą.
+  background:
+    radial-gradient(circle closest-side, var(--pl-spark) 0 0.22rem, color-mix(in oklab, var(--pl-spark) 28%, transparent) 0.27rem 0.5rem, transparent 0.55rem)
+    center / 1.25rem 1.25rem no-repeat;
+
+  &::before,
+  &::after {
+    content: '';
+    flex: 1;
+    height: 1px;
+    background: var(--pl-divider-color);
+  }
+
+  &::before { margin-right: 0.7rem; }
+  &::after { margin-left: 0.7rem; }
+}
+
+// ── Krótka kreska ───────────────────────────────────────────────────────
+// Dziedziczy wyrównanie tekstu (text-align) rodzica.
+.pl-divider-small {
+  height: auto;
+  margin: var(--pl-divider-gap) 0;
+  border: 0;
+  line-height: 0;
+
+  &::after {
+    content: '';
+    display: inline-block;
+    width: 2.75rem;
+    height: 3px;
+    border-radius: var(--pl-radius-pill);
+    background: var(--pl-divider-small-color, var(--pl-text));
+    vertical-align: top;
+  }
+}
+
+// ── Pionowa ─────────────────────────────────────────────────────────────
+.pl-divider-vertical {
+  flex: none;
+  width: 0;
+  height: var(--pl-divider-h, 6rem);
+  margin: var(--pl-divider-gap) auto;
+  border: 0;
+  border-left: 1px solid var(--pl-divider-color);
+}
+
+// W wierszu flex / siatce rozciąga się na wysokość sąsiadów.
+:where(.pl-flex, .pl-flex-inline, .pl-grid) > .pl-divider-vertical {
+  align-self: stretch;
+  height: var(--pl-divider-h, auto);
+  margin: 0;
+  padding: 0;
+}
+
+// ── Style linii ─────────────────────────────────────────────────────────
+.pl-divider-dashed { border-style: dashed; }
+.pl-divider-dotted { border-style: dotted; border-top-width: 2px; }
+.pl-divider-vertical.pl-divider-dotted { border-top-width: 0; border-left-width: 2px; }
+.pl-divider-strong { --pl-divider-color: var(--pl-border-strong); }
+
+// Linia zanikająca ku końcom.
+.pl-divider-fade {
+  height: 1px;
+  border: 0;
+  background: linear-gradient(90deg, transparent, var(--pl-border-strong) 20% 80%, transparent);
+}
+
+// ── Etykieta w środku linii ─────────────────────────────────────────────
+.pl-divider-label {
+  display: flex;
+  align-items: center;
+  gap: var(--pl-space-4);
+  margin: var(--pl-divider-gap) 0;
+  border: 0;
+  color: var(--pl-text-subtle);
+  font-family: var(--pl-font-mono);
+  font-size: var(--pl-text-xs);
+  font-weight: 500;
+  line-height: 1.4;
+  letter-spacing: 0.07em;
+  text-transform: uppercase;
+  white-space: nowrap;
+
+  &::before,
+  &::after {
+    content: '';
+    flex: 1;
+    border-top: 1px solid var(--pl-divider-color);
+  }
+
+  &.pl-divider-dashed::before,
+  &.pl-divider-dashed::after {
+    border-top-style: dashed;
+  }
+}
+
+.pl-divider-label-left::before { flex: 0 0 var(--pl-space-5); }
+.pl-divider-label-right::after { flex: 0 0 var(--pl-space-5); }
+
+// Odstępy.
+.pl-divider-compact { --pl-divider-gap: var(--pl-space-3); }
+.pl-divider-spacious { --pl-divider-gap: var(--pl-space-7); }

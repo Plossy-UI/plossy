@@ -1,0 +1,104 @@
+// Leader — kropkowany łącznik między tekstem a wartością (menu, cenniki, spisy treści).
+@use '../abstracts' as *;
+
+.pl-leader {
+  --pl-leader-color: var(--pl-border-strong);
+  --pl-leader-gap: 0.6em;
+  --pl-leader-step: 7px;
+  --pl-leader-dot: 1px;
+
+  display: flex;
+  align-items: baseline;
+  gap: var(--pl-leader-gap);
+  min-width: 0;
+  color: inherit;
+  text-decoration: none;
+
+  // Wypełnienie stoi między pierwszym a ostatnim elementem.
+  &::after {
+    content: '';
+    order: 1;
+    flex: 1 1 1.5rem;
+    min-width: 1.5rem;
+    height: calc(var(--pl-leader-dot) * 2);
+    background-image: radial-gradient(
+      circle,
+      var(--pl-leader-color) var(--pl-leader-dot),
+      transparent calc(var(--pl-leader-dot) + 0.5px)
+    );
+    background-position: 0 50%;
+    background-size: var(--pl-leader-step) 100%;
+    background-repeat: repeat-x;
+    @include transition('background-image, opacity', var(--pl-dur-2));
+  }
+
+  > * {
+    min-width: 0;
+    margin: 0;
+  }
+
+  > :last-child:not(:first-child) {
+    order: 2;
+    flex: none;
+    font-variant-numeric: tabular-nums;
+    white-space: nowrap;
+  }
+}
+
+// ── Warianty wypełnienia ────────────────────────────────────────────────
+.pl-leader-dashed::after {
+  height: 1px;
+  background-image: linear-gradient(90deg, var(--pl-leader-color) 55%, transparent 0);
+}
+
+.pl-leader-line::after {
+  height: 1px;
+  background: var(--pl-leader-color);
+}
+
+.pl-leader-blank::after {
+  background: none;
+}
+
+// ── Kolory ──────────────────────────────────────────────────────────────
+.pl-leader-muted {
+  --pl-leader-color: var(--pl-border);
+}
+
+.pl-leader-primary {
+  --pl-leader-color: color-mix(in oklab, var(--pl-primary) 55%, transparent);
+}
+
+.pl-leader-spark {
+  --pl-leader-color: var(--pl-spark);
+  --pl-leader-dot: 1.5px;
+}
+
+// ── Rozmiar ─────────────────────────────────────────────────────────────
+.pl-leader-large {
+  --pl-leader-step: 10px;
+  --pl-leader-dot: 1.5px;
+  --pl-leader-gap: 0.8em;
+}
+
+// Interaktywny wiersz (np. spis treści): łącznik przyjmuje kolor akcentu.
+a.pl-leader {
+  @include transition('color', var(--pl-dur-2));
+
+  &:hover {
+    --pl-leader-color: var(--pl-primary);
+    color: var(--pl-primary-text);
+    text-decoration: none;
+  }
+
+  @include focus-visible(4px);
+
+  &:focus-visible {
+    border-radius: var(--pl-radius-xs);
+  }
+}
+
+// Lista pozycji z łącznikami.
+.pl-leader + .pl-leader {
+  margin-top: var(--pl-space-2);
+}

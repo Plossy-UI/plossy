@@ -1,0 +1,79 @@
+// Inverse — lokalne odwrócenie kolorów.
+//   .pl-light  treść stoi na CIEMNYM tle  → tokeny ciemnego motywu
+//   .pl-dark   treść stoi na JASNYM tle   → tokeny jasnego motywu
+// Tokeny pochodne (color-mix, cienie) liczą się tam, gdzie są zadeklarowane,
+// dlatego w każdym zakresie dołączamy też mixin `derived`.
+// Moduł tokens jest ładowany przez @use tylko raz — CSS się nie dubluje.
+@use '../abstracts' as *;
+@use '../tokens';
+
+// „secondary" i „ink" to tony odwrócone względem tła. Na SAMYM elemencie
+// z klasą .pl-light są zawsze ciemne (atrament), więc
+// `.pl-background-secondary.pl-light` daje ciemne tło w każdym motywie;
+// dzieci dostają już wartości odwrócone (jasny przycisk secondary na ciemnym tle).
+// Wartości muszą odpowiadać mixinom `light` / `dark` w _tokens.scss.
+@mixin ink-dark {
+  --pl-secondary: oklch(0.235 0.012 85);
+  --pl-on-secondary: oklch(0.975 0.005 85);
+  --pl-ink: oklch(0.215 0.012 85);
+  --pl-on-ink: oklch(0.975 0.005 85);
+  @include secondary-derived;
+}
+
+@mixin ink-light {
+  --pl-secondary: oklch(0.94 0.006 85);
+  --pl-on-secondary: oklch(0.2 0.01 85);
+  --pl-ink: oklch(0.955 0.006 85);
+  --pl-on-ink: oklch(0.2 0.01 85);
+  @include secondary-derived;
+}
+
+@mixin secondary-derived {
+  --pl-secondary-hover: color-mix(in oklab, var(--pl-secondary), var(--pl-mix-strong) 14%);
+  --pl-secondary-soft: color-mix(in oklab, var(--pl-secondary) 13%, var(--pl-surface));
+  --pl-secondary-border: color-mix(in oklab, var(--pl-secondary) 32%, var(--pl-surface));
+  --pl-secondary-text: color-mix(in oklab, var(--pl-secondary) 78%, var(--pl-text));
+}
+
+.pl-light > * {
+  @include ink-light;
+}
+
+.pl-dark > * {
+  @include ink-dark;
+}
+
+.pl-light {
+  @include tokens.dark;
+  @include tokens.derived;
+  @include ink-dark;
+  color: var(--pl-text);
+}
+
+.pl-dark {
+  @include tokens.light;
+  @include tokens.derived;
+  @include ink-light;
+  color: var(--pl-text);
+}
+
+// ── Zachowanie kolorów ──────────────────────────────────────────────────
+// .pl-preserve-color wewnątrz odwróconego zakresu wraca do motywu strony
+// (np. biała karta w ciemnej sekcji).
+.pl-preserve-color {
+  @include tokens.light;
+  @include tokens.derived;
+  color: var(--pl-text);
+}
+
+[data-pl-theme='dark'] .pl-preserve-color {
+  @include tokens.dark;
+  @include tokens.derived;
+}
+
+@media (prefers-color-scheme: dark) {
+  [data-pl-theme='auto'] .pl-preserve-color {
+    @include tokens.dark;
+    @include tokens.derived;
+  }
+}

@@ -1,0 +1,189 @@
+// Quantity — licznik ilości z przyciskami − / +
+@use '../abstracts' as *;
+
+.pl-quantity {
+  --pl-quantity-h: var(--pl-control-h);
+  --pl-quantity-w: 3rem;
+  --pl-quantity-radius: var(--pl-radius-md);
+
+  display: inline-flex;
+  align-items: stretch;
+  height: var(--pl-quantity-h);
+  border: var(--pl-border-w, 1px) solid var(--pl-border-strong);
+  border-radius: var(--pl-quantity-radius);
+  background: var(--pl-surface);
+  box-shadow: var(--pl-shadow-xs);
+  color: var(--pl-text);
+  vertical-align: middle;
+  overflow: hidden;
+  transition:
+    border-color var(--pl-dur-2) var(--pl-ease),
+    box-shadow var(--pl-dur-2) var(--pl-ease);
+
+  &:focus-within {
+    border-color: var(--pl-primary);
+    box-shadow: 0 0 0 3px color-mix(in oklab, var(--pl-primary) 22%, transparent);
+  }
+}
+
+.pl-quantity-input {
+  appearance: textfield;
+  width: var(--pl-quantity-w);
+  min-width: 0;
+  margin: 0;
+  padding: 0 0.25rem;
+  border: 0;
+  outline: 0;
+  background: transparent;
+  color: inherit;
+  font: inherit;
+  font-size: var(--pl-control-text, 0.9375rem);
+  font-weight: 560;
+  font-variant-numeric: tabular-nums;
+  text-align: center;
+
+  &::-webkit-outer-spin-button,
+  &::-webkit-inner-spin-button {
+    appearance: none;
+    margin: 0;
+  }
+
+  // Liczba wsuwa się od strony zmiany.
+  &.pl-quantity-up {
+    animation: pl-quantity-up var(--pl-dur-3) var(--pl-ease-spring);
+  }
+
+  &.pl-quantity-down {
+    animation: pl-quantity-down var(--pl-dur-3) var(--pl-ease-spring);
+  }
+}
+
+.pl-quantity-button {
+  @include button-reset;
+  position: relative;
+  display: inline-flex;
+  flex: none;
+  align-items: center;
+  justify-content: center;
+  width: var(--pl-quantity-h);
+  color: var(--pl-text-muted);
+  cursor: pointer;
+  transition:
+    background-color var(--pl-dur-2) var(--pl-ease),
+    color var(--pl-dur-2) var(--pl-ease);
+
+  // Znak rysowany kreskami — bez zależności od ikon.
+  &::before,
+  &::after {
+    content: '';
+    position: absolute;
+    width: 0.7rem;
+    height: 1.5px;
+    border-radius: 1px;
+    background: currentColor;
+    transition: transform var(--pl-dur-3) var(--pl-ease-spring);
+  }
+
+  &::after {
+    transform: rotate(90deg);
+  }
+
+  &.pl-quantity-minus::after {
+    display: none;
+  }
+
+  &:hover {
+    background: var(--pl-muted);
+    color: var(--pl-text);
+  }
+
+  &:active::before {
+    transform: scaleX(0.7);
+  }
+
+  &:active::after {
+    transform: rotate(90deg) scaleX(0.7);
+  }
+
+  &:focus-visible {
+    outline: 0;
+    background: var(--pl-muted);
+    color: var(--pl-primary-text, var(--pl-text));
+  }
+
+  &:disabled {
+    opacity: 0.35;
+    cursor: not-allowed;
+    background: transparent;
+  }
+}
+
+.pl-quantity.pl-disabled {
+  opacity: 0.55;
+  pointer-events: none;
+}
+
+@keyframes pl-quantity-up {
+  from {
+    opacity: 0;
+    transform: translateY(45%);
+  }
+}
+
+@keyframes pl-quantity-down {
+  from {
+    opacity: 0;
+    transform: translateY(-45%);
+  }
+}
+
+// ── Warianty ────────────────────────────────────────────────────────────
+.pl-quantity-small {
+  --pl-quantity-h: var(--pl-control-h-sm);
+  --pl-quantity-w: 2.25rem;
+  --pl-quantity-radius: var(--pl-radius-sm);
+}
+
+.pl-quantity-large {
+  --pl-quantity-h: var(--pl-control-h-lg);
+  --pl-quantity-w: 3.5rem;
+  --pl-quantity-radius: calc(var(--pl-radius-md) * 1.17);
+}
+
+.pl-quantity-pill {
+  --pl-quantity-radius: var(--pl-radius-pill);
+}
+
+// Przyciski oddzielone liniami od pola.
+.pl-quantity-divided .pl-quantity-button {
+  &.pl-quantity-minus {
+    border-right: var(--pl-border-w, 1px) solid var(--pl-border);
+  }
+
+  &.pl-quantity-plus {
+    border-left: var(--pl-border-w, 1px) solid var(--pl-border);
+  }
+}
+
+// Bez ramki — do tabel i ciasnych wierszy koszyka.
+.pl-quantity-ghost {
+  border-color: transparent;
+  background: var(--pl-muted);
+  box-shadow: none;
+}
+
+.pl-quantity-block {
+  display: flex;
+  width: 100%;
+
+  .pl-quantity-input {
+    flex: 1 1 auto;
+    width: auto;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .pl-quantity-input {
+    animation: none !important;
+  }
+}

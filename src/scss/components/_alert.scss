@@ -1,0 +1,255 @@
+// Alert
+@use '../abstracts' as *;
+
+.pl-alert {
+  --pl-tone: var(--pl-text);
+  --pl-on-tone: var(--pl-on-ink);
+  --pl-tone-soft: var(--pl-muted);
+  --pl-tone-text: var(--pl-text);
+  --pl-alert-px: 1.125rem;
+  --pl-alert-py: 0.95rem;
+  --pl-alert-radius: var(--pl-radius-md);
+
+  position: relative;
+  display: flex;
+  align-items: flex-start;
+  gap: var(--pl-space-3);
+  margin: 0 0 var(--pl-space-4);
+  padding: var(--pl-alert-py) var(--pl-alert-px);
+  border: 1px solid color-mix(in oklab, var(--pl-tone) 16%, transparent);
+  border-radius: var(--pl-alert-radius);
+  background: var(--pl-tone-soft);
+  color: var(--pl-text);
+  font-size: 0.9375rem;
+  line-height: 1.55;
+
+  &:last-child {
+    margin-bottom: 0;
+  }
+
+  // Linki dziedziczą zabarwienie alertu.
+  a:not([class]) {
+    color: var(--pl-tone-text);
+    font-weight: 540;
+  }
+}
+
+@include tones('pl-alert');
+
+.pl-alert-secondary {
+  --pl-tone: var(--pl-ink);
+  --pl-on-tone: var(--pl-on-ink);
+  --pl-tone-soft: var(--pl-muted-strong);
+  --pl-tone-text: var(--pl-text);
+}
+
+// ── Części ──────────────────────────────────────────────────────────────
+.pl-alert-icon {
+  display: inline-flex;
+  flex: none;
+  align-items: center;
+  justify-content: center;
+  width: 1.5rem;
+  height: 1.5rem;
+  margin-top: -0.02rem;
+  color: var(--pl-tone-text);
+
+  > .pl-icon,
+  > svg {
+    width: 1.25rem;
+    height: 1.25rem;
+  }
+}
+
+// Ikona w zabarwionym kółku.
+.pl-alert-icon-box {
+  width: 2.25rem;
+  height: 2.25rem;
+  margin-top: -0.1rem;
+  border-radius: var(--pl-radius-sm);
+  background: color-mix(in oklab, var(--pl-tone) 16%, transparent);
+}
+
+.pl-alert-body {
+  flex: 1 1 auto;
+  min-width: 0;
+
+  > :last-child {
+    margin-bottom: 0;
+  }
+
+  > p {
+    margin-bottom: 0.4em;
+  }
+}
+
+.pl-alert-title {
+  margin: 0 0 0.15em;
+  font-family: var(--pl-font-display);
+  font-size: var(--pl-text-md);
+  font-weight: var(--pl-display-weight, 600);
+  line-height: 1.4;
+  letter-spacing: var(--pl-display-tracking, -0.012em);
+  color: var(--pl-tone-text);
+}
+
+.pl-alert-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--pl-space-2);
+  margin-top: var(--pl-space-3);
+}
+
+// Akcje w jednej linii z treścią (po prawej).
+.pl-alert > .pl-alert-actions {
+  flex: none;
+  align-self: center;
+  margin-top: 0;
+}
+
+.pl-alert-close {
+  flex: none;
+  margin: -0.25rem -0.4rem -0.25rem 0;
+  color: var(--pl-tone-text);
+}
+
+// ── Style ───────────────────────────────────────────────────────────────
+.pl-alert-solid {
+  border-color: transparent;
+  background: var(--pl-tone);
+  color: var(--pl-on-tone);
+  box-shadow:
+    inset 0 1px 0 oklch(1 0 0 / 0.14),
+    0 10px 24px -14px color-mix(in oklab, var(--pl-tone) 80%, transparent);
+
+  .pl-alert-title,
+  .pl-alert-icon,
+  .pl-alert-close,
+  a:not([class]) {
+    color: inherit;
+  }
+
+  .pl-alert-icon-box {
+    background: color-mix(in oklab, var(--pl-on-tone) 18%, transparent);
+  }
+}
+
+.pl-alert-outline {
+  border-color: color-mix(in oklab, var(--pl-tone) 42%, transparent);
+  background: transparent;
+}
+
+// Biała karta z kolorowym paskiem akcentu po lewej.
+.pl-alert-accent {
+  padding-left: calc(var(--pl-alert-px) + 0.5rem);
+  border-color: var(--pl-border);
+  background: var(--pl-surface);
+  box-shadow: var(--pl-shadow-sm);
+
+  &::before {
+    content: '';
+    position: absolute;
+    inset: 0.7rem auto 0.7rem 0.55rem;
+    width: 3px;
+    border-radius: 3px;
+    background: var(--pl-tone);
+  }
+}
+
+// „Iskra" — limonkowa kropka w rogu dla nowości i ogłoszeń.
+.pl-alert-spark::after {
+  content: '';
+  position: absolute;
+  top: -0.25rem;
+  left: -0.25rem;
+  width: 0.625rem;
+  height: 0.625rem;
+  border-radius: 50%;
+  background: var(--pl-spark);
+  box-shadow: 0 0 0 3px var(--pl-bg);
+  animation: pl-alert-spark 2.4s var(--pl-ease-in-out) infinite;
+}
+
+@keyframes pl-alert-spark {
+  50% {
+    transform: scale(0.72);
+    opacity: 0.75;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .pl-alert-spark::after {
+    animation: none;
+  }
+}
+
+// ── Rozmiary ────────────────────────────────────────────────────────────
+.pl-alert-small {
+  --pl-alert-px: 0.8rem;
+  --pl-alert-py: 0.55rem;
+  --pl-alert-radius: var(--pl-radius-sm);
+  gap: var(--pl-space-2);
+  font-size: var(--pl-text-sm);
+
+  .pl-alert-icon {
+    width: 1.25rem;
+    height: 1.35rem;
+
+    > .pl-icon,
+    > svg {
+      width: 1.05rem;
+      height: 1.05rem;
+    }
+  }
+
+  .pl-alert-close {
+    --pl-close-size: 1.5rem;
+    --pl-close-icon: 0.6875rem;
+    margin: -0.1rem -0.3rem -0.1rem 0;
+  }
+}
+
+.pl-alert-large {
+  --pl-alert-px: 1.5rem;
+  --pl-alert-py: 1.35rem;
+  --pl-alert-radius: var(--pl-radius-lg);
+  gap: var(--pl-space-4);
+  font-size: var(--pl-text-md);
+
+  .pl-alert-title {
+    font-size: var(--pl-text-lg);
+  }
+}
+
+// Baner na całą szerokość (bez zaokrągleń i bocznych ramek).
+.pl-alert-banner {
+  align-items: center;
+  justify-content: center;
+  margin: 0;
+  border-width: 0 0 1px;
+  border-radius: 0;
+  text-align: center;
+
+  .pl-alert-body {
+    flex: 0 1 auto;
+  }
+}
+
+// ── Animacje ────────────────────────────────────────────────────────────
+// Zamykanie: zanik + lekkie zsunięcie; wysokość zwija JS.
+.pl-alert-leave {
+  pointer-events: none;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .pl-alert-enter {
+    animation: pl-alert-in var(--pl-dur-4) var(--pl-ease-spring) both;
+  }
+}
+
+@keyframes pl-alert-in {
+  from {
+    opacity: 0;
+    transform: translateY(-8px) scale(0.98);
+  }
+}

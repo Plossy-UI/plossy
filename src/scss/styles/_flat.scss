@@ -1,0 +1,126 @@
+// Styl „flat" — czysty, płaski minimalizm sklepu modowego: biel i czerń, jeden krój
+// bezszeryfowy, proste rogi, włosowe szare linie, zero cieni, przyciski wersalikami.
+@use 'engine' as *;
+
+@include preset('flat') {
+  --pl-radius-xs: 0px;
+  --pl-radius-sm: 0px;
+  --pl-radius-md: 0px;
+  --pl-radius-lg: 0px;
+  --pl-radius-xl: 0px;
+  --pl-radius-pill: 0px;
+  --pl-shadow-scale: 0;
+  --pl-gloss: 0;
+  --pl-lift: 0;
+  --pl-press: 1;
+
+  --pl-font-sans: 'Baloo Tamma 2 Variable', 'Baloo Tamma 2', Arial, ui-sans-serif, system-ui, sans-serif;
+  --pl-font-display: 'Baloo Tamma 2 Variable', 'Baloo Tamma 2', Arial, ui-sans-serif, system-ui, sans-serif;
+  --pl-heading-weight: 500;
+  --pl-heading-tracking: 0em;
+  --pl-heading-tracking-h1: -0.01em;
+  --pl-heading-tracking-h2: -0.005em;
+  --pl-heading-tracking-h5: 0em;
+  --pl-heading-tracking-h6: 0em;
+  --pl-display-weight: 500;
+  --pl-display-tracking: 0em;
+  --pl-control-weight: 500;
+  --pl-control-tracking: 0.03em;
+  --pl-control-case: uppercase;
+  --pl-control-text: 0.8125rem;
+  --pl-control-h: 2.75rem;
+  --pl-control-h-sm: 2.125rem;
+  --pl-control-h-lg: 3.25rem;
+  // Spokojniejsza skala nagłówków — typografia nie krzyczy.
+  --pl-text-2xl: 1.6rem;
+  --pl-text-3xl: 2rem;
+  --pl-text-4xl: clamp(2.2rem, 1.8rem + 1.6vw, 3rem);
+  --pl-text-5xl: clamp(2.6rem, 2rem + 3vw, 4rem);
+
+  --pl-ease-spring: cubic-bezier(0.33, 0.5, 0.2, 1);
+
+  --pl-bg: oklch(1 0 0);
+  --pl-surface: oklch(1 0 0);
+  --pl-surface-raised: oklch(1 0 0);
+  --pl-muted: oklch(0.965 0 0);
+  --pl-muted-strong: oklch(0.93 0 0);
+  --pl-border: oklch(0.895 0 0);
+  --pl-border-strong: oklch(0.74 0 0);
+  --pl-text: oklch(0.21 0 0);
+  --pl-text-muted: oklch(0.45 0 0);
+  --pl-text-subtle: oklch(0.6 0 0);
+  --pl-ink: oklch(0.15 0 0);
+  --pl-on-ink: oklch(1 0 0);
+  --pl-secondary: oklch(0.15 0 0);
+  --pl-on-secondary: oklch(1 0 0);
+  --pl-spark: oklch(0.925 0.018 85);
+  --pl-on-spark: oklch(0.21 0 0);
+  --pl-danger: oklch(0.6 0.22 25);
+  --pl-overlay: oklch(0 0 0 / 0.45);
+}
+
+@include preset-dark('flat') {
+  --pl-bg: oklch(0.13 0 0);
+  --pl-surface: oklch(0.13 0 0);
+  --pl-surface-raised: oklch(0.18 0 0);
+  --pl-muted: oklch(0.19 0 0);
+  --pl-muted-strong: oklch(0.24 0 0);
+  --pl-border: oklch(0.27 0 0);
+  --pl-border-strong: oklch(0.42 0 0);
+  --pl-text: oklch(0.96 0 0);
+  --pl-text-muted: oklch(0.74 0 0);
+  --pl-text-subtle: oklch(0.56 0 0);
+  --pl-ink: oklch(0.96 0 0);
+  --pl-on-ink: oklch(0.13 0 0);
+  --pl-secondary: oklch(0.96 0 0);
+  --pl-on-secondary: oklch(0.13 0 0);
+  --pl-spark: oklch(0.3 0.01 85);
+  --pl-on-spark: oklch(0.96 0 0);
+  --pl-overlay: oklch(0 0 0 / 0.7);
+}
+
+@include preset-accent('flat', 0.17, 0, 0);
+@include preset-accent-dark('flat', 0.86, 0, 0, oklch(0.13 0 0));
+
+[data-pl-style='flat'] {
+  @include no-depth;
+  @include outline-button;
+
+  .pl-button {
+    --pl-button-px: 2.4em;
+  }
+
+  .pl-button-icon {
+    --pl-button-px: 0;
+  }
+
+  // Znaczki jak metki: prostokątne, wersalikami.
+  .pl-label,
+  .pl-badge:not(.pl-badge-dot),
+  .pl-chip {
+    border-radius: 0;
+  }
+
+  .pl-label {
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+  }
+
+  mark,
+  :not(pre) > code {
+    border-radius: 0;
+  }
+
+  // Przełącznik zostaje obły — kwadratowy czyta się jak pole wyboru.
+  .pl-switch,
+  .pl-switch::before,
+  .pl-switch::after {
+    border-radius: 999px;
+  }
+}
+
+// Baloo Tamma 2 ma bardzo wysokie pole znaku (ok. 1,75 em) z linią bazową w ~65% wysokości,
+// więc podkreślenia rysowane gradientem w tle trzeba przesunąć do góry.
+[data-pl-style='flat'] :is(.pl-heading-mark, .pl-text-highlight) {
+  background-image: linear-gradient(transparent 40%, var(--pl-text-highlight-color, var(--pl-spark)) 40%, var(--pl-text-highlight-color, var(--pl-spark)) 67%, transparent 67%);
+}

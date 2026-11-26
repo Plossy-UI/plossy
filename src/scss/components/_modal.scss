@@ -1,0 +1,442 @@
+// Modal — okno dialogowe na natywnym <dialog> (showModal).
+// <dialog class="pl-modal" id="m" data-pl-modal>
+//   <div class="pl-modal-dialog">
+//     <div class="pl-modal-header"><h2 class="pl-modal-title">…</h2><button class="pl-close" data-pl-modal-close></button></div>
+//     <div class="pl-modal-body">…</div>
+//     <div class="pl-modal-footer">…</div>
+//   </div>
+// </dialog>
+// Sam <dialog> to przezroczysta warstwa na cały ekran; widocznym panelem jest .pl-modal-dialog.
+@use '../abstracts' as *;
+
+.pl-modal {
+  --pl-modal-width: 36rem;
+  --pl-modal-gutter: clamp(0.75rem, 4vw, 2.5rem);
+  --pl-modal-px: 1.5rem;
+  --pl-modal-py: 1.25rem;
+  --pl-modal-radius: var(--pl-radius-xl);
+  --pl-modal-rise: 14px;
+
+  position: fixed;
+  inset: 0;
+  box-sizing: border-box;
+  width: 100%;
+  max-width: none;
+  height: 100%;
+  max-height: none;
+  margin: 0;
+  padding: var(--pl-modal-gutter);
+  overflow: hidden auto;
+  overscroll-behavior: contain;
+  border: 0;
+  background: transparent;
+  color: var(--pl-text);
+
+  &[open] {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+
+  &:focus {
+    outline: none;
+  }
+
+  &::backdrop {
+    background: var(--pl-overlay, oklch(0 0 0 / 0.5));
+    backdrop-filter: blur(6px) saturate(1.15);
+    animation: pl-modal-backdrop-in var(--pl-dur-3, 320ms) var(--pl-ease, ease) both;
+  }
+
+  &.pl-closing::backdrop {
+    animation: pl-modal-backdrop-out var(--pl-dur-2, 200ms) var(--pl-ease, ease) both;
+  }
+}
+
+.pl-modal-dialog {
+  position: relative;
+  display: flex;
+  flex: none;
+  flex-direction: column;
+  box-sizing: border-box;
+  width: 100%;
+  max-width: var(--pl-modal-width);
+  margin-block: clamp(0rem, 6vh, 4rem) auto;
+  background: var(--pl-surface);
+  border: 1px solid var(--pl-border);
+  border-radius: var(--pl-modal-radius);
+  box-shadow: var(--pl-shadow-xl);
+  transform-origin: 50% 40%;
+
+  &:focus {
+    outline: none;
+  }
+
+  .pl-modal[open] > & {
+    animation:
+      pl-modal-fade-in var(--pl-dur-2) var(--pl-ease) both,
+      pl-modal-pop-in var(--pl-dur-4) var(--pl-ease-spring) both;
+  }
+
+  .pl-modal.pl-closing > & {
+    animation: pl-modal-out var(--pl-dur-2) var(--pl-ease-in) both;
+  }
+
+  // „Nope" — potrząśnięcie przy kliknięciu tła modala statycznego.
+  .pl-modal[open] > &.pl-modal-shake {
+    animation: pl-modal-shake 420ms var(--pl-ease) both;
+  }
+}
+
+// ── Sekcje ──────────────────────────────────────────────────────────────
+.pl-modal-header {
+  display: flex;
+  flex: none;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: var(--pl-space-4);
+  padding: var(--pl-modal-py) var(--pl-modal-px);
+
+  > .pl-close {
+    margin: -0.2rem -0.5rem -0.2rem 0;
+  }
+}
+
+.pl-modal-title {
+  margin: 0;
+  font-family: var(--pl-font-display);
+  font-size: var(--pl-text-xl);
+  font-weight: var(--pl-display-weight, 600);
+  line-height: 1.25;
+  letter-spacing: var(--pl-display-tracking, -0.02em);
+  color: var(--pl-text);
+}
+
+// Mała etykieta nad tytułem.
+.pl-modal-eyebrow {
+  display: block;
+  margin-bottom: var(--pl-space-1);
+  font-family: var(--pl-font-mono);
+  font-size: var(--pl-text-xs);
+  font-weight: 500;
+  letter-spacing: 0.07em;
+  text-transform: uppercase;
+  color: var(--pl-text-subtle);
+}
+
+.pl-modal-body {
+  flex: 1 1 auto;
+  min-height: 0;
+  padding: var(--pl-modal-px);
+  color: var(--pl-text-muted);
+
+  .pl-modal-header + & {
+    padding-top: 0;
+  }
+
+  > :first-child {
+    margin-top: 0;
+  }
+
+  > :last-child {
+    margin-bottom: 0;
+  }
+}
+
+.pl-modal-footer {
+  display: flex;
+  flex: none;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: flex-end;
+  gap: var(--pl-space-2);
+  padding: var(--pl-space-4) var(--pl-modal-px);
+  background: color-mix(in oklab, var(--pl-muted) 55%, var(--pl-surface));
+  border-top: 1px solid var(--pl-border);
+  border-radius: 0 0 calc(var(--pl-modal-radius) - 1px) calc(var(--pl-modal-radius) - 1px);
+}
+
+// Stopka bez tła i linii.
+.pl-modal-footer-plain {
+  padding-top: 0;
+  padding-bottom: var(--pl-modal-px);
+  background: none;
+  border-top: 0;
+}
+
+// ── Przycisk zamykania poza nagłówkiem ──────────────────────────────────
+.pl-modal .pl-modal-close-default {
+  position: absolute;
+  top: 0.85rem;
+  right: 0.85rem;
+  z-index: 2;
+}
+
+.pl-modal .pl-modal-close-outside {
+  position: absolute;
+  top: 0;
+  right: -2.75rem;
+  z-index: 2;
+  color: oklch(1 0 0 / 0.95);
+  opacity: 0.85;
+
+  &:hover {
+    opacity: 1;
+  }
+
+  // Na wąskich ekranach nie ma miejsca obok panelu — przycisk ląduje nad nim.
+  @include down(s) {
+    top: -2.5rem;
+    right: 0;
+  }
+}
+
+.pl-modal:has(.pl-modal-close-outside) {
+  @include down(s) {
+    padding-top: calc(var(--pl-modal-gutter) + 2.5rem);
+  }
+}
+
+// ── Rozmiary ────────────────────────────────────────────────────────────
+.pl-modal-small {
+  --pl-modal-width: 25rem;
+  --pl-modal-radius: var(--pl-radius-lg);
+}
+
+.pl-modal-large {
+  --pl-modal-width: 52rem;
+}
+
+.pl-modal-xlarge {
+  --pl-modal-width: 72rem;
+}
+
+// Pełny ekran.
+.pl-modal-full {
+  --pl-modal-radius: 0px;
+  --pl-modal-width: none;
+  --pl-modal-rise: 24px;
+  padding: 0;
+
+  > .pl-modal-dialog {
+    min-height: 100%;
+    margin: 0;
+    border: 0;
+    box-shadow: none;
+  }
+
+  &.pl-modal-scroll > .pl-modal-dialog {
+    height: 100%;
+    max-height: 100%;
+  }
+}
+
+// ── Położenie ───────────────────────────────────────────────────────────
+.pl-modal-center > .pl-modal-dialog {
+  margin-block: auto;
+}
+
+// ── Przewijana treść: nagłówek i stopka stoją, przewija się .pl-modal-body ──
+.pl-modal-scroll {
+  overflow: hidden;
+
+  > .pl-modal-dialog {
+    max-height: 100%;
+    margin-block: auto;
+  }
+
+  .pl-modal-header {
+    border-bottom: 1px solid var(--pl-border);
+  }
+
+  .pl-modal-body {
+    padding-top: var(--pl-modal-px);
+    overflow-y: auto;
+    overscroll-behavior: contain;
+  }
+}
+
+// ── Media: obraz / wideo bez paddingu ───────────────────────────────────
+.pl-modal-media {
+  --pl-modal-width: 56rem;
+
+  > .pl-modal-dialog {
+    border: 0;
+    background: transparent;
+    box-shadow: none;
+
+    > :is(img, video, picture, iframe),
+    > .pl-modal-body > :is(img, video, picture, iframe) {
+      display: block;
+      width: 100%;
+      height: auto;
+      border-radius: var(--pl-modal-radius);
+      box-shadow: var(--pl-shadow-xl);
+    }
+
+    > iframe,
+    > .pl-modal-body > iframe {
+      aspect-ratio: 16 / 9;
+      border: 0;
+    }
+
+    > .pl-modal-body {
+      padding: 0;
+    }
+  }
+}
+
+// Podpis pod medium.
+.pl-modal-caption {
+  margin: var(--pl-space-3) 0 0;
+  font-size: var(--pl-text-sm);
+  text-align: center;
+  color: oklch(1 0 0 / 0.85);
+}
+
+// ── Arkusz dolny (bottom sheet) ─────────────────────────────────────────
+@mixin sheet {
+  padding: var(--pl-space-7) 0 0;
+
+  > .pl-modal-dialog {
+    max-width: min(var(--pl-modal-width), 100%);
+    max-height: 100%;
+    margin-block: auto 0;
+    padding-top: 1.1rem;
+    border-bottom: 0;
+    border-radius: var(--pl-modal-radius) var(--pl-modal-radius) 0 0;
+    transform-origin: 50% 100%;
+
+    // Uchwyt.
+    &::before {
+      content: '';
+      position: absolute;
+      top: 0.5rem;
+      left: 50%;
+      width: 2.5rem;
+      height: 0.25rem;
+      margin-left: -1.25rem;
+      border-radius: var(--pl-radius-pill);
+      background: var(--pl-border-strong);
+    }
+  }
+
+  &[open] > .pl-modal-dialog {
+    animation: pl-modal-sheet-in var(--pl-dur-4) var(--pl-ease-spring) both;
+    // „Zapas" pod panelem, żeby przy przeciąganiu nie odsłonić tła.
+    box-shadow:
+      var(--pl-shadow-xl),
+      0 4rem 0 0 var(--pl-surface);
+  }
+
+  &.pl-closing > .pl-modal-dialog {
+    animation: pl-modal-sheet-out var(--pl-dur-3) var(--pl-ease-in) both;
+  }
+
+  .pl-modal-body {
+    overflow-y: auto;
+    overscroll-behavior: contain;
+  }
+
+  .pl-modal-footer {
+    border-radius: 0;
+    padding-bottom: calc(var(--pl-space-4) + env(safe-area-inset-bottom, 0px));
+  }
+}
+
+// Arkusz tylko na telefonach (powyżej breakpointu „s" — zwykły modal).
+.pl-modal-sheet {
+  @include down(s) {
+    @include sheet;
+  }
+}
+
+// Arkusz na każdej szerokości.
+.pl-modal-sheet-always {
+  @include sheet;
+}
+
+// ── Okna systemowe: alert / confirm / prompt ────────────────────────────
+.pl-modal-prompt-label {
+  display: block;
+  margin-bottom: var(--pl-space-3);
+}
+
+.pl-modal-message {
+  font-size: var(--pl-text-md);
+  color: var(--pl-text);
+  overflow-wrap: anywhere;
+}
+
+// ── Animacje ────────────────────────────────────────────────────────────
+@keyframes pl-modal-backdrop-in {
+  from {
+    opacity: 0;
+    backdrop-filter: blur(0) saturate(1);
+  }
+}
+
+@keyframes pl-modal-backdrop-out {
+  to {
+    opacity: 0;
+    backdrop-filter: blur(0) saturate(1);
+  }
+}
+
+@keyframes pl-modal-fade-in {
+  from {
+    opacity: 0;
+  }
+}
+
+@keyframes pl-modal-pop-in {
+  from {
+    transform: translateY(var(--pl-modal-rise)) scale(0.96);
+  }
+}
+
+@keyframes pl-modal-out {
+  to {
+    opacity: 0;
+    transform: translateY(calc(var(--pl-modal-rise) * 0.6)) scale(0.97);
+  }
+}
+
+@keyframes pl-modal-sheet-in {
+  from {
+    transform: translateY(100%);
+  }
+}
+
+@keyframes pl-modal-sheet-out {
+  to {
+    transform: translateY(105%);
+  }
+}
+
+@keyframes pl-modal-shake {
+  0%,
+  100% {
+    transform: none;
+  }
+
+  18% {
+    transform: translateX(-9px) rotate(-0.4deg);
+  }
+
+  36% {
+    transform: translateX(8px) rotate(0.4deg);
+  }
+
+  54% {
+    transform: translateX(-5px);
+  }
+
+  72% {
+    transform: translateX(3px);
+  }
+
+  88% {
+    transform: translateX(-1px);
+  }
+}

@@ -1,0 +1,141 @@
+// Label — mała etykieta statusu.
+@use '../abstracts' as *;
+
+.pl-label {
+  --pl-tone: var(--pl-text-muted);
+  --pl-on-tone: var(--pl-surface);
+  --pl-tone-soft: var(--pl-muted-strong);
+  --pl-tone-text: var(--pl-text-muted);
+  --pl-label-h: 1.5rem;
+  --pl-label-px: 0.55rem;
+
+  display: inline-flex;
+  align-items: center;
+  gap: 0.45em;
+  min-height: var(--pl-label-h);
+  padding: 0 var(--pl-label-px);
+  border: 1px solid transparent;
+  border-radius: var(--pl-radius-xs);
+  background: var(--pl-tone-soft);
+  color: var(--pl-tone-text);
+  font-family: var(--pl-font-mono);
+  font-size: 0.6875rem;
+  font-weight: 560;
+  line-height: 1.2;
+  letter-spacing: 0.07em;
+  text-transform: uppercase;
+  text-decoration: none;
+  white-space: nowrap;
+  vertical-align: middle;
+  @include transition('background-color, border-color, color', var(--pl-dur-2));
+
+  > svg,
+  > .pl-icon {
+    flex: none;
+    width: 1.2em;
+    height: 1.2em;
+    margin-inline-start: -0.1em;
+  }
+}
+
+@include tones('pl-label');
+
+// ── Style ───────────────────────────────────────────────────────────────
+.pl-label-solid {
+  background: var(--pl-tone);
+  color: var(--pl-on-tone);
+}
+
+.pl-label-outline {
+  border-color: color-mix(in oklab, var(--pl-tone) 42%, transparent);
+  background: transparent;
+}
+
+// Iskra — limonkowe wyróżnienie („Nowość").
+.pl-label-spark {
+  --pl-tone: var(--pl-spark);
+  --pl-on-tone: var(--pl-on-spark);
+  --pl-tone-soft: var(--pl-spark);
+  --pl-tone-text: var(--pl-on-spark);
+}
+
+.pl-label-spark.pl-label-outline {
+  --pl-tone-text: var(--pl-text);
+  border-color: var(--pl-spark);
+}
+
+// ── Kropka statusu ──────────────────────────────────────────────────────
+.pl-label-dot::before {
+  content: '';
+  flex: none;
+  width: 0.5rem;
+  height: 0.5rem;
+  border-radius: 50%;
+  background: currentColor;
+}
+
+.pl-label-dot:not(.pl-label-solid)::before {
+  background: var(--pl-tone);
+}
+
+// Pulsująca kropka („na żywo").
+.pl-label-pulse::before {
+  animation: pl-label-pulse 1.6s var(--pl-ease) infinite;
+}
+
+@keyframes pl-label-pulse {
+  0% {
+    box-shadow: 0 0 0 0 color-mix(in oklab, currentColor 55%, transparent);
+  }
+
+  70%,
+  100% {
+    box-shadow: 0 0 0 0.4rem transparent;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .pl-label-pulse::before {
+    animation: none;
+  }
+}
+
+// ── Kształt i rozmiary ──────────────────────────────────────────────────
+.pl-label-pill {
+  border-radius: var(--pl-radius-pill);
+  --pl-label-px: 0.7rem;
+}
+
+.pl-label-small {
+  --pl-label-h: 1.25rem;
+  --pl-label-px: 0.4rem;
+  font-size: 0.625rem;
+}
+
+.pl-label-large {
+  --pl-label-h: 1.875rem;
+  --pl-label-px: 0.75rem;
+  font-size: 0.75rem;
+}
+
+// Etykieta-link.
+a.pl-label,
+button.pl-label {
+  cursor: pointer;
+
+  &:hover {
+    background: color-mix(in oklab, var(--pl-tone) 22%, var(--pl-surface));
+    text-decoration: none;
+  }
+
+  &.pl-label-solid:hover {
+    background: color-mix(in oklab, var(--pl-tone), var(--pl-mix-strong) 12%);
+  }
+
+  &.pl-label-outline:hover {
+    border-color: var(--pl-tone);
+    background: color-mix(in oklab, var(--pl-tone) 9%, transparent);
+  }
+
+  @include focus-visible;
+}

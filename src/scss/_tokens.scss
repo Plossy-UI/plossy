@@ -1,0 +1,262 @@
+// Plossy — tokeny projektowe (CSS custom properties).
+// Motyw: ciepłe, piaskowe neutralne + akcent „iris" + limonkowa „iskra".
+@use 'sass:list';
+@use 'abstracts' as *;
+
+// Tokeny zależne od innych zmiennych muszą być zadeklarowane ponownie
+// wszędzie tam, gdzie zmienia się motyw lub akcent (inaczej się nie przeliczą).
+@mixin derived {
+  --pl-primary: oklch(calc(var(--pl-accent-l) + var(--pl-accent-shift)) var(--pl-accent-c) var(--pl-accent-h));
+  --pl-focus: color-mix(in oklab, var(--pl-primary) 65%, transparent);
+
+  @each $tone in $tones {
+    --pl-#{$tone}-hover: color-mix(in oklab, var(--pl-#{$tone}), var(--pl-mix-strong) 14%);
+    --pl-#{$tone}-soft: color-mix(in oklab, var(--pl-#{$tone}) 13%, var(--pl-surface));
+    --pl-#{$tone}-border: color-mix(in oklab, var(--pl-#{$tone}) 32%, var(--pl-surface));
+    --pl-#{$tone}-text: color-mix(in oklab, var(--pl-#{$tone}) 78%, var(--pl-text));
+  }
+
+  --pl-ring: 0 0 0 3px color-mix(in oklab, var(--pl-primary) 22%, transparent);
+  --pl-shadow-xs: 0 1px 2px oklch(var(--pl-shadow-color) / calc(var(--pl-shadow-strength) * var(--pl-shadow-scale) * 0.07));
+  --pl-shadow-sm:
+    0 1px 2px oklch(var(--pl-shadow-color) / calc(var(--pl-shadow-strength) * var(--pl-shadow-scale) * 0.05)),
+    0 2px 8px -2px oklch(var(--pl-shadow-color) / calc(var(--pl-shadow-strength) * var(--pl-shadow-scale) * 0.07));
+  --pl-shadow-md:
+    0 2px 4px -1px oklch(var(--pl-shadow-color) / calc(var(--pl-shadow-strength) * var(--pl-shadow-scale) * 0.05)),
+    0 10px 24px -8px oklch(var(--pl-shadow-color) / calc(var(--pl-shadow-strength) * var(--pl-shadow-scale) * 0.12));
+  --pl-shadow-lg:
+    0 4px 8px -2px oklch(var(--pl-shadow-color) / calc(var(--pl-shadow-strength) * var(--pl-shadow-scale) * 0.05)),
+    0 22px 44px -14px oklch(var(--pl-shadow-color) / calc(var(--pl-shadow-strength) * var(--pl-shadow-scale) * 0.2));
+  --pl-shadow-xl:
+    0 8px 16px -6px oklch(var(--pl-shadow-color) / calc(var(--pl-shadow-strength) * var(--pl-shadow-scale) * 0.08)),
+    0 40px 80px -24px oklch(var(--pl-shadow-color) / calc(var(--pl-shadow-strength) * var(--pl-shadow-scale) * 0.3));
+}
+
+@mixin light {
+  color-scheme: light;
+  --pl-spark: oklch(0.9 0.19 125);
+  --pl-on-spark: oklch(0.26 0.07 125);
+
+  --pl-bg: oklch(0.984 0.005 85);
+  --pl-surface: oklch(1 0 0);
+  --pl-surface-raised: oklch(1 0 0);
+  --pl-muted: oklch(0.962 0.007 85);
+  --pl-muted-strong: oklch(0.932 0.009 85);
+  --pl-border: oklch(0.905 0.009 85);
+  --pl-border-strong: oklch(0.83 0.011 85);
+
+  --pl-text: oklch(0.225 0.012 85);
+  --pl-text-muted: oklch(0.48 0.012 85);
+  --pl-text-subtle: oklch(0.63 0.011 85);
+
+  // „Atrament" — odwrócona powierzchnia (ciemne sekcje, tooltipy, przyciski secondary).
+  --pl-ink: oklch(0.215 0.012 85);
+  --pl-on-ink: oklch(0.975 0.005 85);
+
+  --pl-accent-shift: 0;
+  --pl-mix-strong: black;
+  --pl-on-primary: oklch(0.99 0.005 85);
+
+  --pl-secondary: oklch(0.235 0.012 85);
+  --pl-on-secondary: oklch(0.975 0.005 85);
+  --pl-success: oklch(0.56 0.14 152);
+  --pl-on-success: oklch(0.99 0.01 152);
+  --pl-warning: oklch(0.76 0.15 75);
+  --pl-on-warning: oklch(0.24 0.05 75);
+  --pl-danger: oklch(0.58 0.2 25);
+  --pl-on-danger: oklch(0.99 0.01 25);
+  --pl-info: oklch(0.6 0.13 235);
+  --pl-on-info: oklch(0.99 0.01 235);
+
+
+  --pl-overlay: oklch(0.2 0.02 85 / 0.45);
+  --pl-shadow-color: 0.25 0.03 85;
+  --pl-shadow-strength: 1;
+}
+
+@mixin dark {
+  color-scheme: dark;
+  --pl-spark: oklch(0.9 0.19 125);
+  --pl-on-spark: oklch(0.26 0.07 125);
+
+  --pl-bg: oklch(0.165 0.007 85);
+  --pl-surface: oklch(0.2 0.008 85);
+  --pl-surface-raised: oklch(0.235 0.009 85);
+  --pl-muted: oklch(0.235 0.009 85);
+  --pl-muted-strong: oklch(0.28 0.01 85);
+  --pl-border: oklch(0.29 0.01 85);
+  --pl-border-strong: oklch(0.38 0.012 85);
+
+  --pl-text: oklch(0.955 0.006 85);
+  --pl-text-muted: oklch(0.72 0.01 85);
+  --pl-text-subtle: oklch(0.57 0.01 85);
+
+  --pl-ink: oklch(0.955 0.006 85);
+  --pl-on-ink: oklch(0.2 0.01 85);
+
+  --pl-accent-shift: 0.1;
+  --pl-mix-strong: white;
+  --pl-on-primary: oklch(0.99 0.005 85);
+
+  --pl-secondary: oklch(0.94 0.006 85);
+  --pl-on-secondary: oklch(0.2 0.01 85);
+  --pl-success: oklch(0.7 0.16 152);
+  --pl-on-success: oklch(0.2 0.05 152);
+  --pl-warning: oklch(0.8 0.15 78);
+  --pl-on-warning: oklch(0.24 0.05 75);
+  --pl-danger: oklch(0.66 0.2 25);
+  --pl-on-danger: oklch(0.99 0.01 25);
+  --pl-info: oklch(0.72 0.13 235);
+  --pl-on-info: oklch(0.2 0.04 235);
+
+
+  --pl-overlay: oklch(0.08 0.01 85 / 0.66);
+  --pl-shadow-color: 0 0 0;
+  --pl-shadow-strength: 3;
+}
+
+:root {
+  // ── Akcent (parametryczny: jasność / chroma / odcień) ────────────────
+  --pl-accent-l: 0.52;
+  --pl-accent-c: 0.21;
+  --pl-accent-h: 282;
+
+  // ── Typografia ────────────────────────────────────────────────────────
+  --pl-font-sans: 'Geist Variable', 'Geist', ui-sans-serif, system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+  --pl-font-display: 'Bricolage Grotesque Variable', 'Bricolage Grotesque', var(--pl-font-sans);
+  --pl-font-mono: 'Geist Mono Variable', 'Geist Mono', ui-monospace, 'SF Mono', Menlo, Consolas, monospace;
+
+  --pl-text-xs: 0.75rem;
+  --pl-text-sm: 0.875rem;
+  --pl-text-md: 1rem;
+  --pl-text-lg: 1.125rem;
+  --pl-text-xl: 1.375rem;
+  --pl-text-2xl: 1.75rem;
+  --pl-text-3xl: 2.25rem;
+  --pl-text-4xl: clamp(2.5rem, 2rem + 2.2vw, 3.5rem);
+  --pl-text-5xl: clamp(3rem, 2rem + 4.4vw, 5rem);
+  --pl-leading: 1.6;
+  --pl-leading-tight: 1.15;
+
+  // ── Odstępy ───────────────────────────────────────────────────────────
+  --pl-space-1: 0.25rem;
+  --pl-space-2: 0.5rem;
+  --pl-space-3: 0.75rem;
+  --pl-space-4: 1rem;
+  --pl-space-5: 1.5rem;
+  --pl-space-6: 2rem;
+  --pl-space-7: 3rem;
+  --pl-space-8: 4rem;
+  --pl-space-9: 6rem;
+  --pl-gutter: 1.5rem;
+
+  // ── Kształt ───────────────────────────────────────────────────────────
+  --pl-radius-xs: 6px;
+  --pl-radius-sm: 8px;
+  --pl-radius-md: 12px;
+  --pl-radius-lg: 18px;
+  --pl-radius-xl: 28px;
+  --pl-radius-pill: 999px;
+
+  // ── Kontrolki ─────────────────────────────────────────────────────────
+  --pl-control-h: 2.5rem;
+  --pl-control-h-sm: 2rem;
+  --pl-control-h-lg: 3rem;
+
+  // ── Ruch ──────────────────────────────────────────────────────────────
+  --pl-dur-1: 140ms;
+  --pl-dur-2: 220ms;
+  --pl-dur-3: 380ms;
+  --pl-dur-4: 560ms;
+  --pl-ease: cubic-bezier(0.33, 0.5, 0.2, 1);
+  --pl-ease-in: cubic-bezier(0.4, 0, 0.8, 0.5);
+  --pl-ease-in-out: cubic-bezier(0.65, 0, 0.35, 1);
+  // Łagodne dojście bez przestrzelenia. Nazwa tokenu została dla zgodności — styl może tu wstawić własną krzywą.
+  --pl-ease-spring: cubic-bezier(0.33, 0.5, 0.2, 1);
+
+  // ── Warstwy ───────────────────────────────────────────────────────────
+  --pl-z-sticky: 980;
+  --pl-z-navbar: 990;
+  --pl-z-drop: 1020;
+  --pl-z-tooltip: 1030;
+  --pl-z-notification: 1040;
+
+  --pl-container: 1200px;
+
+  // ── Pokrętła stylu (patrz styles/) ───────────────────────────────────
+  // Presety stylu (data-pl-style) nadpisują je razem z promieniami, krojami i ruchem.
+  --pl-shadow-scale: 1; // 0 = bez cieni
+  --pl-gloss: 1; // połysk i poświata przycisków (0 = płasko)
+  --pl-lift: 1; // unoszenie przy hoverze (0 = brak)
+  --pl-press: 0.965; // skala przy kliknięciu (1 = brak)
+  --pl-border-w: 1px; // grubość ramek kontrolek i kart
+  --pl-heading-weight: 620;
+  --pl-heading-tracking: -0.022em;
+  --pl-heading-case: none;
+  --pl-control-weight: 540;
+  --pl-control-tracking: -0.006em;
+  --pl-control-case: none;
+  --pl-control-text: 0.9375rem;
+
+  @include light;
+  @include derived;
+}
+
+[data-pl-theme='light'] {
+  @include light;
+  @include derived;
+}
+
+[data-pl-theme='dark'] {
+  @include dark;
+  @include derived;
+}
+
+@media (prefers-color-scheme: dark) {
+  [data-pl-theme='auto'] {
+    @include dark;
+    @include derived;
+  }
+}
+
+// Lokalny motyw / styl ustawia też kolor tekstu (inaczej dziedziczyłby kolor strony).
+[data-pl-theme],
+[data-pl-style] {
+  color: var(--pl-text);
+}
+
+// ── Presety akcentu ─────────────────────────────────────────────────────
+$accents: (
+  'iris': (0.52, 0.21, 282),
+  'moss': (0.5, 0.115, 165),
+  'coral': (0.6, 0.19, 32),
+  'ocean': (0.53, 0.15, 245),
+  'plum': (0.5, 0.19, 340),
+  'ink': (0.27, 0.015, 85),
+);
+
+@each $name, $v in $accents {
+  [data-pl-accent='#{$name}'] {
+    --pl-accent-l: #{list.nth($v, 1)};
+    --pl-accent-c: #{list.nth($v, 2)};
+    --pl-accent-h: #{list.nth($v, 3)};
+    @include derived;
+  }
+}
+
+// W ciemnym motywie akcent „ink" odwraca się w jasny.
+[data-pl-theme='dark'][data-pl-accent='ink'],
+[data-pl-theme='dark'] [data-pl-accent='ink'] {
+  --pl-accent-l: 0.84;
+  --pl-on-primary: oklch(0.2 0.01 85);
+  @include derived;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  :root {
+    --pl-dur-1: 1ms;
+    --pl-dur-2: 1ms;
+    --pl-dur-3: 1ms;
+    --pl-dur-4: 1ms;
+  }
+}

@@ -1,0 +1,43 @@
+// Switcher — kontener paneli przełączanych przez nawigację (tab, subnav, nav, przyciski).
+@use '../abstracts' as *;
+
+.pl-switcher {
+  --pl-switcher-shift: 10px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  // Gest poziomy obsługuje JS, pionowe przewijanie zostaje natywne.
+  touch-action: pan-y;
+
+  > :not(.pl-active) {
+    display: none;
+  }
+
+  > * > :last-child {
+    margin-bottom: 0;
+  }
+}
+
+.pl-tab + .pl-switcher,
+.pl-subnav + .pl-switcher {
+  margin-top: var(--pl-space-5);
+}
+
+// Domyślne wejście panelu: zanikanie + krótkie przesunięcie zgodne z kierunkiem zmiany.
+@media (prefers-reduced-motion: no-preference) {
+  .pl-switcher-enter {
+    animation: pl-switcher-enter var(--pl-dur-3) var(--pl-ease) both;
+  }
+}
+
+@keyframes pl-switcher-enter {
+  from {
+    opacity: 0;
+    transform: translate3d(calc(var(--pl-switcher-dir, 1) * var(--pl-switcher-shift, 10px)), 0, 0);
+  }
+
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}

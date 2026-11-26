@@ -1,0 +1,155 @@
+---
+import Base from '../../layouts/Base.astro';
+import { examples } from '../../examples';
+import '../../styles/home.scss';
+
+const groups = [...new Set(examples.map((e) => e.group))];
+---
+
+<Base title="Przykłady" description="Gotowe strony zbudowane z komponentów Plossy.">
+  <main id="main" class="home">
+    <section class="home-container examples-head">
+      <p class="home-eyebrow">Przykłady</p>
+      <h1 class="home-h2">Całe strony z gotowych klocków.</h1>
+      <p class="home-text">
+        Sklep, treści, wzorce — każda strona poniżej powstała wyłącznie z komponentów i narzędzi Plossy. Otwórz, podejrzyj źródło i skopiuj
+        to, czego potrzebujesz.
+      </p>
+    </section>
+
+    {
+      groups.map((group) => (
+        <section class="home-container examples-group">
+          <h2 class="examples-group-title">{group}</h2>
+          <div class="examples-grid">
+            {examples
+              .filter((e) => e.group === group)
+              .map((e) => (
+                <a class="examples-card" href={`/examples/${e.slug}/`}>
+                  <span class="examples-thumb">
+                    <iframe src={`/examples/${e.slug}/?embed`} loading="lazy" tabindex="-1" aria-hidden="true" title="" />
+                  </span>
+                  <span class="examples-body">
+                    <strong>
+                      {e.title}
+                      <span data-pl-icon="arrow-up-right" />
+                    </strong>
+                    <span>{e.text}</span>
+                  </span>
+                </a>
+              ))}
+          </div>
+        </section>
+      ))
+    }
+    <footer class="home-footer home-container">
+      <span>Plossy · licencja MIT</span>
+      <span>Treści i marki w przykładach są fikcyjne.</span>
+    </footer>
+  </main>
+</Base>
+
+<style lang="scss">
+  .examples-head {
+    padding-top: 4.5rem;
+    padding-bottom: 1rem;
+  }
+
+  .examples-group {
+    padding-top: 2.5rem;
+  }
+
+  .examples-group-title {
+    margin: 0 0 1.25rem;
+    padding-bottom: 0.75rem;
+    border-bottom: 1px solid var(--pl-border);
+    font-family: var(--pl-font-mono);
+    font-size: 0.75rem;
+    font-weight: 500;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--pl-text-subtle);
+  }
+
+  .examples-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(17.5rem, 1fr));
+    gap: 1.25rem;
+  }
+
+  .examples-card {
+    display: flex;
+    flex-direction: column;
+    border: 1px solid var(--pl-border);
+    border-radius: var(--pl-radius-lg);
+    background: var(--pl-surface);
+    box-shadow: var(--pl-shadow-sm);
+    color: var(--pl-text);
+    text-decoration: none;
+    overflow: hidden;
+    transition:
+      transform var(--pl-dur-4) var(--pl-ease-spring),
+      box-shadow var(--pl-dur-3) var(--pl-ease),
+      border-color var(--pl-dur-2) var(--pl-ease);
+
+    &:hover {
+      border-color: var(--pl-border-strong);
+      box-shadow: var(--pl-shadow-lg);
+      transform: translateY(-4px);
+    }
+  }
+
+  // Miniatura: prawdziwa strona w iframe, pomniejszona 4×.
+  .examples-thumb {
+    position: relative;
+    display: block;
+    aspect-ratio: 16 / 10;
+    border-bottom: 1px solid var(--pl-border);
+    background: var(--pl-muted);
+    overflow: hidden;
+
+    iframe {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 400%;
+      height: 400%;
+      border: 0;
+      transform: scale(0.25);
+      transform-origin: 0 0;
+      pointer-events: none;
+    }
+  }
+
+  .examples-body {
+    display: grid;
+    gap: 0.3rem;
+    padding: 1rem 1.15rem 1.15rem;
+    font-size: var(--pl-text-sm);
+    color: var(--pl-text-muted);
+
+    strong {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 0.5rem;
+      font-family: var(--pl-font-display);
+      font-size: var(--pl-text-lg);
+      font-weight: 600;
+      letter-spacing: -0.015em;
+      color: var(--pl-text);
+    }
+
+    :global(.pl-icon) {
+      width: 1rem;
+      height: 1rem;
+      color: var(--pl-text-subtle);
+      transition: transform var(--pl-dur-3) var(--pl-ease-spring), color var(--pl-dur-2) var(--pl-ease);
+    }
+  }
+
+  .examples-card:hover .examples-body :global(.pl-icon) {
+    color: var(--pl-primary-text);
+    transform: translate(2px, -2px);
+  }
+</style>

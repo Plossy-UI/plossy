@@ -1,0 +1,29 @@
+// Height — wysokości.
+@use '../abstracts' as *;
+
+[class*='pl-height'] {
+  box-sizing: border-box;
+}
+
+.pl-height-1-1 { height: 100% !important; }
+.pl-height-auto { height: auto !important; }
+
+// Co najmniej wysokość okna (svh: bez „skakania" pasków przeglądarki mobilnej).
+.pl-height-viewport { min-height: 100vh !important; min-height: 100svh !important; }
+.pl-height-viewport-half { min-height: 50vh !important; min-height: 50svh !important; }
+.pl-height-viewport-2-3 { min-height: 66vh !important; min-height: 66svh !important; }
+
+// Stałe.
+.pl-height-small { height: 9.5rem !important; }
+.pl-height-medium { height: 18.75rem !important; }
+.pl-height-large { height: 28rem !important; }
+
+// Maksymalne.
+.pl-height-max-small { max-height: 9.5rem !important; }
+.pl-height-max-medium { max-height: 18.75rem !important; }
+.pl-height-max-large { max-height: 28rem !important; }
+
+// Minimalne.
+.pl-height-min-small { min-height: 9.5rem !important; }
+.pl-height-min-medium { min-height: 18.75rem !important; }
+.pl-height-min-large { min-height: 28rem !important; }

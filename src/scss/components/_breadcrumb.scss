@@ -1,0 +1,156 @@
+// Breadcrumb
+@use '../abstracts' as *;
+
+.pl-breadcrumb {
+  --pl-breadcrumb-gap: 0.3rem;
+
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.15rem var(--pl-breadcrumb-gap);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  font-size: var(--pl-text-sm);
+  line-height: 1.4;
+
+  > li {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--pl-breadcrumb-gap);
+    min-width: 0;
+    color: var(--pl-text-muted);
+  }
+
+  // Separator — domyślnie ukośnik.
+  > li + li::before {
+    content: '/';
+    flex: none;
+    color: var(--pl-text-subtle);
+    opacity: 0.7;
+    user-select: none;
+  }
+
+  > li > a,
+  > li > span {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4em;
+    min-width: 0;
+    padding: 0.25em 0.5em;
+    border-radius: var(--pl-radius-xs);
+    color: inherit;
+    text-decoration: none;
+    white-space: nowrap;
+  }
+
+  > li > a {
+    @include transition('color, background-color', var(--pl-dur-2));
+
+    &:hover {
+      background: var(--pl-muted);
+      color: var(--pl-text);
+    }
+
+    &:active {
+      background: var(--pl-muted-strong);
+    }
+
+    @include focus-visible(0);
+  }
+
+  // Bieżąca strona.
+  > li:last-child > span,
+  > li.pl-active > *,
+  > li > [aria-current] {
+    color: var(--pl-text);
+    font-weight: 560;
+  }
+
+  > li.pl-disabled > * {
+    color: var(--pl-text-subtle);
+    pointer-events: none;
+  }
+
+  .pl-icon {
+    flex: none;
+    width: 1.1em;
+    height: 1.1em;
+  }
+}
+
+// ── Separatory ──────────────────────────────────────────────────────────
+.pl-breadcrumb-chevron > li + li::before {
+  content: '';
+  width: 0.4em;
+  height: 0.4em;
+  margin: 0 0.15em 0 0;
+  border: solid currentColor;
+  border-width: 1.5px 1.5px 0 0;
+  transform: rotate(45deg);
+}
+
+.pl-breadcrumb-dot > li + li::before {
+  content: '';
+  width: 0.25em;
+  height: 0.25em;
+  border-radius: 50%;
+  background: currentColor;
+}
+
+.pl-breadcrumb-arrow > li + li::before {
+  content: '→';
+  font-size: 1.1em;
+  line-height: 1;
+  translate: 0 -0.08em;
+}
+
+// ── Skracanie środkowych pozycji ────────────────────────────────────────
+.pl-breadcrumb-truncate {
+  flex-wrap: nowrap;
+
+  > li:not(:first-child, :last-child) > * {
+    display: block;
+    max-width: var(--pl-breadcrumb-truncate, 8rem);
+    @include truncate;
+  }
+
+  > li:last-child {
+    flex: 0 1 auto;
+
+    > * {
+      display: block;
+      @include truncate;
+    }
+  }
+}
+
+// ── Wariant: pigułka ────────────────────────────────────────────────────
+.pl-breadcrumb-pill {
+  display: inline-flex;
+  padding: 0.3rem 0.5rem;
+  border: 1px solid var(--pl-border);
+  border-radius: var(--pl-radius-pill);
+  background: var(--pl-surface);
+  box-shadow: var(--pl-shadow-xs);
+
+  > li > a,
+  > li > span {
+    border-radius: var(--pl-radius-pill);
+  }
+
+  > li:last-child > span,
+  > li.pl-active > * {
+    background: var(--pl-primary-soft);
+    color: var(--pl-primary-text);
+  }
+}
+
+// ── Rozmiary ────────────────────────────────────────────────────────────
+.pl-breadcrumb-small {
+  font-size: var(--pl-text-xs);
+}
+
+.pl-breadcrumb-large {
+  font-size: var(--pl-text-md);
+}

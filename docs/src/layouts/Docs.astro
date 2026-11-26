@@ -1,0 +1,104 @@
+---
+import Base from './Base.astro';
+import { getNav } from '../nav';
+import type { MarkdownHeading } from 'astro';
+
+interface Props {
+  title: string;
+  description?: string;
+  badge?: string;
+  id: string;
+  headings: MarkdownHeading[];
+}
+
+const { title, description, badge, id, headings } = Astro.props;
+const nav = await getNav();
+const flat = nav.flatMap((group) => group.items.map((item) => ({ ...item, group: group.label })));
+const index = flat.findIndex((item) => item.id === id);
+const current = flat[index];
+const prev = flat[index - 1];
+const next = flat[index + 1];
+const toc = headings.filter((h) => h.depth === 2 || h.depth === 3);
+---
+
+<Base title={title} description={description}>
+  <div class="docs-shell">
+    <aside class="docs-sidebar" data-docs-sidebar transition:name="docs-sidebar" transition:animate="none">
+      <nav class="docs-nav" aria-label="Dokumentacja">
+        {
+          nav.map((group) => (
+            <section class="docs-nav-group">
+              <h2 class="docs-nav-label">{group.label}</h2>
+              <ul>
+                {group.items.map((item) => (
+                  <li>
+                    <a href={item.href} class:list={['docs-nav-link', { 'is-active': item.id === id }]} aria-current={item.id === id ? 'page' : undefined}>
+                      <span>{item.title}</span>
+                      {item.badge && <span class="docs-nav-badge">{item.badge}</span>}
+                    </a>
+                  </li>
+                ))}
+              </ul>
+            </section>
+          ))
+        }
+      </nav>
+    </aside>
+    <div class="docs-backdrop" data-docs-menu></div>
+
+    <main class="docs-main" id="main">
+      <article class="docs-article">
+        <header class="docs-page-header">
+          <p class="docs-eyebrow">
+            <span>{current?.group}</span>
+            {badge && <span class="docs-eyebrow-badge">{badge}</span>}
+          </p>
+          <h1>{title}</h1>
+          {description && <p class="docs-lead">{description}</p>}
+        </header>
+
+        <div class="docs-content">
+          <slot />
+        </div>
+
+        <footer class="docs-pager">
+          {
+            prev ? (
+              <a class="docs-pager-link" href={prev.href}>
+                <small>Poprzednie</small>
+                <span>{prev.title}</span>
+              </a>
+            ) : (
+              <span />
+            )
+          }
+          {
+            next && (
+              <a class="docs-pager-link docs-pager-next" href={next.href}>
+                <small>Następne</small>
+                <span>{next.title}</span>
+              </a>
+            )
+          }
+        </footer>
+      </article>
+
+      <aside class="docs-toc" aria-label="Na tej stronie">
+        {
+          toc.length > 1 && (
+            <>
+              <p class="docs-toc-title">Na tej stronie</p>
+              <ul data-docs-toc>
+                {toc.map((h) => (
+                  <li class={`docs-toc-${h.depth}`}>
+                    <a href={`#${h.slug}`}>{h.text}</a>
+                  </li>
+                ))}
+              </ul>
+            </>
+          )
+        }
+      </aside>
+    </main>
+  </div>
+</Base>

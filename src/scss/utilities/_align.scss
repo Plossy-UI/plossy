@@ -1,0 +1,32 @@
+// Align — opływanie elementów (floaty z marginesami).
+@use '../abstracts' as *;
+
+[class^='pl-align-'],
+[class*=' pl-align-'] {
+  display: block;
+  margin-bottom: var(--pl-gutter);
+}
+
+* + [class^='pl-align-'],
+* + [class*=' pl-align-'] {
+  margin-top: var(--pl-gutter);
+}
+
+.pl-align-center {
+  margin-left: auto;
+  margin-right: auto;
+}
+
+@include responsive using ($s) {
+  .pl-align-left#{$s} {
+    float: left;
+    margin-top: 0;
+    margin-right: var(--pl-gutter);
+  }
+
+  .pl-align-right#{$s} {
+    float: right;
+    margin-top: 0;
+    margin-left: var(--pl-gutter);
+  }
+}

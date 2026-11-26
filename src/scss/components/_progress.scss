@@ -1,0 +1,333 @@
+// Progress — natywny <progress>, pasek z divów (.pl-progress-bar) i pierścień (.pl-progress-ring).
+@use '../abstracts' as *;
+
+// Rejestracja zmiennej jako liczby — dzięki temu zmiana --pl-progress płynnie się animuje.
+@property --pl-progress {
+  syntax: '<number>';
+  inherits: true;
+  initial-value: 0;
+}
+
+// ── Natywny <progress> ──────────────────────────────────────────────────
+.pl-progress {
+  --pl-tone: var(--pl-primary);
+  --pl-progress-h: 0.5rem;
+  --pl-progress-track: var(--pl-muted-strong);
+
+  appearance: none;
+  display: block;
+  width: 100%;
+  height: var(--pl-progress-h);
+  margin: 0 0 1.1em;
+  border: 0;
+  border-radius: var(--pl-radius-pill);
+  background-color: var(--pl-progress-track);
+  overflow: hidden;
+  vertical-align: baseline;
+
+  &:last-child {
+    margin-bottom: 0;
+  }
+
+  &::-webkit-progress-bar {
+    background: transparent;
+  }
+
+  &::-webkit-progress-value {
+    border-radius: var(--pl-radius-pill);
+    background: var(--pl-tone);
+    transition: width var(--pl-dur-4) var(--pl-ease);
+  }
+
+  &::-moz-progress-bar {
+    border-radius: var(--pl-radius-pill);
+    background: var(--pl-tone);
+  }
+
+  // Nieokreślony postęp (bez atrybutu value).
+  &:indeterminate {
+    background-image: linear-gradient(90deg, transparent, var(--pl-tone) 50%, transparent);
+    background-repeat: no-repeat;
+    background-size: 45% 100%;
+    animation: pl-progress-indeterminate 1.3s var(--pl-ease-in-out) infinite;
+
+    &::-webkit-progress-value {
+      background: transparent;
+    }
+
+    &::-moz-progress-bar {
+      background: transparent;
+    }
+  }
+}
+
+@keyframes pl-progress-indeterminate {
+  from {
+    background-position: -85% 0;
+  }
+
+  to {
+    background-position: 185% 0;
+  }
+}
+
+// ── Pasek z divów ───────────────────────────────────────────────────────
+.pl-progress-bar {
+  --pl-tone: var(--pl-primary);
+  --pl-on-tone: var(--pl-on-primary);
+  --pl-progress-h: 0.5rem;
+  --pl-progress-track: var(--pl-muted-strong);
+
+  display: flex;
+  height: var(--pl-progress-h);
+  border-radius: var(--pl-radius-pill);
+  background: var(--pl-progress-track);
+  overflow: hidden;
+}
+
+.pl-progress-fill {
+  position: relative;
+  display: flex;
+  flex: none;
+  align-items: center;
+  justify-content: center;
+  width: calc(var(--pl-progress) * 1%);
+  min-width: 0;
+  border-radius: var(--pl-radius-pill);
+  background-color: var(--pl-tone);
+  color: var(--pl-on-tone);
+  font-family: var(--pl-font-mono);
+  font-size: 0.6875rem;
+  font-weight: 560;
+  line-height: 1;
+  letter-spacing: 0.04em;
+  white-space: nowrap;
+  overflow: hidden;
+  transition:
+    width var(--pl-dur-4) var(--pl-ease),
+    background-color var(--pl-dur-2) var(--pl-ease);
+}
+
+// Segmenty (kilka wypełnień w jednym pasku) stykają się płasko.
+.pl-progress-fill:not(:only-child) {
+  border-radius: 0;
+
+  &:not(:first-child) {
+    box-shadow: -1.5px 0 0 var(--pl-surface);
+  }
+
+  &:last-child {
+    border-radius: 0 var(--pl-radius-pill) var(--pl-radius-pill) 0;
+  }
+}
+
+// Paski ukośne + animacja.
+.pl-progress-striped .pl-progress-fill,
+.pl-progress-fill.pl-progress-striped {
+  background-image: linear-gradient(
+    -45deg,
+    oklch(1 0 0 / 0.22) 25%,
+    transparent 25%,
+    transparent 50%,
+    oklch(1 0 0 / 0.22) 50%,
+    oklch(1 0 0 / 0.22) 75%,
+    transparent 75%
+  );
+  background-size: 1rem 1rem;
+}
+
+.pl-progress-animated .pl-progress-fill,
+.pl-progress-fill.pl-progress-animated {
+  animation: pl-progress-stripes 0.9s linear infinite;
+}
+
+@keyframes pl-progress-stripes {
+  from {
+    background-position: 0 0;
+  }
+
+  to {
+    background-position: 1rem 0;
+  }
+}
+
+// Nieokreślony postęp.
+.pl-progress-indeterminate > .pl-progress-fill {
+  width: 40%;
+  animation: pl-progress-slide 1.3s var(--pl-ease-in-out) infinite;
+}
+
+@keyframes pl-progress-slide {
+  from {
+    transform: translateX(-100%);
+  }
+
+  to {
+    transform: translateX(250%);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .pl-progress-animated .pl-progress-fill,
+  .pl-progress-fill.pl-progress-animated {
+    animation: none;
+  }
+}
+
+// Nagłówek paska: opis po lewej, wartość po prawej.
+.pl-progress-label {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: var(--pl-space-3);
+  margin-bottom: var(--pl-space-2);
+  color: var(--pl-text);
+  font-size: var(--pl-text-sm);
+  font-weight: 540;
+
+  > :last-child:not(:first-child) {
+    color: var(--pl-text-muted);
+    font-family: var(--pl-font-mono);
+    font-size: var(--pl-text-xs);
+    font-weight: 500;
+    font-variant-numeric: tabular-nums;
+  }
+}
+
+// ── Rozmiary (wspólne dla <progress> i paska) ───────────────────────────
+.pl-progress-small {
+  --pl-progress-h: 0.25rem;
+}
+
+.pl-progress-large {
+  --pl-progress-h: 1.25rem;
+}
+
+
+// ── Pierścień ───────────────────────────────────────────────────────────
+.pl-progress-ring {
+  --pl-tone: var(--pl-primary);
+  --pl-progress-size: 4.5rem;
+  --pl-progress-width: 0.4rem;
+  --pl-progress-track: var(--pl-muted-strong);
+  --pl-progress-inner: calc(50% - var(--pl-progress-width));
+
+  position: relative;
+  display: inline-flex;
+  flex: none;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  width: var(--pl-progress-size);
+  height: var(--pl-progress-size);
+  border-radius: 50%;
+  color: var(--pl-text);
+  font-family: var(--pl-font-display);
+  font-size: calc(var(--pl-progress-size) * 0.26);
+  font-weight: var(--pl-display-weight, 620);
+  line-height: 1;
+  letter-spacing: var(--pl-display-tracking, -0.02em);
+  font-variant-numeric: tabular-nums;
+  vertical-align: middle;
+  transition: --pl-progress var(--pl-dur-4) var(--pl-ease);
+
+  &::before,
+  &::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    border-radius: 50%;
+    pointer-events: none;
+  }
+
+  // Tor + wypełnienie (z zaokrąglonym początkiem).
+  &::before {
+    background:
+      radial-gradient(
+        circle closest-side at 50% calc(var(--pl-progress-width) / 2),
+        var(--pl-tone) calc(var(--pl-progress-width) / 2 - 0.5px),
+        transparent calc(var(--pl-progress-width) / 2)
+      ),
+      conic-gradient(var(--pl-tone) calc(var(--pl-progress) * 1%), var(--pl-progress-track) 0);
+    mask: radial-gradient(
+      closest-side,
+      transparent calc(100% - var(--pl-progress-width) - 0.5px),
+      #000 calc(100% - var(--pl-progress-width))
+    );
+  }
+
+  // Zaokrąglony koniec — kropka obracana razem z postępem.
+  &::after {
+    background: radial-gradient(
+      circle closest-side at 50% calc(var(--pl-progress-width) / 2),
+      var(--pl-tone) calc(var(--pl-progress-width) / 2 - 0.5px),
+      transparent calc(var(--pl-progress-width) / 2)
+    );
+    transform: rotate(calc(var(--pl-progress) * 3.6deg));
+  }
+
+  > small {
+    margin-top: 0.3em;
+    color: var(--pl-text-subtle);
+    font-family: var(--pl-font-mono);
+    font-size: 0.4em;
+    font-weight: 500;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+  }
+
+  > svg,
+  > .pl-icon {
+    width: 1.25em;
+    height: 1.25em;
+    color: var(--pl-tone);
+  }
+}
+
+.pl-progress-ring.pl-progress-small {
+  --pl-progress-size: 2.5rem;
+  --pl-progress-width: 0.25rem;
+}
+
+.pl-progress-ring.pl-progress-large {
+  --pl-progress-size: 7.5rem;
+  --pl-progress-width: 0.6rem;
+}
+
+// Nieokreślony pierścień — obracający się łuk.
+.pl-progress-ring.pl-progress-indeterminate {
+  --pl-progress: 28;
+
+  &::before,
+  &::after {
+    animation: pl-progress-ring-spin 1.1s linear infinite;
+  }
+
+  &::after {
+    animation-name: pl-progress-ring-spin-end;
+  }
+}
+
+@keyframes pl-progress-ring-spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@keyframes pl-progress-ring-spin-end {
+  from {
+    transform: rotate(calc(var(--pl-progress) * 3.6deg));
+  }
+
+  to {
+    transform: rotate(calc(var(--pl-progress) * 3.6deg + 360deg));
+  }
+}
+
+// ── Tony (na końcu — wspólne dla <progress>, paska i pierścienia) ───────
+@include tones('pl-progress');
+
+.pl-progress-spark {
+  --pl-tone: var(--pl-spark);
+  --pl-on-tone: var(--pl-on-spark);
+}

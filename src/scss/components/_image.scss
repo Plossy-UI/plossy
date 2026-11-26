@@ -1,0 +1,313 @@
+// Image — responsywne obrazy, proporcje, podpisy.
+@use '../abstracts' as *;
+
+// ── Proporcje ───────────────────────────────────────────────────────────
+// Na wrapperze (.pl-image) albo bezpośrednio na <img> / <video> / <iframe>.
+$ratios: (
+  '21-9': '21 / 9',
+  '16-9': '16 / 9',
+  '3-2': '3 / 2',
+  '4-3': '4 / 3',
+  '1-1': '1 / 1',
+  '3-4': '3 / 4',
+  '2-3': '2 / 3',
+  '9-16': '9 / 16',
+);
+
+@include responsive using ($s) {
+  @each $name, $value in $ratios {
+    .pl-ratio-#{$name}#{$s} {
+      aspect-ratio: #{$value};
+    }
+  }
+}
+
+[class*='pl-ratio-'] {
+  &:is(img, video) {
+    width: 100%;
+    object-fit: cover;
+  }
+
+  &:is(iframe) {
+    display: block;
+    width: 100%;
+    height: auto;
+  }
+
+  > :is(img, video, iframe):only-child {
+    display: block;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+}
+
+// ── Wrapper ─────────────────────────────────────────────────────────────
+.pl-image {
+  --pl-image-radius: 0px;
+
+  position: relative;
+  display: block;
+  overflow: hidden;
+  margin: 0;
+  border-radius: var(--pl-image-radius);
+  // Tło widoczne, zanim obraz się wczyta (loading="lazy").
+  background: var(--pl-muted);
+  color: inherit;
+  text-decoration: none;
+
+  > :is(img, video),
+  > picture > img {
+    display: block;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition:
+      transform var(--pl-dur-4) var(--pl-ease),
+      filter var(--pl-dur-3) var(--pl-ease);
+  }
+}
+
+a.pl-image {
+  @include focus-visible;
+}
+
+.pl-image-inline {
+  display: inline-block;
+  vertical-align: middle;
+}
+
+.pl-image-contain > :is(img, video) {
+  object-fit: contain;
+}
+
+.pl-image-top > :is(img, video) { object-position: top; }
+.pl-image-bottom > :is(img, video) { object-position: bottom; }
+
+// ── Kształty ────────────────────────────────────────────────────────────
+.pl-image-rounded {
+  --pl-image-radius: var(--pl-radius-lg);
+}
+
+.pl-image-rounded-small {
+  --pl-image-radius: var(--pl-radius-sm);
+}
+
+.pl-image-circle {
+  --pl-image-radius: 50%;
+  aspect-ratio: 1;
+}
+
+:is(img, video):is(.pl-image-rounded, .pl-image-rounded-small, .pl-image-circle) {
+  border-radius: var(--pl-image-radius);
+  object-fit: cover;
+}
+
+.pl-image-shadow {
+  box-shadow: var(--pl-shadow-md);
+}
+
+// Włosowa obwódka wewnętrzna — odcina jasne zdjęcia od tła.
+.pl-image-border::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  z-index: 2;
+  border-radius: inherit;
+  box-shadow: inset 0 0 0 1px color-mix(in oklab, var(--pl-text) 12%, transparent);
+  pointer-events: none;
+}
+
+// ── Efekty hover ────────────────────────────────────────────────────────
+.pl-image-zoom:hover > :is(img, video),
+.pl-image-zoom:focus-visible > :is(img, video),
+.pl-image-zoom-parent:hover .pl-image > :is(img, video) {
+  transform: scale(1.06);
+}
+
+.pl-image-grayscale {
+  > :is(img, video) {
+    filter: grayscale(1);
+  }
+
+  &:hover > :is(img, video) {
+    filter: none;
+  }
+}
+
+.pl-image-dim:hover > :is(img, video) {
+  filter: brightness(0.82);
+}
+
+// ── Podpisy ─────────────────────────────────────────────────────────────
+// Pod obrazem: <figure class="pl-figure"><div class="pl-image">…</div><figcaption>…</figcaption></figure>
+.pl-figure {
+  margin: 0 0 var(--pl-space-5);
+
+  &:last-child {
+    margin-bottom: 0;
+  }
+
+  > figcaption,
+  > .pl-figure-caption {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: var(--pl-space-3);
+    margin-top: 0.7rem;
+    font-size: var(--pl-text-sm);
+    line-height: 1.5;
+    color: var(--pl-text-muted);
+
+    strong {
+      font-weight: 560;
+      color: var(--pl-text);
+    }
+  }
+}
+
+.pl-figure-center > figcaption {
+  justify-content: center;
+  text-align: center;
+}
+
+// Mała etykieta techniczna w podpisie (numer, autor).
+.pl-figure-label {
+  flex: none;
+  font-family: var(--pl-font-mono);
+  font-size: var(--pl-text-xs);
+  letter-spacing: 0.07em;
+  text-transform: uppercase;
+  color: var(--pl-text-subtle);
+}
+
+// Na obrazie: <figure class="pl-image"><img><figcaption class="pl-image-caption">…</figcaption></figure>
+.pl-image-caption {
+  position: absolute;
+  inset: auto 0 0;
+  z-index: 1;
+  margin: 0;
+  padding: 3rem 1.125rem 1rem;
+  background: linear-gradient(to top, oklch(0 0 0 / 0.72), oklch(0 0 0 / 0.38) 50%, oklch(0 0 0 / 0));
+  color: oklch(1 0 0);
+  font-size: var(--pl-text-sm);
+  line-height: 1.45;
+  transition:
+    opacity var(--pl-dur-3) var(--pl-ease),
+    transform var(--pl-dur-4) var(--pl-ease-spring);
+
+  strong,
+  .pl-image-caption-title {
+    display: block;
+    font-family: var(--pl-font-display);
+    font-size: var(--pl-text-lg);
+    font-weight: var(--pl-display-weight, 600);
+    line-height: 1.25;
+    letter-spacing: var(--pl-display-tracking, -0.015em);
+  }
+
+  small {
+    display: block;
+    opacity: 0.8;
+  }
+}
+
+.pl-image-caption-top {
+  inset: 0 0 auto;
+  padding: 1rem 1.125rem 3rem;
+  background: linear-gradient(to bottom, oklch(0 0 0 / 0.72), oklch(0 0 0 / 0.38) 50%, oklch(0 0 0 / 0));
+}
+
+// Podpis jako pływająca, rozmyta pigułka.
+.pl-image-caption-chip {
+  inset: auto auto 0.75rem 0.75rem;
+  max-width: calc(100% - 1.5rem);
+  padding: 0.45rem 0.8rem;
+  border-radius: var(--pl-radius-pill);
+  background: oklch(0 0 0 / 0.5);
+  backdrop-filter: blur(10px) saturate(1.4);
+  font-size: var(--pl-text-xs);
+  font-weight: 520;
+}
+
+// Podpis widoczny dopiero po najechaniu / fokusie.
+.pl-image-caption-hover {
+  opacity: 0;
+  transform: translateY(10px);
+}
+
+.pl-image:hover > .pl-image-caption-hover,
+.pl-image:focus-within > .pl-image-caption-hover,
+.pl-image:focus-visible > .pl-image-caption-hover {
+  opacity: 1;
+  transform: none;
+}
+
+@media (hover: none) {
+  .pl-image-caption-hover {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+// ── Ramka (miniatura) ───────────────────────────────────────────────────
+.pl-image-frame {
+  --pl-image-frame-p: 0.375rem;
+  --pl-image-frame-radius: var(--pl-radius-md);
+
+  display: inline-block;
+  max-width: 100%;
+  margin: 0;
+  padding: var(--pl-image-frame-p);
+  @include surface(var(--pl-image-frame-radius), var(--pl-shadow-xs));
+  color: inherit;
+  text-decoration: none;
+  vertical-align: middle;
+  transition:
+    transform var(--pl-dur-4) var(--pl-ease-spring),
+    box-shadow var(--pl-dur-3) var(--pl-ease),
+    border-color var(--pl-dur-2) var(--pl-ease);
+
+  > img,
+  > video,
+  > .pl-image {
+    display: block;
+    max-width: 100%;
+    border-radius: calc(var(--pl-image-frame-radius) - var(--pl-image-frame-p));
+  }
+
+  > figcaption {
+    margin: 0;
+    padding: 0.55rem 0.4rem 0.3rem;
+    font-size: var(--pl-text-sm);
+    line-height: 1.4;
+    color: var(--pl-text-muted);
+  }
+}
+
+a.pl-image-frame,
+.pl-image-frame-hover {
+  @include focus-visible;
+
+  &:hover {
+    border-color: var(--pl-border-strong);
+    box-shadow: var(--pl-shadow-md);
+    transform: translateY(-3px) rotate(-0.6deg);
+  }
+}
+
+.pl-image-frame-large {
+  --pl-image-frame-p: 0.625rem;
+  --pl-image-frame-radius: var(--pl-radius-lg);
+}
+
+.pl-image-frame-circle {
+  border-radius: 50%;
+
+  > img,
+  > .pl-image {
+    border-radius: 50%;
+    aspect-ratio: 1;
+    object-fit: cover;
+  }
+}

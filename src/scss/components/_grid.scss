@@ -1,0 +1,244 @@
+// Grid — siatka flex z rynnami + pomocnicze siatki CSS Grid (auto, bento).
+@use 'sass:math';
+@use '../abstracts' as *;
+
+// Rynna pozioma: ujemny margines + padding dzieci (procentowe szerokości
+// sumują się wtedy dokładnie do 100%). Rynna pionowa: row-gap — działa dla
+// każdego zawiniętego wiersza bez JS.
+.pl-grid {
+  --pl-grid-gap: var(--pl-gutter);
+  --pl-grid-gap-x: var(--pl-grid-gap);
+  --pl-grid-gap-y: var(--pl-grid-gap);
+  --pl-grid-scale: 1;
+  // Wartości wynikowe — liczone tutaj, żeby zagnieżdżona siatka miała własne.
+  --pl-grid-x: calc(var(--pl-grid-gap-x) * var(--pl-grid-scale));
+  --pl-grid-y: calc(var(--pl-grid-gap-y) * var(--pl-grid-scale));
+
+  display: flex;
+  flex-wrap: wrap;
+  margin: 0 0 0 calc(-1 * var(--pl-grid-x));
+  padding: 0;
+  row-gap: var(--pl-grid-y);
+  list-style: none;
+
+  > * {
+    box-sizing: border-box;
+    min-width: 0;
+    max-width: 100%;
+    margin: 0;
+    padding-left: var(--pl-grid-x);
+  }
+
+  // Ostatni akapit itp. w komórce nie dokłada marginesu.
+  > * > :where(:last-child) {
+    margin-bottom: 0;
+  }
+}
+
+// Kolejne siatki pod sobą zachowują ten sam odstęp co wiersze.
+.pl-grid + .pl-grid,
+.pl-grid-auto + .pl-grid-auto,
+.pl-bento + .pl-bento {
+  margin-top: var(--pl-grid-y, var(--pl-grid-gap));
+}
+
+// ── Rynny ───────────────────────────────────────────────────────────────
+.pl-grid-auto,
+.pl-bento {
+  --pl-grid-gap: var(--pl-gutter);
+  --pl-grid-gap-x: var(--pl-grid-gap);
+  --pl-grid-gap-y: var(--pl-grid-gap);
+}
+
+.pl-grid-small { --pl-grid-gap: var(--pl-space-3); }
+.pl-grid-medium { --pl-grid-gap: var(--pl-space-5); }
+.pl-grid-large {
+  --pl-grid-gap: var(--pl-space-6);
+
+  @include up(l) {
+    --pl-grid-gap: var(--pl-space-7);
+  }
+}
+.pl-grid-collapse { --pl-grid-gap: 0px; }
+
+.pl-grid-column-small { --pl-grid-gap-x: var(--pl-space-3); }
+.pl-grid-column-medium { --pl-grid-gap-x: var(--pl-space-5); }
+.pl-grid-column-large { --pl-grid-gap-x: var(--pl-space-7); }
+.pl-grid-column-collapse { --pl-grid-gap-x: 0px; }
+
+.pl-grid-row-small { --pl-grid-gap-y: var(--pl-space-3); }
+.pl-grid-row-medium { --pl-grid-gap-y: var(--pl-space-5); }
+.pl-grid-row-large { --pl-grid-gap-y: var(--pl-space-7); }
+.pl-grid-row-collapse { --pl-grid-gap-y: 0px; }
+
+// ── Linie podziału ──────────────────────────────────────────────────────
+// Rynna rośnie dwukrotnie, a linie rysują pseudo-elementy komórek. Linie
+// pierwszej kolumny i pierwszego wiersza wypadają poza obszar siatki
+// i są przycinane przez clip-path.
+.pl-grid-divider {
+  --pl-grid-scale: 2;
+  clip-path: inset(0 -100vmax -100vmax var(--pl-grid-x));
+
+  > * {
+    position: relative;
+  }
+
+  > *::before,
+  > *::after {
+    content: '';
+    position: absolute;
+    pointer-events: none;
+  }
+
+  > *::before {
+    top: 0;
+    bottom: 0;
+    left: calc(var(--pl-grid-x) / 2);
+    border-left: 1px solid var(--pl-border);
+  }
+
+  > *::after {
+    top: calc(var(--pl-grid-y) / -2);
+    right: 0;
+    left: var(--pl-grid-x);
+    border-top: 1px solid var(--pl-border);
+  }
+}
+
+// ── Równa wysokość zawartości komórek ───────────────────────────────────
+.pl-grid-match > * {
+  display: flex;
+  flex-wrap: wrap;
+
+  > * {
+    flex: none;
+    box-sizing: border-box;
+    width: 100%;
+  }
+}
+
+// Wyrównanie komórek w pionie / poziomie bez klas flex.
+.pl-grid-middle { align-items: center; }
+.pl-grid-bottom { align-items: flex-end; }
+.pl-grid-center { justify-content: center; }
+
+// ── Szerokości dzieci ───────────────────────────────────────────────────
+// Poniżej breakpointu klasy responsywnej (np. samo .pl-child-width-1-3@m)
+// komórki zajmują pełną szerokość zamiast kurczyć się do treści.
+[class*='pl-child-width'] > * {
+  width: 100%;
+}
+
+@include responsive using ($s) {
+  @for $i from 1 through 6 {
+    .pl-child-width-1-#{$i}#{$s} > * {
+      flex: none;
+      width: math.percentage(math.div(1, $i));
+    }
+  }
+
+  .pl-child-width-auto#{$s} > * {
+    flex: none;
+    width: auto;
+  }
+
+  .pl-child-width-expand#{$s} > * {
+    flex: 1;
+    width: auto;
+    min-width: 1px;
+  }
+}
+
+// ── CSS Grid: kolumny dopasowujące się same ─────────────────────────────
+// Kolumny mają co najmniej --pl-grid-min i dzielą wolne miejsce po równo.
+.pl-grid-auto,
+.pl-grid-auto-fill {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(var(--pl-grid-min, 16rem), 100%), 1fr));
+  gap: var(--pl-grid-gap-y) var(--pl-grid-gap-x);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+
+  > * {
+    min-width: 0;
+    margin: 0;
+  }
+}
+
+// auto-fill: puste ścieżki zostają (elementy nie rozciągają się na cały wiersz).
+.pl-grid-auto-fill {
+  --pl-grid-gap: var(--pl-gutter);
+  --pl-grid-gap-x: var(--pl-grid-gap);
+  --pl-grid-gap-y: var(--pl-grid-gap);
+  grid-template-columns: repeat(auto-fill, minmax(min(var(--pl-grid-min, 16rem), 100%), 1fr));
+}
+
+// ── Bento ───────────────────────────────────────────────────────────────
+.pl-bento {
+  --pl-bento-cols: 4;
+  --pl-bento-row: 11rem;
+
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  grid-auto-rows: minmax(var(--pl-bento-row), auto);
+  grid-auto-flow: dense;
+  gap: var(--pl-grid-gap-y) var(--pl-grid-gap-x);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+
+  > * {
+    min-width: 0;
+    min-height: 0;
+    margin: 0;
+  }
+
+  @include up(s) {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  @include up(m) {
+    grid-template-columns: repeat(var(--pl-bento-cols), minmax(0, 1fr));
+  }
+}
+
+.pl-bento-2 { --pl-bento-cols: 2; }
+.pl-bento-3 { --pl-bento-cols: 3; }
+.pl-bento-5 { --pl-bento-cols: 5; }
+.pl-bento-6 { --pl-bento-cols: 6; }
+
+// Rozpiętości. Na telefonie siatka ma jedną kolumnę, więc spany działają od
+// `s` (tam najwyżej 2 kolumny), a pełne wartości od `m`.
+@include up(s) {
+  .pl-span-2,
+  .pl-span-3,
+  .pl-span-4,
+  .pl-span-5,
+  .pl-span-6 { grid-column: span 2; }
+
+  .pl-row-span-2 { grid-row: span 2; }
+  .pl-row-span-3 { grid-row: span 3; }
+}
+
+@include up(m) {
+  @for $i from 3 through 6 {
+    .pl-span-#{$i} { grid-column: span $i; }
+  }
+}
+
+.pl-span-full { grid-column: 1 / -1; }
+
+// Warianty z sufiksem obowiązują dopiero od danego breakpointu.
+@each $name, $value in $breakpoints {
+  @media (min-width: $value) {
+    .pl-span-1\@#{$name} { grid-column: span 1; }
+    @for $i from 2 through 6 {
+      .pl-span-#{$i}\@#{$name} { grid-column: span $i; }
+    }
+    .pl-span-full\@#{$name} { grid-column: 1 / -1; }
+    .pl-row-span-1\@#{$name} { grid-row: span 1; }
+    .pl-row-span-2\@#{$name} { grid-row: span 2; }
+    .pl-row-span-3\@#{$name} { grid-row: span 3; }
+  }
+}

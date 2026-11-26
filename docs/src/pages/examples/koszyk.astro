@@ -1,0 +1,587 @@
+---
+import Example from '../../layouts/Example.astro';
+import ShopHeader from '../../components/examples/ShopHeader.astro';
+import ShopFooter from '../../components/examples/ShopFooter.astro';
+
+const items = [
+  { name: 'Lampa stołowa Moln', variant: 'Szkło mleczne · 28 cm', price: 319, old: 399, qty: 1, img: 2 },
+  { name: 'Świecznik Sten', variant: 'Ceramika · grafit', price: 89, old: 0, qty: 2, img: 4 },
+  { name: 'Poduszka lniana Lin', variant: 'Len prany · 50 × 50 cm · piasek', price: 119, old: 0, qty: 1, img: 8 },
+  { name: 'Wazon Dyn', variant: 'Kamionka · wys. 24 cm', price: 149, old: 0, qty: 1, img: 6 },
+];
+
+const steps = ['Koszyk', 'Dostawa', 'Płatność', 'Podsumowanie'];
+
+const delivery = [
+  { id: 'kurier', title: 'Kurier DPD', text: 'Jutro, 8:00–16:00. SMS z godziną doręczenia.', price: 14.99, icon: 'truck' },
+  { id: 'automat', title: 'Automat paczkowy', text: 'Jutro do 12:00. Odbiór całą dobę.', price: 11.99, icon: 'package' },
+  { id: 'showroom', title: 'Odbiór w showroomie', text: 'Gdynia, ul. Morska 14 — od jutra, 10:00–18:00.', price: 0, icon: 'store' },
+];
+
+const payments = [
+  { id: 'blik', title: 'BLIK', text: 'Kod z aplikacji banku, potwierdzenie w kilka sekund.', icon: 'smartphone' },
+  { id: 'karta', title: 'Karta płatnicza', text: 'Visa, Mastercard. Możesz zapisać kartę na później.', icon: 'credit-card' },
+  { id: 'przelew', title: 'Szybki przelew', text: 'Przekierujemy Cię na stronę Twojego banku.', icon: 'wallet' },
+  { id: 'raty', title: 'Zapłać za 30 dni', text: 'Bez odsetek i opłat — najpierw sprawdź, potem płać.', icon: 'calendar' },
+];
+
+const zl = (n) => n.toLocaleString('pl-PL', { minimumFractionDigits: Number.isInteger(n) ? 0 : 2 }).replace(/ /g, ' ') + ' zł';
+---
+
+<Example title="Koszyk i zamówienie — Lorem" description="Koszyk i proces zamówienia w krokach: produkty, dostawa, płatność i potwierdzenie — z komponentów Plossy.">
+  <ShopHeader />
+
+  <main>
+    <section class="pl-section pl-section-small">
+      <div class="pl-container">
+        <nav aria-label="Okruszki">
+          <ul class="pl-breadcrumb pl-breadcrumb-chevron pl-breadcrumb-small">
+            <li><a href="/examples/sklep/">Lorem</a></li>
+            <li><span aria-current="page">Koszyk</span></li>
+          </ul>
+        </nav>
+
+        <div class="pl-grid pl-flex-middle pl-margin-top pl-margin-medium-bottom">
+          <div class="pl-width-1-3@m">
+            <h1 class="pl-heading-small pl-margin-remove" id="step-heading">Twój koszyk</h1>
+          </div>
+          <div class="pl-width-2-3@m">
+            <ol class="pl-stepper pl-stepper-small" id="steps" aria-label="Etapy zamówienia">
+              {steps.map((title, i) => (
+                <li class={i === 0 ? 'pl-active' : ''} aria-current={i === 0 ? 'step' : undefined}>
+                  <span class="pl-stepper-marker"></span>
+                  <div class="pl-stepper-content">
+                    <button class="pl-link-reset pl-stepper-title shop-step" type="button" data-step={i} disabled={i > 0}>{title}</button>
+                  </div>
+                </li>
+              ))}
+            </ol>
+          </div>
+        </div>
+
+        <div class="pl-grid pl-grid-large" id="checkout">
+          <div class="pl-width-2-3@m">
+            <!-- KROK 1: koszyk -->
+            <div data-panel="0">
+              <div id="cart-full">
+                <div class="pl-card">
+                  <ul class="pl-list pl-list-divider pl-list-collapse pl-margin-remove" id="cart-items">
+                    {items.map((item) => (
+                      <li class="shop-item" data-price={item.price} data-name={item.name}>
+                        <div class="pl-flex pl-gap pl-padding-small">
+                          <a class="pl-image pl-image-rounded-small pl-ratio-1-1 pl-flex-none shop-item-thumb" href="/examples/produkt/">
+                            <img src={`/img/photo-${item.img}.svg`} alt="" />
+                          </a>
+                          <div class="pl-flex-1 shop-min">
+                            <div class="pl-flex pl-flex-between pl-gap-small">
+                              <div class="shop-min">
+                                <h3 class="pl-text-md pl-margin-remove"><a class="pl-link-reset" href="/examples/produkt/">{item.name}</a></h3>
+                                <p class="pl-text-sm pl-text-muted pl-margin-remove">{item.variant}</p>
+                              </div>
+                              <button class="pl-button pl-button-ghost pl-button-icon pl-button-small pl-flex-none" type="button" aria-label={`Usuń z koszyka: ${item.name}`} data-remove data-pl-tooltip="Usuń">
+                                <span data-pl-icon="trash-2"></span>
+                              </button>
+                            </div>
+                            <div class="pl-flex pl-flex-between pl-flex-bottom pl-gap-small pl-margin-small-top">
+                              <div class="pl-input-group shop-qty">
+                                <button class="pl-button pl-button-icon pl-button-small" type="button" aria-label="Mniej" data-qty-step="-1"><span data-pl-icon="minus"></span></button>
+                                <input class="pl-input pl-form-small pl-text-center pl-text-tabular" type="text" inputmode="numeric" value={item.qty} aria-label={`Liczba sztuk: ${item.name}`} data-qty />
+                                <button class="pl-button pl-button-icon pl-button-small" type="button" aria-label="Więcej" data-qty-step="1"><span data-pl-icon="plus"></span></button>
+                              </div>
+                              <div class="pl-text-right pl-text-tabular">
+                                {item.old > 0 && <s class="pl-text-subtle pl-text-sm pl-margin-xsmall-right">{zl(item.old)}</s>}
+                                <strong class="pl-text-lg" data-line>{zl(item.price * item.qty)}</strong>
+                                <div class="pl-text-sm pl-text-subtle" data-unit hidden={item.qty < 2}>{zl(item.price)} / szt.</div>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+
+                <div class="pl-grid pl-grid-small pl-flex-middle pl-margin-top">
+                  <div class="pl-width-1-2@s">
+                    <form id="promo-form" class="pl-form-field">
+                      <label class="pl-form-label" for="promo">Kod rabatowy</label>
+                      <div class="pl-input-group">
+                        <span class="pl-input-group-text"><span data-pl-icon="tag"></span></span>
+                        <input class="pl-input pl-text-uppercase" id="promo" type="text" placeholder="np. LOREM10" autocomplete="off" />
+                        <button class="pl-button" type="submit">Zastosuj</button>
+                      </div>
+                      <p class="pl-form-help" id="promo-help">Wpisz <strong>LOREM10</strong>, żeby dostać 10% zniżki na start.</p>
+                    </form>
+                  </div>
+                  <div class="pl-width-1-2@s pl-text-right@s">
+                    <a class="pl-link-arrow-left pl-link-muted" href="/examples/kategoria/">Wróć do zakupów</a>
+                  </div>
+                </div>
+              </div>
+
+              <div class="pl-placeholder pl-placeholder-large" id="cart-empty" hidden>
+                <span class="pl-placeholder-icon" data-pl-icon="shopping-bag"></span>
+                <h2 class="pl-placeholder-title">Twój koszyk jest pusty</h2>
+                <p class="pl-placeholder-text">Nic straconego — nowa kolekcja lamp i ceramiki czeka. Darmowa dostawa już od 299 zł.</p>
+                <div class="pl-placeholder-actions">
+                  <a class="pl-button pl-button-primary" href="/examples/kategoria/">Przeglądaj oświetlenie</a>
+                  <button class="pl-button pl-button-ghost" type="button" data-restore><span data-pl-icon="rotate-ccw"></span> Przywróć produkty</button>
+                </div>
+              </div>
+            </div>
+
+            <!-- KROK 2: dostawa -->
+            <div data-panel="1" hidden>
+              <form id="address-form" class="pl-form-stacked" data-pl-form-validate="success: true">
+                <fieldset class="pl-fieldset">
+                  <legend class="pl-legend">Sposób dostawy</legend>
+                  <div class="pl-grid pl-grid-small pl-child-width-1-1" role="radiogroup" aria-label="Sposób dostawy">
+                    {delivery.map((d, i) => (
+                      <div>
+                        <label class="pl-form-card">
+                          <input class="pl-radio" type="radio" name="delivery" value={d.id} data-price={d.price} data-title={d.title} checked={i === 0} />
+                          <span class="pl-text-primary" data-pl-icon={d.icon}></span>
+                          <span class="pl-form-card-body">
+                            <span class="pl-form-card-title">{d.title}</span>
+                            <span class="pl-form-card-text">{d.text}</span>
+                          </span>
+                          <span class="pl-form-card-meta" data-delivery-price={d.price}>{d.price ? zl(d.price) : '0 zł'}</span>
+                        </label>
+                      </div>
+                    ))}
+                  </div>
+                </fieldset>
+
+                <fieldset class="pl-fieldset pl-margin-medium-top">
+                  <legend class="pl-legend">Dane odbiorcy</legend>
+                  <div class="pl-form-grid pl-form-grid-6">
+                    <div class="pl-form-field pl-form-span-3">
+                      <label class="pl-form-label pl-form-required" for="a-first">Imię</label>
+                      <input class="pl-input" id="a-first" name="first" type="text" required minlength="2" autocomplete="given-name" />
+                    </div>
+                    <div class="pl-form-field pl-form-span-3">
+                      <label class="pl-form-label pl-form-required" for="a-last">Nazwisko</label>
+                      <input class="pl-input" id="a-last" name="last" type="text" required minlength="2" autocomplete="family-name" />
+                    </div>
+                    <div class="pl-form-field pl-form-span-3">
+                      <label class="pl-form-label pl-form-required" for="a-email">E-mail</label>
+                      <div class="pl-form-icon">
+                        <span data-pl-icon="mail"></span>
+                        <input class="pl-input" id="a-email" name="email" type="email" required autocomplete="email" />
+                      </div>
+                    </div>
+                    <div class="pl-form-field pl-form-span-3">
+                      <label class="pl-form-label pl-form-required" for="a-phone">Telefon</label>
+                      <div class="pl-input-group">
+                        <span class="pl-input-group-text">+48</span>
+                        <input class="pl-input" id="a-phone" name="phone" type="tel" required pattern="[0-9 ]{9,11}" placeholder="600 100 200" autocomplete="tel-national" data-pl-message-pattern="Podaj 9 cyfr numeru telefonu." />
+                      </div>
+                    </div>
+                    <div class="pl-form-field pl-form-span-full">
+                      <label class="pl-form-label pl-form-required" for="a-street">Ulica i numer</label>
+                      <input class="pl-input" id="a-street" name="street" type="text" required autocomplete="street-address" />
+                    </div>
+                    <div class="pl-form-field pl-form-span-2">
+                      <label class="pl-form-label pl-form-required" for="a-zip">Kod pocztowy</label>
+                      <input class="pl-input" id="a-zip" name="zip" type="text" required pattern="[0-9]{2}-[0-9]{3}" placeholder="00-000" autocomplete="postal-code" data-pl-message-pattern="Wpisz kod w formacie 00-000." />
+                    </div>
+                    <div class="pl-form-field pl-form-span-2">
+                      <label class="pl-form-label pl-form-required" for="a-city">Miasto</label>
+                      <input class="pl-input" id="a-city" name="city" type="text" required autocomplete="address-level2" />
+                    </div>
+                    <div class="pl-form-field pl-form-span-2">
+                      <label class="pl-form-label" for="a-country">Kraj</label>
+                      <select class="pl-select" id="a-country" name="country" autocomplete="country-name">
+                        <option>Polska</option>
+                        <option>Czechy</option>
+                        <option>Niemcy</option>
+                        <option>Szwecja</option>
+                      </select>
+                    </div>
+                    <div class="pl-form-field pl-form-span-full">
+                      <label class="pl-form-label" for="a-note">Uwagi dla kuriera <span class="pl-form-optional">opcjonalnie</span></label>
+                      <textarea class="pl-textarea" id="a-note" name="note" rows="2" maxlength="200" placeholder="Np. kod do domofonu, piętro" data-pl-autosize></textarea>
+                    </div>
+                    <div class="pl-form-span-full">
+                      <label class="pl-form-check">
+                        <input class="pl-switch" type="checkbox" role="switch" name="invoice" />
+                        Chcę otrzymać fakturę na firmę
+                      </label>
+                    </div>
+                  </div>
+                </fieldset>
+
+                <div class="pl-form-actions pl-flex pl-flex-between pl-margin-medium-top">
+                  <button class="pl-button pl-button-ghost" type="button" data-go="0"><span data-pl-icon="arrow-left"></span> Koszyk</button>
+                  <button class="pl-button pl-button-primary" type="submit">Dalej: płatność <span class="pl-button-arrow" data-pl-icon="arrow-right"></span></button>
+                </div>
+              </form>
+            </div>
+
+            <!-- KROK 3: płatność -->
+            <div data-panel="2" hidden>
+              <form id="payment-form" data-pl-form-validate>
+                <fieldset class="pl-fieldset">
+                  <legend class="pl-legend">Metoda płatności</legend>
+                  <div class="pl-grid pl-grid-small pl-child-width-1-2@s" role="radiogroup" aria-label="Metoda płatności">
+                    {payments.map((p, i) => (
+                      <div>
+                        <label class="pl-form-card pl-form-card-flip">
+                          <input class="pl-radio" type="radio" name="payment" value={p.title} checked={i === 0} />
+                          <span class="pl-text-primary" data-pl-icon={p.icon}></span>
+                          <span class="pl-form-card-body">
+                            <span class="pl-form-card-title">{p.title}</span>
+                            <span class="pl-form-card-text">{p.text}</span>
+                          </span>
+                        </label>
+                      </div>
+                    ))}
+                  </div>
+                </fieldset>
+
+                <div class="pl-card pl-card-muted pl-margin-top" id="blik-box">
+                  <div class="pl-card-body">
+                    <div class="pl-form-field">
+                      <label class="pl-form-label" for="blik">Kod BLIK</label>
+                      <input class="pl-input pl-form-large pl-form-width-small pl-text-mono pl-text-center" id="blik" name="blik" type="text" inputmode="numeric" pattern="[0-9 ]{6,7}" maxlength="7" placeholder="000 000" autocomplete="one-time-code" data-pl-message-pattern="Kod BLIK ma 6 cyfr." />
+                      <p class="pl-form-help">Kod znajdziesz w aplikacji swojego banku. Możesz też zostawić puste — poprosimy o niego w następnym kroku.</p>
+                    </div>
+                  </div>
+                </div>
+
+                <div class="pl-margin-medium-top">
+                  <label class="pl-form-check">
+                    <input class="pl-checkbox" type="checkbox" name="terms" required data-pl-message-required="Zaakceptuj regulamin, żeby złożyć zamówienie." />
+                    <span>Akceptuję <a href="/examples/cms/">regulamin sklepu</a> i <a href="/examples/cms/">politykę prywatności</a>.</span>
+                  </label>
+                  <label class="pl-form-check pl-margin-small-top">
+                    <input class="pl-checkbox" type="checkbox" name="news" />
+                    <span>Chcę dostawać newsletter (raz w miesiącu, −10% na kolejne zakupy).</span>
+                  </label>
+                </div>
+
+                <div class="pl-form-actions pl-flex pl-flex-between pl-margin-medium-top">
+                  <button class="pl-button pl-button-ghost" type="button" data-go="1"><span data-pl-icon="arrow-left"></span> Dostawa</button>
+                  <button class="pl-button pl-button-primary" type="submit" id="pay-button"><span data-pl-icon="lock"></span> Zamawiam i płacę</button>
+                </div>
+              </form>
+            </div>
+
+            <!-- KROK 4: podsumowanie -->
+            <div data-panel="3" hidden>
+              <div class="pl-card pl-card-accent">
+                <div class="pl-card-body pl-text-center">
+                  <span class="pl-avatar pl-avatar-xlarge pl-avatar-success pl-animation-spring"><span data-pl-icon="check"></span></span>
+                  <p class="pl-heading-eyebrow pl-heading-eyebrow-center pl-margin-top">Zamówienie nr AN-2026-11-0482</p>
+                  <h2 class="pl-margin-remove-top">Dziękujemy, <span data-out="first">zamówienie przyjęte</span>!</h2>
+                  <p class="pl-text-muted pl-width-xlarge pl-margin-auto">
+                    Potwierdzenie wysłaliśmy na adres <strong data-out="email">Twój e-mail</strong>. Paczkę nadamy jeszcze dziś —
+                    numer do śledzenia dostaniesz SMS-em.
+                  </p>
+                </div>
+                <div class="pl-card-footer">
+                  <dl class="pl-description-list pl-description-list-horizontal pl-description-list-plain pl-margin-remove">
+                    <dt>Dostawa</dt>
+                    <dd><span data-out="delivery">Kurier DPD</span> · <span data-out="address">—</span></dd>
+                    <dt>Płatność</dt>
+                    <dd><span data-out="payment">BLIK</span> · <span class="pl-label pl-label-success pl-label-dot">Opłacone</span></dd>
+                    <dt>Kwota</dt>
+                    <dd><strong class="pl-text-tabular" data-total>0 zł</strong></dd>
+                  </dl>
+                </div>
+              </div>
+              <div class="pl-flex pl-flex-center pl-flex-wrap pl-gap-small pl-margin-medium-top">
+                <a class="pl-button pl-button-primary" href="/examples/sklep/">Wróć do sklepu</a>
+                <a class="pl-button" href="/examples/panel/"><span data-pl-icon="package"></span> Śledź zamówienie</a>
+              </div>
+            </div>
+          </div>
+
+          <!-- Podsumowanie zamówienia -->
+          <div class="pl-width-1-3@m">
+            <aside class="pl-card" id="summary" aria-label="Podsumowanie zamówienia" data-pl-sticky="offset: 88; end: parent; media: @m">
+              <div class="pl-card-body">
+                <h2 class="pl-card-title">Podsumowanie</h2>
+
+                <div class="pl-progress-label pl-text-sm"><span id="ship-text">Do darmowej dostawy</span><span class="pl-text-tabular" id="ship-left"></span></div>
+                <div class="pl-progress-bar pl-progress-small pl-progress-success" id="ship-bar" role="progressbar" aria-label="Postęp do darmowej dostawy" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0" style="--pl-progress: 0">
+                  <div class="pl-progress-fill"></div>
+                </div>
+
+                <dl class="shop-totals pl-margin-top pl-margin-remove-bottom">
+                  <div><dt>Produkty (<span id="sum-count">0</span>)</dt><dd id="sum-items">0 zł</dd></div>
+                  <div id="sum-discount-row" hidden><dt>Rabat <span class="pl-label pl-label-success pl-label-small">LOREM10</span></dt><dd class="pl-text-success" id="sum-discount">0 zł</dd></div>
+                  <div><dt>Dostawa <span class="pl-text-subtle" id="sum-delivery-name"></span></dt><dd id="sum-delivery">0 zł</dd></div>
+                </dl>
+                <hr class="pl-divider pl-divider-compact" />
+                <div class="pl-flex pl-flex-between pl-flex-baseline">
+                  <span class="pl-text-semibold">Do zapłaty</span>
+                  <strong class="pl-text-2xl pl-text-display pl-text-tabular" data-total>0 zł</strong>
+                </div>
+                <p class="pl-text-sm pl-text-subtle pl-margin-remove-top">w tym VAT 23%</p>
+
+                <button class="pl-button pl-button-primary pl-button-large pl-button-block pl-margin-small-top" type="button" id="summary-next">
+                  <span id="summary-next-label">Przejdź do dostawy</span> <span class="pl-button-arrow" data-pl-icon="arrow-right"></span>
+                </button>
+              </div>
+              <div class="pl-card-footer pl-display-block">
+                <ul class="pl-list pl-text-sm pl-text-muted pl-margin-remove">
+                  <li class="pl-flex pl-flex-middle pl-gap-small"><span class="pl-text-success" data-pl-icon="shield-check"></span> Szyfrowane płatności (SSL)</li>
+                  <li class="pl-flex pl-flex-middle pl-gap-small"><span class="pl-text-success" data-pl-icon="rotate-ccw"></span> 30 dni na darmowy zwrot</li>
+                  <li class="pl-flex pl-flex-middle pl-gap-small"><span class="pl-text-success" data-pl-icon="award"></span> 4,9 / 5 z 2 318 opinii</li>
+                </ul>
+                <div class="pl-flex pl-flex-wrap pl-gap-xsmall pl-margin-small-top">
+                  <span class="pl-label pl-label-outline pl-label-small">BLIK</span>
+                  <span class="pl-label pl-label-outline pl-label-small">Visa</span>
+                  <span class="pl-label pl-label-outline pl-label-small">Mastercard</span>
+                  <span class="pl-label pl-label-outline pl-label-small">Przelewy24</span>
+                  <span class="pl-label pl-label-outline pl-label-small">PayPo</span>
+                </div>
+              </div>
+            </aside>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <ShopFooter />
+
+  <style is:global>
+    .shop-item-thumb {
+      width: clamp(4.5rem, 18vw, 6.5rem);
+      align-self: flex-start;
+    }
+    .shop-min {
+      min-width: 0;
+    }
+    .shop-qty {
+      width: 7.25rem;
+    }
+    .shop-step {
+      border: 0;
+      background: none;
+      padding: 0;
+      font: inherit;
+      color: inherit;
+      cursor: pointer;
+    }
+    /* Na telefonie tytuł pokazuje tylko bieżący krok. */
+    @media (max-width: 639px) {
+      #steps > li:not(.pl-active) .pl-stepper-content {
+        display: none;
+      }
+    }
+    .shop-step:disabled {
+      cursor: default;
+    }
+    .shop-totals > div {
+      display: flex;
+      justify-content: space-between;
+      gap: var(--pl-space-3);
+      padding-block: var(--pl-space-1);
+      color: var(--pl-text-muted);
+    }
+    .shop-totals dt {
+      font-weight: inherit;
+    }
+    .shop-totals dd {
+      margin: 0;
+      color: var(--pl-text);
+      font-variant-numeric: tabular-nums;
+    }
+    /* Usuwanie pozycji: zwinięcie wiersza po animacji wyjścia. */
+    .shop-item {
+      overflow: hidden;
+      transition: height var(--pl-dur-3) var(--pl-ease), opacity var(--pl-dur-2) var(--pl-ease);
+    }
+    .shop-item.shop-leave {
+      opacity: 0;
+    }
+  </style>
+
+  <script is:inline>
+    window.addEventListener('load', () => {
+      const Plossy = window.Plossy;
+      const FREE_FROM = 299;
+      const $ = (selector) => document.querySelector(selector);
+      const list = $('#cart-items');
+      const snapshot = list.innerHTML;
+      const zl = (n) => n.toLocaleString('pl-PL', { minimumFractionDigits: Number.isInteger(n) ? 0 : 2, maximumFractionDigits: 2 }).replace(/ /g, ' ') + ' zł';
+      const qtyOf = (item) => Math.max(1, Math.min(20, parseInt(item.querySelector('[data-qty]').value, 10) || 1));
+      let discount = 0;
+      let step = 0;
+      let reached = 0;
+
+      /* ---------- Sumy ---------- */
+      const totals = () => {
+        const rows = [...list.children].filter((item) => !item.classList.contains('shop-leave'));
+        let sum = 0;
+        let count = 0;
+        for (const item of rows) {
+          const qty = qtyOf(item);
+          const price = Number(item.dataset.price);
+          item.querySelector('[data-qty]').value = qty;
+          item.querySelector('[data-line]').textContent = zl(price * qty);
+          item.querySelector('[data-unit]').hidden = qty < 2;
+          sum += price * qty;
+          count += qty;
+        }
+        const off = Math.round(sum * discount * 100) / 100;
+        const goods = sum - off;
+        const free = goods >= FREE_FROM;
+        const method = document.querySelector('[name="delivery"]:checked');
+        const shipping = !count || free ? 0 : Number(method.dataset.price);
+        const total = goods + shipping;
+
+        $('#sum-count').textContent = count;
+        $('#sum-items').textContent = zl(sum);
+        $('#sum-discount-row').hidden = !off;
+        $('#sum-discount').textContent = '−' + zl(off);
+        $('#sum-delivery').textContent = shipping ? zl(shipping) : 'gratis';
+        $('#sum-delivery-name').textContent = step > 0 ? `· ${method.dataset.title}` : '';
+        document.querySelectorAll('[data-total]').forEach((el) => (el.textContent = zl(total)));
+        document.querySelectorAll('[data-delivery-price]').forEach((el) => {
+          const price = Number(el.dataset.deliveryPrice);
+          el.textContent = free || !price ? 'gratis' : zl(price);
+        });
+
+        const percent = Math.min(100, Math.round((goods / FREE_FROM) * 100));
+        $('#ship-bar').style.setProperty('--pl-progress', percent);
+        $('#ship-bar').setAttribute('aria-valuenow', percent);
+        $('#ship-text').textContent = free ? 'Masz darmową dostawę' : 'Do darmowej dostawy';
+        $('#ship-left').textContent = free ? '✓' : `brakuje ${zl(Math.round((FREE_FROM - goods) * 100) / 100)}`;
+
+        const empty = count === 0;
+        $('#cart-full').hidden = empty;
+        $('#cart-empty').hidden = !empty;
+        $('#summary-next').disabled = empty;
+        const badge = document.querySelector('[data-shop-cart-count]');
+        if (badge) badge.textContent = count;
+      };
+
+      /* ---------- Pozycje koszyka ---------- */
+      list.addEventListener('click', (event) => {
+        const item = event.target.closest('.shop-item');
+        if (!item) return;
+        const stepButton = event.target.closest('[data-qty-step]');
+        if (stepButton) {
+          item.querySelector('[data-qty]').value = qtyOf(item) + Number(stepButton.dataset.qtyStep);
+          totals();
+        }
+        if (event.target.closest('[data-remove]')) {
+          item.style.height = item.offsetHeight + 'px';
+          item.classList.add('shop-leave');
+          requestAnimationFrame(() => requestAnimationFrame(() => (item.style.height = '0px')));
+          const done = () => {
+            if (!item.isConnected) return;
+            item.remove();
+            totals();
+          };
+          item.addEventListener('transitionend', (e) => e.propertyName === 'height' && done());
+          setTimeout(done, 600);
+          totals();
+          Plossy.notification({ message: `Usunięto: ${item.dataset.name}`, icon: 'trash-2', timeout: 2500 });
+        }
+      });
+      list.addEventListener('change', totals);
+      document.querySelector('[data-restore]').addEventListener('click', () => {
+        list.innerHTML = snapshot;
+        totals();
+      });
+
+      /* ---------- Kod rabatowy ---------- */
+      $('#promo-form').addEventListener('submit', (event) => {
+        event.preventDefault();
+        const input = $('#promo');
+        const help = $('#promo-help');
+        const ok = input.value.trim().toUpperCase() === 'LOREM10';
+        discount = ok ? 0.1 : 0;
+        input.classList.toggle('pl-form-success', ok);
+        input.classList.toggle('pl-form-danger', !ok);
+        help.className = `pl-form-help ${ok ? 'pl-form-help-success' : 'pl-form-help-danger'}`;
+        help.textContent = ok ? 'Kod LOREM10 aktywny — 10% taniej.' : 'Nie znamy takiego kodu. Spróbuj LOREM10.';
+        if (!ok) {
+          input.classList.remove('pl-animation-shake');
+          void input.offsetWidth;
+          input.classList.add('pl-animation-shake');
+        }
+        totals();
+      });
+
+      /* ---------- Kroki ---------- */
+      const headings = ['Twój koszyk', 'Dostawa', 'Płatność', 'Zamówienie złożone'];
+      const nextLabels = ['Przejdź do dostawy', 'Dalej: płatność', 'Zamawiam i płacę'];
+      const stepItems = [...document.querySelectorAll('#steps > li')];
+      const panels = [...document.querySelectorAll('[data-panel]')];
+      const go = (index) => {
+        const forward = index > step;
+        step = index;
+        reached = Math.max(reached, index);
+        const finished = index === 3;
+        stepItems.forEach((item, i) => {
+          item.classList.toggle('pl-active', i === index && !finished);
+          item.classList.toggle('pl-complete', i < index || finished);
+          if (i === index) item.setAttribute('aria-current', 'step');
+          else item.removeAttribute('aria-current');
+          item.querySelector('button').disabled = finished || i > reached;
+        });
+        panels.forEach((panel, i) => {
+          panel.hidden = i !== index;
+          panel.classList.remove('pl-animation-slide-left', 'pl-animation-slide-right', 'pl-animation-fast');
+          if (i === index) panel.classList.add(forward ? 'pl-animation-slide-right' : 'pl-animation-slide-left', 'pl-animation-fast');
+        });
+        $('#step-heading').textContent = headings[index];
+        $('#summary-next').hidden = finished;
+        if (!finished) $('#summary-next-label').textContent = nextLabels[index];
+        totals();
+        Plossy.scroll.to('#steps', { offset: 120 });
+      };
+
+      const address = $('#address-form');
+      const payment = $('#payment-form');
+      const submitAddress = () => {
+        if (!Plossy.formValidate(address).validate()) return false;
+        go(2);
+        return true;
+      };
+      const submitPayment = () => {
+        if (!Plossy.formValidate(payment).validate()) return;
+        const button = $('#pay-button');
+        button.classList.add('pl-button-loading');
+        $('#summary-next').classList.add('pl-button-loading');
+        setTimeout(() => {
+          button.classList.remove('pl-button-loading');
+          $('#summary-next').classList.remove('pl-button-loading');
+          const data = new FormData(address);
+          const out = (key, value) => document.querySelectorAll(`[data-out="${key}"]`).forEach((el) => (el.textContent = value));
+          out('first', data.get('first'));
+          out('email', data.get('email'));
+          out('delivery', document.querySelector('[name="delivery"]:checked').dataset.title);
+          out('address', `${data.get('street')}, ${data.get('zip')} ${data.get('city')}`);
+          out('payment', new FormData(payment).get('payment'));
+          go(3);
+          Plossy.notification({ title: 'Płatność przyjęta', message: 'Zamówienie AN-2026-11-0482 jest już w realizacji.', status: 'success' });
+        }, 1200);
+      };
+
+      address.addEventListener('submit', (event) => { event.preventDefault(); submitAddress(); });
+      payment.addEventListener('submit', (event) => { event.preventDefault(); submitPayment(); });
+      address.addEventListener('change', totals);
+      payment.addEventListener('change', () => {
+        $('#blik-box').hidden = new FormData(payment).get('payment') !== 'BLIK';
+      });
+      $('#summary-next').addEventListener('click', () => {
+        if (step === 0) go(1);
+        else if (step === 1) submitAddress();
+        else if (step === 2) submitPayment();
+      });
+      document.addEventListener('click', (event) => {
+        const target = event.target.closest('[data-go], [data-step]');
+        if (target && !target.disabled) go(Number(target.dataset.go ?? target.dataset.step));
+      });
+
+      totals();
+    });
+  </script>
+</Example>

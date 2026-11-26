@@ -1,0 +1,141 @@
+// Sortable — zmiana kolejności przez przeciąganie.
+@use '../abstracts' as *;
+
+.pl-sortable {
+  --pl-sortable-radius: var(--pl-radius-md);
+
+  > * {
+    cursor: grab;
+    -webkit-touch-callout: none;
+
+    @include focus-visible;
+  }
+}
+
+// Na ekranach dotykowych przytrzymanie podnosi element zamiast zaznaczać tekst.
+@media (pointer: coarse) {
+  .pl-sortable:not(.pl-sortable-by-handle) > * {
+    user-select: none;
+    -webkit-user-select: none;
+  }
+}
+
+// Z uchwytem łapie się tylko za niego.
+.pl-sortable-by-handle > * {
+  cursor: auto;
+}
+
+.pl-sortable-handle {
+  @include button-reset;
+  display: inline-grid;
+  place-items: center;
+  flex: none;
+  min-width: 1.5rem;
+  min-height: 1.75rem;
+  border-radius: var(--pl-radius-xs);
+  color: var(--pl-text-subtle);
+  cursor: grab;
+  // Uchwyt przejmuje gest od razu — strona nie przewija się pod palcem.
+  touch-action: none;
+  @include transition('color, background-color', var(--pl-dur-2));
+
+  &:hover {
+    color: var(--pl-text);
+    background: var(--pl-muted);
+  }
+
+  @include focus-visible;
+
+  // Pusty uchwyt rysuje sześć kropek.
+  &:empty::before {
+    content: '';
+    width: 0.5rem;
+    height: 0.875rem;
+    background: radial-gradient(circle, currentColor 1.1px, transparent 1.5px) 0 0 / 0.25rem 0.3125rem;
+  }
+}
+
+// Miejsce upuszczenia — oryginalny element zamieniony w „dziurę".
+.pl-sortable-placeholder {
+  position: relative;
+  border-color: transparent !important;
+  border-radius: var(--pl-sortable-radius);
+  color: transparent !important;
+  background: color-mix(in oklab, var(--pl-primary) 7%, transparent) !important;
+  box-shadow: none !important;
+  outline: 1.5px dashed var(--pl-primary-border);
+  outline-offset: -1.5px;
+
+  > * {
+    visibility: hidden;
+  }
+
+  &::before,
+  &::after,
+  &::marker {
+    visibility: hidden;
+  }
+}
+
+// Unoszony klon podążający za wskaźnikiem.
+.pl-sortable-drag {
+  z-index: calc(var(--pl-z-notification) + 10);
+  list-style: none;
+  border-radius: var(--pl-sortable-radius);
+  box-shadow: var(--pl-shadow-xl);
+  rotate: 1.6deg;
+  scale: 1.035;
+  opacity: 0.97;
+  cursor: grabbing;
+  will-change: translate;
+
+  @media (prefers-reduced-motion: no-preference) {
+    animation: pl-sortable-lift var(--pl-dur-3) var(--pl-ease-spring) backwards;
+  }
+}
+
+.pl-sortable-drop {
+  box-shadow: var(--pl-shadow-sm);
+  transition: box-shadow var(--pl-dur-2) var(--pl-ease);
+}
+
+@keyframes pl-sortable-lift {
+  from {
+    rotate: 0deg;
+    scale: 1;
+    box-shadow: var(--pl-shadow-xs);
+  }
+}
+
+// Element podniesiony klawiaturą.
+.pl-sortable-grabbed {
+  position: relative;
+  z-index: 1;
+  border-radius: var(--pl-sortable-radius);
+  box-shadow: var(--pl-ring), var(--pl-shadow-lg) !important;
+  scale: 1.02;
+  transition: scale var(--pl-dur-3) var(--pl-ease-spring);
+}
+
+// Pusta lista pozostaje celem upuszczenia.
+.pl-sortable-empty {
+  display: grid;
+  place-items: center;
+  min-height: 4.5rem;
+  border-radius: var(--pl-sortable-radius);
+  outline: 1.5px dashed var(--pl-border-strong);
+  outline-offset: -1.5px;
+
+  &::after {
+    content: attr(data-pl-empty);
+    font-size: var(--pl-text-sm);
+    color: var(--pl-text-subtle);
+  }
+}
+
+.pl-sortable-dragging,
+.pl-sortable-dragging * {
+  cursor: grabbing !important;
+  user-select: none !important;
+  -webkit-user-select: none !important;
+}

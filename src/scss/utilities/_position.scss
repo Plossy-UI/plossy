@@ -1,0 +1,117 @@
+// Position — pozycjonowanie elementów.
+@use '../abstracts' as *;
+
+// Margines od krawędzi; nie dziedziczy się na zagnieżdżone elementy.
+@property --pl-position-m {
+  syntax: '<length>';
+  inherits: false;
+  initial-value: 0px;
+}
+
+.pl-position-relative { position: relative !important; }
+.pl-position-absolute { position: absolute !important; }
+.pl-position-fixed { position: fixed !important; }
+.pl-position-static { position: static !important; }
+
+.pl-position-sticky {
+  position: sticky !important;
+  top: var(--pl-position-offset, 0px) !important;
+  z-index: var(--pl-z-sticky);
+}
+
+// ── Krawędzie i rogi ────────────────────────────────────────────────────
+[class*='pl-position-top'],
+[class*='pl-position-bottom'],
+[class*='pl-position-left'],
+[class*='pl-position-right'],
+[class*='pl-position-center'],
+.pl-position-cover {
+  position: absolute !important;
+  box-sizing: border-box;
+  max-width: calc(100% - var(--pl-position-m) * 2);
+}
+
+// Pasy przy krawędziach.
+.pl-position-top {
+  inset: var(--pl-position-m) var(--pl-position-m) auto var(--pl-position-m) !important;
+}
+
+.pl-position-bottom {
+  inset: auto var(--pl-position-m) var(--pl-position-m) var(--pl-position-m) !important;
+}
+
+.pl-position-left {
+  inset: var(--pl-position-m) auto var(--pl-position-m) var(--pl-position-m) !important;
+}
+
+.pl-position-right {
+  inset: var(--pl-position-m) var(--pl-position-m) var(--pl-position-m) auto !important;
+}
+
+// Rogi.
+.pl-position-top-left {
+  inset: var(--pl-position-m) auto auto var(--pl-position-m) !important;
+}
+
+.pl-position-top-right {
+  inset: var(--pl-position-m) var(--pl-position-m) auto auto !important;
+}
+
+.pl-position-bottom-left {
+  inset: auto auto var(--pl-position-m) var(--pl-position-m) !important;
+}
+
+.pl-position-bottom-right {
+  inset: auto var(--pl-position-m) var(--pl-position-m) auto !important;
+}
+
+// Środek (translate — transform zostaje wolny dla animacji).
+.pl-position-center {
+  inset: 50% auto auto 50% !important;
+  width: max-content;
+  translate: -50% -50%;
+}
+
+.pl-position-center-left {
+  inset: 50% auto auto var(--pl-position-m) !important;
+  translate: 0 -50%;
+}
+
+.pl-position-center-right {
+  inset: 50% var(--pl-position-m) auto auto !important;
+  translate: 0 -50%;
+}
+
+.pl-position-top-center {
+  inset: var(--pl-position-m) auto auto 50% !important;
+  width: max-content;
+  translate: -50% 0;
+}
+
+.pl-position-bottom-center {
+  inset: auto auto var(--pl-position-m) 50% !important;
+  width: max-content;
+  translate: -50% 0;
+}
+
+// Cały obszar rodzica.
+.pl-position-cover {
+  inset: var(--pl-position-m) !important;
+}
+
+// ── Margines od krawędzi ────────────────────────────────────────────────
+.pl-position-small { --pl-position-m: var(--pl-space-3); }
+.pl-position-medium { --pl-position-m: var(--pl-space-5); }
+.pl-position-large {
+  --pl-position-m: var(--pl-space-6);
+
+  @include up(m) {
+    --pl-position-m: var(--pl-space-7);
+  }
+}
+
+// ── Warstwy ─────────────────────────────────────────────────────────────
+.pl-position-z-index { z-index: 1 !important; }
+.pl-position-z-index-zero { z-index: 0 !important; }
+.pl-position-z-index-negative { z-index: -1 !important; }
+.pl-position-z-index-high { z-index: var(--pl-z-sticky) !important; }

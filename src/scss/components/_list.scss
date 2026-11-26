@@ -1,0 +1,367 @@
+// List — listy bez domyślnego wyglądu, z punktorami, podziałami oraz list-group.
+@use '../abstracts' as *;
+
+$check: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23000' stroke-width='3' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M20 6 9 17l-5-5'/%3E%3C/svg%3E");
+
+.pl-list {
+  --pl-list-gap: 0.55rem;
+  --pl-list-marker: var(--pl-text);
+  --pl-list-indent: 1.35em;
+
+  margin: 0 0 1.1em;
+  padding: 0;
+  list-style: none;
+
+  &:last-child {
+    margin-bottom: 0;
+  }
+
+  > * {
+    break-inside: avoid-column;
+  }
+
+  > :nth-child(n + 2),
+  > * > ul,
+  > * > ol {
+    margin-top: var(--pl-list-gap);
+  }
+
+  // Zagnieżdżone listy.
+  > * > ul,
+  > * > ol {
+    margin-bottom: 0;
+  }
+}
+
+// ── Punktory ────────────────────────────────────────────────────────────
+.pl-list-disc,
+.pl-list-circle,
+.pl-list-square,
+.pl-list-decimal,
+.pl-list-hyphen {
+  padding-left: var(--pl-list-indent);
+
+  > ::marker {
+    color: var(--pl-list-marker);
+  }
+}
+
+.pl-list-disc { list-style-type: disc; }
+.pl-list-circle { list-style-type: circle; }
+.pl-list-square { list-style-type: square; }
+.pl-list-hyphen { list-style-type: '–  '; }
+
+.pl-list-decimal {
+  --pl-list-indent: 1.6em;
+  list-style-type: decimal;
+
+  > ::marker {
+    font-family: var(--pl-font-mono);
+    font-size: 0.85em;
+    font-variant-numeric: tabular-nums;
+  }
+}
+
+// „Ptaszki" w miękkim kółku.
+.pl-list-check {
+  --pl-list-marker: var(--pl-success);
+
+  > * {
+    position: relative;
+    padding-left: 1.9em;
+
+    &::before,
+    &::after {
+      content: '';
+      position: absolute;
+      top: 0.2em;
+      left: 0;
+      width: 1.2em;
+      height: 1.2em;
+      border-radius: 50%;
+    }
+
+    &::before {
+      background: color-mix(in oklab, var(--pl-list-marker) 16%, transparent);
+    }
+
+    &::after {
+      background: var(--pl-list-marker);
+      mask: $check center / 58% no-repeat;
+    }
+  }
+}
+
+// ── Kolor punktorów ─────────────────────────────────────────────────────
+.pl-list-muted { --pl-list-marker: var(--pl-text-subtle); }
+.pl-list-primary { --pl-list-marker: var(--pl-primary); }
+.pl-list-spark { --pl-list-marker: color-mix(in oklab, var(--pl-spark) 72%, var(--pl-text)); }
+
+// ── Podział i paski ─────────────────────────────────────────────────────
+.pl-list-divider > :nth-child(n + 2) {
+  margin-top: var(--pl-list-gap);
+  padding-top: var(--pl-list-gap);
+  border-top: 1px solid var(--pl-border);
+}
+
+.pl-list-check.pl-list-divider > :nth-child(n + 2)::before,
+.pl-list-check.pl-list-divider > :nth-child(n + 2)::after {
+  top: calc(var(--pl-list-gap) + 0.2em);
+}
+
+.pl-list-striped {
+  > * {
+    margin-top: 0 !important;
+    padding: var(--pl-list-gap) 0.85rem;
+    border-radius: var(--pl-radius-sm);
+  }
+
+  > :nth-of-type(odd) {
+    background: var(--pl-muted);
+  }
+}
+
+.pl-list-check.pl-list-striped > * {
+  padding-left: calc(0.85rem + 1.9em);
+
+  &::before,
+  &::after {
+    top: calc(var(--pl-list-gap) + 0.2em);
+    left: 0.85rem;
+  }
+}
+
+// ── Odstępy ─────────────────────────────────────────────────────────────
+.pl-list-large {
+  --pl-list-gap: 1.1rem;
+}
+
+.pl-list-collapse {
+  --pl-list-gap: 0rem;
+}
+
+// ── List group — obramowane, interaktywne wiersze ───────────────────────
+.pl-list-group {
+  --pl-list-group-px: 1rem;
+  --pl-list-group-py: 0.75rem;
+  --pl-list-group-radius: var(--pl-radius-md);
+
+  display: flex;
+  flex-direction: column;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  @include surface(var(--pl-list-group-radius), var(--pl-shadow-xs));
+}
+
+.pl-list-group-item {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: var(--pl-space-3);
+  width: 100%;
+  margin: 0;
+  padding: var(--pl-list-group-py) var(--pl-list-group-px);
+  border: 0;
+  border-top: 1px solid var(--pl-border);
+  background: none;
+  color: var(--pl-text);
+  font: inherit;
+  text-align: start;
+  text-decoration: none;
+
+  &:first-child {
+    border-top: 0;
+    border-start-start-radius: calc(var(--pl-list-group-radius) - 1px);
+    border-start-end-radius: calc(var(--pl-list-group-radius) - 1px);
+  }
+
+  &:last-child {
+    border-end-start-radius: calc(var(--pl-list-group-radius) - 1px);
+    border-end-end-radius: calc(var(--pl-list-group-radius) - 1px);
+  }
+
+  // Akcent aktywnej pozycji — pionowa kreska wysuwana z lewej.
+  &::before {
+    content: '';
+    position: absolute;
+    inset: 0.55rem auto 0.55rem 0;
+    width: 3px;
+    border-radius: 0 3px 3px 0;
+    background: var(--pl-primary);
+    transform: scaleY(0);
+    transition: transform var(--pl-dur-3) var(--pl-ease-spring);
+  }
+
+  > svg,
+  > .pl-icon {
+    flex: none;
+    color: var(--pl-text-subtle);
+    @include transition('color, transform', var(--pl-dur-2));
+  }
+
+  // Element dosunięty do prawej (znaczek, etykieta, licznik, strzałka).
+  > .pl-badge,
+  > .pl-label,
+  > .pl-list-group-meta {
+    flex: none;
+    margin-left: auto;
+  }
+
+  &.pl-active {
+    background: var(--pl-primary-soft);
+    color: var(--pl-primary-text);
+
+    &::before {
+      transform: scaleY(1);
+    }
+
+    > svg,
+    > .pl-icon {
+      color: inherit;
+    }
+  }
+
+  &.pl-disabled,
+  &:disabled {
+    color: var(--pl-text-subtle);
+    pointer-events: none;
+
+    > * {
+      opacity: 0.6;
+    }
+  }
+}
+
+.pl-list-group-meta {
+  color: var(--pl-text-subtle);
+  font-size: var(--pl-text-sm);
+  font-variant-numeric: tabular-nums;
+}
+
+// Treść wielowierszowa: tytuł + opis.
+.pl-list-group-content {
+  flex: 1 1 auto;
+  min-width: 0;
+}
+
+.pl-list-group-title {
+  display: block;
+  font-weight: 560;
+  line-height: 1.35;
+}
+
+.pl-list-group-text {
+  display: block;
+  color: var(--pl-text-muted);
+  font-size: var(--pl-text-sm);
+}
+
+// Interaktywne wiersze.
+a.pl-list-group-item,
+button.pl-list-group-item,
+label.pl-list-group-item {
+  cursor: pointer;
+  @include transition('background-color, color', var(--pl-dur-2));
+
+  &:hover:not(.pl-active) {
+    background: var(--pl-muted);
+    text-decoration: none;
+
+    > svg,
+    > .pl-icon {
+      color: var(--pl-text);
+    }
+  }
+
+  &:active:not(.pl-active) {
+    background: var(--pl-muted-strong);
+  }
+
+  @include focus-visible(-2px);
+}
+
+// ── Warianty list-group ─────────────────────────────────────────────────
+.pl-list-group-flush {
+  border: 0;
+  border-radius: 0;
+  background: none;
+  box-shadow: none;
+
+  > .pl-list-group-item {
+    border-radius: 0;
+  }
+}
+
+.pl-list-group-small {
+  --pl-list-group-px: 0.75rem;
+  --pl-list-group-py: 0.5rem;
+  --pl-list-group-radius: var(--pl-radius-sm);
+  font-size: var(--pl-text-sm);
+}
+
+.pl-list-group-large {
+  --pl-list-group-px: 1.25rem;
+  --pl-list-group-py: 1.05rem;
+  --pl-list-group-radius: var(--pl-radius-lg);
+}
+
+// Numerowana.
+.pl-list-group-numbered {
+  counter-reset: pl-list-group;
+
+  > .pl-list-group-item {
+    counter-increment: pl-list-group;
+
+    &::after {
+      content: counter(pl-list-group, decimal-leading-zero);
+      order: -1;
+      color: var(--pl-text-subtle);
+      font-family: var(--pl-font-mono);
+      font-size: var(--pl-text-xs);
+      letter-spacing: 0.06em;
+    }
+  }
+}
+
+// Pozioma (od breakpointu s).
+.pl-list-group-horizontal {
+  @include up(s) {
+    flex-direction: row;
+
+    > .pl-list-group-item {
+      flex: 1 1 0;
+      justify-content: center;
+      border-top: 0;
+      border-left: 1px solid var(--pl-border);
+      border-radius: 0;
+
+      &::before {
+        inset: auto 0.75rem 0 0.75rem;
+        width: auto;
+        height: 3px;
+        border-radius: 3px 3px 0 0;
+        transform: scaleX(0);
+      }
+
+      &.pl-active::before {
+        transform: scaleX(1);
+      }
+
+      &:first-child {
+        border-left: 0;
+        border-radius: calc(var(--pl-list-group-radius) - 1px) 0 0 calc(var(--pl-list-group-radius) - 1px);
+      }
+
+      &:last-child {
+        border-radius: 0 calc(var(--pl-list-group-radius) - 1px) calc(var(--pl-list-group-radius) - 1px) 0;
+      }
+
+      > .pl-badge,
+      > .pl-label,
+      > .pl-list-group-meta {
+        margin-left: 0;
+      }
+    }
+  }
+}

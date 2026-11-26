@@ -1,0 +1,36 @@
+// Padding — odstępy wewnętrzne.
+@use '../abstracts' as *;
+
+.pl-padding {
+  padding: clamp(var(--pl-space-5), 1rem + 1.6vw, 2.5rem);
+}
+
+.pl-padding-xsmall {
+  padding: var(--pl-space-2);
+}
+
+.pl-padding-small {
+  padding: var(--pl-space-4);
+}
+
+.pl-padding-large {
+  padding: clamp(2.5rem, 1.5rem + 4vw, 4.5rem);
+}
+
+@include responsive using ($s) {
+  .pl-padding-remove#{$s} { padding: 0 !important; }
+  .pl-padding-remove-top#{$s} { padding-top: 0 !important; }
+  .pl-padding-remove-bottom#{$s} { padding-bottom: 0 !important; }
+  .pl-padding-remove-left#{$s} { padding-left: 0 !important; }
+  .pl-padding-remove-right#{$s} { padding-right: 0 !important; }
+
+  .pl-padding-remove-vertical#{$s} {
+    padding-top: 0 !important;
+    padding-bottom: 0 !important;
+  }
+
+  .pl-padding-remove-horizontal#{$s} {
+    padding-left: 0 !important;
+    padding-right: 0 !important;
+  }
+}

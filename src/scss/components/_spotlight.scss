@@ -1,0 +1,51 @@
+// Spotlight — poświata podążająca za kursorem (JS ustawia --pl-spot-x / --pl-spot-y).
+@use '../abstracts' as *;
+
+.pl-spotlight {
+  --pl-spot-size: 22rem;
+  --pl-spot-color: var(--pl-primary);
+  --pl-spot-x: 50%;
+  --pl-spot-y: 50%;
+  position: relative;
+  isolation: isolate;
+
+  &::after {
+    content: '';
+    position: absolute;
+    inset: -1px;
+    z-index: -1;
+    border-radius: inherit;
+    background: radial-gradient(
+      var(--pl-spot-size) circle at var(--pl-spot-x) var(--pl-spot-y),
+      color-mix(in oklab, var(--pl-spot-color) 16%, transparent),
+      transparent 70%
+    );
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity var(--pl-dur-4) var(--pl-ease);
+  }
+
+  &.pl-spotlight-active::after {
+    opacity: 1;
+  }
+}
+
+// Wariant: podświetlana sama ramka.
+.pl-spotlight-border {
+  &::after {
+    z-index: 0;
+    padding: 1px;
+    background: radial-gradient(
+      calc(var(--pl-spot-size) * 0.7) circle at var(--pl-spot-x) var(--pl-spot-y),
+      var(--pl-spot-color),
+      transparent 70%
+    );
+    mask:
+      linear-gradient(#000 0 0) content-box exclude,
+      linear-gradient(#000 0 0);
+  }
+}
+
+.pl-spotlight-spark {
+  --pl-spot-color: var(--pl-spark);
+}

@@ -1,0 +1,302 @@
+---
+import Example from '../../layouts/Example.astro';
+import ShopHeader from '../../components/examples/ShopHeader.astro';
+import ShopFooter from '../../components/examples/ShopFooter.astro';
+
+const categories = [
+  { id: 'wnetrza', label: 'Wnętrza', tone: 'primary' },
+  { id: 'swiatlo', label: 'Światło', tone: 'warning' },
+  { id: 'rzemioslo', label: 'Rzemiosło', tone: 'success' },
+  { id: 'pielegnacja', label: 'Pielęgnacja', tone: 'info' },
+];
+
+const authors = {
+  ida: { name: 'Ida Lindqvist', avatar: 1 },
+  mikolaj: { name: 'Mikołaj Sarna', avatar: 2 },
+  hanna: { name: 'Hanna Wrzos', avatar: 3 },
+  borys: { name: 'Borys Klon', avatar: 4 },
+};
+
+const posts = [
+  { cat: 'swiatlo', photo: 2, title: 'Trzy warstwy światła, czyli jak oświetlić salon', excerpt: 'Jedna lampa pod sufitem to za mało. Pokazujemy, jak łączyć światło ogólne, zadaniowe i nastrojowe.', author: 'mikolaj', date: '18 listopada 2026', iso: '2026-11-18', time: 7 },
+  { cat: 'pielegnacja', photo: 4, title: 'Len po pięciu latach prania. Co się z nim dzieje?', excerpt: 'Mięknie, jaśnieje i wygląda coraz lepiej. Sprawdziliśmy pościel, która służy nam od 2021 roku.', author: 'hanna', date: '12 listopada 2026', iso: '2026-11-12', time: 5 },
+  { cat: 'rzemioslo', photo: 6, title: 'Od bryły gliny do kubka w 21 dni', excerpt: 'Toczenie trwa kwadrans. Reszta to czekanie: suszenie, biskwit, szkliwo i drugi wypał w 1240°C.', author: 'ida', date: '5 listopada 2026', iso: '2026-11-05', time: 9 },
+  { cat: 'wnetrza', photo: 1, title: 'Małe mieszkanie po skandynawsku', excerpt: '38 metrów, dwoje ludzi i pies. Sześć zasad, dzięki którym nikt nikomu nie wchodzi w drogę.', author: 'ida', date: '29 października 2026', iso: '2026-10-29', time: 6 },
+  { cat: 'swiatlo', photo: 8, title: 'Barwa światła: 2700 czy 3000 kelwinów?', excerpt: 'Różnica wydaje się mała, a zmienia cały pokój. Krótki przewodnik po żarówkach bez żargonu.', author: 'mikolaj', date: '21 października 2026', iso: '2026-10-21', time: 4 },
+  { cat: 'pielegnacja', photo: 5, title: 'Olejowany dąb: jak dbać o blat stołu', excerpt: 'Plamy z wina, ślady po kubkach i rysy. Wszystko da się naprawić w jedno popołudnie.', author: 'borys', date: '14 października 2026', iso: '2026-10-14', time: 8 },
+  { cat: 'rzemioslo', photo: 7, title: 'Dlaczego nie używamy wkrętów', excerpt: 'Czop, wpust i klin trzymają mocniej niż stal — i pozwalają rozebrać mebel po trzydziestu latach.', author: 'borys', date: '6 października 2026', iso: '2026-10-06', time: 6 },
+  { cat: 'wnetrza', photo: 3, title: 'Sypialnia bez niebieskiego światła', excerpt: 'Zasłony, kolor ścian i jedna lampka przy łóżku. Urządzamy pokój, w którym naprawdę się śpi.', author: 'hanna', date: '28 września 2026', iso: '2026-09-28', time: 5 },
+  { cat: 'rzemioslo', photo: 4, title: 'Szkło dmuchane ustami: jeden klosz, trzy osoby', excerpt: 'Byliśmy w hucie w Krośnie, gdzie powstają klosze lampy Fjord. Żaden nie jest identyczny — i dobrze.', author: 'mikolaj', date: '24 września 2026', iso: '2026-09-24', time: 10 },
+  { cat: 'wnetrza', photo: 2, title: 'Stół, przy którym mieści się życie', excerpt: 'Jak dobrać wymiary stołu do pokoju i do rodziny. Z tabelą, którą warto wydrukować.', author: 'borys', date: '19 września 2026', iso: '2026-09-19', time: 7 },
+];
+
+const catOf = (id: string) => categories.find((c) => c.id === id)!;
+const count = (id: string) => posts.filter((p) => p.cat === id).length;
+
+const popular = [
+  { title: 'Jak wybrać lampę nad stół', views: '12,4 tys.', photo: 8 },
+  { title: 'Ceramika w zmywarce — tak czy nie?', views: '9,8 tys.', photo: 6 },
+  { title: 'Wełniany pled: pranie bez filcowania', views: '7,1 tys.', photo: 4 },
+  { title: 'Pięć roślin do ciemnego przedpokoju', views: '6,6 tys.', photo: 1 },
+];
+
+const tags = ['len', 'dąb', 'kamionka', 'małe mieszkanie', 'sypialnia', 'kuchnia', 'naprawy', 'żarówki', 'wełna', 'hygge', 'DIY', 'prezenty'];
+---
+
+<Example title="Dziennik — Lorem" description="Lista wpisów bloga: wyróżniony artykuł, filtr kategorii, siatka kart, panel boczny i paginacja.">
+  <ShopHeader active="blog" />
+
+  <main>
+    <!-- Nagłówek -->
+    <section class="pl-section pl-section-remove-bottom">
+      <div class="pl-container">
+        <div class="pl-grid pl-grid-bottom">
+          <div class="pl-width-1-1 pl-width-expand@m">
+            <p class="pl-heading-eyebrow">Dziennik pracowni</p>
+            <h1 class="pl-heading-medium pl-margin-remove-bottom">O domu, świetle i <span class="pl-heading-mark">rzeczach</span> robionych powoli</h1>
+          </div>
+          <div class="pl-width-1-1 pl-width-1-3@m">
+            <form class="pl-form-icon pl-width-1-1" role="search" id="blog-search">
+              <span data-pl-icon="search"></span>
+              <input class="pl-input pl-form-large" type="search" placeholder="Szukaj w dzienniku…" aria-label="Szukaj w dzienniku">
+            </form>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Wyróżniony wpis -->
+    <section class="pl-section pl-section-small">
+      <div class="pl-container">
+        <article class="pl-card pl-card-hover pl-card-horizontal blog-featured" data-pl-scrollspy="cls: pl-animation-slide-up">
+          <figure class="pl-card-media">
+            <img src="/img/photo-5.svg" alt="Stół w jadalni oświetlony nisko zawieszoną lampą" width="1200" height="800">
+            <div class="pl-position-top-left pl-position-small">
+              <span class="pl-label pl-label-spark pl-label-solid">Polecamy</span>
+            </div>
+          </figure>
+          <div class="pl-card-body">
+            <p class="pl-card-meta"><span class="pl-label pl-label-warning">Światło</span> &nbsp; 24 listopada 2026 · 11 min czytania</p>
+            <h2 class="pl-heading-small pl-margin-small-top">
+              <a class="pl-link-heading pl-card-stretch" href="/examples/wpis/">Zimowe światło. Jak urządzić dom na najciemniejsze miesiące</a>
+            </h2>
+            <p class="pl-text-lead">Od listopada do lutego słońce zachodzi przed szesnastą. Skandynawowie mają na to sposób od stuleci — i nie chodzi o mocniejsze żarówki.</p>
+            <div class="pl-flex pl-flex-between pl-flex-middle pl-margin-top">
+              <div class="pl-avatar-item">
+                <span class="pl-avatar"><img src="/img/avatar-2.svg" alt=""></span>
+                <span class="pl-avatar-text">
+                  <span class="pl-avatar-name">Mikołaj Sarna</span>
+                  <span class="pl-avatar-meta">Szkło i światło</span>
+                </span>
+              </div>
+              <span class="pl-button pl-button-text">Czytaj <span class="pl-button-arrow" data-pl-icon="arrow-right"></span></span>
+            </div>
+          </div>
+        </article>
+      </div>
+    </section>
+
+    <!-- Lista + panel boczny -->
+    <section class="pl-section pl-section-small">
+      <div class="pl-container">
+        <div class="pl-grid pl-grid-large">
+          <div class="pl-width-1-1 pl-width-2-3@m" data-pl-filter="target: .js-blog-grid; animation: delayed-fade">
+            <div class="pl-flex pl-flex-between pl-flex-middle pl-flex-wrap pl-gap-small pl-margin-medium-bottom">
+              <div class="pl-overflow-x-auto blog-cats">
+              <ul class="pl-subnav pl-subnav-pill" aria-label="Kategorie">
+                <li class="pl-active" data-pl-filter-control><a href="#">Wszystko <span class="pl-filter-count">{posts.length}</span></a></li>
+                {categories.map((cat) => (
+                  <li data-pl-filter-control={`[data-cat='${cat.id}']`}><a href="#">{cat.label} <span class="pl-filter-count">{count(cat.id)}</span></a></li>
+                ))}
+              </ul>
+              </div>
+              <div>
+                <button class="pl-button pl-button-ghost pl-button-small" type="button"><span data-pl-icon="sliders-horizontal"></span> Sortuj</button>
+                <div class="pl-drop pl-dropdown" data-pl-drop="mode: click; pos: bottom-end">
+                  <ul class="pl-dropdown-nav">
+                    <li class="pl-active" data-pl-filter-control="sort: data-date; order: desc"><a href="#">Najnowsze</a></li>
+                    <li data-pl-filter-control="sort: data-date"><a href="#">Najstarsze</a></li>
+                    <li data-pl-filter-control="sort: data-time"><a href="#">Najkrótsze</a></li>
+                  </ul>
+                </div>
+              </div>
+            </div>
+
+            <div class="pl-grid pl-grid-match pl-child-width-1-1 pl-child-width-1-2@s js-blog-grid">
+              {posts.map((post) => {
+                const cat = catOf(post.cat);
+                const author = authors[post.author as keyof typeof authors];
+                return (
+                  <div data-cat={post.cat} data-date={post.iso} data-time={String(post.time).padStart(2, '0')}>
+                    <article class="pl-card pl-card-hover">
+                      <div class="pl-card-media">
+                        <img src={`/img/photo-${post.photo}.svg`} alt="" width="1200" height="800" loading="lazy">
+                        <div class="pl-position-top-left pl-position-small">
+                          <span class={`pl-label pl-label-${cat.tone} pl-label-solid`}>{cat.label}</span>
+                        </div>
+                      </div>
+                      <div class="pl-card-body">
+                        <h3 class="pl-card-title"><a class="pl-link-heading pl-card-stretch" href="/examples/wpis/">{post.title}</a></h3>
+                        <p class="pl-card-text pl-text-clamp-3">{post.excerpt}</p>
+                      </div>
+                      <div class="pl-card-footer pl-flex pl-flex-between pl-flex-middle pl-gap-small">
+                        <div class="pl-avatar-item">
+                          <span class="pl-avatar pl-avatar-small"><img src={`/img/avatar-${author.avatar}.svg`} alt=""></span>
+                          <span class="pl-avatar-text">
+                            <span class="pl-avatar-name">{author.name}</span>
+                            <span class="pl-avatar-meta"><time datetime={post.iso}>{post.date}</time></span>
+                          </span>
+                        </div>
+                        <span class="pl-text-meta pl-text-nowrap pl-flex-inline pl-flex-middle pl-gap-xsmall"><span class="pl-icon-small" data-pl-icon="clock"></span> {post.time} min</span>
+                      </div>
+                    </article>
+                  </div>
+                );
+              })}
+            </div>
+            <p class="pl-filter-empty" hidden>Brak wpisów w tej kategorii.</p>
+
+            <nav class="pl-margin-large-top" aria-label="Strony dziennika">
+              <ul class="pl-pagination pl-pagination-center">
+                <li class="pl-disabled"><a href="#" aria-label="Poprzednia strona"><span class="pl-pagination-previous"></span></a></li>
+                <li class="pl-active"><a href="#" aria-current="page">1</a></li>
+                <li><a href="#">2</a></li>
+                <li><a href="#">3</a></li>
+                <li><span>…</span></li>
+                <li><a href="#">8</a></li>
+                <li><a href="#" aria-label="Następna strona"><span class="pl-pagination-next"></span></a></li>
+              </ul>
+            </nav>
+          </div>
+
+          <!-- Panel boczny -->
+          <aside class="pl-width-1-1 pl-width-1-3@m">
+            <div data-pl-sticky="offset: 96; end: parent; media: @m">
+              <div class="pl-card">
+                <div class="pl-card-header">
+                  <h2 class="pl-card-title pl-text-lg pl-margin-remove">Najczęściej czytane</h2>
+                </div>
+                <ul class="pl-list-group pl-list-group-flush">
+                  {popular.map((item, index) => (
+                    <a class="pl-list-group-item" href="/examples/wpis/">
+                      <span class="pl-text-display pl-text-xl pl-text-subtle pl-text-tabular">{String(index + 1).padStart(2, '0')}</span>
+                      <span class="pl-list-group-content">
+                        <span class="pl-list-group-title">{item.title}</span>
+                        <span class="pl-list-group-text">{item.views} odsłon</span>
+                      </span>
+                      <img class="pl-image-rounded-small pl-object-cover blog-thumb" src={`/img/photo-${item.photo}.svg`} alt="" width="56" height="56" loading="lazy">
+                    </a>
+                  ))}
+                </ul>
+              </div>
+
+              <div class="pl-margin-medium-top">
+                <p class="pl-text-eyebrow">Tematy</p>
+                <div class="pl-chip-group">
+                  {tags.map((tag) => <a class="pl-chip pl-chip-small" href="#">#{tag}</a>)}
+                </div>
+              </div>
+
+              <div class="pl-tile pl-tile-primary pl-tile-rounded pl-background-aurora pl-margin-medium-top">
+                <span class="pl-icon-box pl-icon-solid pl-icon-secondary" data-pl-icon="mail"></span>
+                <h2 class="pl-text-xl pl-margin-top pl-margin-small-bottom">List z pracowni</h2>
+                <p class="pl-margin-remove-top">Raz w miesiącu: nowy wpis, kulisy pracy i pierwszeństwo przy krótkich seriach.</p>
+                <form class="pl-margin-top" id="blog-newsletter" data-pl-form-validate novalidate>
+                  <div class="pl-form-field">
+                    <input class="pl-input" type="email" required placeholder="Twój e-mail" aria-label="Adres e-mail" autocomplete="email">
+                  </div>
+                  <button class="pl-button pl-button-secondary pl-button-block pl-margin-small-top" type="submit">Zapisz się</button>
+                </form>
+                <p class="pl-text-small pl-margin-small-top pl-margin-remove-bottom">4 200 osób już czyta. Wypisujesz się jednym kliknięciem.</p>
+              </div>
+            </div>
+          </aside>
+        </div>
+      </div>
+    </section>
+
+    <!-- CTA -->
+    <section class="pl-section">
+      <div class="pl-container">
+        <div class="pl-tile pl-tile-muted pl-tile-large pl-tile-rounded pl-background-dots pl-background-fade">
+          <div class="pl-grid pl-grid-middle">
+            <div class="pl-width-1-1 pl-width-expand@m">
+              <p class="pl-heading-eyebrow">Ze sklepu</p>
+              <h2 class="pl-heading-small pl-margin-remove">Rzeczy, o których piszemy, robimy sami</h2>
+            </div>
+            <div class="pl-width-1-1 pl-width-auto@m">
+              <a class="pl-button pl-button-primary pl-button-large" href="/examples/kategoria/">Zobacz kolekcję <span class="pl-button-arrow" data-pl-icon="arrow-right"></span></a>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <ShopFooter />
+  <a href="#" class="pl-totop pl-totop-fixed" data-pl-totop></a>
+</Example>
+
+<script>
+  const api = () => (window as any).Plossy;
+
+  const newsletter = document.querySelector<HTMLFormElement>('#blog-newsletter');
+  newsletter?.addEventListener('pl:valid', (event) => {
+    (event as CustomEvent).detail.originalEvent?.preventDefault();
+    api().notification({ title: 'Zapisano', message: 'Pierwszy list z pracowni wyślemy 1 grudnia.', status: 'success' });
+    newsletter.reset();
+  });
+
+  document.querySelector('#blog-search')?.addEventListener('submit', (event) => {
+    const query = (event.target as HTMLFormElement).querySelector('input')!.value.trim();
+    if (query) api().notification({ message: `Szukam wpisów: „${query}"…`, icon: 'search', timeout: 2500 });
+  });
+</script>
+
+<style>
+  .blog-thumb {
+    width: 3.5rem;
+    height: 3.5rem;
+    flex: none;
+  }
+
+  /* Pigułki kategorii na telefonie przewijają się w poziomie zamiast łamać. */
+  .blog-cats {
+    max-width: 100%;
+    border-radius: var(--pl-radius-pill);
+    scrollbar-width: none;
+  }
+
+  .blog-cats > .pl-subnav {
+    flex-wrap: nowrap;
+    width: max-content;
+    white-space: nowrap;
+  }
+
+  /* .pl-card-horizontal nie układa się w pionie na wąskich ekranach. */
+  @media (max-width: 959.98px) {
+    .blog-featured {
+      flex-direction: column;
+    }
+
+    .blog-featured > .pl-card-media {
+      flex: none;
+      aspect-ratio: 3 / 2;
+      border-radius: calc(var(--pl-card-radius) - 1px) calc(var(--pl-card-radius) - 1px) 0 0;
+    }
+  }
+
+  /* Wyróżniony wpis: zdjęcie zajmuje nieco ponad połowę karty. */
+  @media (min-width: 960px) {
+    .blog-featured > .pl-card-media {
+      flex: 0 0 55%;
+    }
+
+    .blog-featured > .pl-card-body {
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      padding: var(--pl-space-7);
+    }
+  }
+</style>

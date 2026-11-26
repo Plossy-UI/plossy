@@ -1,0 +1,93 @@
+// Silnik presetów stylu — mixiny do definiowania data-pl-style="nazwa".
+//
+//   @use 'engine' as *;
+//   @include preset('moj') { --pl-radius-md: 4px; … }         // pokrętła + paleta jasna
+//   @include preset-dark('moj') { --pl-bg: …; }                // paleta ciemna (opcjonalnie)
+//   @include preset-accent('moj', 0.55, 0.2, 30);              // domyślny akcent (opcjonalnie)
+//   [data-pl-style='moj'] .pl-button { … }                     // korekty komponentów (opcjonalnie)
+//
+// Każdy blok kończy się przeliczeniem tokenów pochodnych, więc styl działa
+// także lokalnie (na fragmencie strony), nie tylko na <html>.
+@use '../tokens' as tokens;
+
+@mixin preset($name) {
+  [data-pl-style='#{$name}'] {
+    @content;
+    @include tokens.derived;
+  }
+}
+
+@mixin preset-dark($name) {
+  [data-pl-theme='dark'][data-pl-style='#{$name}'],
+  [data-pl-theme='dark'] [data-pl-style='#{$name}'],
+  [data-pl-style='#{$name}'] [data-pl-theme='dark'] {
+    @content;
+    @include tokens.derived;
+  }
+}
+
+// Domyślny akcent stylu — ustępuje jawnemu data-pl-accent.
+@mixin preset-accent($name, $l, $c, $h, $on: null) {
+  [data-pl-style='#{$name}']:not([data-pl-accent]) {
+    --pl-accent-l: #{$l};
+    --pl-accent-c: #{$c};
+    --pl-accent-h: #{$h};
+    @if $on {
+      --pl-on-primary: #{$on};
+    }
+    @include tokens.derived;
+    @content;
+  }
+}
+
+@mixin preset-accent-dark($name, $l, $c, $h, $on: null) {
+  [data-pl-theme='dark'][data-pl-style='#{$name}']:not([data-pl-accent]),
+  [data-pl-theme='dark'] [data-pl-style='#{$name}']:not([data-pl-accent]) {
+    --pl-accent-l: #{$l};
+    --pl-accent-c: #{$c};
+    --pl-accent-h: #{$h};
+    @if $on {
+      --pl-on-primary: #{$on};
+    }
+    @include tokens.derived;
+    @content;
+  }
+}
+
+// ── Gotowe korekty do użycia wewnątrz bloku [data-pl-style='…'] ───────────
+
+// Wyłącza własne poświaty i cienie komponentów (te poza tokenami).
+@mixin no-depth {
+  :is(
+      .pl-button, .pl-card, .pl-tile, .pl-alert, .pl-label, .pl-badge, .pl-chip, .pl-avatar, .pl-drop, .pl-popover,
+      .pl-tooltip, .pl-notification, .pl-modal-dialog, .pl-offcanvas-bar, .pl-navbar-container, .pl-pagination a,
+      .pl-pagination span, .pl-totop, .pl-slidenav-previous, .pl-slidenav-next, .pl-list-group, .pl-icon-box,
+      .pl-accordion-item, .pl-comment, .pl-quantity, .pl-countdown-number, .pl-placeholder, .pl-switch, .pl-thumbnav a
+    ),
+  :is(.pl-button, .pl-card, .pl-tile, .pl-chip, .pl-pagination a, .pl-totop, .pl-slidenav-previous, .pl-slidenav-next):is(:hover, :active) {
+    box-shadow: none !important;
+  }
+}
+
+// Przycisk domyślny jako sama ramka; przy hoverze wypełnia się kolorem tekstu.
+@mixin outline-button {
+  .pl-button:not(
+      .pl-button-primary, .pl-button-secondary, .pl-button-success, .pl-button-warning, .pl-button-danger,
+      .pl-button-info, .pl-button-soft, .pl-button-ghost, .pl-button-text, .pl-button-link, .pl-button-outline
+    ) {
+    border-color: var(--pl-text);
+    background: transparent;
+
+    &:hover {
+      border-color: var(--pl-text);
+      background: var(--pl-text);
+      color: var(--pl-bg);
+    }
+  }
+
+  .pl-input,
+  .pl-textarea,
+  .pl-select {
+    background-color: transparent;
+  }
+}

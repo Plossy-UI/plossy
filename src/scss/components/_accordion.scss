@@ -1,0 +1,161 @@
+// Accordion
+@use '../abstracts' as *;
+
+.pl-accordion {
+  --pl-accordion-px: 0rem;
+  --pl-accordion-py: 1.05rem;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.pl-accordion-item {
+  border-bottom: 1px solid var(--pl-border);
+
+  &:first-child {
+    border-top: 1px solid var(--pl-border);
+  }
+}
+
+.pl-accordion-title {
+  @include button-reset;
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: var(--pl-space-3);
+  width: 100%;
+  padding: var(--pl-accordion-py) var(--pl-accordion-px);
+  padding-right: calc(var(--pl-accordion-px) + 2.25rem);
+  font-family: var(--pl-font-display);
+  font-size: var(--pl-text-lg);
+  font-weight: var(--pl-display-weight, 560);
+  line-height: 1.35;
+  letter-spacing: var(--pl-display-tracking, -0.012em);
+  color: var(--pl-text);
+  text-decoration: none;
+  @include transition('color, padding-left', var(--pl-dur-2));
+
+  // Ikona plus → minus z dwóch kresek.
+  &::before,
+  &::after {
+    content: '';
+    position: absolute;
+    top: 50%;
+    right: calc(var(--pl-accordion-px) + 0.35rem);
+    width: 0.8rem;
+    height: 1.5px;
+    border-radius: 2px;
+    background: currentColor;
+    opacity: 0.55;
+    transition:
+      transform var(--pl-dur-4) var(--pl-ease-spring),
+      opacity var(--pl-dur-2) var(--pl-ease);
+  }
+
+  &::after {
+    transform: rotate(90deg);
+  }
+
+  &:hover {
+    color: var(--pl-primary-text);
+
+    &::before,
+    &::after {
+      opacity: 1;
+    }
+  }
+
+  @include focus-visible(-2px);
+
+  &:focus-visible {
+    border-radius: var(--pl-radius-sm);
+  }
+}
+
+.pl-accordion-item.pl-open > .pl-accordion-title {
+  &::before {
+    transform: rotate(180deg);
+    opacity: 1;
+  }
+
+  &::after {
+    transform: rotate(180deg);
+    opacity: 1;
+  }
+}
+
+.pl-accordion-content {
+  padding: 0 calc(var(--pl-accordion-px) + 2.25rem) calc(var(--pl-accordion-py) + 0.2rem) var(--pl-accordion-px);
+  color: var(--pl-text-muted);
+}
+
+// ── Wariant: karty ──────────────────────────────────────────────────────
+.pl-accordion-card {
+  --pl-accordion-px: 1.25rem;
+  display: grid;
+  gap: var(--pl-space-2);
+
+  > .pl-accordion-item {
+    @include surface(var(--pl-radius-md), var(--pl-shadow-xs));
+    @include transition('border-color, box-shadow, background-color', var(--pl-dur-3));
+
+    &:hover {
+      border-color: var(--pl-border-strong);
+    }
+
+    &.pl-open {
+      border-color: var(--pl-border-strong);
+      box-shadow: var(--pl-shadow-md);
+    }
+  }
+}
+
+// ── Wariant: wypełniony ─────────────────────────────────────────────────
+.pl-accordion-muted {
+  --pl-accordion-px: 1.25rem;
+  display: grid;
+  gap: var(--pl-space-2);
+
+  > .pl-accordion-item {
+    border: 0;
+    border-radius: var(--pl-radius-md);
+    background: var(--pl-muted);
+    @include transition('background-color', var(--pl-dur-3));
+
+    &.pl-open {
+      background: var(--pl-primary-soft);
+    }
+  }
+}
+
+// ── Rozmiar ─────────────────────────────────────────────────────────────
+.pl-accordion-small {
+  --pl-accordion-py: 0.7rem;
+
+  .pl-accordion-title {
+    font-size: var(--pl-text-md);
+  }
+
+  .pl-accordion-content {
+    font-size: var(--pl-text-sm);
+  }
+}
+
+// Ikona po lewej stronie.
+.pl-accordion-icon-left {
+  .pl-accordion-title {
+    padding-right: var(--pl-accordion-px);
+    padding-left: calc(var(--pl-accordion-px) + 2rem);
+
+    &::before,
+    &::after {
+      right: auto;
+      left: calc(var(--pl-accordion-px) + 0.25rem);
+    }
+  }
+
+  .pl-accordion-content {
+    padding-right: var(--pl-accordion-px);
+    padding-left: calc(var(--pl-accordion-px) + 2rem);
+  }
+}

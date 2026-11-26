@@ -1,0 +1,301 @@
+// Button
+@use '../abstracts' as *;
+
+.pl-button {
+  --pl-button-h: var(--pl-control-h);
+  --pl-button-px: 1.05em;
+  --pl-button-radius: var(--pl-radius-md);
+
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5em;
+  height: var(--pl-button-h);
+  padding: 0 var(--pl-button-px);
+  border: var(--pl-border-w) solid var(--pl-border);
+  border-radius: var(--pl-button-radius);
+  background: var(--pl-surface);
+  box-shadow: var(--pl-shadow-xs);
+  color: var(--pl-text);
+  font-family: var(--pl-font-sans);
+  font-size: var(--pl-control-text);
+  font-weight: var(--pl-control-weight);
+  line-height: 1;
+  letter-spacing: var(--pl-control-tracking);
+  text-transform: var(--pl-control-case);
+  text-decoration: none;
+  white-space: nowrap;
+  vertical-align: middle;
+  user-select: none;
+  cursor: pointer;
+  transition:
+    background-color var(--pl-dur-2) var(--pl-ease),
+    border-color var(--pl-dur-2) var(--pl-ease),
+    color var(--pl-dur-2) var(--pl-ease),
+    box-shadow var(--pl-dur-3) var(--pl-ease),
+    transform var(--pl-dur-3) var(--pl-ease-spring);
+
+  &:hover {
+    border-color: var(--pl-border-strong);
+    background: var(--pl-muted);
+    text-decoration: none;
+  }
+
+  &:active {
+    transform: scale(var(--pl-press));
+    transition-duration: var(--pl-dur-1);
+  }
+
+  @include focus-visible;
+
+  &:disabled,
+  &.pl-disabled {
+    opacity: 0.5;
+    pointer-events: none;
+    box-shadow: none;
+  }
+
+  > svg,
+  > .pl-icon {
+    flex: none;
+    width: 1.15em;
+    height: 1.15em;
+    transition: transform var(--pl-dur-3) var(--pl-ease-spring);
+  }
+
+  // Ikona-strzałka na końcu delikatnie „ucieka" przy hoverze.
+  &:hover > .pl-button-arrow {
+    transform: translateX(3px);
+  }
+}
+
+// ── Tony (pełne wypełnienie) ────────────────────────────────────────────
+@include tones('pl-button');
+
+.pl-button:is(.pl-button-primary, .pl-button-secondary, .pl-button-success, .pl-button-warning, .pl-button-danger, .pl-button-info) {
+  border-color: transparent;
+  background: var(--pl-tone);
+  color: var(--pl-on-tone);
+  box-shadow:
+    inset 0 1px 0 oklch(1 0 0 / calc(0.16 * var(--pl-gloss))),
+    inset 0 -1px 0 oklch(0 0 0 / calc(0.08 * var(--pl-gloss))),
+    0 1px 2px color-mix(in oklab, var(--pl-tone) calc(40% * var(--pl-gloss)), transparent);
+
+  &:hover {
+    background: color-mix(in oklab, var(--pl-tone), var(--pl-mix-strong) 10%);
+    box-shadow:
+      inset 0 1px 0 oklch(1 0 0 / calc(0.16 * var(--pl-gloss))),
+      inset 0 -1px 0 oklch(0 0 0 / calc(0.08 * var(--pl-gloss))),
+      0 8px 20px -8px color-mix(in oklab, var(--pl-tone) calc(70% * var(--pl-gloss)), transparent);
+    transform: translateY(calc(-1px * var(--pl-lift)));
+  }
+
+  &:active {
+    transform: scale(var(--pl-press));
+  }
+}
+
+// ── Style ───────────────────────────────────────────────────────────────
+.pl-button.pl-button-soft {
+  --pl-tone: var(--pl-text);
+  --pl-tone-soft: var(--pl-muted);
+  --pl-tone-text: var(--pl-text);
+  border-color: transparent;
+  background: var(--pl-tone-soft);
+  box-shadow: none;
+  color: var(--pl-tone-text);
+
+  &:hover {
+    background: color-mix(in oklab, var(--pl-tone) 20%, var(--pl-surface));
+    box-shadow: none;
+    transform: none;
+  }
+}
+
+.pl-button.pl-button-outline {
+  --pl-tone: var(--pl-text);
+  --pl-tone-text: var(--pl-text);
+  border-color: color-mix(in oklab, var(--pl-tone) 45%, transparent);
+  background: transparent;
+  box-shadow: none;
+  color: var(--pl-tone-text);
+
+  &:hover {
+    border-color: var(--pl-tone);
+    background: color-mix(in oklab, var(--pl-tone) 9%, transparent);
+    box-shadow: none;
+    transform: none;
+  }
+}
+
+.pl-button.pl-button-ghost {
+  --pl-tone: var(--pl-text);
+  --pl-tone-text: var(--pl-text);
+  border-color: transparent;
+  background: transparent;
+  box-shadow: none;
+  color: var(--pl-tone-text);
+
+  &:hover {
+    background: color-mix(in oklab, var(--pl-tone) 10%, transparent);
+    box-shadow: none;
+    transform: none;
+  }
+}
+
+// Ponowne nałożenie tonów — muszą wygrać z domyślnymi wartościami stylów powyżej.
+@each $tone in $tones {
+  .pl-button.pl-button-#{$tone}:is(.pl-button-soft, .pl-button-outline, .pl-button-ghost) {
+    --pl-tone: var(--pl-#{$tone});
+    --pl-tone-soft: var(--pl-#{$tone}-soft);
+    --pl-tone-text: var(--pl-#{$tone}-text);
+  }
+}
+
+// Przycisk tekstowy z animowanym podkreśleniem.
+.pl-button.pl-button-text {
+  height: auto;
+  padding: 0.15em 0;
+  border: 0;
+  border-radius: 0;
+  background: none;
+  box-shadow: none;
+  color: var(--pl-text);
+
+  &::after {
+    content: '';
+    position: absolute;
+    inset: auto 0 0 0;
+    height: 1.5px;
+    background: currentColor;
+    transform: scaleX(0);
+    transform-origin: right;
+    transition: transform var(--pl-dur-3) var(--pl-ease);
+  }
+
+  &:hover {
+    background: none;
+
+    &::after {
+      transform: scaleX(1);
+      transform-origin: left;
+    }
+  }
+
+  &:active {
+    transform: none;
+  }
+}
+
+.pl-button.pl-button-link {
+  height: auto;
+  padding: 0;
+  border: 0;
+  background: none;
+  box-shadow: none;
+  color: var(--pl-primary-text);
+  text-decoration: underline;
+  text-decoration-color: color-mix(in oklab, currentColor 30%, transparent);
+  text-underline-offset: 0.22em;
+
+  &:hover {
+    background: none;
+    text-decoration-color: currentColor;
+  }
+}
+
+// ── Rozmiary i kształty ─────────────────────────────────────────────────
+.pl-button-small {
+  --pl-button-h: var(--pl-control-h-sm);
+  --pl-button-px: 0.8em;
+  --pl-button-radius: var(--pl-radius-sm);
+  font-size: 0.8125rem;
+}
+
+.pl-button-large {
+  --pl-button-h: var(--pl-control-h-lg);
+  --pl-button-px: 1.4em;
+  --pl-button-radius: calc(var(--pl-radius-md) * 1.17);
+  font-size: 1rem;
+}
+
+.pl-button-pill {
+  --pl-button-radius: var(--pl-radius-pill);
+}
+
+.pl-button-icon {
+  width: var(--pl-button-h);
+  padding: 0;
+}
+
+.pl-button-block {
+  display: flex;
+  width: 100%;
+}
+
+// ── Stan ładowania ──────────────────────────────────────────────────────
+.pl-button.pl-button-loading {
+  color: transparent !important;
+  pointer-events: none;
+
+  &::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    width: 1.1em;
+    height: 1.1em;
+    margin: auto;
+    border: 2px solid var(--pl-on-tone, var(--pl-text));
+    border-right-color: transparent;
+    border-radius: 50%;
+    animation: pl-button-spin 0.7s linear infinite;
+  }
+
+  &:is(.pl-button-soft, .pl-button-outline, .pl-button-ghost)::before {
+    border-color: var(--pl-tone-text);
+    border-right-color: transparent;
+  }
+}
+
+@keyframes pl-button-spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+// ── Grupa ───────────────────────────────────────────────────────────────
+.pl-button-group {
+  display: inline-flex;
+  vertical-align: middle;
+
+  > .pl-button {
+    border-radius: 0;
+
+    &:not(:first-child) {
+      margin-left: -1px;
+    }
+
+    &:first-child {
+      border-start-start-radius: var(--pl-button-radius);
+      border-end-start-radius: var(--pl-button-radius);
+    }
+
+    &:last-child {
+      border-start-end-radius: var(--pl-button-radius);
+      border-end-end-radius: var(--pl-button-radius);
+    }
+
+    &:hover,
+    &:focus-visible,
+    &.pl-active {
+      z-index: 1;
+      transform: none;
+    }
+  }
+}
+
+.pl-button.pl-active {
+  border-color: var(--pl-border-strong);
+  background: var(--pl-muted-strong);
+}

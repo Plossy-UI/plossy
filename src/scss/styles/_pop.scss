@@ -1,0 +1,117 @@
+// Styl pop: wyraźne ramki, twarde (ale stonowane) cienie, żywy kolor i gruba typografia.
+// Kontrast celowo złagodzony: obrys i cień to przygaszony granat, nie czerń.
+@use 'engine' as *;
+
+@mixin hard-shadows {
+  --pl-shadow-xs: 2px 2px 0 var(--pl-pop-shadow);
+  --pl-shadow-sm: 3px 3px 0 var(--pl-pop-shadow);
+  --pl-shadow-md: 4px 4px 0 var(--pl-pop-shadow);
+  --pl-shadow-lg: 6px 6px 0 var(--pl-pop-shadow);
+  --pl-shadow-xl: 8px 8px 0 var(--pl-pop-shadow);
+}
+
+@include preset('pop') {
+  --pl-spark: oklch(0.91 0.13 100);
+  --pl-pop-edge: oklch(0.36 0.035 285);
+  --pl-pop-shadow: oklch(0.36 0.035 285 / 0.85);
+  --pl-on-spark: oklch(0.2 0.03 100);
+  --pl-radius-xs: 4px;
+  --pl-radius-sm: 6px;
+  --pl-radius-md: 10px;
+  --pl-radius-lg: 14px;
+  --pl-radius-xl: 20px;
+  --pl-border-w: 1.5px;
+  --pl-gloss: 0;
+  --pl-lift: 1.5;
+  --pl-heading-weight: 760;
+  --pl-heading-tracking: -0.04em;
+  --pl-display-weight: 780;
+  --pl-display-tracking: -0.03em;
+  --pl-control-weight: 650;
+  --pl-control-tracking: 0em;
+
+  --pl-bg: oklch(0.975 0.016 95);
+  --pl-surface: oklch(1 0 0);
+  --pl-surface-raised: oklch(1 0 0);
+  --pl-muted: oklch(0.945 0.028 95);
+  --pl-muted-strong: oklch(0.905 0.045 95);
+  --pl-text: oklch(0.25 0.025 285);
+  --pl-text-muted: oklch(0.44 0.025 285);
+  --pl-text-subtle: oklch(0.56 0.022 285);
+  --pl-border: oklch(0.36 0.035 285);
+  --pl-border-strong: oklch(0.36 0.035 285);
+  --pl-ink: oklch(0.27 0.03 285);
+  --pl-on-ink: oklch(0.97 0.03 95);
+  --pl-warning: oklch(0.83 0.13 80);
+}
+
+@include preset-dark('pop') {
+  --pl-pop-edge: oklch(0.72 0.035 290);
+  --pl-pop-shadow: oklch(0.12 0.03 295 / 0.7);
+  --pl-bg: oklch(0.23 0.035 290);
+  --pl-surface: oklch(0.275 0.04 290);
+  --pl-surface-raised: oklch(0.3 0.042 290);
+  --pl-muted: oklch(0.31 0.045 290);
+  --pl-muted-strong: oklch(0.36 0.05 290);
+  --pl-text: oklch(0.93 0.02 95);
+  --pl-text-muted: oklch(0.78 0.025 95);
+  --pl-text-subtle: oklch(0.65 0.025 95);
+  --pl-border: oklch(0.72 0.035 290);
+  --pl-border-strong: oklch(0.72 0.035 290);
+  --pl-ink: oklch(0.93 0.02 95);
+  --pl-on-ink: oklch(0.2 0.05 295);
+}
+
+@include preset-accent('pop', 0.56, 0.19, 292);
+@include preset-accent-dark('pop', 0.76, 0.13, 55, oklch(0.2 0.04 50));
+
+// Twarde cienie (po tokenach pochodnych, także w zagnieżdżonych motywach).
+[data-pl-style='pop'],
+[data-pl-style='pop'] [data-pl-theme],
+[data-pl-style='pop']:not([data-pl-accent]),
+[data-pl-theme][data-pl-style='pop'] {
+  @include hard-shadows;
+}
+
+[data-pl-style='pop'] {
+  .pl-button:not(.pl-button-ghost, .pl-button-text, .pl-button-link, .pl-button-soft) {
+    border-color: var(--pl-pop-edge);
+    box-shadow: 2px 2px 0 var(--pl-pop-shadow) !important;
+
+    &:hover {
+      box-shadow: 3px 3px 0 var(--pl-pop-shadow) !important;
+      transform: translate(-1px, -1px);
+    }
+
+    &:active {
+      box-shadow: 0 0 0 var(--pl-pop-shadow) !important;
+      transform: translate(2px, 2px);
+    }
+  }
+
+  .pl-button-group > .pl-button {
+    transform: none !important;
+  }
+
+  .pl-input,
+  .pl-textarea,
+  .pl-select {
+    border-width: 1.5px;
+    border-color: var(--pl-pop-edge);
+
+    &:focus {
+      box-shadow: 3px 3px 0 color-mix(in oklab, var(--pl-primary) 55%, transparent);
+    }
+  }
+
+  .pl-label,
+  .pl-badge:not(.pl-badge-dot),
+  .pl-chip {
+    border: 1.5px solid var(--pl-pop-edge);
+    font-weight: 650;
+  }
+
+  mark {
+    border-radius: 0;
+  }
+}

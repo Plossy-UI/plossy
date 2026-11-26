@@ -1,0 +1,209 @@
+// Background — kolory tła, obrazy i dekoracyjne tła Plossy.
+@use '../abstracts' as *;
+
+// ── Kolory ──────────────────────────────────────────────────────────────
+.pl-background-default { background-color: var(--pl-bg) !important; }
+.pl-background-surface { background-color: var(--pl-surface) !important; }
+.pl-background-muted { background-color: var(--pl-muted) !important; }
+.pl-background-muted-strong { background-color: var(--pl-muted-strong) !important; }
+.pl-background-transparent { background-color: transparent !important; }
+
+@each $tone in $tones {
+  .pl-background-#{$tone} {
+    background-color: var(--pl-#{$tone}) !important;
+    color: var(--pl-on-#{$tone});
+  }
+
+  .pl-background-#{$tone}-soft {
+    background-color: var(--pl-#{$tone}-soft) !important;
+  }
+}
+
+.pl-background-spark {
+  background-color: var(--pl-spark) !important;
+  color: var(--pl-on-spark);
+}
+
+.pl-background-spark-soft {
+  background-color: color-mix(in oklab, var(--pl-spark) 22%, var(--pl-surface)) !important;
+}
+
+// Miękki gradient akcentu — do banerów i sekcji „hero".
+.pl-background-gradient {
+  background-image: linear-gradient(
+    135deg,
+    var(--pl-primary),
+    color-mix(in oklab, var(--pl-primary) 62%, var(--pl-info))
+  ) !important;
+  color: var(--pl-on-primary);
+}
+
+// ── Obrazy ──────────────────────────────────────────────────────────────
+.pl-background-cover,
+.pl-background-contain {
+  background-position: 50% 50%;
+  background-repeat: no-repeat;
+}
+
+.pl-background-cover { background-size: cover !important; }
+.pl-background-contain { background-size: contain !important; }
+.pl-background-width-1-1 { background-size: 100% !important; }
+.pl-background-height-1-1 { background-size: auto 100% !important; }
+.pl-background-norepeat { background-repeat: no-repeat !important; }
+.pl-background-fixed { background-attachment: fixed !important; }
+
+// Na urządzeniach dotykowych „fixed" bywa kosztowne i zawodne.
+@media (pointer: coarse) {
+  .pl-background-fixed { background-attachment: scroll !important; }
+}
+
+$positions: (
+  'top-left': 0 0,
+  'top-center': 50% 0,
+  'top-right': 100% 0,
+  'center-left': 0 50%,
+  'center-center': 50% 50%,
+  'center-right': 100% 50%,
+  'bottom-left': 0 100%,
+  'bottom-center': 50% 100%,
+  'bottom-right': 100% 100%,
+);
+
+@each $name, $value in $positions {
+  .pl-background-#{$name} { background-position: $value !important; }
+}
+
+// ── Mieszanie ───────────────────────────────────────────────────────────
+@each $mode in multiply, screen, overlay, darken, lighten, color-dodge, color-burn, hard-light, soft-light, difference, exclusion, hue, saturation, color, luminosity {
+  .pl-background-blend-#{$mode} { background-blend-mode: $mode !important; }
+}
+
+// ── Dekoracje — podpis Plossy ─────────────────────────────────────────────
+// Kropki i siatka ustawiają tylko background-image, więc łączą się
+// z klasami koloru tła.
+.pl-background-dots {
+  --pl-pattern-size: 20px;
+  --pl-pattern-color: color-mix(in oklab, var(--pl-text) 16%, transparent);
+
+  background-image: radial-gradient(var(--pl-pattern-color) 1px, transparent 1.5px);
+  background-size: var(--pl-pattern-size) var(--pl-pattern-size);
+  background-position: 50% 50%;
+}
+
+.pl-background-grid {
+  --pl-pattern-size: 32px;
+  --pl-pattern-color: color-mix(in oklab, var(--pl-text) 8%, transparent);
+
+  background-image:
+    linear-gradient(to right, var(--pl-pattern-color) 1px, transparent 1px),
+    linear-gradient(to bottom, var(--pl-pattern-color) 1px, transparent 1px);
+  background-size: var(--pl-pattern-size) var(--pl-pattern-size);
+  background-position: 50% 50%;
+}
+
+.pl-background-dots.pl-background-primary,
+.pl-background-grid.pl-background-primary,
+.pl-background-dots.pl-background-gradient,
+.pl-background-grid.pl-background-gradient {
+  --pl-pattern-color: color-mix(in oklab, var(--pl-on-primary) 22%, transparent);
+}
+
+// Wzór wygasający ku krawędziom (maska na pseudoelemencie, treść zostaje ostra).
+.pl-background-fade {
+  position: relative;
+  isolation: isolate;
+  background-image: none !important;
+
+  &::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    z-index: -1;
+    border-radius: inherit;
+    pointer-events: none;
+    mask-image: radial-gradient(ellipse 85% 85% at 50% 50%, black 35%, transparent 100%);
+  }
+
+  &.pl-background-dots::before {
+    background-image: radial-gradient(var(--pl-pattern-color) 1px, transparent 1.5px);
+    background-size: var(--pl-pattern-size) var(--pl-pattern-size);
+    background-position: 50% 50%;
+  }
+
+  &.pl-background-grid::before {
+    background-image:
+      linear-gradient(to right, var(--pl-pattern-color) 1px, transparent 1px),
+      linear-gradient(to bottom, var(--pl-pattern-color) 1px, transparent 1px);
+    background-size: var(--pl-pattern-size) var(--pl-pattern-size);
+    background-position: 50% 50%;
+  }
+}
+
+// Zorza: rozmyte plamy akcentu i iskry, które powoli dryfują.
+.pl-background-aurora {
+  --pl-aurora-strength: 1;
+  --pl-aurora-blur: 48px;
+  --pl-aurora-speed: 24s;
+
+  position: relative;
+  isolation: isolate;
+  overflow: hidden;
+
+  &::before {
+    content: '';
+    position: absolute;
+    inset: -30%;
+    z-index: -1;
+    pointer-events: none;
+    background:
+      radial-gradient(34% 38% at 26% 34%, color-mix(in oklab, var(--pl-primary) calc(42% * var(--pl-aurora-strength)), transparent), transparent 72%),
+      radial-gradient(28% 32% at 72% 30%, color-mix(in oklab, var(--pl-spark) calc(40% * var(--pl-aurora-strength)), transparent), transparent 72%),
+      radial-gradient(36% 36% at 62% 72%, color-mix(in oklab, var(--pl-primary) calc(26% * var(--pl-aurora-strength)), transparent), transparent 72%),
+      radial-gradient(24% 28% at 30% 74%, color-mix(in oklab, var(--pl-spark) calc(22% * var(--pl-aurora-strength)), transparent), transparent 72%);
+    filter: blur(var(--pl-aurora-blur));
+    will-change: transform;
+  }
+}
+
+.pl-background-aurora-strong { --pl-aurora-strength: 1.7; }
+.pl-background-aurora-static::before { animation: none !important; }
+
+@media (prefers-reduced-motion: no-preference) {
+  .pl-background-aurora::before {
+    animation: pl-background-aurora var(--pl-aurora-speed) var(--pl-ease-in-out) infinite alternate;
+  }
+}
+
+@keyframes pl-background-aurora {
+  0% {
+    transform: translate3d(-5%, -3%, 0) rotate(0deg) scale(1);
+  }
+
+  50% {
+    transform: translate3d(4%, 5%, 0) rotate(10deg) scale(1.1);
+  }
+
+  100% {
+    transform: translate3d(6%, -4%, 0) rotate(-8deg) scale(1.03);
+  }
+}
+
+// Ziarno: szum z filtra SVG (feTurbulence) w pseudoelemencie.
+.pl-background-noise {
+  --pl-noise-opacity: 0.32;
+
+  position: relative;
+  isolation: isolate;
+
+  &::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    z-index: -1;
+    border-radius: inherit;
+    pointer-events: none;
+    opacity: var(--pl-noise-opacity);
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='180' height='180'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='3' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 .5 0 0 0 0 .5 0 0 0 0 .5 0 0 0 .7 0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+    background-size: 180px 180px;
+  }
+}

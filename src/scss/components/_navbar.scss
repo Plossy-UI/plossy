@@ -1,0 +1,559 @@
+// Navbar
+@use '../abstracts' as *;
+
+.pl-navbar-container {
+  --pl-navbar-h: 4rem;
+  --pl-navbar-px: 1.25rem;
+  --pl-navbar-bg: var(--pl-surface);
+
+  position: relative;
+  border-bottom: 1px solid var(--pl-border);
+  background: var(--pl-navbar-bg);
+  color: var(--pl-text);
+  transition:
+    transform var(--pl-dur-4) var(--pl-ease),
+    box-shadow var(--pl-dur-3) var(--pl-ease),
+    background-color var(--pl-dur-3) var(--pl-ease),
+    border-color var(--pl-dur-3) var(--pl-ease);
+}
+
+.pl-navbar {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: var(--pl-space-4);
+  min-height: var(--pl-navbar-h, 4rem);
+  padding: 0 var(--pl-navbar-px, 1.25rem);
+  transition: min-height var(--pl-dur-3) var(--pl-ease);
+}
+
+// Z sekcją środkową: trzy kolumny, środek zawsze idealnie wyśrodkowany.
+.pl-navbar:has(> .pl-navbar-center) {
+  display: grid;
+  grid-template-columns: 1fr auto 1fr;
+
+  > .pl-navbar-left {
+    grid-column: 1;
+    justify-self: start;
+  }
+
+  > .pl-navbar-center {
+    grid-column: 2;
+  }
+
+  > .pl-navbar-right {
+    grid-column: 3;
+    justify-self: end;
+  }
+}
+
+.pl-navbar-left,
+.pl-navbar-center,
+.pl-navbar-right {
+  display: flex;
+  align-items: center;
+  gap: var(--pl-space-3);
+  min-width: 0;
+}
+
+.pl-navbar-right {
+  margin-left: auto;
+}
+
+.pl-navbar-center:only-child {
+  margin-inline: auto;
+}
+
+// ── Logo ────────────────────────────────────────────────────────────────
+.pl-navbar-logo {
+  display: inline-flex;
+  flex: none;
+  align-items: center;
+  gap: 0.5rem;
+  min-height: 2.25rem;
+  color: var(--pl-text);
+  font-family: var(--pl-font-display);
+  font-size: 1.25rem;
+  font-weight: var(--pl-display-weight, 640);
+  line-height: 1;
+  letter-spacing: var(--pl-display-tracking, -0.035em);
+  text-decoration: none;
+  transition: transform var(--pl-dur-3) var(--pl-ease-spring);
+
+  > img,
+  > svg {
+    display: block;
+    width: auto;
+    height: 1.75rem;
+  }
+
+  > .pl-icon {
+    width: 1.35rem;
+    height: 1.35rem;
+  }
+
+  &:hover {
+    color: var(--pl-text);
+    text-decoration: none;
+  }
+
+  &:active {
+    transform: scale(0.97);
+  }
+
+  @include focus-visible(4px);
+}
+
+// Znak graficzny: kwadrat w kolorze akcentu z limonkową iskrą.
+.pl-navbar-logo-mark {
+  position: relative;
+  display: inline-block;
+  flex: none;
+  width: 1.6rem;
+  height: 1.6rem;
+  border-radius: 0.5rem;
+  background: var(--pl-primary);
+  box-shadow: inset 0 1px 0 oklch(1 0 0 / 0.2);
+  transition: transform var(--pl-dur-4) var(--pl-ease-spring);
+
+  &::after {
+    content: '';
+    position: absolute;
+    right: 0.3rem;
+    bottom: 0.3rem;
+    width: 0.45rem;
+    height: 0.45rem;
+    border-radius: 50%;
+    background: var(--pl-spark);
+  }
+
+  .pl-navbar-logo:hover > & {
+    transform: rotate(-10deg) scale(1.06);
+  }
+}
+
+// ── Nawigacja ───────────────────────────────────────────────────────────
+.pl-navbar-nav {
+  display: flex;
+  align-items: center;
+  gap: 0.125rem;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+
+  > li {
+    position: relative;
+    display: flex;
+  }
+
+  > li > a,
+  > li > button {
+    @include button-reset;
+    position: relative;
+    z-index: 0;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.45em;
+    min-height: 2.25rem;
+    padding: 0.3rem 0.8rem;
+    border-radius: var(--pl-radius-pill);
+    color: var(--pl-text-muted);
+    font-size: 0.9375rem;
+    font-weight: 500;
+    line-height: 1.25;
+    letter-spacing: -0.006em;
+    text-decoration: none;
+    white-space: nowrap;
+    transition: color var(--pl-dur-2) var(--pl-ease);
+
+    // Tło hover — pigułka, która wyrasta ze środka.
+    &::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      z-index: -1;
+      border-radius: inherit;
+      background: var(--pl-navbar-hover, var(--pl-muted));
+      opacity: 0;
+      transform: scale(0.82);
+      transition:
+        transform var(--pl-dur-3) var(--pl-ease-spring),
+        opacity var(--pl-dur-2) var(--pl-ease);
+    }
+
+    // Wskaźnik aktywnej pozycji — krótka kreska pod tekstem.
+    &::after {
+      content: '';
+      position: absolute;
+      bottom: 0.1rem;
+      left: 50%;
+      width: 1rem;
+      height: 2px;
+      margin-left: -0.5rem;
+      border-radius: 2px;
+      background: var(--pl-primary);
+      opacity: 0;
+      transform: scaleX(0);
+      transition:
+        transform var(--pl-dur-4) var(--pl-ease-spring),
+        opacity var(--pl-dur-2) var(--pl-ease);
+    }
+
+    &:hover,
+    &[aria-expanded='true'] {
+      color: var(--pl-text);
+
+      &::before {
+        opacity: 1;
+        transform: none;
+      }
+    }
+
+    &:active::before {
+      transform: scale(0.95);
+      background: var(--pl-muted-strong);
+    }
+
+    @include focus-visible(0);
+
+    > .pl-icon,
+    > svg {
+      flex: none;
+      width: 1.1em;
+      height: 1.1em;
+    }
+  }
+
+  > li.pl-active > a {
+    color: var(--pl-text);
+    font-weight: 560;
+
+    &::after {
+      opacity: 1;
+      transform: none;
+    }
+  }
+
+  > li.pl-disabled > a {
+    opacity: 0.45;
+    pointer-events: none;
+  }
+
+  // Pozycja z rozwijanym menu — strzałka w dół.
+  > li.pl-parent > a > .pl-navbar-caret,
+  > li > a > .pl-navbar-caret {
+    flex: none;
+    width: 0.4em;
+    height: 0.4em;
+    margin: -0.2em 0.1em 0 0.1em;
+    border: solid currentColor;
+    border-width: 0 1.5px 1.5px 0;
+    opacity: 0.6;
+    transform: rotate(45deg);
+    transition: transform var(--pl-dur-4) var(--pl-ease-spring);
+  }
+
+  > li > a[aria-expanded='true'] > .pl-navbar-caret {
+    transform: translateY(0.2em) rotate(-135deg);
+  }
+}
+
+// Wariant: aktywna pozycja jako wypełniona pigułka.
+.pl-navbar-nav-pill {
+  > li > a::after {
+    display: none;
+  }
+
+  > li.pl-active > a {
+    color: var(--pl-on-ink);
+
+    &::before {
+      background: var(--pl-ink);
+      opacity: 1;
+      transform: none;
+    }
+  }
+}
+
+// Wariant: linia na dolnej krawędzi paska.
+.pl-navbar-nav-line {
+  align-self: stretch;
+  gap: 0.25rem;
+
+  > li {
+    align-items: center;
+  }
+
+  > li > a::after {
+    bottom: calc((var(--pl-navbar-h, 4rem) - 2.25rem) / -2);
+    left: 0.8rem;
+    width: calc(100% - 1.6rem);
+    margin-left: 0;
+    border-radius: 2px 2px 0 0;
+  }
+}
+
+.pl-navbar-subtitle {
+  display: block;
+  margin-top: 0.1em;
+  color: var(--pl-text-subtle);
+  font-size: var(--pl-text-xs);
+  font-weight: 400;
+  letter-spacing: 0;
+}
+
+.pl-navbar-nav > li > a:has(.pl-navbar-subtitle) {
+  padding-block: 0.4rem;
+  border-radius: var(--pl-radius-md);
+  text-align: left;
+
+  &::after {
+    display: none;
+  }
+}
+
+// ── Dowolna treść ───────────────────────────────────────────────────────
+.pl-navbar-item {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--pl-space-2);
+  min-height: 2.25rem;
+  color: var(--pl-text-muted);
+  font-size: var(--pl-text-sm);
+  white-space: nowrap;
+}
+
+// ── Przełącznik (hamburger → X) ─────────────────────────────────────────
+.pl-navbar-toggle {
+  @include button-reset;
+  position: relative;
+  display: inline-flex;
+  flex: none;
+  align-items: center;
+  justify-content: center;
+  width: 2.5rem;
+  height: 2.5rem;
+  border-radius: var(--pl-radius-md);
+  // Środkowa kreska to gradient tła, górna i dolna — pseudo-elementy.
+  background: linear-gradient(currentColor, currentColor) center / 1.125rem 1.5px no-repeat;
+  color: var(--pl-text);
+  transition:
+    background-color var(--pl-dur-2) var(--pl-ease),
+    background-size var(--pl-dur-2) var(--pl-ease),
+    transform var(--pl-dur-3) var(--pl-ease-spring);
+
+  &::before,
+  &::after {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 1.125rem;
+    height: 1.5px;
+    margin: -0.75px 0 0 -0.5625rem;
+    border-radius: 2px;
+    background: currentColor;
+    transition: transform var(--pl-dur-4) var(--pl-ease-spring);
+  }
+
+  &::before {
+    transform: translateY(-0.375rem);
+  }
+
+  &::after {
+    transform: translateY(0.375rem);
+  }
+
+  &:hover {
+    background-color: var(--pl-muted);
+
+    &::before {
+      transform: translateY(-0.45rem);
+    }
+
+    &::after {
+      transform: translateY(0.45rem);
+    }
+  }
+
+  &:active {
+    transform: scale(0.92);
+  }
+
+  @include focus-visible;
+
+  &.pl-open,
+  &[aria-expanded='true'] {
+    background-size: 0 1.5px;
+
+    &::before {
+      transform: rotate(45deg);
+    }
+
+    &::after {
+      transform: rotate(-45deg);
+    }
+  }
+}
+
+// ── Menu rozwijane ──────────────────────────────────────────────────────
+.pl-drop.pl-navbar-dropdown {
+  --pl-drop-width: max-content;
+  --pl-drop-padding: 0.375rem;
+  --pl-drop-radius: calc(var(--pl-radius-md) + 2px);
+  min-width: 13.5rem;
+}
+
+// Mega-menu: kolumny tworzą się same — po jednej na każde dziecko.
+.pl-navbar-dropdown-grid {
+  display: grid;
+  grid-auto-flow: column;
+  grid-auto-columns: var(--pl-navbar-dropdown-col, 12.5rem);
+  gap: var(--pl-space-2) var(--pl-space-4);
+  padding: var(--pl-space-2);
+
+  > * {
+    min-width: 0;
+  }
+
+  > * + *:not(.pl-navbar-dropdown-feature) {
+    padding-left: var(--pl-space-4);
+    border-left: 1px solid var(--pl-border);
+  }
+
+  @include down(s) {
+    grid-auto-flow: row;
+    grid-auto-columns: auto;
+
+    > * + *:not(.pl-navbar-dropdown-feature) {
+      padding-top: var(--pl-space-3);
+      padding-left: 0;
+      border-top: 1px solid var(--pl-border);
+      border-left: 0;
+    }
+  }
+}
+
+// Wyróżniony kafel w mega-menu.
+.pl-navbar-dropdown-feature {
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  gap: 0.25rem;
+  min-height: 9rem;
+  padding: var(--pl-space-4);
+  border-radius: var(--pl-radius-sm);
+  background:
+    radial-gradient(120% 90% at 100% 0%, color-mix(in oklab, var(--pl-spark) 55%, transparent), transparent 60%),
+    var(--pl-primary-soft);
+  color: var(--pl-text);
+  font-size: var(--pl-text-sm);
+  text-decoration: none;
+  transition: transform var(--pl-dur-3) var(--pl-ease-spring);
+
+  > strong {
+    font-family: var(--pl-font-display);
+    font-size: var(--pl-text-lg);
+    letter-spacing: var(--pl-display-tracking, -0.02em);
+  }
+
+  &:is(a):hover {
+    transform: translateY(-2px);
+  }
+}
+
+.pl-navbar-dropdown-grid > .pl-navbar-dropdown-feature {
+  padding: var(--pl-space-4);
+  border: 0;
+}
+
+// ── Warianty paska ──────────────────────────────────────────────────────
+.pl-navbar-transparent {
+  --pl-navbar-bg: transparent;
+  --pl-navbar-hover: color-mix(in oklab, var(--pl-text) 8%, transparent);
+  border-bottom-color: transparent;
+}
+
+// Matowe szkło.
+.pl-navbar-glass {
+  --pl-navbar-bg: color-mix(in oklab, var(--pl-surface) 68%, transparent);
+  --pl-navbar-hover: color-mix(in oklab, var(--pl-text) 8%, transparent);
+  border-bottom-color: color-mix(in oklab, var(--pl-border) 70%, transparent);
+  -webkit-backdrop-filter: blur(18px) saturate(1.7);
+  backdrop-filter: blur(18px) saturate(1.7);
+}
+
+// Pływająca pigułka — odklejona od krawędzi, zaokrąglona, z cieniem.
+.pl-navbar-floating {
+  --pl-navbar-h: 3.5rem;
+  --pl-navbar-px: 0.625rem;
+  --pl-navbar-bg: color-mix(in oklab, var(--pl-surface) 78%, transparent);
+  --pl-navbar-hover: color-mix(in oklab, var(--pl-text) 8%, transparent);
+  --pl-navbar-offset: 0.75rem;
+
+  width: calc(100% - 2 * var(--pl-navbar-offset));
+  max-width: var(--pl-navbar-max, 60rem);
+  margin: var(--pl-navbar-offset) auto 0;
+  border: 1px solid color-mix(in oklab, var(--pl-border) 80%, transparent);
+  border-radius: var(--pl-radius-pill);
+  box-shadow:
+    inset 0 1px 0 oklch(1 0 0 / 0.12),
+    var(--pl-shadow-md);
+  -webkit-backdrop-filter: blur(18px) saturate(1.7);
+  backdrop-filter: blur(18px) saturate(1.7);
+
+  .pl-navbar-logo {
+    padding-left: 0.6rem;
+  }
+
+  .pl-navbar-toggle {
+    border-radius: 50%;
+  }
+}
+
+// ── Przyklejanie i reakcja na przewijanie ───────────────────────────────
+.pl-navbar-sticky {
+  position: sticky;
+  top: 0;
+  z-index: var(--pl-z-navbar);
+
+  &.pl-navbar-floating {
+    top: var(--pl-navbar-offset);
+  }
+}
+
+// Po przewinięciu (navbar.js): cień + niższy pasek.
+.pl-navbar-scrolled {
+  --pl-navbar-h: 3.25rem;
+  box-shadow: var(--pl-shadow-md);
+
+  &.pl-navbar-transparent {
+    --pl-navbar-bg: color-mix(in oklab, var(--pl-surface) 82%, transparent);
+    border-bottom-color: var(--pl-border);
+    -webkit-backdrop-filter: blur(18px) saturate(1.7);
+    backdrop-filter: blur(18px) saturate(1.7);
+  }
+
+  &.pl-navbar-floating {
+    --pl-navbar-h: 3rem;
+    box-shadow:
+      inset 0 1px 0 oklch(1 0 0 / 0.12),
+      var(--pl-shadow-lg);
+  }
+}
+
+// Schowany przy przewijaniu w dół (navbar.js, opcja hide).
+.pl-navbar-hidden {
+  transform: translateY(calc(-100% - var(--pl-navbar-offset, 0rem) - 1.5rem));
+  box-shadow: none;
+  transition-timing-function: var(--pl-ease-in-out);
+}
+
+// ── Rozmiary ────────────────────────────────────────────────────────────
+.pl-navbar-small {
+  --pl-navbar-h: 3.25rem;
+}
+
+.pl-navbar-large {
+  --pl-navbar-h: 5rem;
+}

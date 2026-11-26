@@ -1,0 +1,241 @@
+// Slider — karuzela wielu elementów (tor przesuwany transformacją przez JS).
+@use '../abstracts' as *;
+
+.pl-slider {
+  --pl-slider-arrow-offset: 0.75rem;
+  position: relative;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  border-radius: var(--pl-radius-md);
+
+  @include focus-visible(4px);
+}
+
+.pl-slider-container {
+  grid-area: 1 / 1;
+  min-width: 0;
+  overflow: hidden;
+  // Pion przewija strona, poziom obsługuje slider.
+  touch-action: pan-y;
+}
+
+// Zapas na cienie kart i uniesienie przy hover (overflow: hidden by je ucinał).
+.pl-slider-container-offset {
+  margin: -1rem -1.5rem -3.5rem;
+  padding: 1rem 1.5rem 3.5rem;
+}
+
+// Wygaszone krawędzie.
+.pl-slider-fade {
+  --pl-slider-fade: 3rem;
+  mask-image: linear-gradient(
+    to right,
+    transparent,
+    oklch(0 0 0) var(--pl-slider-fade),
+    oklch(0 0 0) calc(100% - var(--pl-slider-fade)),
+    transparent
+  );
+}
+
+.pl-slider-items {
+  display: flex;
+  flex-wrap: nowrap;
+  gap: var(--pl-slider-gap, var(--pl-slider-gap-auto, 0px));
+  margin-top: 0;
+  margin-bottom: 0;
+  padding: 0;
+  list-style: none;
+  will-change: transform;
+
+  > * {
+    flex: none;
+    min-width: 0;
+    max-width: 100%;
+    margin: 0;
+  }
+}
+
+// Szerokość z liczby kolumn: --pl-slider-items (klasy .pl-slider-cols-* lub styl inline).
+// Zerowa specyficzność — klasy .pl-child-width-* / .pl-width-* mają pierwszeństwo.
+:where(.pl-slider-items) > :where(*) {
+  width: calc(
+    (100% - (var(--pl-slider-items) - 1) * var(--pl-slider-gap, var(--pl-slider-gap-auto, 0px))) / var(--pl-slider-items)
+  );
+}
+
+@include responsive using ($s) {
+  @for $i from 1 through 6 {
+    .pl-slider-cols-#{$i}#{$s} {
+      --pl-slider-items: #{$i};
+      --pl-slider-gap-auto: var(--pl-gutter);
+    }
+  }
+}
+
+.pl-slider-gap-small {
+  --pl-slider-gap: var(--pl-space-3);
+}
+
+.pl-slider-gap-large {
+  --pl-slider-gap: var(--pl-space-6);
+}
+
+.pl-slider-gap-collapse {
+  --pl-slider-gap: 0px;
+}
+
+// Obrazy nie „łapią" natywnego przeciągania.
+.pl-slider-items img {
+  -webkit-user-drag: none;
+}
+
+.pl-slider-draggable {
+  .pl-slider-container {
+    cursor: grab;
+  }
+
+  .pl-slider-items {
+    user-select: none;
+    -webkit-user-select: none;
+  }
+}
+
+.pl-slider-dragging {
+  .pl-slider-container {
+    cursor: grabbing;
+  }
+
+  .pl-slider-items > * {
+    pointer-events: none;
+  }
+}
+
+// Efekt: elementy poza widokiem są przygaszone i lekko pomniejszone.
+.pl-slider-focus .pl-slider-items > * {
+  opacity: 0.45;
+  scale: 0.94;
+  transition:
+    opacity var(--pl-dur-3) var(--pl-ease),
+    scale var(--pl-dur-4) var(--pl-ease-spring);
+
+  &.pl-active {
+    opacity: 1;
+    scale: 1;
+  }
+}
+
+// ── Strzałki ────────────────────────────────────────────────────────────
+// Bezpośrednie dzieci slidera lądują po bokach toru (ta sama komórka siatki).
+.pl-slider > .pl-slidenav-previous,
+.pl-slider > .pl-slidenav-next,
+.pl-slider > [data-pl-slider-item='previous'],
+.pl-slider > [data-pl-slider-item='next'] {
+  grid-area: 1 / 1;
+  align-self: center;
+  justify-self: start;
+  z-index: 2;
+  margin-inline: var(--pl-slider-arrow-offset);
+}
+
+.pl-slider > .pl-slidenav-next,
+.pl-slider > [data-pl-slider-item='next'] {
+  justify-self: end;
+}
+
+// Strzałki na zewnątrz toru (gdy jest na nie miejsce).
+.pl-slider-arrows-outside {
+  --pl-slider-arrow-offset: -1.25rem;
+}
+
+// Strzałki widoczne dopiero po najechaniu / fokusie.
+@media (hover: hover) {
+  .pl-slider-arrows-hover > [data-pl-slider-item] {
+    opacity: 0;
+    transition:
+      opacity var(--pl-dur-2) var(--pl-ease),
+      background-color var(--pl-dur-2) var(--pl-ease),
+      transform var(--pl-dur-3) var(--pl-ease-spring),
+      translate var(--pl-dur-4) var(--pl-ease-spring);
+
+    &[data-pl-slider-item='previous'] {
+      translate: -0.5rem 0;
+    }
+
+    &[data-pl-slider-item='next'] {
+      translate: 0.5rem 0;
+    }
+  }
+
+  .pl-slider-arrows-hover:hover > [data-pl-slider-item],
+  .pl-slider-arrows-hover:focus-within > [data-pl-slider-item] {
+    opacity: 1;
+    translate: 0 0;
+  }
+}
+
+// Pasek sterowania pod torem: kropki + strzałki w jednym rzędzie.
+.pl-slider-arrows {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: var(--pl-space-2);
+  margin-top: var(--pl-space-4);
+
+  > .pl-slider-nav {
+    margin: 0 auto 0 0;
+  }
+}
+
+.pl-slider [data-pl-slider-item][aria-disabled='true'],
+.pl-slider .pl-disabled > [aria-disabled='true'] {
+  opacity: 0.35;
+  pointer-events: none;
+}
+
+// ── Nawigacja (kropki) ──────────────────────────────────────────────────
+.pl-slider-nav {
+  justify-content: center;
+  margin-top: var(--pl-space-4);
+}
+
+// Zapasowy wygląd strzałek i kropek (gdy brak stylów slidenav / dotnav).
+// :where() = zerowa specyficzność, właściwe komponenty zawsze wygrywają.
+:where(.pl-slider, .pl-slideshow) :where(.pl-slidenav-previous, .pl-slidenav-next) {
+  @include button-reset;
+  display: inline-grid;
+  place-items: center;
+  width: var(--pl-control-h);
+  height: var(--pl-control-h);
+  border: 1px solid var(--pl-border);
+  border-radius: var(--pl-radius-pill);
+  color: var(--pl-text);
+  background: var(--pl-surface-raised);
+  box-shadow: var(--pl-shadow-sm);
+}
+
+:where(.pl-slider-nav, .pl-slideshow-nav):where(:not(.pl-dotnav, .pl-thumbnav)) {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  padding: 0;
+  list-style: none;
+
+  > :where(li) > :where(a, button) {
+    display: block;
+    width: 0.5rem;
+    height: 0.5rem;
+    overflow: hidden;
+    border-radius: var(--pl-radius-pill);
+    background: var(--pl-border-strong);
+    text-indent: 100%;
+    white-space: nowrap;
+    transition:
+      width var(--pl-dur-4) var(--pl-ease-spring),
+      background-color var(--pl-dur-2) var(--pl-ease);
+  }
+
+  > :where(li.pl-active) > :where(a, button) {
+    width: 1.5rem;
+    background: var(--pl-primary);
+  }
+}

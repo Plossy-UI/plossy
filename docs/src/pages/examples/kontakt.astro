@@ -1,0 +1,448 @@
+---
+import Example from '../../layouts/Example.astro';
+import ShopHeader from '../../components/examples/ShopHeader.astro';
+import ShopFooter from '../../components/examples/ShopFooter.astro';
+
+const cards = [
+  { icon: 'map-pin', tone: 'primary', title: 'Pracownia i showroom', lines: ['ul. Stoczniowa 14', '80-001 Gdańsk'], link: 'Wyznacz trasę', href: '#mapa' },
+  { icon: 'phone', tone: 'success', title: 'Telefon', lines: ['58 555 01 42', 'pon. – pt., 9:00 – 17:00'], link: 'Zadzwoń', href: '#' },
+  { icon: 'mail', tone: 'info', title: 'E-mail', lines: ['kontakt@lorem.example', 'Odpowiadamy w ciągu 24 h'], link: 'Napisz wiadomość', href: '#formularz' },
+  { icon: 'clock', tone: 'warning', title: 'Godziny otwarcia', lines: ['pon. – pt. 10:00 – 18:00', 'sob. 10:00 – 15:00'], link: 'Otwarte piątki w pracowni', href: '/examples/cms/' },
+];
+
+const showrooms = [
+  {
+    city: 'Gdańsk', name: 'Pracownia w stoczni', image: 3,
+    address: 'ul. Stoczniowa 14, 80-001 Gdańsk', phone: '58 555 01 42',
+    hours: 'pon. – pt. 10:00 – 18:00, sob. 10:00 – 15:00',
+    tags: ['Pełna kolekcja', 'Odbiór zamówień', 'Parking'], open: true,
+  },
+  {
+    city: 'Warszawa', name: 'Showroom na Powiślu', image: 7,
+    address: 'ul. Solec 81, 00-382 Warszawa', phone: '22 555 01 77',
+    hours: 'wt. – pt. 11:00 – 19:00, sob. 11:00 – 16:00',
+    tags: ['Meble i oświetlenie', 'Konsultacje wnętrzarskie'], open: false,
+  },
+];
+
+const faq = [
+  {
+    label: 'Zamówienia',
+    items: [
+      ['Jak długo czeka się na zamówienie?', 'Produkty dostępne od ręki wysyłamy w ciągu 2 dni roboczych. Rzeczy robione na zamówienie — ceramika w niestandardowym szkliwie, meble na wymiar — potrzebują od 3 do 6 tygodni. Dokładny termin zawsze widać na karcie produktu.'],
+      ['Czy mogę zmienić zamówienie po jego złożeniu?', 'Tak, dopóki paczka nie została spakowana. Napisz do nas, podając numer zamówienia — zwykle mamy na to jeden dzień roboczy.'],
+      ['Czy wystawiacie faktury VAT?', 'Oczywiście. Wystarczy podać NIP podczas składania zamówienia; faktura trafi na e-mail razem z potwierdzeniem wysyłki.'],
+    ],
+  },
+  {
+    label: 'Dostawa',
+    items: [
+      ['Ile kosztuje dostawa?', 'Paczki do 30 kg wysyłamy kurierem za 16 zł, a od 400 zł — bezpłatnie. Meble dostarcza nasz transport z wniesieniem; koszt zależy od odległości i jest podawany w koszyku.'],
+      ['Czy wysyłacie za granicę?', 'Tak, do wszystkich krajów Unii Europejskiej. Czas dostawy to zwykle 3–6 dni roboczych.'],
+      ['Jak pakujecie ceramikę i szkło?', 'W karton z recyklingu, wełnę drzewną i papierową taśmę. Każda paczka jest ubezpieczona — jeśli coś dotrze uszkodzone, wysyłamy nową sztukę bez dodatkowych pytań.'],
+    ],
+  },
+  {
+    label: 'Zwroty i naprawy',
+    items: [
+      ['Ile mam czasu na zwrot?', 'Masz 30 dni od otrzymania przesyłki. Wypełnij formularz zwrotu, a my zamówimy kuriera na nasz koszt.'],
+      ['Stłukł mi się klosz lampy. Co teraz?', 'Napisz do nas i dołącz zdjęcie. Klosze i części zamienne mamy do każdej lampy z ostatnich dziesięciu lat — wymiana zwykle kosztuje ułamek ceny nowej lampy.'],
+      ['Jak działa program „Drugie życie"?', 'Odkupujemy używane meble Lorem w zamian za voucher do sklepu. Mebel odnawiamy w stolarni i wystawiamy ponownie w niższej cenie.'],
+    ],
+  },
+];
+---
+
+<Example title="Kontakt — Lorem" description="Strona kontaktowa: karty kontaktu, formularz z walidacją, mapa dojazdu, showroomy i FAQ.">
+  <ShopHeader active="kontakt" />
+
+  <main>
+    <!-- Nagłówek -->
+    <section class="pl-section pl-section-large pl-section-remove-bottom">
+      <div class="pl-container">
+        <div class="pl-width-2xlarge" data-pl-scrollspy="cls: pl-animation-slide-up; target: > *; delay: 100">
+          <p class="pl-heading-eyebrow">Kontakt</p>
+          <h1 class="pl-heading-medium">Porozmawiajmy o Twoim <span class="pl-heading-accent">domu</span></h1>
+          <p class="pl-text-lead">Pytanie o produkt, zamówienie na wymiar, a może wizyta w pracowni? Napisz, zadzwoń albo po prostu wpadnij — kawa zawsze jest.</p>
+        </div>
+
+        <div class="pl-grid pl-grid-match pl-child-width-1-1 pl-child-width-1-2@s pl-child-width-1-4@m pl-margin-large-top" data-pl-scrollspy="cls: pl-animation-slide-up; target: > *; delay: 80">
+          {cards.map((card) => (
+            <div>
+              <div class="pl-card pl-card-hover">
+                <div class="pl-card-body">
+                  <span class={`pl-icon-box pl-icon-${card.tone}`} data-pl-icon={card.icon}></span>
+                  <h2 class="pl-card-title pl-margin-top">{card.title}</h2>
+                  <p class="pl-card-text">
+                    <span class="pl-text-emphasis pl-text-medium pl-text-break">{card.lines[0]}</span><br>
+                    <span class="pl-text-muted">{card.lines[1]}</span>
+                  </p>
+                </div>
+                <div class="pl-card-footer">
+                  <a class="pl-card-stretch pl-flex-inline pl-flex-middle pl-gap-xsmall" href={card.href}>{card.link} <span class="pl-icon-small" data-pl-icon="arrow-right"></span></a>
+                </div>
+              </div>
+            </div>
+          ))}
+        </div>
+      </div>
+    </section>
+
+    <!-- Formularz + mapa -->
+    <section class="pl-section pl-section-large" id="formularz">
+      <div class="pl-container">
+        <div class="pl-grid pl-grid-large">
+          <div class="pl-width-1-1 pl-width-1-2@m">
+            <p class="pl-heading-eyebrow pl-heading-eyebrow-line">Formularz</p>
+            <h2 class="pl-heading-small">Napisz do nas</h2>
+            <p class="pl-text-muted">Odpowiadamy w dni robocze, zwykle w ciągu kilku godzin. Pola oznaczone gwiazdką są wymagane.</p>
+
+            <form class="pl-form-grid pl-margin-medium-top" id="kontakt-form" data-pl-form-validate="success: true" novalidate>
+              <div class="pl-form-field">
+                <label class="pl-form-label pl-form-required" for="k-name">Imię i nazwisko</label>
+                <div class="pl-form-icon">
+                  <span data-pl-icon="user"></span>
+                  <input class="pl-input" id="k-name" name="name" type="text" required minlength="3" autocomplete="name" placeholder="Anna Kowalska">
+                </div>
+              </div>
+              <div class="pl-form-field">
+                <label class="pl-form-label pl-form-required" for="k-email">E-mail</label>
+                <div class="pl-form-icon">
+                  <span data-pl-icon="mail"></span>
+                  <input class="pl-input" id="k-email" name="email" type="email" required autocomplete="email" placeholder="anna@example.com">
+                </div>
+              </div>
+              <div class="pl-form-field">
+                <label class="pl-form-label pl-form-required" for="k-topic">Temat</label>
+                <select class="pl-select" id="k-topic" name="topic" required data-pl-combobox data-pl-message-required="Wybierz temat wiadomości.">
+                  <option value="">Wybierz temat…</option>
+                  <option value="produkt">Pytanie o produkt</option>
+                  <option value="zamowienie">Moje zamówienie</option>
+                  <option value="wymiar">Projekt na wymiar</option>
+                  <option value="zwrot">Zwrot lub reklamacja</option>
+                  <option value="naprawa">Naprawa i części zamienne</option>
+                  <option value="b2b">Współpraca i zamówienia firmowe</option>
+                  <option value="prasa">Media i prasa</option>
+                </select>
+              </div>
+              <div class="pl-form-field">
+                <label class="pl-form-label" for="k-order">Numer zamówienia <span class="pl-form-optional">opcjonalnie</span></label>
+                <input class="pl-input" id="k-order" name="order" type="text" pattern="AN-[0-9]{5}" placeholder="AN-00000" data-pl-message-pattern="Numer ma format AN-00000.">
+              </div>
+              <div class="pl-form-field pl-form-span-full">
+                <label class="pl-form-label pl-form-required" for="k-message">Wiadomość</label>
+                <textarea class="pl-textarea" id="k-message" name="message" rows="5" required minlength="20" maxlength="800" data-pl-char-count data-pl-autosize="max-rows: 12" placeholder="W czym możemy pomóc?" data-pl-message-minlength="Napisz chociaż dwa zdania — łatwiej będzie nam pomóc."></textarea>
+                <div class="pl-form-help pl-form-help-split">
+                  <span>Im więcej szczegółów, tym szybciej odpowiemy.</span>
+                  <span class="pl-form-count"></span>
+                </div>
+              </div>
+              <div class="pl-form-field pl-form-span-full">
+                <span class="pl-form-label">Załączniki <span class="pl-form-optional">opcjonalnie</span></span>
+                <div class="pl-upload pl-upload-small" id="kontakt-upload" data-pl-upload="multiple: true; max-size: 5; max-files: 3; accept: image/*,application/pdf">
+                  <span class="pl-upload-icon" data-pl-icon="paperclip"></span>
+                  <p class="pl-upload-text">Przeciągnij zdjęcia lub <label class="pl-upload-link">wybierz pliki<input type="file" name="files" multiple data-pl-novalidate></label></p>
+                  <p class="pl-upload-hint">maks. 3 × 5 MB</p>
+                </div>
+              </div>
+              <div class="pl-form-field pl-form-span-full">
+                <label class="pl-form-check">
+                  <input class="pl-checkbox" type="checkbox" name="consent" required data-pl-message-required="Bez tej zgody nie możemy odpowiedzieć.">
+                  <span>Zgadzam się na przetwarzanie moich danych w celu udzielenia odpowiedzi. <a href="/examples/cms/#regulamin">Polityka prywatności</a></span>
+                </label>
+              </div>
+              <div class="pl-form-field pl-form-span-full">
+                <label class="pl-form-check">
+                  <input class="pl-checkbox" type="checkbox" name="newsletter">
+                  <span>Chcę dostawać list z pracowni — raz w miesiącu, bez spamu.</span>
+                </label>
+              </div>
+              <div class="pl-form-actions pl-form-span-full">
+                <button class="pl-button pl-button-primary pl-button-large" type="submit">Wyślij wiadomość <span class="pl-button-arrow" data-pl-icon="send"></span></button>
+                <button class="pl-button pl-button-ghost pl-button-large" type="reset">Wyczyść</button>
+              </div>
+            </form>
+          </div>
+
+          <div class="pl-width-1-1 pl-width-1-2@m" id="mapa">
+            <div data-pl-sticky="offset: 96; end: parent; media: @m">
+              <!-- Mapa: zaślepka z narzędzi tła, bez zewnętrznych zasobów -->
+              <div class="pl-card kontakt-map-card">
+                <div class="pl-background-muted pl-background-grid pl-position-relative pl-overflow-hidden kontakt-map" role="img" aria-label="Schematyczna mapa dojazdu do pracowni Lorem">
+                  <div class="pl-position-absolute pl-background-info-soft kontakt-map-water"></div>
+                  <div class="pl-position-absolute pl-background-success-soft pl-border-pill kontakt-map-park"></div>
+                  <div class="pl-position-absolute pl-background-surface kontakt-map-road kontakt-map-road-a"></div>
+                  <div class="pl-position-absolute pl-background-surface kontakt-map-road kontakt-map-road-b"></div>
+                  <span class="pl-position-absolute pl-text-eyebrow kontakt-map-label-water">Motława</span>
+                  <span class="pl-position-absolute pl-text-eyebrow kontakt-map-label-park">Park Stoczniowy</span>
+
+                  <div class="pl-position-absolute kontakt-map-pin-main">
+                    <button class="pl-marker pl-marker-large" type="button" aria-label="Pokaż adres pracowni"><span data-pl-icon="map-pin"></span></button>
+                    <div class="pl-drop" data-pl-drop="mode: click; pos: top">
+                      <p class="pl-text-eyebrow pl-margin-remove">Lorem</p>
+                      <h3 class="pl-drop-title">Pracownia w stoczni</h3>
+                      <p class="pl-drop-text">ul. Stoczniowa 14, hala 14<br>wejście od strony dźwigu M3</p>
+                      <div class="pl-drop-footer">
+                        <a class="pl-button pl-button-small pl-button-primary" href="#">Nawiguj <span data-pl-icon="navigation"></span></a>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="pl-position-absolute kontakt-map-pin-tram">
+                    <button class="pl-marker pl-marker-small pl-marker-static pl-marker-secondary" type="button" aria-label="Przystanek tramwajowy" data-pl-tooltip="title: Tramwaj 7 i 10 — przystanek Stocznia, 4 min pieszo; pos: top">T</button>
+                  </div>
+                  <div class="pl-position-absolute kontakt-map-pin-parking">
+                    <button class="pl-marker pl-marker-small pl-marker-static pl-marker-info" type="button" aria-label="Parking" data-pl-tooltip="title: Bezpłatny parking dla gości — 12 miejsc; pos: top">P</button>
+                  </div>
+                  <div class="pl-position-absolute kontakt-map-pin-train">
+                    <button class="pl-marker pl-marker-small pl-marker-static pl-marker-success" type="button" aria-label="Stacja SKM" data-pl-tooltip="title: SKM Gdańsk Stocznia — 9 min pieszo; pos: top">S</button>
+                  </div>
+
+                  <div class="pl-overlay pl-overlay-default pl-overlay-rounded pl-overlay-small pl-position-bottom-left pl-position-small">
+                    <span class="pl-label pl-label-success pl-label-dot pl-label-pulse">Otwarte do 18:00</span>
+                  </div>
+                </div>
+                <div class="pl-card-body">
+                  <dl class="pl-description-list pl-description-list-horizontal pl-description-list-small kontakt-dl">
+                    <dt>Adres</dt>
+                    <dd>ul. Stoczniowa 14, 80-001 Gdańsk</dd>
+                    <dt>Dojazd</dt>
+                    <dd>Tramwaj 7, 10 · SKM Gdańsk Stocznia</dd>
+                    <dt>Parking</dt>
+                    <dd>Bezpłatny, 12 miejsc przy hali</dd>
+                  </dl>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Showroomy -->
+    <section class="pl-section pl-section-large pl-section-muted">
+      <div class="pl-container">
+        <div class="pl-flex pl-flex-between pl-flex-bottom pl-flex-wrap pl-gap-medium">
+          <div>
+            <p class="pl-heading-eyebrow">Showroomy</p>
+            <h2 class="pl-heading-small pl-margin-remove-bottom">Dotknij, zanim kupisz</h2>
+          </div>
+          <a class="pl-button pl-button-text" href="/examples/cms/">Poznaj pracownię <span class="pl-button-arrow" data-pl-icon="arrow-right"></span></a>
+        </div>
+
+        <div class="pl-grid pl-grid-match pl-child-width-1-1 pl-child-width-1-2@m pl-margin-large-top" data-pl-scrollspy="cls: pl-animation-slide-up; target: > *; delay: 120">
+          {showrooms.map((room) => (
+            <div>
+              <article class="pl-card pl-card-hover">
+                <div class="pl-card-media pl-image pl-ratio-21-9">
+                  <img src={`/img/photo-${room.image}.svg`} alt={`Showroom ${room.city}`} width="1200" height="800" loading="lazy">
+                  <div class="pl-position-top-left pl-position-small">
+                    {room.open
+                      ? <span class="pl-label pl-label-success pl-label-solid pl-label-dot">Otwarte teraz</span>
+                      : <span class="pl-label pl-label-solid">Zamknięte · otwieramy jutro o 11:00</span>}
+                  </div>
+                </div>
+                <div class="pl-card-body">
+                  <p class="pl-card-meta">{room.city}</p>
+                  <h3 class="pl-card-title">{room.name}</h3>
+                  <ul class="pl-list pl-margin-top">
+                    <li class="pl-flex pl-gap-small"><span class="pl-text-subtle" data-pl-icon="map-pin"></span><span>{room.address}</span></li>
+                    <li class="pl-flex pl-gap-small"><span class="pl-text-subtle" data-pl-icon="clock"></span><span>{room.hours}</span></li>
+                    <li class="pl-flex pl-gap-small"><span class="pl-text-subtle" data-pl-icon="phone"></span><span>{room.phone}</span></li>
+                  </ul>
+                  <div class="pl-chip-group pl-margin-top">
+                    {room.tags.map((tag) => <span class="pl-chip pl-chip-small">{tag}</span>)}
+                  </div>
+                </div>
+                <div class="pl-card-footer pl-flex pl-flex-between pl-flex-middle">
+                  <a class="pl-link-arrow" href="#mapa">Jak dojechać</a>
+                  <button class="pl-button pl-button-small pl-button-soft pl-button-primary" type="button" data-kontakt-visit={room.city}><span data-pl-icon="calendar"></span> Umów wizytę</button>
+                </div>
+              </article>
+            </div>
+          ))}
+        </div>
+      </div>
+    </section>
+
+    <!-- FAQ -->
+    <section class="pl-section pl-section-large">
+      <div class="pl-container pl-container-small">
+        <div class="pl-text-center">
+          <p class="pl-heading-eyebrow pl-heading-eyebrow-center">FAQ</p>
+          <h2 class="pl-heading-small">Zanim napiszesz</h2>
+          <p class="pl-text-lead">Odpowiedzi na pytania, które słyszymy najczęściej.</p>
+        </div>
+
+        <div class="pl-flex pl-flex-center pl-margin-medium-top">
+          <ul class="pl-tab pl-tab-segment" data-pl-switcher="connect: #kontakt-faq">
+            {faq.map((group, index) => (
+              <li class={index === 0 ? 'pl-active' : undefined}><a href="#">{group.label}</a></li>
+            ))}
+          </ul>
+        </div>
+        <div class="pl-switcher pl-margin-medium-top" id="kontakt-faq">
+          {faq.map((group, index) => (
+            <div class={index === 0 ? 'pl-active' : undefined}>
+              <div class="pl-accordion pl-accordion-card" data-pl-accordion>
+                {group.items.map(([question, answer], itemIndex) => (
+                  <div class={`pl-accordion-item${itemIndex === 0 ? ' pl-open' : ''}`}>
+                    <button class="pl-accordion-title" type="button">{question}</button>
+                    <div class="pl-accordion-content"><p>{answer}</p></div>
+                  </div>
+                ))}
+              </div>
+            </div>
+          ))}
+        </div>
+      </div>
+    </section>
+
+    <!-- Pomoc -->
+    <section class="pl-section pl-section-remove-top">
+      <div class="pl-container">
+        <div class="pl-tile pl-tile-secondary pl-tile-large pl-tile-rounded" data-pl-scrollspy="cls: pl-animation-scale-up">
+          <div class="pl-grid pl-grid-large pl-grid-middle">
+            <div class="pl-width-1-1 pl-width-expand@m">
+              <div class="pl-avatar-group pl-margin-bottom">
+                <span class="pl-avatar pl-avatar-large"><img src="/img/avatar-5.svg" alt="Lena"></span>
+                <span class="pl-avatar pl-avatar-large"><img src="/img/avatar-3.svg" alt="Hanna"></span>
+                <span class="pl-avatar pl-avatar-large"><img src="/img/avatar-6.svg" alt="Tymon"></span>
+              </div>
+              <h2 class="pl-heading-small pl-margin-small-bottom">Nie znalazłeś odpowiedzi?</h2>
+              <p class="pl-text-lead pl-margin-remove">Lena, Hanna i Tymon odbierają telefon osobiście. Żadnych automatów, żadnego „wciśnij 4".</p>
+            </div>
+            <div class="pl-width-1-1 pl-width-auto@m">
+              <div class="pl-flex pl-flex-wrap pl-gap-small">
+                <a class="pl-button pl-button-primary pl-button-large" href="#"><span data-pl-icon="phone"></span> 58 555 01 42</a>
+                <a class="pl-button pl-button-large" href="#formularz"><span data-pl-icon="message-circle"></span> Napisz do nas</a>
+              </div>
+              <p class="pl-text-meta pl-margin-small-top"><span class="pl-badge pl-badge-dot pl-badge-success pl-badge-pulse"></span>&nbsp; Średni czas oczekiwania: 40 sekund</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <ShopFooter />
+</Example>
+
+<script>
+  const api = () => (window as any).Plossy;
+  const form = document.querySelector<HTMLFormElement>('#kontakt-form');
+
+  form?.addEventListener('pl:valid', (event) => {
+    (event as CustomEvent).detail.originalEvent?.preventDefault();
+    const name = (form.elements.namedItem('name') as HTMLInputElement).value.trim().split(' ')[0];
+    const button = form.querySelector<HTMLButtonElement>('[type="submit"]');
+    button?.classList.add('pl-button-loading');
+    // Udajemy wysyłkę — po chwili potwierdzenie i czysty formularz.
+    setTimeout(() => {
+      button?.classList.remove('pl-button-loading');
+      api().notification({
+        title: `Dziękujemy, ${name}!`,
+        message: 'Wiadomość dotarła do pracowni. Odpowiemy najpóźniej jutro do 17:00.',
+        status: 'success',
+        timeout: 6000,
+      });
+      form.reset();
+    }, 900);
+  });
+
+  form?.addEventListener('pl:invalid', (event) => {
+    const count = (event as CustomEvent).detail.fields?.length ?? 0;
+    api().notification({ message: `Popraw zaznaczone pola (${count}), aby wysłać wiadomość.`, status: 'warning', group: 'kontakt' });
+  });
+
+  form?.addEventListener('reset', () => {
+    api().combobox?.('#k-topic')?.clear();
+    api().upload?.('#kontakt-upload')?.clear();
+    requestAnimationFrame(() => {
+      api().formValidate?.(form)?.reset();
+      api().charCount?.('#k-message')?.update();
+      api().autosize?.('#k-message')?.update();
+    });
+  });
+
+  document.querySelectorAll<HTMLElement>('[data-kontakt-visit]').forEach((button) => {
+    button.addEventListener('click', () => {
+      api().notification({
+        title: `Wizyta — ${button.dataset.kontaktVisit}`,
+        message: 'Oddzwonimy, żeby potwierdzić termin. Wybierz temat „Projekt na wymiar" w formularzu.',
+        status: 'primary',
+        action: { label: 'Do formularza', onClick: () => document.querySelector('#formularz')?.scrollIntoView({ behavior: 'smooth' }) },
+      });
+    });
+  });
+</script>
+
+<style>
+  #formularz,
+  #mapa {
+    scroll-margin-top: 5rem;
+  }
+
+  /* Schemat mapy: geometria „ulic", wody i parku — kolory z klas Plossy. */
+  .kontakt-map-card {
+    overflow: hidden;
+  }
+
+  .kontakt-map {
+    aspect-ratio: 4 / 3;
+    --pl-pattern-size: 40px;
+  }
+
+  .kontakt-map-water {
+    inset: -10% auto -10% 68%;
+    width: 22%;
+    rotate: 12deg;
+  }
+
+  .kontakt-map-park {
+    top: 10%;
+    left: 6%;
+    width: 30%;
+    height: 26%;
+  }
+
+  .kontakt-map-road {
+    box-shadow: 0 0 0 1px var(--pl-border);
+  }
+
+  .kontakt-map-road-a {
+    top: 58%;
+    left: -5%;
+    width: 110%;
+    height: 0.9rem;
+    rotate: -6deg;
+  }
+
+  .kontakt-map-road-b {
+    top: -10%;
+    left: 44%;
+    width: 0.9rem;
+    height: 120%;
+    rotate: 14deg;
+  }
+
+  .kontakt-map-label-water {
+    top: 16%;
+    left: 74%;
+    rotate: 102deg;
+    transform-origin: left top;
+  }
+
+  .kontakt-map-label-park {
+    top: 20%;
+    left: 11%;
+  }
+
+  .kontakt-map-pin-main { top: 40%; left: 50%; }
+  .kontakt-map-pin-tram { top: 50%; left: 20%; }
+  .kontakt-map-pin-parking { top: 30%; left: 60%; }
+  .kontakt-map-pin-train { top: 74%; left: 76%; }
+
+  .kontakt-dl {
+    --pl-dl-term-w: 6rem;
+  }
+</style>

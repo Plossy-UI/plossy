@@ -1,0 +1,245 @@
+// Animation — animacje odtwarzane po dodaniu klasy.
+// Czas bazuje na tokenach --pl-dur-*, więc przy „prefers-reduced-motion"
+// animacje wejścia skracają się do zera (element od razu jest w stanie końcowym).
+@use 'sass:list';
+@use '../abstracts' as *;
+
+[class*='pl-animation-'] {
+  --pl-animation-duration: var(--pl-dur-4);
+
+  animation-duration: var(--pl-animation-duration);
+  animation-timing-function: var(--pl-ease);
+  // backwards, nie both: po zakończeniu animacja puszcza element, więc jego własne
+  // przejścia (np. uniesienie przy hover) działają płynnie zamiast przeskakiwać.
+  animation-fill-mode: backwards;
+}
+
+// ── Wejścia ─────────────────────────────────────────────────────────────
+.pl-animation-fade {
+  animation-name: pl-fade;
+  animation-timing-function: linear;
+}
+
+.pl-animation-scale-up {
+  animation-name: pl-fade, pl-scale-up;
+  animation-timing-function: var(--pl-ease), var(--pl-ease-spring);
+}
+
+.pl-animation-scale-down {
+  animation-name: pl-fade, pl-scale-down;
+}
+
+// Kierunek = kierunek ruchu: slide-up wjeżdża od dołu ku górze.
+[class*='pl-animation-slide-'] {
+  animation-name: pl-fade, pl-slide;
+  animation-timing-function: var(--pl-ease), var(--pl-ease-spring);
+}
+
+$slide-sizes: ('': 1.5rem, '-small': 0.5rem, '-medium': 3rem, '-full': 100%);
+$slide-dirs: (
+  'up': (0, 1),
+  'down': (0, -1),
+  'left': (1, 0),
+  'right': (-1, 0),
+);
+
+@each $dir, $v in $slide-dirs {
+  @each $size, $distance in $slide-sizes {
+    .pl-animation-slide-#{$dir}#{$size} {
+      --pl-animation-distance: #{$distance};
+      --pl-animation-x: calc(var(--pl-animation-distance) * #{list.nth($v, 1)});
+      --pl-animation-y: calc(var(--pl-animation-distance) * #{list.nth($v, 2)});
+    }
+  }
+}
+
+.pl-animation-blur {
+  animation-name: pl-blur;
+}
+
+.pl-animation-spring {
+  animation-name: pl-fade, pl-spring;
+  animation-duration: calc(var(--pl-animation-duration) * 0.5), calc(var(--pl-animation-duration) * 1.4);
+  animation-timing-function: var(--pl-ease), var(--pl-ease-spring);
+}
+
+// ── Akcenty ─────────────────────────────────────────────────────────────
+.pl-animation-shake {
+  animation-name: pl-shake;
+  animation-timing-function: var(--pl-ease-in-out);
+}
+
+.pl-animation-kenburns {
+  animation-name: pl-kenburns;
+  animation-duration: 15s;
+  animation-timing-function: linear;
+}
+
+// Rysowanie konturu SVG. Dodaj pathLength="1" do kształtów albo ustaw
+// --pl-animation-stroke na długość ścieżki.
+.pl-animation-stroke {
+  --pl-animation-stroke: 1;
+
+  animation-name: pl-stroke;
+  animation-duration: 2s;
+  animation-timing-function: var(--pl-ease-in-out);
+  stroke-dasharray: var(--pl-animation-stroke);
+}
+
+// ── Modyfikatory ────────────────────────────────────────────────────────
+.pl-animation-fast { --pl-animation-duration: var(--pl-dur-2); }
+.pl-animation-slow { --pl-animation-duration: calc(var(--pl-dur-4) * 1.8); }
+.pl-animation-reverse { animation-direction: reverse; animation-fill-mode: both; }
+
+@for $i from 1 through 5 {
+  .pl-animation-delay-#{$i} { animation-delay: #{$i * 100}ms; }
+}
+
+// Odtwarza animacje dzieci po najechaniu / fokusie.
+.pl-animation-toggle:not(:hover):not(:focus-within) [class*='pl-animation-'] {
+  animation-name: none;
+}
+
+// ── Ciągłe ──────────────────────────────────────────────────────────────
+.pl-animation-spin {
+  animation: pl-spin 1s linear infinite;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .pl-animation-float {
+    animation: pl-float 3.6s var(--pl-ease-in-out) infinite alternate;
+  }
+
+  .pl-animation-pulse {
+    animation: pl-pulse 1.8s var(--pl-ease-in-out) infinite;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .pl-animation-kenburns,
+  .pl-animation-stroke,
+  .pl-animation-shake {
+    animation-name: none;
+  }
+
+  .pl-animation-spin {
+    animation-duration: 2.4s;
+  }
+}
+
+// ── Klatki ──────────────────────────────────────────────────────────────
+@keyframes pl-fade {
+  from {
+    opacity: 0;
+  }
+}
+
+@keyframes pl-scale-up {
+  from {
+    transform: scale(0.9);
+  }
+}
+
+@keyframes pl-scale-down {
+  from {
+    transform: scale(1.1);
+  }
+}
+
+@keyframes pl-slide {
+  from {
+    transform: translate(var(--pl-animation-x, 0), var(--pl-animation-y, 0));
+  }
+}
+
+@keyframes pl-blur {
+  from {
+    opacity: 0;
+    filter: blur(12px);
+    transform: scale(1.03);
+  }
+}
+
+@keyframes pl-spring {
+  from {
+    transform: scale(0.55);
+  }
+}
+
+@keyframes pl-shake {
+  0%, 100% {
+    transform: translateX(0);
+  }
+
+  15% {
+    transform: translateX(-9px);
+  }
+
+  30% {
+    transform: translateX(8px);
+  }
+
+  45% {
+    transform: translateX(-6px);
+  }
+
+  60% {
+    transform: translateX(5px);
+  }
+
+  75% {
+    transform: translateX(-3px);
+  }
+
+  90% {
+    transform: translateX(2px);
+  }
+}
+
+@keyframes pl-kenburns {
+  from {
+    transform: scale(1);
+  }
+
+  to {
+    transform: scale(1.2);
+  }
+}
+
+@keyframes pl-stroke {
+  from {
+    stroke-dashoffset: var(--pl-animation-stroke);
+  }
+
+  to {
+    stroke-dashoffset: 0;
+  }
+}
+
+@keyframes pl-spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@keyframes pl-float {
+  from {
+    transform: translateY(4px);
+  }
+
+  to {
+    transform: translateY(-6px);
+  }
+}
+
+@keyframes pl-pulse {
+  0%, 100% {
+    transform: scale(1);
+    opacity: 1;
+  }
+
+  50% {
+    transform: scale(1.06);
+    opacity: 0.72;
+  }
+}

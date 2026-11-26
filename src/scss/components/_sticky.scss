@@ -1,0 +1,34 @@
+// Sticky — element przyklejany do górnej krawędzi okna (pozycję ustawia JS).
+@use '../abstracts' as *;
+
+.pl-sticky {
+  --pl-sticky-z: var(--pl-z-sticky);
+  @include transition('background-color, box-shadow, border-color, backdrop-filter', var(--pl-dur-3));
+}
+
+.pl-sticky-fixed {
+  position: fixed !important;
+  z-index: var(--pl-sticky-z);
+  box-sizing: border-box;
+  margin: 0 !important;
+  // Animacje wejścia nie mogą zostawić elementu poza ekranem.
+  animation-fill-mode: both;
+  backface-visibility: hidden;
+}
+
+// Zajmuje miejsce przyklejonego elementu, żeby układ strony nie skakał.
+.pl-sticky-placeholder {
+  box-sizing: border-box;
+  visibility: hidden;
+  pointer-events: none;
+}
+
+// Gotowy wygląd „uniesionego" paska: półprzezroczyste tło, rozmycie i miękki cień.
+// Użycie: <div class="pl-sticky-raised" data-pl-sticky> — styl włącza się po przyklejeniu.
+.pl-sticky-raised.pl-sticky-fixed {
+  background-color: color-mix(in oklab, var(--pl-surface) 82%, transparent);
+  box-shadow:
+    0 1px 0 var(--pl-border),
+    var(--pl-shadow-md);
+  backdrop-filter: saturate(1.6) blur(14px);
+}

@@ -1,0 +1,36 @@
+// Column — tekst łamany na szpalty (CSS multi-column).
+@use '../abstracts' as *;
+
+[class*='pl-column-'] {
+  column-gap: var(--pl-column-gap, var(--pl-gutter));
+}
+
+// Media nie wystają poza szpaltę.
+[class*='pl-column-'] img {
+  width: 100%;
+  height: auto;
+}
+
+@include responsive using ($s) {
+  @for $i from 1 through 6 {
+    .pl-column-1-#{$i}#{$s} {
+      column-count: $i;
+    }
+  }
+}
+
+// Linia między szpaltami (odstęp rośnie dwukrotnie).
+.pl-column-divider {
+  column-gap: calc(var(--pl-column-gap, var(--pl-gutter)) * 2);
+  column-rule: 1px solid var(--pl-border);
+}
+
+// Element rozciągnięty na wszystkie szpalty (np. śródtytuł).
+.pl-column-span {
+  column-span: all;
+}
+
+// Element, który nie może zostać rozbity między szpalty (karta, cytat).
+.pl-column-avoid-break {
+  break-inside: avoid;
+}

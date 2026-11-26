@@ -1,0 +1,24 @@
+---
+import Base from '../layouts/Base.astro';
+import '../styles/home.scss';
+---
+
+<Base title="Nie znaleziono strony">
+  <main id="main" class="home">
+    <section class="home-hero">
+      <div class="home-hero-bg" aria-hidden="true"></div>
+      <div class="home-container">
+        <span class="home-pill"><span class="home-pill-dot"></span> Błąd 404</span>
+        <h1 class="home-title">Tu nic <em>nie ma</em>.</h1>
+        <p class="home-lead">Strona, której szukasz, nie istnieje albo została przeniesiona. Sprawdź adres lub wróć do dokumentacji.</p>
+        <div class="home-actions">
+          <a class="pl-button pl-button-primary pl-button-large" href="/">Strona główna</a>
+          <a class="pl-button pl-button-large" href="/docs/start/wprowadzenie/">Dokumentacja</a>
+          <button class="pl-button pl-button-large pl-button-ghost" type="button" data-docs-search-open>
+            <span data-pl-icon="search"></span> Szukaj
+          </button>
+        </div>
+      </div>
+    </section>
+  </main>
+</Base>

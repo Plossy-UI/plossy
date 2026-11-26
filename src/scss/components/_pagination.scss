@@ -1,0 +1,313 @@
+// Pagination
+@use '../abstracts' as *;
+
+.pl-pagination {
+  --pl-pagination-size: 2.25rem;
+  --pl-pagination-radius: var(--pl-radius-sm);
+  --pl-pagination-gap: 0.25rem;
+
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--pl-pagination-gap);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  font-size: var(--pl-text-sm);
+
+  > li {
+    display: flex;
+  }
+
+  > li > a,
+  > li > span,
+  > li > button {
+    @include button-reset;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5em;
+    min-width: var(--pl-pagination-size);
+    height: var(--pl-pagination-size);
+    padding: 0 0.6em;
+    border: 1px solid transparent;
+    border-radius: var(--pl-pagination-radius);
+    color: var(--pl-text-muted);
+    font-weight: 500;
+    font-variant-numeric: tabular-nums;
+    line-height: 1;
+    text-decoration: none;
+    white-space: nowrap;
+    user-select: none;
+    transition:
+      color var(--pl-dur-2) var(--pl-ease),
+      background-color var(--pl-dur-2) var(--pl-ease),
+      border-color var(--pl-dur-2) var(--pl-ease),
+      box-shadow var(--pl-dur-3) var(--pl-ease),
+      transform var(--pl-dur-3) var(--pl-ease-spring);
+  }
+
+  > li > a,
+  > li > button {
+    &:hover {
+      background: var(--pl-muted);
+      color: var(--pl-text);
+    }
+
+    &:active {
+      transform: scale(0.92);
+    }
+
+    @include focus-visible;
+  }
+
+  // Wielokropek i inne nieklikalne elementy.
+  > li > span {
+    color: var(--pl-text-subtle);
+  }
+
+  > li.pl-active > * {
+    background: var(--pl-primary);
+    color: var(--pl-on-primary);
+    font-weight: 600;
+    box-shadow:
+      inset 0 1px 0 oklch(1 0 0 / 0.16),
+      0 4px 12px -4px color-mix(in oklab, var(--pl-primary) 60%, transparent);
+    cursor: default;
+
+    &:hover {
+      background: var(--pl-primary);
+      color: var(--pl-on-primary);
+    }
+
+    &:active {
+      transform: none;
+    }
+  }
+
+  > li.pl-disabled > * {
+    opacity: 0.4;
+    pointer-events: none;
+  }
+
+  .pl-icon {
+    width: 1.1em;
+    height: 1.1em;
+  }
+}
+
+// ── Strzałki rysowane w CSS ─────────────────────────────────────────────
+.pl-pagination-previous,
+.pl-pagination-next {
+  display: inline-block;
+  flex: none;
+  width: 0.45em;
+  height: 0.45em;
+  border: solid currentColor;
+  border-width: 1.5px 1.5px 0 0;
+  transition: translate var(--pl-dur-3) var(--pl-ease-spring);
+}
+
+.pl-pagination-previous {
+  margin-left: 0.15em;
+  transform: rotate(-135deg);
+}
+
+.pl-pagination-next {
+  margin-right: 0.15em;
+  transform: rotate(45deg);
+}
+
+// ── Style ───────────────────────────────────────────────────────────────
+.pl-pagination-pill {
+  --pl-pagination-radius: var(--pl-radius-pill);
+}
+
+.pl-pagination-outline {
+  --pl-pagination-gap: 0.375rem;
+
+  > li > a,
+  > li > button {
+    border-color: var(--pl-border);
+    background: var(--pl-surface);
+    box-shadow: var(--pl-shadow-xs);
+
+    &:hover {
+      border-color: var(--pl-border-strong);
+      background: var(--pl-muted);
+    }
+  }
+
+  > li.pl-active > * {
+    border-color: var(--pl-primary);
+    background: var(--pl-primary-soft);
+    color: var(--pl-primary-text);
+    box-shadow: var(--pl-ring);
+
+    &:hover {
+      background: var(--pl-primary-soft);
+      color: var(--pl-primary-text);
+    }
+  }
+}
+
+// Zwarta grupa we wspólnej ramce.
+.pl-pagination-group {
+  --pl-pagination-gap: 0.125rem;
+  display: inline-flex;
+  padding: 0.25rem;
+  border: 1px solid var(--pl-border);
+  border-radius: calc(var(--pl-pagination-radius) + 0.25rem + 1px);
+  background: var(--pl-surface);
+  box-shadow: var(--pl-shadow-xs);
+
+  &.pl-pagination-pill {
+    border-radius: var(--pl-radius-pill);
+  }
+}
+
+// ── Rozmiary ────────────────────────────────────────────────────────────
+.pl-pagination-small {
+  --pl-pagination-size: 1.875rem;
+  --pl-pagination-radius: var(--pl-radius-xs);
+  font-size: var(--pl-text-xs);
+}
+
+.pl-pagination-large {
+  --pl-pagination-size: 2.75rem;
+  --pl-pagination-radius: var(--pl-radius-md);
+  font-size: var(--pl-text-md);
+}
+
+// ── Wyrównanie ──────────────────────────────────────────────────────────
+.pl-pagination-center {
+  justify-content: center;
+}
+
+.pl-pagination-right {
+  justify-content: flex-end;
+}
+
+.pl-pagination-between {
+  justify-content: space-between;
+}
+
+// Dosuwa pozycję (i kolejne) do prawej krawędzi.
+.pl-pagination > .pl-pagination-push {
+  margin-left: auto;
+}
+
+// ── Pager: poprzednia / następna ────────────────────────────────────────
+.pl-pager {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: var(--pl-space-3);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+
+  > li {
+    display: flex;
+    min-width: 0;
+  }
+
+  > li:last-child:not(:first-child),
+  > .pl-pager-next {
+    grid-column: 2;
+  }
+
+  > li > a {
+    position: relative;
+    display: flex;
+    flex: 1;
+    flex-direction: column;
+    gap: 0.2rem;
+    min-width: 0;
+    padding: 0.9rem 1.1rem 0.95rem 2.75rem;
+    border: 1px solid var(--pl-border);
+    border-radius: var(--pl-radius-md);
+    background: var(--pl-surface);
+    box-shadow: var(--pl-shadow-xs);
+    color: var(--pl-text);
+    text-decoration: none;
+    transition:
+      border-color var(--pl-dur-2) var(--pl-ease),
+      box-shadow var(--pl-dur-3) var(--pl-ease),
+      transform var(--pl-dur-3) var(--pl-ease-spring);
+
+    // Strzałka.
+    &::before {
+      content: '';
+      position: absolute;
+      top: 50%;
+      left: 1.2rem;
+      width: 0.5rem;
+      height: 0.5rem;
+      margin-top: -0.25rem;
+      border: solid var(--pl-text-subtle);
+      border-width: 1.5px 1.5px 0 0;
+      transform: rotate(-135deg);
+      transition:
+        translate var(--pl-dur-3) var(--pl-ease-spring),
+        border-color var(--pl-dur-2) var(--pl-ease);
+    }
+
+    &:hover {
+      border-color: var(--pl-border-strong);
+      box-shadow: var(--pl-shadow-md);
+      transform: translateY(-2px);
+
+      &::before {
+        border-color: var(--pl-primary);
+        translate: -3px 0;
+      }
+    }
+
+    &:active {
+      transform: scale(0.985);
+    }
+
+    @include focus-visible;
+  }
+
+  > li:last-child:not(:first-child) > a,
+  > .pl-pager-next > a {
+    padding: 0.9rem 2.75rem 0.95rem 1.1rem;
+    align-items: flex-end;
+    text-align: right;
+
+    &::before {
+      right: 1.2rem;
+      left: auto;
+      transform: rotate(45deg);
+    }
+
+    &:hover::before {
+      translate: 3px 0;
+    }
+  }
+
+  > li.pl-disabled > a {
+    opacity: 0.45;
+    pointer-events: none;
+    box-shadow: none;
+  }
+}
+
+.pl-pager-label {
+  color: var(--pl-text-subtle);
+  font-family: var(--pl-font-mono);
+  font-size: 0.6875rem;
+  letter-spacing: 0.07em;
+  text-transform: uppercase;
+}
+
+.pl-pager-title {
+  max-width: 100%;
+  font-family: var(--pl-font-display);
+  font-size: var(--pl-text-lg);
+  font-weight: var(--pl-display-weight, 580);
+  line-height: 1.3;
+  letter-spacing: var(--pl-display-tracking, -0.018em);
+  @include truncate;
+}

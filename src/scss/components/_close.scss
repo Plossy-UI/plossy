@@ -1,0 +1,95 @@
+// Close — przycisk zamykania z „X" rysowanym w CSS.
+// <button class="pl-close" type="button" aria-label="Zamknij"></button>
+@use '../abstracts' as *;
+
+.pl-close {
+  --pl-close-size: 2rem;
+  --pl-close-icon: 0.875rem;
+  --pl-close-stroke: 1.5px;
+
+  @include button-reset;
+  position: relative;
+  display: inline-flex;
+  flex: none;
+  align-items: center;
+  justify-content: center;
+  width: var(--pl-close-size);
+  height: var(--pl-close-size);
+  border-radius: 50%;
+  color: inherit;
+  opacity: 0.62;
+  vertical-align: middle;
+  transition:
+    background-color var(--pl-dur-2) var(--pl-ease),
+    opacity var(--pl-dur-2) var(--pl-ease),
+    transform var(--pl-dur-4) var(--pl-ease-spring);
+
+  // Dwie kreski tworzące „X" — dziedziczą kolor tekstu, więc działają na każdym tle.
+  &::before,
+  &::after {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: var(--pl-close-icon);
+    height: var(--pl-close-stroke);
+    margin: calc(var(--pl-close-stroke) / -2) 0 0 calc(var(--pl-close-icon) / -2);
+    border-radius: 2px;
+    background: currentColor;
+    transform: rotate(45deg);
+  }
+
+  &::after {
+    transform: rotate(-45deg);
+  }
+
+  &:hover {
+    background: color-mix(in oklab, currentColor 11%, transparent);
+    opacity: 1;
+    transform: rotate(90deg);
+  }
+
+  &:active {
+    background: color-mix(in oklab, currentColor 18%, transparent);
+    transform: rotate(90deg) scale(0.88);
+    transition-duration: var(--pl-dur-1);
+  }
+
+  @include focus-visible;
+
+  &:focus-visible {
+    opacity: 1;
+  }
+
+  &:disabled,
+  &.pl-disabled {
+    opacity: 0.3;
+    pointer-events: none;
+  }
+}
+
+.pl-close-small {
+  --pl-close-size: 1.5rem;
+  --pl-close-icon: 0.6875rem;
+}
+
+.pl-close-large {
+  --pl-close-size: 2.75rem;
+  --pl-close-icon: 1.25rem;
+  --pl-close-stroke: 2px;
+}
+
+// Zawsze widoczne tło (np. na zdjęciach).
+.pl-close-filled {
+  background: color-mix(in oklab, currentColor 9%, transparent);
+  opacity: 0.85;
+
+  &:hover {
+    background: color-mix(in oklab, currentColor 18%, transparent);
+  }
+}
+
+// Z włosową ramką.
+.pl-close-outline {
+  box-shadow: inset 0 0 0 1px color-mix(in oklab, currentColor 26%, transparent);
+}

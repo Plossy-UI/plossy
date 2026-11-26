@@ -1,0 +1,111 @@
+// Styl „editorial" — układ redakcyjny: monumentalny szeryf, kremowe strony,
+// czarne cienkie linie, zero cieni i zaokrągleń, czerwony akcent.
+@use 'engine' as *;
+
+@include preset('editorial') {
+  --pl-spark: oklch(0.91 0.17 100);
+  --pl-on-spark: oklch(0.2 0.02 100);
+  --pl-radius-xs: 0px;
+  --pl-radius-sm: 0px;
+  --pl-radius-md: 0px;
+  --pl-radius-lg: 0px;
+  --pl-radius-xl: 0px;
+  --pl-shadow-scale: 0;
+  --pl-gloss: 0;
+  --pl-lift: 0;
+  --pl-press: 1;
+
+  --pl-font-display: 'DM Serif Display', 'Times New Roman', Georgia, serif;
+  --pl-heading-weight: 400;
+  --pl-heading-tracking: -0.02em;
+  --pl-heading-tracking-h1: -0.035em;
+  --pl-heading-tracking-h2: -0.03em;
+  --pl-heading-tracking-h5: -0.01em;
+  --pl-heading-tracking-h6: 0em;
+  --pl-display-weight: 400;
+  --pl-display-tracking: -0.015em;
+  --pl-leading-tight: 1.02;
+  --pl-control-weight: 500;
+  --pl-control-tracking: 0em;
+  // Typografia jako bohater: wyraźnie większa skala nagłówków.
+  --pl-text-lg: 1.25rem;
+  --pl-text-xl: 1.75rem;
+  --pl-text-2xl: 2.4rem;
+  --pl-text-3xl: 3.4rem;
+  --pl-text-4xl: clamp(3.4rem, 2.2rem + 5vw, 6rem);
+  --pl-text-5xl: clamp(4rem, 2rem + 9vw, 9rem);
+
+  --pl-ease-spring: cubic-bezier(0.33, 0.5, 0.2, 1);
+
+  --pl-bg: oklch(0.962 0.014 92);
+  --pl-surface: oklch(0.962 0.014 92);
+  --pl-surface-raised: oklch(0.98 0.01 92);
+  --pl-muted: oklch(0.93 0.018 92);
+  --pl-muted-strong: oklch(0.895 0.02 92);
+  --pl-text: oklch(0.16 0.005 90);
+  --pl-text-muted: oklch(0.38 0.008 90);
+  --pl-text-subtle: oklch(0.54 0.008 90);
+  --pl-border: oklch(0.16 0.005 90 / 0.85);
+  --pl-border-strong: oklch(0.16 0.005 90);
+  --pl-ink: oklch(0.16 0.005 90);
+  --pl-on-ink: oklch(0.962 0.014 92);
+  --pl-secondary: oklch(0.16 0.005 90);
+}
+
+@include preset-dark('editorial') {
+  --pl-bg: oklch(0.13 0.004 90);
+  --pl-surface: oklch(0.13 0.004 90);
+  --pl-surface-raised: oklch(0.17 0.005 90);
+  --pl-muted: oklch(0.18 0.005 90);
+  --pl-muted-strong: oklch(0.23 0.006 90);
+  --pl-text: oklch(0.955 0.014 92);
+  --pl-text-muted: oklch(0.76 0.012 92);
+  --pl-text-subtle: oklch(0.58 0.01 92);
+  --pl-border: oklch(0.955 0.014 92 / 0.8);
+  --pl-border-strong: oklch(0.955 0.014 92);
+  --pl-ink: oklch(0.955 0.014 92);
+  --pl-on-ink: oklch(0.13 0.004 90);
+  --pl-secondary: oklch(0.955 0.014 92);
+  --pl-on-secondary: oklch(0.13 0.004 90);
+}
+
+@include preset-accent('editorial', 0.57, 0.22, 28);
+@include preset-accent-dark('editorial', 0.55, 0.2, 28);
+
+[data-pl-style='editorial'] {
+  :is(.pl-button, .pl-card, .pl-tile, .pl-chip, .pl-label, .pl-badge, .pl-avatar, .pl-switch, .pl-pagination a, .pl-totop, .pl-icon-box),
+  :is(.pl-button, .pl-card):is(:hover, :active) {
+    box-shadow: none !important;
+  }
+
+  .pl-button:not(
+      .pl-button-primary, .pl-button-secondary, .pl-button-success, .pl-button-warning, .pl-button-danger,
+      .pl-button-info, .pl-button-soft, .pl-button-ghost, .pl-button-text, .pl-button-link, .pl-button-outline
+    ) {
+    border-color: var(--pl-text);
+    background: transparent;
+
+    &:hover {
+      background: var(--pl-text);
+      color: var(--pl-bg);
+    }
+  }
+
+  .pl-input,
+  .pl-textarea,
+  .pl-select {
+    background-color: transparent;
+  }
+
+  a:not([class]) {
+    text-decoration-color: currentColor;
+  }
+
+  blockquote {
+    border-left: 0;
+    padding-left: 0;
+    font-size: var(--pl-text-2xl);
+    font-style: italic;
+    line-height: 1.15;
+  }
+}

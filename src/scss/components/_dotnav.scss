@@ -1,0 +1,106 @@
+// Dotnav
+@use '../abstracts' as *;
+
+.pl-dotnav {
+  --pl-dotnav-size: 0.5rem;
+  --pl-dotnav-active: 1.5rem;
+  --pl-dotnav-gap: 0.5rem;
+  --pl-dotnav-color: var(--pl-border-strong);
+  --pl-dotnav-color-hover: var(--pl-text-subtle);
+  --pl-dotnav-color-active: var(--pl-primary);
+
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--pl-dotnav-gap);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+
+  > li {
+    display: flex;
+  }
+
+  > li > * {
+    @include button-reset;
+    position: relative;
+    display: block;
+    width: var(--pl-dotnav-size);
+    height: var(--pl-dotnav-size);
+    border-radius: var(--pl-radius-pill);
+    background: var(--pl-dotnav-color);
+    // Tekst zostaje dla czytników ekranu.
+    overflow: hidden;
+    text-indent: 100%;
+    white-space: nowrap;
+    transition:
+      width var(--pl-dur-4) var(--pl-ease-spring),
+      height var(--pl-dur-4) var(--pl-ease-spring),
+      transform var(--pl-dur-3) var(--pl-ease-spring),
+      background-color var(--pl-dur-2) var(--pl-ease);
+
+    &:hover {
+      background: var(--pl-dotnav-color-hover);
+      transform: scale(1.3);
+    }
+
+    &:active {
+      transform: scale(0.9);
+    }
+
+    @include focus-visible(3px);
+  }
+
+  // Aktywna kropka rozciąga się w pigułkę.
+  > li.pl-active > * {
+    width: var(--pl-dotnav-active);
+    background: var(--pl-dotnav-color-active);
+    transform: none;
+  }
+}
+
+// Powiększony obszar kliknięcia (poza overflow: hidden — na elemencie li).
+.pl-dotnav > li {
+  position: relative;
+  padding: 0.35rem 0;
+  margin: -0.35rem 0;
+}
+
+.pl-dotnav-vertical {
+  flex-direction: column;
+
+  > li {
+    padding: 0 0.35rem;
+    margin: 0 -0.35rem;
+  }
+
+  > li.pl-active > * {
+    width: var(--pl-dotnav-size);
+    height: var(--pl-dotnav-active);
+  }
+}
+
+// ── Warianty ────────────────────────────────────────────────────────────
+// Na zdjęciach i ciemnych tłach.
+.pl-dotnav-light,
+.pl-slideshow-nav-inside.pl-dotnav {
+  --pl-dotnav-color: oklch(1 0 0 / 0.45);
+  --pl-dotnav-color-hover: oklch(1 0 0 / 0.75);
+  --pl-dotnav-color-active: oklch(1 0 0);
+}
+
+.pl-dotnav-spark {
+  --pl-dotnav-color-active: var(--pl-spark);
+}
+
+.pl-dotnav-small {
+  --pl-dotnav-size: 0.375rem;
+  --pl-dotnav-active: 1.1rem;
+  --pl-dotnav-gap: 0.375rem;
+}
+
+.pl-dotnav-large {
+  --pl-dotnav-size: 0.7rem;
+  --pl-dotnav-active: 2.1rem;
+  --pl-dotnav-gap: 0.6rem;
+}

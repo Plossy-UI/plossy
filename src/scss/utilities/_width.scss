@@ -1,0 +1,57 @@
+// Width — szerokości ułamkowe, stałe i automatyczne.
+@use 'sass:list';
+@use 'sass:math';
+@use '../abstracts' as *;
+
+// Ułamki: (licznik, mianownik).
+$fractions: (
+  (1, 1), (1, 2), (1, 3), (2, 3), (1, 4), (3, 4),
+  (1, 5), (2, 5), (3, 5), (4, 5), (1, 6), (5, 6)
+);
+
+$fixed: (
+  small: 9.5rem,
+  medium: 18.75rem,
+  large: 28rem,
+  xlarge: 37.5rem,
+  2xlarge: 47rem,
+);
+
+[class*='pl-width'] {
+  box-sizing: border-box;
+  max-width: 100%;
+}
+
+@include responsive using ($s) {
+  @each $f in $fractions {
+    $n: list.nth($f, 1);
+    $d: list.nth($f, 2);
+
+    .pl-width-#{$n}-#{$d}#{$s} {
+      flex: none !important;
+      width: math.percentage(math.div($n, $d)) !important;
+    }
+  }
+
+  @each $name, $value in $fixed {
+    .pl-width-#{$name}#{$s} {
+      width: $value !important;
+    }
+  }
+
+  // Szerokość wynikająca z treści.
+  .pl-width-auto#{$s} {
+    flex: none !important;
+    width: auto !important;
+  }
+
+  // Wypełnia pozostałe miejsce w wierszu flex / siatce.
+  .pl-width-expand#{$s} {
+    flex: 1 !important;
+    width: auto !important;
+    min-width: 1px;
+  }
+
+  .pl-width-max-content#{$s} { width: max-content !important; }
+  .pl-width-min-content#{$s} { width: min-content !important; }
+}

@@ -1,0 +1,250 @@
+---
+// Układ przykładowych stron: sama biblioteka Plossy (bez stylów dokumentacji)
+// + pasek u góry strony: powrót do galerii, wybór stylu, koloru akcentu i motywu.
+import '@fontsource-variable/geist';
+import '@fontsource-variable/geist-mono';
+import '@fontsource-variable/bricolage-grotesque';
+// Kroje presetów stylu
+import '@fontsource-variable/cormorant-garamond';
+import '@fontsource-variable/jost';
+import '@fontsource-variable/baloo-tamma-2';
+import '@fontsource-variable/playfair-display';
+import '@fontsource-variable/playfair-display/wght-italic.css';
+import '@fontsource-variable/nunito';
+import '@fontsource-variable/fraunces';
+import '@fontsource/dm-serif-display/400.css';
+import '@fontsource/dm-serif-display/400-italic.css';
+import '@plossy/scss/plossy.scss';
+import { styles } from '../styles';
+
+interface Props {
+  title: string;
+  description?: string;
+}
+const accents = [
+  ['iris', 'Iris'],
+  ['moss', 'Moss'],
+  ['coral', 'Coral'],
+  ['ocean', 'Ocean'],
+  ['plum', 'Plum'],
+  ['ink', 'Ink'],
+];
+const { title, description = 'Przykładowa strona zbudowana z komponentów Plossy.' } = Astro.props;
+---
+
+<!doctype html>
+<html lang="pl" data-pl-theme="light">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>{title} · Przykłady Plossy</title>
+    <meta name="description" content={description} />
+    <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+    <script is:inline>
+      (() => {
+        const root = document.documentElement;
+        try {
+          const params = new URLSearchParams(location.search);
+          const theme = params.get('theme') || localStorage.getItem('plossy-theme');
+          root.dataset.plTheme = theme || (matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
+          const accent = params.get('accent') || localStorage.getItem('plossy-accent');
+          if (accent) root.dataset.plAccent = accent;
+          const style = params.get('style') || localStorage.getItem('plossy-style');
+          if (style && style !== 'soft') root.dataset.plStyle = style;
+          if (params.has('embed')) root.classList.add('example-embed');
+        } catch {}
+      })();
+    </script>
+  </head>
+  <body>
+    <div class="example-bar" role="region" aria-label="Ustawienia podglądu">
+      <a class="example-bar-back" href="/examples/"><span data-pl-icon="arrow-left"></span><span>Przykłady</span></a>
+      <span class="example-bar-title">{title}</span>
+      <label class="example-bar-field">
+        <span>Styl</span>
+        <select data-example-style aria-label="Styl">
+          {styles.map((style) => <option value={style.id}>{style.label}</option>)}
+        </select>
+      </label>
+      <div class="example-bar-accents" role="group" aria-label="Kolor akcentu">
+        <button type="button" class="example-accent" data-example-accent="" title="Kolor domyślny stylu" aria-label="Kolor domyślny stylu"></button>
+        {accents.map(([id, label]) => (
+          <button type="button" class="example-accent" data-example-accent={id} data-pl-accent={id} title={label} aria-label={`Akcent ${label}`} />
+        ))}
+      </div>
+      <button type="button" class="example-bar-theme" data-example-theme aria-label="Przełącz motyw jasny / ciemny" title="Motyw">
+        <span data-pl-icon="sun"></span>
+      </button>
+    </div>
+
+    <slot />
+
+    <script>
+      import '@plossy/js/index.js';
+
+      document.querySelector('[data-example-theme]')?.addEventListener('click', () => {
+        const root = document.documentElement;
+        const next = root.dataset.plTheme === 'dark' ? 'light' : 'dark';
+        root.dataset.plTheme = next;
+        try {
+          localStorage.setItem('plossy-theme', next);
+        } catch {}
+      });
+
+      const styleSelect = document.querySelector<HTMLSelectElement>('[data-example-style]');
+      if (styleSelect) {
+        styleSelect.value = document.documentElement.dataset.plStyle || 'soft';
+        styleSelect.addEventListener('change', () => {
+          const root = document.documentElement;
+          if (styleSelect.value === 'soft') delete root.dataset.plStyle;
+          else root.dataset.plStyle = styleSelect.value;
+          try {
+            localStorage.setItem('plossy-style', styleSelect.value);
+          } catch {}
+        });
+      }
+
+      const accentButtons = [...document.querySelectorAll<HTMLButtonElement>('[data-example-accent]')];
+      const markAccent = () => {
+        const current = document.documentElement.dataset.plAccent || '';
+        accentButtons.forEach((btn) => btn.classList.toggle('is-active', btn.dataset.exampleAccent === current));
+      };
+      accentButtons.forEach((btn) =>
+        btn.addEventListener('click', () => {
+          const root = document.documentElement;
+          const value = btn.dataset.exampleAccent || '';
+          if (value) root.dataset.plAccent = value;
+          else delete root.dataset.plAccent;
+          try {
+            if (value) localStorage.setItem('plossy-accent', value);
+            else localStorage.removeItem('plossy-accent');
+          } catch {}
+          markAccent();
+        }),
+      );
+      markAccent();
+
+      // Linki „#" i formularze demonstracyjne nie przeładowują strony.
+      document.addEventListener('click', (event) => {
+        if ((event.target as Element).closest?.('a[href="#"]')) event.preventDefault();
+      });
+      document.addEventListener('submit', (event) => {
+        if (!(event.target as Element).hasAttribute('data-real-submit')) event.preventDefault();
+      });
+    </script>
+
+    <style is:global>
+      /* Pasek podglądu — zwykły element na górze strony (przewija się razem z nią,
+         więc nie koliduje z przyklejanymi nagłówkami przykładów). */
+      .example-bar {
+        position: relative;
+        z-index: 5;
+        display: flex;
+        align-items: center;
+        gap: 0.5rem 1rem;
+        flex-wrap: wrap;
+        min-height: 2.75rem;
+        padding: 0.35rem 1rem;
+        border-bottom: 1px solid var(--pl-border);
+        background: var(--pl-surface);
+        color: var(--pl-text-muted);
+        font-family: var(--pl-font-sans);
+        font-size: var(--pl-text-sm);
+        line-height: 1.2;
+      }
+      .example-bar-back,
+      .example-bar-theme {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.4rem;
+        height: 2rem;
+        padding: 0 0.6rem;
+        border: 0;
+        border-radius: var(--pl-radius-sm);
+        background: none;
+        color: inherit;
+        font: inherit;
+        font-weight: 500;
+        text-decoration: none;
+        cursor: pointer;
+        transition: background-color var(--pl-dur-2) var(--pl-ease), color var(--pl-dur-2) var(--pl-ease);
+      }
+      .example-bar-back:hover,
+      .example-bar-theme:hover {
+        background: var(--pl-muted);
+        color: var(--pl-text);
+        text-decoration: none;
+      }
+      .example-bar-back {
+        margin-left: -0.6rem;
+      }
+      .example-bar-title {
+        margin-right: auto;
+        color: var(--pl-text);
+        font-weight: 600;
+      }
+      .example-bar-field {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.4rem;
+      }
+      .example-bar select {
+        height: 2rem;
+        padding: 0 0.5rem;
+        border: 1px solid var(--pl-border);
+        border-radius: var(--pl-radius-sm);
+        background: var(--pl-surface);
+        color: var(--pl-text);
+        font: inherit;
+        font-weight: 500;
+        cursor: pointer;
+      }
+      .example-bar-accents {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.4rem;
+      }
+      .example-accent {
+        width: 1.1rem;
+        height: 1.1rem;
+        padding: 0;
+        border: 0;
+        border-radius: 50%;
+        background: var(--pl-primary);
+        cursor: pointer;
+        transition: transform var(--pl-dur-3) var(--pl-ease-spring), box-shadow var(--pl-dur-2) var(--pl-ease);
+      }
+      /* Pierwsza kropka = kolor domyślny wybranego stylu (przekreślona obwódką). */
+      .example-accent[data-example-accent=''] {
+        background: conic-gradient(var(--pl-primary) 0 50%, var(--pl-surface) 0);
+        box-shadow: inset 0 0 0 1.5px var(--pl-primary);
+      }
+      .example-accent:hover {
+        transform: scale(1.2);
+      }
+      .example-accent.is-active {
+        box-shadow: 0 0 0 2px var(--pl-surface), 0 0 0 3.5px var(--pl-primary);
+      }
+      .example-accent.is-active[data-example-accent=''] {
+        box-shadow: inset 0 0 0 1.5px var(--pl-primary), 0 0 0 2px var(--pl-surface), 0 0 0 3.5px var(--pl-primary);
+      }
+      .example-bar .pl-icon {
+        width: 1rem;
+        height: 1rem;
+      }
+      @media (max-width: 639px) {
+        .example-bar-title,
+        .example-bar-field > span {
+          display: none;
+        }
+        .example-bar-back {
+          margin-right: auto;
+        }
+      }
+      /* W miniaturach galerii (iframe ?embed) pasek jest ukryty. */
+      .example-embed .example-bar {
+        display: none;
+      }
+    </style>
+  </body>
+</html>

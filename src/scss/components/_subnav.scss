@@ -1,0 +1,261 @@
+// Subnav
+@use '../abstracts' as *;
+
+.pl-subnav {
+  --pl-subnav-gap: 1.5rem;
+
+  position: relative;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.35rem var(--pl-subnav-gap);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  font-size: var(--pl-text-sm);
+
+  > li {
+    position: relative;
+    display: flex;
+    align-items: center;
+  }
+
+  > li > a,
+  > li > button,
+  > li > span {
+    @include button-reset;
+    position: relative;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.45em;
+    padding: 0.3rem 0;
+    color: var(--pl-text-muted);
+    font-weight: 500;
+    line-height: 1.4;
+    text-decoration: none;
+    white-space: nowrap;
+    transition: color var(--pl-dur-2) var(--pl-ease);
+
+    > .pl-icon,
+    > svg {
+      flex: none;
+      width: 1.15em;
+      height: 1.15em;
+    }
+  }
+
+  > li > span {
+    cursor: default;
+  }
+
+  > li > a,
+  > li > button {
+    // Podkreślenie, które „wjeżdża" od lewej.
+    &::after {
+      content: '';
+      position: absolute;
+      inset: auto 0 0 0;
+      height: 1.5px;
+      border-radius: 2px;
+      background: currentColor;
+      transform: scaleX(0);
+      transform-origin: right;
+      transition: transform var(--pl-dur-3) var(--pl-ease);
+    }
+
+    &:hover {
+      color: var(--pl-text);
+    }
+
+    @include focus-visible(3px);
+
+    &:focus-visible {
+      border-radius: var(--pl-radius-xs);
+    }
+  }
+
+  > li.pl-active > * {
+    color: var(--pl-text);
+    font-weight: 600;
+
+    &::after {
+      background: var(--pl-primary);
+      transform: scaleX(1);
+      transform-origin: left;
+    }
+  }
+
+  > li.pl-disabled > * {
+    opacity: 0.45;
+    pointer-events: none;
+  }
+}
+
+// ── Z separatorami ──────────────────────────────────────────────────────
+.pl-subnav-divider {
+  > li + li::before {
+    content: '';
+    width: 1px;
+    height: 1em;
+    margin-left: calc(var(--pl-subnav-gap) / -2);
+    margin-right: calc(var(--pl-subnav-gap) / 2);
+    background: var(--pl-border-strong);
+  }
+}
+
+// ── Pigułki (kontrolka segmentowa) ──────────────────────────────────────
+.pl-subnav-pill {
+  --pl-subnav-pad: 3px;
+  --pl-subnav-radius: var(--pl-radius-pill);
+
+  display: inline-flex;
+  gap: 2px;
+  padding: var(--pl-subnav-pad);
+  border-radius: calc(var(--pl-subnav-radius) + var(--pl-subnav-pad));
+  background: var(--pl-muted);
+  box-shadow: inset 0 0 0 1px color-mix(in oklab, var(--pl-border) 60%, transparent);
+  vertical-align: middle;
+
+  > li > a,
+  > li > button,
+  > li > span {
+    z-index: 1;
+    min-height: 2rem;
+    padding: 0.3rem 0.95rem;
+    border-radius: var(--pl-subnav-radius);
+    transition:
+      color var(--pl-dur-2) var(--pl-ease),
+      background-color var(--pl-dur-2) var(--pl-ease),
+      box-shadow var(--pl-dur-2) var(--pl-ease),
+      transform var(--pl-dur-3) var(--pl-ease-spring);
+
+    &::after {
+      display: none;
+    }
+  }
+
+  > li > a:active,
+  > li > button:active {
+    transform: scale(0.96);
+  }
+
+  > li:not(.pl-active) > a:hover,
+  > li:not(.pl-active) > button:hover {
+    background: color-mix(in oklab, var(--pl-text) 6%, transparent);
+  }
+
+  // Bez JS: aktywna pozycja sama jest „pigułką".
+  > li.pl-active > * {
+    background: var(--pl-surface-raised);
+    box-shadow:
+      var(--pl-shadow-sm),
+      inset 0 0 0 1px color-mix(in oklab, var(--pl-border) 70%, transparent);
+  }
+
+  // Ze Switcherem: jedna pigułka przesuwa się między pozycjami.
+  &.pl-switcher-ready {
+    &::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: var(--pl-indicator-w, 0);
+      height: var(--pl-indicator-h, 0);
+      border-radius: var(--pl-subnav-radius);
+      background: var(--pl-surface-raised);
+      box-shadow:
+        var(--pl-shadow-sm),
+        inset 0 0 0 1px color-mix(in oklab, var(--pl-border) 70%, transparent);
+      transform: translate(var(--pl-indicator-x, 0), var(--pl-indicator-y, 0));
+      transition:
+        transform var(--pl-dur-4) var(--pl-ease-spring),
+        width var(--pl-dur-4) var(--pl-ease-spring),
+        height var(--pl-dur-3) var(--pl-ease);
+      pointer-events: none;
+    }
+
+    > li.pl-active > * {
+      background: transparent;
+      box-shadow: none;
+    }
+  }
+}
+
+// Pigułki w kolorze akcentu.
+.pl-subnav-pill.pl-subnav-primary {
+  > li.pl-active > * {
+    background: var(--pl-primary);
+    box-shadow: 0 4px 12px -4px color-mix(in oklab, var(--pl-primary) 60%, transparent);
+    color: var(--pl-on-primary);
+  }
+
+  &.pl-switcher-ready {
+    &::before {
+      background: var(--pl-primary);
+      box-shadow:
+        inset 0 1px 0 oklch(1 0 0 / 0.16),
+        0 4px 12px -4px color-mix(in oklab, var(--pl-primary) 60%, transparent);
+    }
+
+    > li.pl-active > * {
+      background: transparent;
+      box-shadow: none;
+    }
+  }
+}
+
+// Zaokrąglony prostokąt zamiast pigułki.
+.pl-subnav-rounded {
+  --pl-subnav-radius: var(--pl-radius-sm);
+}
+
+.pl-subnav-fill {
+  display: flex;
+
+  > li {
+    flex: 1 1 0;
+  }
+
+  > li > * {
+    flex: 1;
+    justify-content: center;
+  }
+}
+
+// ── Rozmiary ────────────────────────────────────────────────────────────
+.pl-subnav-small {
+  font-size: var(--pl-text-xs);
+
+  &.pl-subnav-pill > li > * {
+    min-height: 1.625rem;
+    padding: 0.2rem 0.7rem;
+  }
+}
+
+.pl-subnav-large {
+  font-size: 0.9375rem;
+
+  &.pl-subnav-pill > li > * {
+    min-height: 2.5rem;
+    padding: 0.4rem 1.25rem;
+  }
+}
+
+// ── Wąskie ekrany: pastylki przewijają się w poziomie zamiast zawijać ────
+@media (max-width: 639.98px) {
+  .pl-subnav-pill:not(.pl-subnav-wrap) {
+    max-width: 100%;
+    flex-wrap: nowrap;
+    overflow-x: auto;
+    overscroll-behavior-x: contain;
+    scrollbar-width: none;
+
+    &::-webkit-scrollbar {
+      display: none;
+    }
+
+    > li {
+      flex: none;
+    }
+  }
+}

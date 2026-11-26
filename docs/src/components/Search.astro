@@ -1,0 +1,15 @@
+---
+import { getNav } from '../nav';
+const nav = await getNav();
+const items = nav.flatMap((group) => group.items.map((item) => ({ t: item.title, h: item.href, g: group.label })));
+---
+
+<dialog class="docs-search" data-docs-search aria-label="Szukaj w dokumentacji">
+  <div class="docs-search-field">
+    <span data-pl-icon="search"></span>
+    <input type="text" placeholder="Szukaj komponentu…" autocomplete="off" spellcheck="false" data-docs-search-input />
+    <kbd>Esc</kbd>
+  </div>
+  <ul class="docs-search-results" data-docs-search-results></ul>
+  <script type="application/json" data-docs-search-data set:html={JSON.stringify(items)} />
+</dialog>

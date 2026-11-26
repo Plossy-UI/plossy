@@ -1,0 +1,87 @@
+// Section — poziomy pas strony z rytmem pionowych odstępów i tłem.
+@use '../abstracts' as *;
+
+// Odwrócona paleta: wszystko wewnątrz (tekst, ramki, karty) czyta tokeny
+// przeliczone względem koloru tła, więc treść pozostaje czytelna.
+@mixin on-tone {
+  --pl-bg: var(--pl-tone);
+  --pl-surface: color-mix(in oklab, var(--pl-on-tone) 9%, var(--pl-tone));
+  --pl-surface-raised: color-mix(in oklab, var(--pl-on-tone) 13%, var(--pl-tone));
+  --pl-muted: color-mix(in oklab, var(--pl-on-tone) 8%, var(--pl-tone));
+  --pl-muted-strong: color-mix(in oklab, var(--pl-on-tone) 15%, var(--pl-tone));
+  --pl-border: color-mix(in oklab, var(--pl-on-tone) 18%, transparent);
+  --pl-border-strong: color-mix(in oklab, var(--pl-on-tone) 34%, transparent);
+  --pl-text: var(--pl-on-tone);
+  --pl-text-muted: color-mix(in oklab, var(--pl-on-tone) 78%, transparent);
+  --pl-text-subtle: color-mix(in oklab, var(--pl-on-tone) 60%, transparent);
+  --pl-primary-text: var(--pl-on-tone);
+  --pl-focus: color-mix(in oklab, var(--pl-on-tone) 70%, transparent);
+
+  background-color: var(--pl-tone);
+  // Delikatny połysk w rogu — sekcja nie jest płaską plamą koloru.
+  background-image: radial-gradient(90% 120% at 100% 0%, oklch(1 0 0 / 0.1), transparent 60%);
+  color: var(--pl-text);
+}
+
+.pl-section {
+  --pl-section-py: clamp(3rem, 1.75rem + 4.5vw, 5.5rem);
+
+  display: flow-root;
+  position: relative;
+  padding-block: var(--pl-section-py);
+
+  // Ostatni element nie dokłada marginesu do paddingu sekcji.
+  > :last-child {
+    margin-bottom: 0;
+  }
+}
+
+// ── Rozmiary ────────────────────────────────────────────────────────────
+.pl-section-xsmall { --pl-section-py: var(--pl-space-5); }
+.pl-section-small { --pl-section-py: clamp(2rem, 1.5rem + 1.8vw, 3rem); }
+.pl-section-large { --pl-section-py: clamp(4.5rem, 2rem + 8vw, 9rem); }
+.pl-section-xlarge { --pl-section-py: clamp(6rem, 2rem + 13vw, 14rem); }
+
+.pl-section-remove-vertical { padding-block: 0; }
+.pl-section-remove-top { padding-top: 0; }
+.pl-section-remove-bottom { padding-bottom: 0; }
+
+// ── Style ───────────────────────────────────────────────────────────────
+.pl-section-default {
+  background-color: var(--pl-bg);
+}
+
+.pl-section-muted {
+  background-color: var(--pl-muted);
+}
+
+.pl-section-primary {
+  --pl-tone: var(--pl-primary);
+  --pl-on-tone: var(--pl-on-primary);
+  @include on-tone;
+}
+
+.pl-section-secondary {
+  --pl-tone: var(--pl-ink);
+  --pl-on-tone: var(--pl-on-ink);
+  @include on-tone;
+}
+
+// ── Nachodzenie na poprzednią sekcję ────────────────────────────────────
+// Sekcja wsuwa się na poprzednią jak arkusz z zaokrągloną górą.
+.pl-section-overlap {
+  --pl-section-overlap: var(--pl-space-7);
+
+  z-index: 1;
+  margin-top: calc(-1 * var(--pl-section-overlap));
+  border-radius: var(--pl-radius-xl) var(--pl-radius-xl) 0 0;
+
+  &:not([class*='pl-section-default'], [class*='pl-section-muted'], [class*='pl-section-primary'], [class*='pl-section-secondary']) {
+    background-color: var(--pl-bg);
+  }
+}
+
+// Zaokrąglona sekcja „wyspa" (np. wewnątrz kontenera).
+.pl-section-rounded {
+  border-radius: var(--pl-radius-xl);
+}

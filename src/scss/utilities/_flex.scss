@@ -1,0 +1,65 @@
+// Flex — narzędzia układu flexbox.
+@use '../abstracts' as *;
+
+.pl-flex { display: flex !important; }
+.pl-flex-inline { display: inline-flex !important; }
+
+@include responsive using ($s) {
+  // Wyrównanie w poziomie (oś główna).
+  .pl-flex-left#{$s} { justify-content: flex-start !important; }
+  .pl-flex-center#{$s} { justify-content: center !important; }
+  .pl-flex-right#{$s} { justify-content: flex-end !important; }
+  .pl-flex-between#{$s} { justify-content: space-between !important; }
+  .pl-flex-around#{$s} { justify-content: space-around !important; }
+  .pl-flex-evenly#{$s} { justify-content: space-evenly !important; }
+
+  // Wyrównanie w pionie (oś poprzeczna).
+  .pl-flex-stretch#{$s} { align-items: stretch !important; }
+  .pl-flex-top#{$s} { align-items: flex-start !important; }
+  .pl-flex-middle#{$s} { align-items: center !important; }
+  .pl-flex-bottom#{$s} { align-items: flex-end !important; }
+  .pl-flex-baseline#{$s} { align-items: baseline !important; }
+
+  // Kierunek.
+  .pl-flex-row#{$s} { flex-direction: row !important; }
+  .pl-flex-row-reverse#{$s} { flex-direction: row-reverse !important; }
+  .pl-flex-column#{$s} { flex-direction: column !important; }
+  .pl-flex-column-reverse#{$s} { flex-direction: column-reverse !important; }
+
+  // Kolejność.
+  .pl-flex-first#{$s} { order: -1 !important; }
+  .pl-flex-last#{$s} { order: 99 !important; }
+  .pl-flex-initial#{$s} { order: 0 !important; }
+
+  // Rozmiar elementu.
+  .pl-flex-1#{$s} { flex: 1 !important; min-width: 0; }
+  .pl-flex-auto#{$s} { flex: auto !important; }
+  .pl-flex-none#{$s} { flex: none !important; }
+}
+
+// Zawijanie.
+.pl-flex-nowrap { flex-wrap: nowrap !important; }
+.pl-flex-wrap { flex-wrap: wrap !important; }
+.pl-flex-wrap-reverse { flex-wrap: wrap-reverse !important; }
+
+// Rozkład zawiniętych wierszy.
+.pl-flex-wrap-stretch { align-content: stretch !important; }
+.pl-flex-wrap-top { align-content: flex-start !important; }
+.pl-flex-wrap-middle { align-content: center !important; }
+.pl-flex-wrap-bottom { align-content: flex-end !important; }
+.pl-flex-wrap-between { align-content: space-between !important; }
+.pl-flex-wrap-around { align-content: space-around !important; }
+
+// Wyrównanie pojedynczego elementu.
+.pl-flex-self-top { align-self: flex-start !important; }
+.pl-flex-self-middle { align-self: center !important; }
+.pl-flex-self-bottom { align-self: flex-end !important; }
+.pl-flex-self-stretch { align-self: stretch !important; }
+
+// Odstępy między elementami (działa też dla display: grid).
+.pl-gap-xsmall { gap: var(--pl-space-1) !important; }
+.pl-gap-small { gap: var(--pl-space-2) !important; }
+.pl-gap,
+.pl-gap-medium { gap: var(--pl-space-4) !important; }
+.pl-gap-large { gap: var(--pl-space-6) !important; }
+.pl-gap-remove { gap: 0 !important; }

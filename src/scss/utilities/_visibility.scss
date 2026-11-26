@@ -1,0 +1,73 @@
+// Visibility — ukrywanie i pokazywanie elementów.
+@use 'sass:map';
+@use '../abstracts' as *;
+
+.pl-hidden {
+  display: none !important;
+}
+
+.pl-invisible {
+  visibility: hidden !important;
+}
+
+// .pl-hidden@m — ukryty od breakpointu w górę.
+// .pl-visible@m — widoczny dopiero od breakpointu.
+@each $name, $value in $breakpoints {
+  @media (min-width: $value) {
+    .pl-hidden\@#{$name} {
+      display: none !important;
+    }
+  }
+
+  @media (max-width: ($value - 0.02px)) {
+    .pl-visible\@#{$name} {
+      display: none !important;
+    }
+  }
+}
+
+// ── Urządzenia dotykowe ─────────────────────────────────────────────────
+@media (hover: none) and (pointer: coarse) {
+  .pl-hidden-touch {
+    display: none !important;
+  }
+}
+
+@media (hover: hover), (pointer: fine) {
+  .pl-hidden-notouch {
+    display: none !important;
+  }
+}
+
+// ── Odsłanianie po najechaniu ───────────────────────────────────────────
+// Tylko tam, gdzie hover istnieje — na ekranach dotykowych elementy są
+// zawsze widoczne. Fokus klawiatury wewnątrz kontenera też odsłania.
+.pl-invisible-hover {
+  transition: opacity var(--pl-dur-2) var(--pl-ease);
+}
+
+@media (hover: hover) {
+  // Ukrycie „dostępne": element nie zajmuje miejsca, ale przyjmuje fokus.
+  .pl-visible-toggle:not(:hover):not(:focus-within) .pl-hidden-hover {
+    position: absolute !important;
+    width: 0 !important;
+    height: 0 !important;
+    padding: 0 !important;
+    margin: 0 !important;
+    border: 0 !important;
+    overflow: hidden !important;
+  }
+
+  .pl-visible-toggle:not(:hover):not(:focus-within) .pl-invisible-hover {
+    opacity: 0 !important;
+  }
+}
+
+// Bez obrysu na samym kontenerze, gdy fokus dostaje tabindex="0".
+.pl-visible-toggle:focus {
+  outline: none;
+}
+
+.pl-visible-toggle:focus-visible {
+  @include focus-ring;
+}

@@ -1,0 +1,154 @@
+// Marker — okrągły znacznik „+" z pulsującym pierścieniem (hotspoty na obrazach).
+@use '../abstracts' as *;
+
+.pl-marker {
+  --pl-tone: var(--pl-primary);
+  --pl-on-tone: var(--pl-on-primary);
+  --pl-marker-size: 2rem;
+  --pl-marker-plus: 0.7rem;
+
+  @include button-reset;
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: var(--pl-marker-size);
+  height: var(--pl-marker-size);
+  border-radius: 50%;
+  // „+" z dwóch kresek rysowanych gradientem — pseudo-elementy zostają dla pierścieni.
+  background:
+    linear-gradient(currentColor, currentColor) center / var(--pl-marker-plus) 1.5px no-repeat,
+    linear-gradient(currentColor, currentColor) center / 1.5px var(--pl-marker-plus) no-repeat,
+    var(--pl-tone);
+  box-shadow:
+    0 0 0 3px color-mix(in oklab, var(--pl-tone) 25%, transparent),
+    var(--pl-shadow-md);
+  color: var(--pl-on-tone);
+  font-family: var(--pl-font-mono);
+  font-size: 0.75rem;
+  font-weight: 600;
+  line-height: 1;
+  text-decoration: none;
+  vertical-align: middle;
+  transition:
+    transform var(--pl-dur-4) var(--pl-ease-spring),
+    box-shadow var(--pl-dur-3) var(--pl-ease),
+    background-color var(--pl-dur-2) var(--pl-ease);
+
+  // Pierścienie pulsu.
+  &::before,
+  &::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    z-index: -1;
+    border-radius: 50%;
+    background: var(--pl-tone);
+    opacity: 0;
+    pointer-events: none;
+  }
+
+  &:hover {
+    transform: scale(1.12) rotate(90deg);
+    box-shadow:
+      0 0 0 5px color-mix(in oklab, var(--pl-tone) 28%, transparent),
+      var(--pl-shadow-lg);
+    color: var(--pl-on-tone);
+    text-decoration: none;
+  }
+
+  &:active {
+    transform: scale(0.94) rotate(90deg);
+    transition-duration: var(--pl-dur-1);
+  }
+
+  // Otwarty (drop / popover widoczny): „+" obraca się w „×".
+  &.pl-open,
+  &.pl-active,
+  &[aria-expanded='true'] {
+    transform: rotate(135deg);
+  }
+
+  @include focus-visible(3px);
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .pl-marker::before,
+  .pl-marker::after {
+    animation: pl-marker-pulse 2.4s var(--pl-ease) infinite;
+  }
+
+  .pl-marker::after {
+    animation-delay: 1.2s;
+  }
+
+  .pl-marker:is(:hover, .pl-open, .pl-active, .pl-marker-static, [aria-expanded='true'])::before,
+  .pl-marker:is(:hover, .pl-open, .pl-active, .pl-marker-static, [aria-expanded='true'])::after {
+    animation: none;
+  }
+}
+
+@keyframes pl-marker-pulse {
+  0% {
+    transform: scale(1);
+    opacity: 0.45;
+  }
+
+  75%,
+  100% {
+    transform: scale(2.3);
+    opacity: 0;
+  }
+}
+
+// Z własną treścią (numer, ikona) znika rysowany „+" i obrót.
+.pl-marker:not(:empty) {
+  background: var(--pl-tone);
+
+  &:hover {
+    transform: scale(1.12);
+  }
+
+  &:active {
+    transform: scale(0.94);
+  }
+
+  &.pl-open,
+  &.pl-active,
+  &[aria-expanded='true'] {
+    transform: scale(1.12);
+  }
+
+  > svg,
+  > .pl-icon {
+    width: 1.1em;
+    height: 1.1em;
+  }
+}
+
+// ── Tony ────────────────────────────────────────────────────────────────
+@include tones('pl-marker');
+
+// Jasny — na ciemne zdjęcia.
+.pl-marker-light {
+  --pl-tone: oklch(1 0 0);
+  --pl-on-tone: oklch(0.22 0.01 85);
+}
+
+.pl-marker-spark {
+  --pl-tone: var(--pl-spark);
+  --pl-on-tone: var(--pl-on-spark);
+}
+
+// ── Rozmiary ────────────────────────────────────────────────────────────
+.pl-marker-small {
+  --pl-marker-size: 1.5rem;
+  --pl-marker-plus: 0.55rem;
+  font-size: 0.6875rem;
+}
+
+.pl-marker-large {
+  --pl-marker-size: 2.75rem;
+  --pl-marker-plus: 0.95rem;
+  font-size: 0.875rem;
+}

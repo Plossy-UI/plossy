@@ -1,0 +1,268 @@
+// Avatar
+@use '../abstracts' as *;
+
+.pl-avatar {
+  --pl-avatar-size: 2.5rem;
+  --pl-avatar-radius: 50%;
+  --pl-avatar-bg: var(--pl-tone-soft, var(--pl-muted-strong));
+  --pl-avatar-color: var(--pl-tone-text, var(--pl-text-muted));
+  --pl-avatar-ring: var(--pl-bg);
+
+  position: relative;
+  display: inline-flex;
+  flex: none;
+  align-items: center;
+  justify-content: center;
+  width: var(--pl-avatar-size);
+  height: var(--pl-avatar-size);
+  border-radius: var(--pl-avatar-radius);
+  background: var(--pl-avatar-bg);
+  color: var(--pl-avatar-color);
+  font-family: var(--pl-font-display);
+  font-size: calc(var(--pl-avatar-size) * 0.38);
+  font-weight: var(--pl-display-weight, 600);
+  line-height: 1;
+  letter-spacing: var(--pl-display-tracking, -0.01em);
+  text-decoration: none;
+  text-transform: uppercase;
+  vertical-align: middle;
+  user-select: none;
+
+  > img,
+  > video {
+    display: block;
+    width: 100%;
+    height: 100%;
+    border-radius: inherit;
+    object-fit: cover;
+  }
+
+  // Włosowa obwódka nad zdjęciem — odcina jasne zdjęcia od tła.
+  &::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    border-radius: inherit;
+    box-shadow: inset 0 0 0 1px color-mix(in oklab, var(--pl-text) 9%, transparent);
+    pointer-events: none;
+  }
+
+  > .pl-icon,
+  > svg {
+    width: 50%;
+    height: 50%;
+  }
+}
+
+a.pl-avatar,
+button.pl-avatar {
+  padding: 0;
+  border: 0;
+  cursor: pointer;
+  transition:
+    transform var(--pl-dur-3) var(--pl-ease-spring),
+    box-shadow var(--pl-dur-2) var(--pl-ease);
+
+  &:hover {
+    transform: scale(1.06);
+  }
+
+  &:active {
+    transform: scale(0.96);
+  }
+
+  @include focus-visible;
+}
+
+// ── Tony inicjałów ──────────────────────────────────────────────────────
+@include tones('pl-avatar');
+
+.pl-avatar-secondary {
+  --pl-avatar-bg: var(--pl-ink);
+  --pl-avatar-color: var(--pl-on-ink);
+}
+
+.pl-avatar-spark {
+  --pl-avatar-bg: var(--pl-spark);
+  --pl-avatar-color: var(--pl-on-spark);
+}
+
+.pl-avatar-solid {
+  --pl-avatar-bg: var(--pl-tone, var(--pl-ink));
+  --pl-avatar-color: var(--pl-on-tone, var(--pl-on-ink));
+}
+
+// ── Rozmiary ────────────────────────────────────────────────────────────
+.pl-avatar-xsmall { --pl-avatar-size: 1.5rem; }
+.pl-avatar-small { --pl-avatar-size: 2rem; }
+.pl-avatar-large { --pl-avatar-size: 3.5rem; }
+.pl-avatar-xlarge { --pl-avatar-size: 5rem; }
+.pl-avatar-2xlarge { --pl-avatar-size: 7rem; }
+
+// ── Kształty ────────────────────────────────────────────────────────────
+.pl-avatar-circle {
+  --pl-avatar-radius: 50%;
+}
+
+.pl-avatar-rounded {
+  --pl-avatar-radius: calc(var(--pl-avatar-size) * 0.28);
+}
+
+.pl-avatar-square {
+  --pl-avatar-radius: var(--pl-radius-xs);
+}
+
+// ── Pierścień ───────────────────────────────────────────────────────────
+.pl-avatar-ring {
+  box-shadow:
+    0 0 0 2px var(--pl-avatar-ring),
+    0 0 0 4px var(--pl-tone, var(--pl-primary));
+}
+
+.pl-avatar-ring-spark {
+  box-shadow:
+    0 0 0 2px var(--pl-avatar-ring),
+    0 0 0 4px var(--pl-spark);
+}
+
+// ── Status ──────────────────────────────────────────────────────────────
+.pl-avatar-status {
+  --pl-avatar-status-size: max(0.5rem, calc(var(--pl-avatar-size) * 0.26));
+
+  position: absolute;
+  right: calc(var(--pl-avatar-size) * 0.146 - var(--pl-avatar-status-size) / 2);
+  bottom: calc(var(--pl-avatar-size) * 0.146 - var(--pl-avatar-status-size) / 2);
+  z-index: 1;
+  width: var(--pl-avatar-status-size);
+  height: var(--pl-avatar-status-size);
+  border-radius: 50%;
+  background: var(--pl-text-subtle);
+  box-shadow: 0 0 0 max(2px, calc(var(--pl-avatar-size) * 0.045)) var(--pl-avatar-ring);
+}
+
+.pl-avatar-rounded > .pl-avatar-status,
+.pl-avatar-square > .pl-avatar-status {
+  right: calc(var(--pl-avatar-status-size) * -0.2);
+  bottom: calc(var(--pl-avatar-status-size) * -0.2);
+}
+
+.pl-avatar-status-top {
+  top: calc(var(--pl-avatar-size) * 0.146 - var(--pl-avatar-status-size) / 2);
+  bottom: auto;
+}
+
+// Online = limonkowa iskra z delikatnym pulsem.
+.pl-avatar-status-online {
+  background: var(--pl-spark);
+
+  &::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    border-radius: 50%;
+    background: var(--pl-spark);
+    animation: pl-avatar-pulse 2.2s var(--pl-ease) infinite;
+  }
+}
+
+.pl-avatar-status-busy { background: var(--pl-danger); }
+.pl-avatar-status-away { background: var(--pl-warning); }
+.pl-avatar-status-offline {
+  background: var(--pl-surface);
+  box-shadow:
+    inset 0 0 0 2px var(--pl-text-subtle),
+    0 0 0 max(2px, calc(var(--pl-avatar-size) * 0.045)) var(--pl-avatar-ring);
+}
+
+@keyframes pl-avatar-pulse {
+  0% {
+    transform: scale(1);
+    opacity: 0.7;
+  }
+  70%,
+  100% {
+    transform: scale(2.4);
+    opacity: 0;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .pl-avatar-status-online::after {
+    animation: none;
+    opacity: 0;
+  }
+}
+
+// ── Grupa ───────────────────────────────────────────────────────────────
+.pl-avatar-group {
+  --pl-avatar-overlap: 0.3;
+  display: inline-flex;
+  align-items: center;
+  vertical-align: middle;
+  // Odwrócona kolejność osi pozwala, by pierwszy awatar leżał na wierzchu bez z-index.
+  isolation: isolate;
+
+  > .pl-avatar {
+    box-shadow: 0 0 0 2px var(--pl-avatar-ring);
+    transition:
+      transform var(--pl-dur-3) var(--pl-ease-spring),
+      margin var(--pl-dur-3) var(--pl-ease-spring);
+
+    &:not(:first-child) {
+      margin-left: calc(var(--pl-avatar-size) * var(--pl-avatar-overlap) * -1);
+    }
+
+    &:hover {
+      z-index: 2;
+      transform: translateY(-3px);
+    }
+  }
+}
+
+// Rozsuwa stos po najechaniu.
+.pl-avatar-group-expand:hover > .pl-avatar:not(:first-child) {
+  margin-left: calc(var(--pl-avatar-size) * -0.08);
+}
+
+// Licznik „+N”.
+.pl-avatar-more {
+  --pl-avatar-bg: var(--pl-surface);
+  --pl-avatar-color: var(--pl-text-muted);
+  font-family: var(--pl-font-mono);
+  font-size: calc(var(--pl-avatar-size) * 0.3);
+  font-weight: 500;
+  letter-spacing: -0.02em;
+
+  &::after {
+    box-shadow: inset 0 0 0 1px var(--pl-border-strong);
+  }
+}
+
+// ── Awatar z podpisem ───────────────────────────────────────────────────
+.pl-avatar-item {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--pl-space-3);
+  min-width: 0;
+  color: inherit;
+  text-decoration: none;
+}
+
+.pl-avatar-text {
+  display: grid;
+  min-width: 0;
+  line-height: 1.3;
+}
+
+.pl-avatar-name {
+  font-weight: 560;
+  letter-spacing: -0.008em;
+  color: var(--pl-text);
+  @include truncate;
+}
+
+.pl-avatar-meta {
+  font-size: var(--pl-text-sm);
+  color: var(--pl-text-muted);
+  @include truncate;
+}

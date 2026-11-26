@@ -1,0 +1,463 @@
+// Combobox — pole wyboru z wyszukiwaniem (pojedyncze, wielokrotne, asynchroniczne)
+@use '../abstracts' as *;
+
+.pl-combobox {
+  --pl-combobox-h: var(--pl-control-h);
+  --pl-combobox-px: 0.8rem;
+  --pl-combobox-radius: var(--pl-radius-md);
+  --pl-combobox-accent: var(--pl-primary);
+  --pl-combobox-border: var(--pl-border);
+  --pl-combobox-font: 0.9375rem;
+
+  position: relative;
+  display: block;
+  width: 100%;
+  max-width: 100%;
+  min-width: 0;
+  text-align: left;
+
+  &.pl-form-small {
+    --pl-combobox-h: var(--pl-control-h-sm);
+    --pl-combobox-px: 0.65rem;
+    --pl-combobox-radius: var(--pl-radius-sm);
+    --pl-combobox-font: 0.8125rem;
+  }
+
+  &.pl-form-large {
+    --pl-combobox-h: var(--pl-control-h-lg);
+    --pl-combobox-px: 1rem;
+    --pl-combobox-radius: 14px;
+    --pl-combobox-font: 1rem;
+  }
+
+  &.pl-form-danger {
+    --pl-combobox-accent: var(--pl-danger);
+    --pl-combobox-border: var(--pl-danger);
+  }
+
+  &.pl-form-success {
+    --pl-combobox-accent: var(--pl-success);
+    --pl-combobox-border: var(--pl-success);
+  }
+
+  &.pl-disabled {
+    pointer-events: none;
+
+    .pl-combobox-control {
+      background: var(--pl-muted);
+      box-shadow: none;
+      opacity: 0.75;
+    }
+  }
+}
+
+// Ukryty element źródłowy (<select>) — nadal bierze udział w formularzu.
+.pl-combobox-native {
+  @include visually-hidden;
+}
+
+.pl-combobox-control {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.3rem;
+  min-height: var(--pl-combobox-h);
+  padding: 0.25rem calc(var(--pl-combobox-px) + 1.4rem) 0.25rem var(--pl-combobox-px);
+  border: 1px solid var(--pl-combobox-border);
+  border-radius: var(--pl-combobox-radius);
+  background: var(--pl-surface);
+  box-shadow: var(--pl-shadow-xs);
+  color: var(--pl-text);
+  font-size: var(--pl-combobox-font);
+  cursor: text;
+  transition:
+    border-color var(--pl-dur-2) var(--pl-ease),
+    background-color var(--pl-dur-2) var(--pl-ease),
+    box-shadow var(--pl-dur-3) var(--pl-ease);
+
+  &:hover {
+    border-color: color-mix(in oklab, var(--pl-combobox-border), var(--pl-border-strong) 100%);
+  }
+
+  &:focus-within,
+  .pl-open > & {
+    border-color: var(--pl-combobox-accent);
+    box-shadow: 0 0 0 3px color-mix(in oklab, var(--pl-combobox-accent) 22%, transparent);
+  }
+}
+
+.pl-combobox:is(.pl-form-danger, .pl-form-success) .pl-combobox-control:hover {
+  border-color: var(--pl-combobox-border);
+}
+
+.pl-combobox-clearable .pl-combobox-control,
+.pl-combobox-control:has(> .pl-combobox-clear) {
+  padding-right: calc(var(--pl-combobox-px) + 3rem);
+}
+
+.pl-combobox-input {
+  flex: 1 1 4rem;
+  width: 4rem;
+  min-width: 0;
+  height: calc(var(--pl-combobox-h) - 0.5rem - 2px);
+  margin: 0;
+  padding: 0;
+  border: 0;
+  border-radius: 0;
+  outline: 0;
+  background: none;
+  box-shadow: none;
+  color: inherit;
+  font: inherit;
+  letter-spacing: -0.003em;
+  text-overflow: ellipsis;
+
+  &::placeholder {
+    color: var(--pl-text-subtle);
+    opacity: 1;
+  }
+
+  &[readonly] {
+    cursor: pointer;
+  }
+}
+
+// Strzałka i przycisk czyszczenia — przypięte do prawej krawędzi.
+.pl-combobox-caret,
+.pl-combobox-clear {
+  position: absolute;
+  top: calc((var(--pl-combobox-h) - 1.5rem) / 2);
+  display: grid;
+  place-items: center;
+  width: 1.5rem;
+  height: 1.5rem;
+  color: var(--pl-text-subtle);
+
+  > svg {
+    width: 1rem;
+    height: 1rem;
+  }
+}
+
+.pl-combobox-caret {
+  right: calc(var(--pl-combobox-px) - 0.3rem);
+  pointer-events: none;
+  transition:
+    color var(--pl-dur-2) var(--pl-ease),
+    transform var(--pl-dur-4) var(--pl-ease-spring);
+
+  .pl-combobox-control:hover &,
+  .pl-open & {
+    color: var(--pl-text);
+  }
+
+  .pl-open & {
+    transform: rotate(180deg);
+  }
+}
+
+.pl-combobox-clear {
+  @include button-reset;
+  display: grid;
+  right: calc(var(--pl-combobox-px) + 1.25rem);
+  border-radius: var(--pl-radius-xs);
+  transition:
+    color var(--pl-dur-2) var(--pl-ease),
+    background-color var(--pl-dur-2) var(--pl-ease),
+    transform var(--pl-dur-3) var(--pl-ease-spring);
+
+  > svg {
+    width: 0.9rem;
+    height: 0.9rem;
+  }
+
+  &:hover {
+    background: var(--pl-muted);
+    color: var(--pl-text);
+  }
+
+  &:active {
+    transform: scale(0.88);
+  }
+
+  &[hidden] {
+    display: none;
+  }
+}
+
+// Wskaźnik ładowania zamiast strzałki.
+.pl-combobox-loading .pl-combobox-caret {
+  transform: none;
+
+  > svg {
+    display: none;
+  }
+
+  &::after {
+    content: '';
+    width: 0.95rem;
+    height: 0.95rem;
+    border: 2px solid var(--pl-muted-strong);
+    border-top-color: var(--pl-combobox-accent);
+    border-radius: 50%;
+    animation: pl-combobox-spin 0.7s linear infinite;
+  }
+}
+
+// ── Znaczniki (multiple) ────────────────────────────────────────────────
+.pl-combobox-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.15rem;
+  max-width: 100%;
+  height: calc(var(--pl-combobox-h) - 0.5rem - 2px - 0.25rem);
+  min-height: 1.35rem;
+  padding: 0 0.2rem 0 0.55rem;
+  border-radius: var(--pl-radius-xs);
+  background: var(--pl-primary-soft);
+  color: var(--pl-primary-text);
+  font-size: 0.875em;
+  font-weight: 520;
+  line-height: 1;
+  white-space: nowrap;
+  cursor: default;
+
+  @media (prefers-reduced-motion: no-preference) {
+    animation: pl-combobox-chip var(--pl-dur-4) var(--pl-ease-spring);
+  }
+}
+
+.pl-combobox-chip-label {
+  @include truncate;
+}
+
+.pl-combobox-chip-remove {
+  @include button-reset;
+  display: grid;
+  place-items: center;
+  flex: none;
+  width: 1.15rem;
+  height: 1.15rem;
+  border-radius: 4px;
+  opacity: 0.6;
+  transition:
+    opacity var(--pl-dur-2) var(--pl-ease),
+    background-color var(--pl-dur-2) var(--pl-ease);
+
+  > svg {
+    width: 0.75rem;
+    height: 0.75rem;
+  }
+
+  &:hover {
+    background: color-mix(in oklab, currentColor 16%, transparent);
+    opacity: 1;
+  }
+}
+
+// ── Lista ───────────────────────────────────────────────────────────────
+.pl-combobox-list {
+  @include floating-surface;
+  --pl-combobox-shift: -6px;
+  max-height: min(19rem, calc(100vh - 32px));
+  padding: 0.3rem;
+  overflow-x: hidden;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  font-size: 0.9375rem;
+  scroll-padding-block: 0.3rem;
+  transform-origin: top center;
+
+  &[data-pl-placement^='top'] {
+    --pl-combobox-shift: 6px;
+    transform-origin: bottom center;
+  }
+
+  @media (prefers-reduced-motion: no-preference) {
+    animation: pl-combobox-in var(--pl-dur-3) var(--pl-ease-spring);
+
+    &.pl-combobox-list-out {
+      animation: pl-combobox-out var(--pl-dur-1) var(--pl-ease-in) forwards;
+    }
+  }
+}
+
+.pl-combobox-group + .pl-combobox-group,
+.pl-combobox-option + .pl-combobox-group {
+  margin-top: 0.3rem;
+  padding-top: 0.3rem;
+  border-top: 1px solid var(--pl-border);
+}
+
+.pl-combobox-group-label {
+  padding: 0.4rem 0.6rem 0.25rem;
+  color: var(--pl-text-subtle);
+  font-family: var(--pl-font-mono);
+  font-size: 0.6875rem;
+  letter-spacing: 0.07em;
+  text-transform: uppercase;
+}
+
+.pl-combobox-option {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  min-height: 2.125rem;
+  padding: 0.35rem 0.6rem;
+  border-radius: var(--pl-radius-sm);
+  color: var(--pl-text);
+  line-height: 1.3;
+  cursor: pointer;
+  user-select: none;
+  @include transition('background-color, color', var(--pl-dur-1));
+
+  &.pl-active {
+    background: var(--pl-muted);
+  }
+
+  &:active:not(.pl-disabled) {
+    background: var(--pl-muted-strong);
+  }
+
+  &[aria-selected='true'] {
+    color: var(--pl-primary-text);
+    font-weight: 540;
+
+    .pl-combobox-check {
+      opacity: 1;
+      transform: none;
+    }
+  }
+
+  &.pl-disabled {
+    color: var(--pl-text-subtle);
+    cursor: not-allowed;
+  }
+
+  mark {
+    padding: 0;
+    border-radius: 3px;
+    background: color-mix(in oklab, var(--pl-spark) 55%, transparent);
+    color: inherit;
+    box-shadow: 0 0 0 1px color-mix(in oklab, var(--pl-spark) 55%, transparent);
+  }
+}
+
+.pl-combobox-option-text {
+  display: grid;
+  flex: 1;
+  min-width: 0;
+}
+
+.pl-combobox-option-label {
+  @include truncate;
+}
+
+.pl-combobox-option-description {
+  @include truncate;
+  color: var(--pl-text-muted);
+  font-size: var(--pl-text-xs);
+  font-weight: 400;
+}
+
+.pl-combobox-option-icon {
+  display: grid;
+  place-items: center;
+  flex: none;
+  width: 1.75rem;
+  height: 1.75rem;
+  border-radius: var(--pl-radius-xs);
+  background: var(--pl-muted);
+  color: var(--pl-text-muted);
+
+  > svg {
+    width: 1rem;
+    height: 1rem;
+  }
+
+  .pl-active > & {
+    background: var(--pl-surface);
+  }
+}
+
+.pl-combobox-option-image {
+  flex: none;
+  width: 1.75rem;
+  height: 1.75rem;
+  border-radius: 50%;
+  object-fit: cover;
+}
+
+.pl-combobox-check {
+  display: grid;
+  flex: none;
+  margin-left: auto;
+  color: var(--pl-primary);
+  opacity: 0;
+  transform: scale(0.4) rotate(-20deg);
+  transition:
+    transform var(--pl-dur-4) var(--pl-ease-spring),
+    opacity var(--pl-dur-2) var(--pl-ease);
+
+  > svg {
+    width: 1rem;
+    height: 1rem;
+  }
+}
+
+.pl-combobox-create {
+  color: var(--pl-primary-text);
+
+  .pl-combobox-option-icon {
+    background: var(--pl-primary-soft);
+    color: var(--pl-primary-text);
+  }
+}
+
+.pl-combobox-empty {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.6rem;
+  padding: 1.1rem 0.75rem;
+  color: var(--pl-text-subtle);
+  font-size: var(--pl-text-sm);
+  text-align: center;
+}
+
+.pl-combobox-spinner {
+  flex: none;
+  width: 0.95rem;
+  height: 0.95rem;
+  border: 2px solid var(--pl-muted-strong);
+  border-top-color: var(--pl-primary);
+  border-radius: 50%;
+  animation: pl-combobox-spin 0.7s linear infinite;
+}
+
+@keyframes pl-combobox-in {
+  from {
+    opacity: 0;
+    transform: translateY(var(--pl-combobox-shift)) scale(0.97);
+  }
+}
+
+@keyframes pl-combobox-out {
+  to {
+    opacity: 0;
+    transform: translateY(var(--pl-combobox-shift)) scale(0.98);
+  }
+}
+
+@keyframes pl-combobox-chip {
+  from {
+    opacity: 0;
+    transform: scale(0.8);
+  }
+}
+
+@keyframes pl-combobox-spin {
+  to {
+    transform: rotate(360deg);
+  }
+}

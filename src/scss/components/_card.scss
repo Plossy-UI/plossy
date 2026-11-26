@@ -1,0 +1,231 @@
+// Card
+@use '../abstracts' as *;
+
+.pl-card {
+  --pl-card-p: 1.5rem;
+  --pl-card-radius: var(--pl-radius-lg);
+
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+  @include surface(var(--pl-card-radius));
+  color: var(--pl-text);
+  transition:
+    transform var(--pl-dur-4) var(--pl-ease-spring),
+    box-shadow var(--pl-dur-3) var(--pl-ease),
+    border-color var(--pl-dur-2) var(--pl-ease),
+    background-color var(--pl-dur-2) var(--pl-ease);
+}
+
+.pl-card-body {
+  flex: 1 1 auto;
+  padding: var(--pl-card-p);
+}
+
+.pl-card-header,
+.pl-card-footer {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--pl-space-2) var(--pl-space-3);
+  padding: calc(var(--pl-card-p) * 0.7) var(--pl-card-p);
+}
+
+.pl-card-header {
+  border-bottom: 1px solid var(--pl-border);
+}
+
+.pl-card-footer {
+  border-top: 1px solid var(--pl-border);
+  color: var(--pl-text-muted);
+  font-size: var(--pl-text-sm);
+}
+
+.pl-card-title {
+  margin: 0 0 0.4em;
+  font-family: var(--pl-font-display);
+  font-size: var(--pl-text-xl);
+  font-weight: var(--pl-display-weight, 600);
+  line-height: 1.25;
+  letter-spacing: var(--pl-display-tracking, -0.02em);
+  color: inherit;
+}
+
+.pl-card-header .pl-card-title {
+  margin: 0;
+  font-size: var(--pl-text-lg);
+}
+
+.pl-card-meta {
+  margin: 0 0 0.6em;
+  font-size: var(--pl-text-sm);
+  color: var(--pl-text-subtle);
+}
+
+.pl-card-text {
+  color: var(--pl-text-muted);
+}
+
+// ── Media ───────────────────────────────────────────────────────────────
+.pl-card-media {
+  position: relative;
+  overflow: hidden;
+  margin: 0;
+  border-radius: calc(var(--pl-card-radius) - 1px) calc(var(--pl-card-radius) - 1px) 0 0;
+
+  &:last-child {
+    border-radius: 0 0 calc(var(--pl-card-radius) - 1px) calc(var(--pl-card-radius) - 1px);
+  }
+
+  &:only-child {
+    border-radius: calc(var(--pl-card-radius) - 1px);
+  }
+
+  > img,
+  > video {
+    display: block;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform var(--pl-dur-4) var(--pl-ease);
+  }
+}
+
+// Media z wewnętrznym marginesem (zaokrąglone ze wszystkich stron).
+.pl-card-media-inset {
+  margin: 0.5rem 0.5rem 0;
+  border-radius: calc(var(--pl-card-radius) - 0.5rem) !important;
+}
+
+.pl-card-hover:hover .pl-card-media > img {
+  transform: scale(1.04);
+}
+
+.pl-card-badge {
+  position: absolute;
+  top: 0.9rem;
+  right: 0.9rem;
+  z-index: 1;
+}
+
+// ── Układ poziomy ───────────────────────────────────────────────────────
+// Poniżej 640px układa się w pion (jak zwykła karta); .pl-card-horizontal-always wyłącza to.
+@mixin card-horizontal {
+  flex-direction: row;
+
+  > .pl-card-media {
+    flex: 0 0 38%;
+    border-radius: calc(var(--pl-card-radius) - 1px) 0 0 calc(var(--pl-card-radius) - 1px);
+
+    &:last-child {
+      border-radius: 0 calc(var(--pl-card-radius) - 1px) calc(var(--pl-card-radius) - 1px) 0;
+    }
+  }
+}
+
+.pl-card-horizontal-always {
+  @include card-horizontal;
+}
+
+@media (min-width: 640px) {
+  .pl-card-horizontal {
+    @include card-horizontal;
+  }
+}
+
+// ── Warianty ────────────────────────────────────────────────────────────
+.pl-card-muted {
+  border-color: transparent;
+  background: var(--pl-muted);
+  box-shadow: none;
+}
+
+.pl-card-outline {
+  background: transparent;
+  box-shadow: none;
+}
+
+.pl-card-ghost {
+  border-color: transparent;
+  background: transparent;
+  box-shadow: none;
+}
+
+.pl-card-primary,
+.pl-card-secondary {
+  border-color: transparent;
+  background: var(--pl-tone);
+  color: var(--pl-on-tone);
+  --pl-border: color-mix(in oklab, var(--pl-on-tone) 18%, transparent);
+  --pl-text: var(--pl-on-tone);
+  --pl-text-muted: color-mix(in oklab, var(--pl-on-tone) 78%, transparent);
+  --pl-text-subtle: color-mix(in oklab, var(--pl-on-tone) 60%, transparent);
+  // Domyślne przyciski, chipy i pola stają się półprzezroczyste na kolorze karty.
+  --pl-surface: color-mix(in oklab, var(--pl-on-tone) 10%, transparent);
+  --pl-muted: color-mix(in oklab, var(--pl-on-tone) 16%, transparent);
+  --pl-muted-strong: color-mix(in oklab, var(--pl-on-tone) 24%, transparent);
+  --pl-border-strong: color-mix(in oklab, var(--pl-on-tone) 34%, transparent);
+}
+
+.pl-card-primary {
+  --pl-tone: var(--pl-primary);
+  --pl-on-tone: var(--pl-on-primary);
+  box-shadow: 0 16px 36px -18px color-mix(in oklab, var(--pl-primary) 80%, transparent);
+}
+
+.pl-card-secondary {
+  --pl-tone: var(--pl-ink);
+  --pl-on-tone: var(--pl-on-ink);
+}
+
+// Karta z kolorowym akcentem u góry.
+.pl-card-accent {
+  &::before {
+    content: '';
+    position: absolute;
+    inset: -1px -1px auto -1px;
+    height: 3px;
+    border-radius: var(--pl-card-radius) var(--pl-card-radius) 0 0;
+    background: linear-gradient(90deg, var(--pl-primary), var(--pl-spark));
+    clip-path: inset(0 round var(--pl-card-radius) var(--pl-card-radius) 0 0);
+  }
+}
+
+// ── Interakcje ──────────────────────────────────────────────────────────
+.pl-card-hover {
+  &:hover {
+    border-color: var(--pl-border-strong);
+    box-shadow: var(--pl-shadow-lg);
+    transform: translateY(calc(-4px * var(--pl-lift)));
+  }
+}
+
+a.pl-card,
+.pl-card-link {
+  text-decoration: none;
+  cursor: pointer;
+
+  @include focus-visible;
+}
+
+// Rozciąga link na całą kartę: <a class="pl-card-stretch" href>…</a>
+// (::before, bo ::after zajmuje strzałka .pl-link-arrow)
+.pl-card-stretch::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  border-radius: inherit;
+}
+
+// ── Rozmiary ────────────────────────────────────────────────────────────
+.pl-card-small {
+  --pl-card-p: 1rem;
+  --pl-card-radius: var(--pl-radius-md);
+}
+
+.pl-card-large {
+  --pl-card-p: 2.25rem;
+  --pl-card-radius: var(--pl-radius-xl);
+}

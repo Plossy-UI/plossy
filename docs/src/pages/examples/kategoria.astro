@@ -1,0 +1,536 @@
+---
+import Example from '../../layouts/Example.astro';
+import ShopHeader from '../../components/examples/ShopHeader.astro';
+import ShopFooter from '../../components/examples/ShopFooter.astro';
+
+const colors = {
+  grafit: { label: 'Grafit', dot: 'var(--pl-ink)' },
+  piasek: { label: 'Piasek', dot: 'color-mix(in oklab, var(--pl-warning) 45%, var(--pl-surface))' },
+  szalwia: { label: 'Szałwia', dot: 'color-mix(in oklab, var(--pl-success) 55%, var(--pl-muted-strong))' },
+  terakota: { label: 'Terakota', dot: 'color-mix(in oklab, var(--pl-danger) 60%, var(--pl-warning))' },
+  mleczny: { label: 'Mleczny', dot: 'var(--pl-surface)' },
+};
+const materials = { metal: 'Metal', szklo: 'Szkło', ceramika: 'Ceramika', drewno: 'Drewno', len: 'Len' };
+const subs = { wiszace: 'Wiszące', stolowe: 'Stołowe', podlogowe: 'Podłogowe', kinkiety: 'Kinkiety' };
+
+const products = [
+  { name: 'Lampa wisząca Fjord', sub: 'wiszace', color: 'grafit', material: 'metal', price: 549, old: 0, rating: 4.8, reviews: 124, stock: 1, isNew: true, img: 1 },
+  { name: 'Lampa stołowa Moln', sub: 'stolowe', color: 'mleczny', material: 'szklo', price: 319, old: 399, rating: 4.6, reviews: 87, stock: 1, isNew: false, img: 2 },
+  { name: 'Kinkiet Birk', sub: 'kinkiety', color: 'piasek', material: 'drewno', price: 229, old: 0, rating: 4.4, reviews: 41, stock: 1, isNew: false, img: 3 },
+  { name: 'Lampa podłogowa Stilla', sub: 'podlogowe', color: 'grafit', material: 'metal', price: 899, old: 0, rating: 4.9, reviews: 203, stock: 1, isNew: false, img: 4 },
+  { name: 'Lampa wisząca Dimma', sub: 'wiszace', color: 'mleczny', material: 'szklo', price: 679, old: 849, rating: 4.7, reviews: 66, stock: 1, isNew: false, img: 5 },
+  { name: 'Lampa stołowa Lera', sub: 'stolowe', color: 'terakota', material: 'ceramika', price: 389, old: 0, rating: 4.5, reviews: 58, stock: 0, isNew: true, img: 6 },
+  { name: 'Kinkiet Skymning', sub: 'kinkiety', color: 'szalwia', material: 'metal', price: 259, old: 0, rating: 3.9, reviews: 19, stock: 1, isNew: false, img: 7 },
+  { name: 'Lampa podłogowa Lin', sub: 'podlogowe', color: 'piasek', material: 'len', price: 749, old: 0, rating: 4.3, reviews: 35, stock: 1, isNew: false, img: 8 },
+  { name: 'Lampa wisząca Kupa', sub: 'wiszace', color: 'terakota', material: 'ceramika', price: 459, old: 0, rating: 4.6, reviews: 92, stock: 1, isNew: false, img: 3 },
+  { name: 'Lampa stołowa Sval', sub: 'stolowe', color: 'szalwia', material: 'metal', price: 279, old: 349, rating: 4.2, reviews: 27, stock: 1, isNew: false, img: 1 },
+  { name: 'Lampa wisząca Väv', sub: 'wiszace', color: 'piasek', material: 'len', price: 419, old: 0, rating: 4.8, reviews: 110, stock: 0, isNew: false, img: 6 },
+  { name: 'Lampa podłogowa Tall', sub: 'podlogowe', color: 'mleczny', material: 'drewno', price: 1190, old: 0, rating: 5, reviews: 48, stock: 1, isNew: true, img: 2 },
+].map((p, i) => ({ ...p, pos: i + 1, off: p.old ? Math.round((1 - p.price / p.old) * 100) : 0 }));
+
+const zl = (n) => n.toLocaleString('pl-PL').replace(/ /g, ' ') + ' zł';
+---
+
+<Example title="Oświetlenie — Lorem" description="Strona kategorii sklepu: filtry, sortowanie i siatka produktów zbudowane z komponentów Plossy.">
+  <ShopHeader active="kategoria" />
+
+  <main>
+    <!-- Nagłówek kategorii -->
+    <section class="pl-section pl-section-small pl-section-muted">
+      <div class="pl-container" data-pl-scrollspy="cls: pl-animation-slide-up; target: > *; delay: 70">
+        <nav aria-label="Okruszki">
+          <ul class="pl-breadcrumb pl-breadcrumb-chevron pl-breadcrumb-small">
+            <li><a href="/examples/sklep/">Lorem</a></li>
+            <li><a href="/examples/sklep/">Sklep</a></li>
+            <li><span aria-current="page">Oświetlenie</span></li>
+          </ul>
+        </nav>
+        <div class="pl-grid pl-grid-large pl-flex-bottom pl-margin-top">
+          <div class="pl-width-3-5@m">
+            <p class="pl-heading-eyebrow">Kolekcja jesień 2026</p>
+            <h1 class="pl-heading-medium pl-margin-remove-top pl-margin-small-bottom">Oświetlenie</h1>
+            <p class="pl-text-lead pl-text-muted pl-margin-remove">
+              Lampy, które robią nastrój zamiast hałasu. Matowe szkło, len, ceramika i szczotkowany metal — ręcznie
+              wykańczane w małych seriach, z ciepłym, miękkim światłem.
+            </p>
+          </div>
+          <div class="pl-width-2-5@m">
+            <ul class="pl-list pl-list-check pl-list-primary pl-text-sm pl-margin-remove">
+              <li>Darmowa dostawa od 299 zł</li>
+              <li>30 dni na zwrot, bez pytań</li>
+              <li>Żarówki LED 2700 K w zestawie</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="pl-section pl-section-small">
+      <div class="pl-container" id="katalog" data-pl-filter="target: .js-products; duration: 320">
+        <!-- Podkategorie -->
+        <div class="pl-overflow-x-auto pl-margin-medium-bottom">
+          <ul class="pl-subnav pl-subnav-pill pl-flex-nowrap pl-width-max-content">
+            <li class="pl-active" data-pl-filter-control="group: sub"><a href="#">Wszystkie <span class="pl-filter-count">{products.length}</span></a></li>
+            {Object.entries(subs).map(([key, label]) => (
+              <li data-pl-filter-control={`filter: [data-sub='${key}']; group: sub`}>
+                <a href="#">{label} <span class="pl-filter-count">{products.filter((p) => p.sub === key).length}</span></a>
+              </li>
+            ))}
+          </ul>
+        </div>
+
+        <div class="pl-grid pl-grid-large">
+          <!-- Panel filtrów (desktop) -->
+          <aside class="pl-width-1-4@m pl-visible@m" aria-label="Filtry">
+            <div id="filters-desktop">
+              <form id="filters" class="shop-filters">
+                <div class="pl-flex pl-flex-between pl-flex-middle pl-margin-small-bottom">
+                  <h2 class="pl-text-eyebrow pl-margin-remove">Filtry</h2>
+                  <button class="pl-button pl-button-text pl-button-small" type="button" data-filters-clear>Wyczyść</button>
+                </div>
+
+                <div class="pl-accordion pl-accordion-small" data-pl-accordion="multiple: true">
+                  <div class="pl-accordion-item pl-open">
+                    <button class="pl-accordion-title" type="button">Cena</button>
+                    <div class="pl-accordion-content">
+                      <div class="pl-flex pl-flex-between pl-flex-middle pl-margin-small-bottom">
+                        <span class="pl-text-sm pl-text-muted" id="price-label">Zakres</span>
+                        <strong class="pl-text-sm pl-text-tabular" id="price-out"></strong>
+                      </div>
+                      <div class="pl-range-dual" id="price-range" role="group" aria-labelledby="price-label" data-pl-range="dual: true; gap: 100; suffix: ' zł'; output: #price-out">
+                        <input class="pl-range" type="range" min="200" max="1200" step="50" value="200" aria-label="Cena od" />
+                        <input class="pl-range" type="range" min="200" max="1200" step="50" value="1200" aria-label="Cena do" />
+                      </div>
+                    </div>
+                  </div>
+
+                  <div class="pl-accordion-item pl-open">
+                    <button class="pl-accordion-title" type="button">Kolor</button>
+                    <div class="pl-accordion-content">
+                      <div class="pl-chip-group">
+                        {Object.entries(colors).map(([key, c]) => (
+                          <label class="pl-chip pl-chip-selectable pl-chip-soft pl-chip-plain pl-chip-small">
+                            <input type="checkbox" name="color" value={key} data-label={c.label} />
+                            <span class="pl-chip-dot shop-dot" style={`--pl-chip-dot: ${c.dot}`}></span>
+                            {c.label}
+                          </label>
+                        ))}
+                      </div>
+                    </div>
+                  </div>
+
+                  <div class="pl-accordion-item pl-open">
+                    <button class="pl-accordion-title" type="button">Materiał</button>
+                    <div class="pl-accordion-content">
+                      <div class="pl-form-checks">
+                        {Object.entries(materials).map(([key, label]) => (
+                          <label class="pl-form-check">
+                            <input class="pl-checkbox" type="checkbox" name="material" value={key} data-label={label} />
+                            <span class="pl-flex-1">{label}</span>
+                            <span class="pl-text-subtle pl-text-sm pl-text-tabular">{products.filter((p) => p.material === key).length}</span>
+                          </label>
+                        ))}
+                      </div>
+                    </div>
+                  </div>
+
+                  <div class="pl-accordion-item pl-open">
+                    <button class="pl-accordion-title" type="button">Dostępność</button>
+                    <div class="pl-accordion-content">
+                      <label class="pl-form-check pl-form-check-reverse">
+                        <input class="pl-switch" type="checkbox" role="switch" name="stock" />
+                        Tylko dostępne od ręki
+                      </label>
+                    </div>
+                  </div>
+
+                  <div class="pl-accordion-item">
+                    <button class="pl-accordion-title" type="button">Ocena</button>
+                    <div class="pl-accordion-content">
+                      <div class="pl-form-checks">
+                        <label class="pl-form-check"><input class="pl-radio" type="radio" name="rating" value="" checked /> Dowolna</label>
+                        <label class="pl-form-check">
+                          <input class="pl-radio" type="radio" name="rating" value="45" data-label="Ocena 4,5+" />
+                          <span class="pl-rating pl-rating-small" style="--pl-rating-value: 5" aria-hidden="true"></span>
+                          4,5 i więcej
+                        </label>
+                        <label class="pl-form-check">
+                          <input class="pl-radio" type="radio" name="rating" value="4" data-label="Ocena 4+" />
+                          <span class="pl-rating pl-rating-small" style="--pl-rating-value: 4" aria-hidden="true"></span>
+                          4 i więcej
+                        </label>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </form>
+            </div>
+
+            <div class="pl-card pl-card-muted pl-card-small pl-margin-medium-top">
+              <div class="pl-card-body">
+                <p class="pl-text-eyebrow pl-margin-remove">Poradnik</p>
+                <h3 class="pl-card-title pl-margin-xsmall-top">Jak dobrać światło do salonu?</h3>
+                <p class="pl-card-text pl-text-sm">Trzy warstwy, ciepła barwa i ściemniacz — krótka ściąga od naszych projektantek.</p>
+                <a class="pl-link-arrow pl-text-sm" href="/examples/wpis/">Czytaj poradnik</a>
+              </div>
+            </div>
+          </aside>
+
+          <!-- Lista produktów -->
+          <div class="pl-width-expand">
+            <div class="pl-flex pl-flex-between pl-flex-middle pl-flex-wrap pl-gap-small">
+              <div class="pl-flex pl-flex-middle pl-gap-small">
+                <button class="pl-button pl-hidden@m" type="button" data-pl-offcanvas-open="#filters-offcanvas">
+                  <span data-pl-icon="sliders-horizontal"></span> Filtry
+                  <span class="pl-badge pl-badge-primary" id="filters-badge" hidden>0</span>
+                </button>
+                <p class="pl-margin-remove pl-text-muted" aria-live="polite">
+                  <strong class="pl-text-default" id="result-count">{products.length}</strong> <span id="result-noun">produktów</span>
+                </p>
+              </div>
+
+              <div class="pl-flex pl-flex-middle pl-gap-small">
+                <button class="pl-button" type="button" aria-haspopup="true">
+                  <span data-pl-icon="chevrons-up-down"></span>
+                  <span class="pl-visible@s pl-text-muted">Sortuj:</span> <span id="sort-label">Polecane</span>
+                </button>
+                <div class="pl-drop pl-dropdown" data-pl-drop="pos: bottom-end">
+                  <ul class="pl-dropdown-nav">
+                    <li class="pl-active" data-pl-filter-control="sort: data-pos"><a href="#">Polecane</a></li>
+                    <li data-pl-filter-control="sort: data-price"><a href="#">Cena: od najniższej</a></li>
+                    <li data-pl-filter-control="sort: data-price; order: desc"><a href="#">Cena: od najwyższej</a></li>
+                    <li data-pl-filter-control="sort: data-rating; order: desc"><a href="#">Najwyżej oceniane</a></li>
+                    <li data-pl-filter-control="sort: data-name"><a href="#">Nazwa: A–Z</a></li>
+                  </ul>
+                </div>
+
+                <ul class="pl-iconnav pl-iconnav-bar pl-visible@s" aria-label="Widok listy">
+                  <li class="pl-active"><a href="#" data-view="grid" aria-label="Widok siatki" data-pl-tooltip="Siatka"><span data-pl-icon="layout-grid"></span></a></li>
+                  <li><a href="#" data-view="list" aria-label="Widok listy" data-pl-tooltip="Lista"><span data-pl-icon="layout-list"></span></a></li>
+                </ul>
+              </div>
+            </div>
+
+            <!-- Aktywne filtry -->
+            <div class="pl-chip-group pl-margin-small-top" id="active-filters" hidden></div>
+
+            <hr class="pl-divider pl-divider-compact" />
+
+            <div class="pl-grid pl-grid-medium pl-grid-match pl-child-width-1-2 pl-child-width-1-3@l js-products" id="products">
+              {products.map((p) => (
+                <div
+                  data-sub={p.sub}
+                  data-color={p.color}
+                  data-material={p.material}
+                  data-stock={p.stock}
+                  data-price={p.price}
+                  data-rating={p.rating}
+                  data-name={p.name}
+                  data-pos={p.pos}
+                  data-r4={p.rating >= 4 ? '' : undefined}
+                  data-r45={p.rating >= 4.5 ? '' : undefined}
+                >
+                  <article class="pl-card pl-card-small pl-card-hover shop-product">
+                    <div class="pl-card-media pl-position-relative pl-transition-toggle">
+                      <a class="pl-image pl-ratio-1-1" href="/examples/produkt/" tabindex="-1" aria-hidden="true">
+                        <img src={`/img/photo-${p.img}.svg`} alt="" loading="lazy" />
+                      </a>
+                      <div class="pl-position-top-left pl-position-small pl-flex pl-gap-xsmall">
+                        {p.isNew && <span class="pl-label pl-label-spark pl-label-pill">Nowość</span>}
+                        {p.off > 0 && <span class="pl-label pl-label-danger pl-label-solid pl-label-pill">−{p.off}%</span>}
+                        {!p.stock && <span class="pl-label pl-label-pill">Na zamówienie</span>}
+                      </div>
+                      <button
+                        class="pl-button pl-button-icon pl-button-small pl-button-pill pl-position-top-right pl-position-small shop-wish"
+                        type="button"
+                        aria-label={`Dodaj do ulubionych: ${p.name}`}
+                        aria-pressed="false"
+                        data-wish
+                        data-pl-tooltip="title: Dodaj do ulubionych; pos: left"
+                      >
+                        <span data-pl-icon="heart"></span>
+                      </button>
+                      <div class="pl-position-bottom pl-position-small pl-transition-slide-bottom-small pl-visible@m">
+                        <a class="pl-button pl-button-small pl-button-block pl-glass" href="/examples/produkt/"><span data-pl-icon="eye"></span> Szybki podgląd</a>
+                      </div>
+                    </div>
+                    <div class="pl-card-body">
+                      <p class="pl-card-meta pl-margin-remove">{subs[p.sub]} · {materials[p.material]}</p>
+                      <h3 class="pl-card-title pl-text-md pl-margin-xsmall-top pl-margin-xsmall-bottom">
+                        <a class="pl-link-reset" href="/examples/produkt/">{p.name}</a>
+                      </h3>
+                      <div class="pl-flex pl-flex-middle pl-gap-xsmall pl-text-sm pl-text-muted">
+                        <span class="pl-rating pl-rating-small" style={`--pl-rating-value: ${p.rating}`} role="img" aria-label={`Ocena ${String(p.rating).replace('.', ',')} na 5`}></span>
+                        <span class="pl-text-tabular">{String(p.rating).replace('.', ',')}</span>
+                        <span class="pl-text-subtle">({p.reviews})</span>
+                      </div>
+                      <div class="pl-flex pl-flex-between pl-flex-bottom pl-gap-small pl-margin-auto-top shop-buy">
+                        <p class="pl-margin-remove pl-text-tabular">
+                          <strong class={`pl-text-lg ${p.old ? 'pl-text-danger' : ''}`}>{zl(p.price)}</strong>
+                          {p.old > 0 && <s class="pl-text-subtle pl-text-sm pl-margin-xsmall-left">{zl(p.old)}</s>}
+                        </p>
+                        <button
+                          class="pl-button pl-button-primary pl-button-icon pl-button-pill pl-flex-none"
+                          type="button"
+                          aria-label={`Dodaj do koszyka: ${p.name}`}
+                          data-add-cart={p.name}
+                          data-pl-tooltip="Do koszyka"
+                        >
+                          <span data-pl-icon="shopping-bag"></span>
+                        </button>
+                      </div>
+                    </div>
+                  </article>
+                </div>
+              ))}
+            </div>
+
+            <div class="pl-placeholder pl-filter-empty" hidden>
+              <span class="pl-placeholder-icon" data-pl-icon="search"></span>
+              <h3 class="pl-placeholder-title">Nic nie pasuje do tych filtrów</h3>
+              <p class="pl-placeholder-text">Poszerz zakres cen albo usuń któryś z wybranych filtrów.</p>
+              <div class="pl-placeholder-actions">
+                <button class="pl-button pl-button-primary" type="button" data-filters-clear>Wyczyść filtry</button>
+              </div>
+            </div>
+
+            <nav class="pl-margin-large-top" aria-label="Stronicowanie wyników">
+              <ul class="pl-pagination pl-pagination-pill pl-pagination-center">
+                <li class="pl-disabled"><a href="#" aria-label="Poprzednia strona"><span class="pl-pagination-previous"></span></a></li>
+                <li class="pl-active"><a href="#" aria-current="page">1</a></li>
+                <li><a href="#">2</a></li>
+                <li><a href="#">3</a></li>
+                <li><span>…</span></li>
+                <li><a href="#">7</a></li>
+                <li><a href="#" aria-label="Następna strona"><span class="pl-pagination-next"></span></a></li>
+              </ul>
+            </nav>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Tekst SEO -->
+    <section class="pl-section pl-section-small pl-section-muted">
+      <div class="pl-container pl-container-small" data-pl-scrollspy="cls: pl-animation-slide-up">
+        <p class="pl-heading-eyebrow">O kategorii</p>
+        <h2 class="pl-margin-remove-top">Oświetlenie w skandynawskim duchu</h2>
+        <p class="pl-text-muted">
+          W Lorem wierzymy, że dobre światło to połowa wnętrza. Dlatego nasze lampy projektujemy tak, by
+          rozpraszały blask miękko i równomiernie — bez olśnień i ostrych cieni. Każdy klosz powstaje w niewielkiej
+          manufakturze: szkło dmuchane jest ręcznie, len tkany w Żyrardowie, a ceramika wypalana w piecach pod
+          Bolesławcem.
+        </p>
+        <div id="seo-more" hidden>
+          <p class="pl-text-muted">
+            Zastanawiasz się, od czego zacząć? Najprościej od trzech warstw: światła ogólnego (lampa wisząca nad
+            stołem lub pośrodku pokoju), zadaniowego (lampa stołowa przy fotelu, kinkiet nad blatem) i nastrojowego
+            (lampa podłogowa w rogu). Wszystkie modele współpracują ze ściemniaczami i mają gwint E27 lub E14, więc
+            żarówkę wymienisz w każdym markecie.
+          </p>
+          <p class="pl-text-muted">
+            Do każdej lampy dołączamy żarówkę LED o barwie 2700 K, komplet kołków i instrukcję montażu. Na okablowanie
+            i oprawki dajemy 5 lat gwarancji, a jeśli lampa nie przypadnie Ci do gustu — masz 30 dni na bezpłatny zwrot.
+          </p>
+        </div>
+        <button class="pl-button pl-button-text" type="button" data-pl-toggle="target: #seo-more; animation: true" data-seo-toggle>
+          Czytaj więcej
+        </button>
+      </div>
+    </section>
+  </main>
+
+  <!-- Filtry na telefonie -->
+  <dialog class="pl-offcanvas" id="filters-offcanvas" data-pl-offcanvas="side: left">
+    <div class="pl-offcanvas-bar">
+      <div class="pl-offcanvas-header">
+        <h2 class="pl-offcanvas-title">Filtry</h2>
+        <button class="pl-close" type="button" aria-label="Zamknij" data-pl-offcanvas-close></button>
+      </div>
+      <div class="pl-offcanvas-body" id="filters-mobile"></div>
+      <div class="pl-offcanvas-footer">
+        <button class="pl-button pl-button-primary pl-button-block" type="button" data-pl-offcanvas-close>
+          Pokaż wyniki&nbsp;<span class="pl-badge pl-badge-spark" id="result-count-mobile">{products.length}</span></button>
+      </div>
+    </div>
+  </dialog>
+
+  <ShopFooter />
+
+  <style is:global>
+    .shop-dot {
+      width: 0.8rem;
+      height: 0.8rem;
+      box-shadow: inset 0 0 0 1px var(--pl-border-strong);
+    }
+    .shop-wish[aria-pressed='true'] {
+      color: var(--pl-danger);
+    }
+    .shop-wish[aria-pressed='true'] svg {
+      fill: currentColor;
+    }
+    .shop-buy {
+      padding-top: var(--pl-space-3);
+    }
+    /* Widok listy: karta pozioma z węższym zdjęciem. */
+    .shop-list .shop-product > .pl-card-media {
+      flex-basis: clamp(7rem, 30%, 14rem);
+    }
+  </style>
+
+  <script is:inline>
+    window.addEventListener('load', () => {
+      const Plossy = window.Plossy;
+      const root = document.querySelector('#katalog');
+      const grid = document.querySelector('#products');
+      const form = document.querySelector('#filters');
+      const filter = Plossy.filter(root);
+      const range = document.querySelector('#price-range');
+      const [minInput, maxInput] = range.querySelectorAll('input');
+      const chips = document.querySelector('#active-filters');
+      const items = [...grid.children];
+      const checked = (name) => [...form.querySelectorAll(`[name="${name}"]:checked`)];
+      const subLabels = { wiszace: 'Wiszące', stolowe: 'Stołowe', podlogowe: 'Podłogowe', kinkiety: 'Kinkiety' };
+
+      // Panel filtrów: na desktopie w kolumnie, na telefonie w offcanvasie.
+      const wide = matchMedia('(min-width: 960px)');
+      const place = () => {
+        document.querySelector(wide.matches ? '#filters-desktop' : '#filters-mobile').append(form);
+        if (wide.matches) Plossy.offcanvas('#filters-offcanvas')?.hide();
+      };
+      wide.addEventListener('change', place);
+      place();
+
+      // Kontrolki formularza → stan komponentu Filter (grupy łączone warunkiem „i").
+      const sync = () => {
+        const state = filter.getState();
+        delete state.filter[''];
+        const group = (name, selector) => {
+          if (selector) state.filter[name] = selector;
+          else delete state.filter[name];
+        };
+        const list = (name) => checked(name).map((input) => `[data-${name}='${input.value}']`).join(',');
+        group('color', list('color'));
+        group('material', list('material'));
+        group('stock', form.elements.stock.checked ? "[data-stock='1']" : '');
+        group('rating', form.elements.rating.value ? `[data-r${form.elements.rating.value}]` : '');
+        const min = Number(minInput.value);
+        const max = Number(maxInput.value);
+        const limited = min > Number(minInput.min) || max < Number(maxInput.max);
+        for (const item of items) item.toggleAttribute('data-in-price', Number(item.dataset.price) >= min && Number(item.dataset.price) <= max);
+        group('price', limited ? '[data-in-price]' : '');
+        if (!Object.keys(state.filter).length) state.filter[''] = '';
+        filter.setState(state);
+      };
+      form.addEventListener('change', sync);
+      range.addEventListener('pl:change', sync);
+
+      const clearAll = () => {
+        form.reset();
+        Plossy.range(range)?.set([Number(minInput.min), Number(maxInput.max)]);
+        filter.setState({ filter: { '': '' }, sort: filter.getState().sort });
+      };
+      document.addEventListener('click', (event) => {
+        if (event.target.closest('[data-filters-clear]')) clearAll();
+      });
+
+      // Licznik wyników, etykieta sortowania i chipy aktywnych filtrów.
+      const noun = (n) => (n === 1 ? 'produkt' : n % 10 >= 2 && n % 10 <= 4 && (n % 100 < 12 || n % 100 > 14) ? 'produkty' : 'produktów');
+      const render = () => {
+        const state = filter.getState();
+        const count = items.filter((item) => !item.hidden).length;
+        document.querySelector('#result-count').textContent = count;
+        document.querySelector('#result-count-mobile').textContent = count;
+        document.querySelector('#result-noun').textContent = noun(count);
+        const sortItem = root.querySelector('.pl-dropdown-nav > .pl-active a');
+        if (sortItem) document.querySelector('#sort-label').textContent = sortItem.textContent;
+
+        const active = [];
+        const sub = /data-sub='(\w+)'/.exec(state.filter.sub || '');
+        if (sub) active.push({ label: subLabels[sub[1]], clear: () => filter.setState({ ...state, filter: { ...state.filter, sub: '' } }) });
+        for (const input of [...checked('color'), ...checked('material')]) {
+          active.push({ label: input.dataset.label, clear: () => { input.checked = false; sync(); } });
+        }
+        if (form.elements.stock.checked) active.push({ label: 'Dostępne od ręki', clear: () => { form.elements.stock.checked = false; sync(); } });
+        const rating = checked('rating')[0];
+        if (rating?.value) active.push({ label: rating.dataset.label, clear: () => { form.elements.rating.value = ''; sync(); } });
+        if (state.filter.price) {
+          active.push({
+            label: `${minInput.value}–${maxInput.value} zł`,
+            clear: () => { Plossy.range(range)?.set([Number(minInput.min), Number(maxInput.max)]); sync(); },
+          });
+        }
+
+        chips.replaceChildren(
+          ...active.map(({ label, clear }) => {
+            const chip = document.createElement('span');
+            chip.className = 'pl-chip pl-chip-small pl-animation-scale-up pl-animation-fast';
+            chip.textContent = label + ' ';
+            const button = document.createElement('button');
+            button.className = 'pl-chip-remove';
+            button.type = 'button';
+            button.setAttribute('aria-label', `Usuń filtr: ${label}`);
+            button.addEventListener('click', clear);
+            chip.append(button);
+            return chip;
+          }),
+        );
+        if (active.length > 1) {
+          const all = document.createElement('button');
+          all.className = 'pl-button pl-button-text pl-button-small';
+          all.type = 'button';
+          all.textContent = 'Wyczyść wszystko';
+          all.addEventListener('click', clearAll);
+          chips.append(all);
+        }
+        chips.hidden = active.length === 0;
+        const badge = document.querySelector('#filters-badge');
+        const formFilters = active.length - (sub ? 1 : 0);
+        badge.textContent = formFilters;
+        badge.hidden = formFilters === 0;
+      };
+      root.addEventListener('pl:afterfilter', render);
+      render();
+
+      // Widok siatka / lista.
+      document.querySelectorAll('[data-view]').forEach((link) => {
+        link.addEventListener('click', (event) => {
+          event.preventDefault();
+          const list = link.dataset.view === 'list';
+          grid.classList.toggle('shop-list', list);
+          grid.classList.toggle('pl-child-width-1-1', list);
+          grid.classList.toggle('pl-child-width-1-2', !list);
+          grid.classList.toggle('pl-child-width-1-3@l', !list);
+          grid.querySelectorAll('.shop-product').forEach((card) => card.classList.toggle('pl-card-horizontal', list));
+          document.querySelectorAll('[data-view]').forEach((other) => other.parentElement.classList.toggle('pl-active', other === link));
+        });
+      });
+
+      // Koszyk i ulubione.
+      document.addEventListener('click', (event) => {
+        const add = event.target.closest('[data-add-cart]');
+        if (add) {
+          Plossy.notification({
+            title: 'Dodano do koszyka',
+            message: add.dataset.addCart,
+            status: 'success',
+            icon: 'shopping-bag',
+            timeout: 3500,
+            action: { label: 'Zobacz koszyk', onClick: () => (location.href = '/examples/koszyk/') },
+          });
+        }
+        const wish = event.target.closest('[data-wish]');
+        if (wish) {
+          const on = wish.getAttribute('aria-pressed') !== 'true';
+          wish.setAttribute('aria-pressed', String(on));
+          Plossy.notification({ message: on ? 'Zapisano na liście ulubionych.' : 'Usunięto z ulubionych.', icon: 'heart', timeout: 2200 });
+        }
+      });
+
+      const seo = document.querySelector('[data-seo-toggle]');
+      seo.addEventListener('click', () => {
+        seo.textContent = seo.textContent.trim() === 'Czytaj więcej' ? 'Zwiń' : 'Czytaj więcej';
+      });
+    });
+  </script>
+</Example>

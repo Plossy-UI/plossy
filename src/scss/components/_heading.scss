@@ -1,0 +1,201 @@
+// Heading — nagłówki ekspozycyjne i ozdobniki.
+@use '../abstracts' as *;
+
+[class*='pl-heading-'] {
+  --pl-heading-accent: var(--pl-primary);
+}
+
+// ── Rozmiary ────────────────────────────────────────────────────────────
+.pl-heading-small,
+.pl-heading-medium,
+.pl-heading-large,
+.pl-heading-xlarge,
+.pl-heading-2xlarge {
+  font-family: var(--pl-font-display);
+  font-weight: var(--pl-display-weight, 640);
+  text-wrap: balance;
+}
+
+.pl-heading-small {
+  font-size: clamp(2rem, 1.7rem + 1.3vw, 2.75rem);
+  line-height: 1.1;
+  letter-spacing: -0.034em;
+}
+
+.pl-heading-medium {
+  font-size: clamp(2.4rem, 1.8rem + 2.4vw, 3.75rem);
+  line-height: 1.05;
+  letter-spacing: -0.04em;
+}
+
+.pl-heading-large {
+  font-size: clamp(2.8rem, 1.8rem + 4.2vw, 5.25rem);
+  line-height: 1;
+  letter-spacing: -0.045em;
+}
+
+.pl-heading-xlarge {
+  font-size: clamp(3.2rem, 1.6rem + 6.6vw, 7.5rem);
+  line-height: 0.96;
+  letter-spacing: -0.05em;
+}
+
+.pl-heading-2xlarge {
+  font-size: clamp(3.6rem, 1.2rem + 10vw, 11rem);
+  line-height: 0.92;
+  letter-spacing: -0.055em;
+}
+
+// Fragment nagłówka: akcent kolorem, zakreślacz, kontur.
+.pl-heading-accent {
+  color: var(--pl-primary-text);
+}
+
+.pl-heading-mark {
+  padding: 0 0.12em;
+  border-radius: 0.14em;
+  background: linear-gradient(transparent 58%, var(--pl-spark) 58%, var(--pl-spark) 92%, transparent 92%);
+  -webkit-box-decoration-break: clone;
+  box-decoration-break: clone;
+}
+
+.pl-heading-outline {
+  color: transparent;
+  -webkit-text-stroke: 1.5px var(--pl-text);
+}
+
+// ── Eyebrow: mały nadtytuł ──────────────────────────────────────────────
+.pl-heading-eyebrow {
+  display: flex;
+  align-items: center;
+  gap: 0.65em;
+  margin: 0 0 var(--pl-space-3);
+  font-family: var(--pl-font-mono);
+  font-size: var(--pl-text-xs);
+  font-weight: 500;
+  line-height: 1.4;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--pl-text-muted);
+
+  // Limonkowa iskra przed tekstem.
+  &::before {
+    content: '';
+    flex: none;
+    width: 0.5rem;
+    height: 0.5rem;
+    border-radius: 50%;
+    background: var(--pl-spark);
+    box-shadow: 0 0 0 1px color-mix(in oklab, var(--pl-on-spark) 22%, transparent);
+  }
+
+  & + :is(h1, h2, h3, h4, h5, h6) {
+    margin-top: 0;
+  }
+}
+
+.pl-heading-eyebrow-plain::before {
+  content: none;
+}
+
+.pl-heading-eyebrow-line::before {
+  width: 1.75rem;
+  height: 1.5px;
+  border-radius: 2px;
+  background: var(--pl-heading-accent);
+  box-shadow: none;
+}
+
+.pl-heading-eyebrow-primary {
+  color: var(--pl-primary-text);
+}
+
+.pl-heading-eyebrow-center {
+  justify-content: center;
+}
+
+// ── Divider: kreska pod nagłówkiem ──────────────────────────────────────
+.pl-heading-divider {
+  position: relative;
+  padding-bottom: 0.5em;
+  border-bottom: 1px solid var(--pl-border);
+
+  // Krótki akcent leżący na włosowej linii.
+  &::after {
+    content: '';
+    position: absolute;
+    bottom: -1px;
+    left: 0;
+    width: 2.5rem;
+    height: 2px;
+    border-radius: 2px;
+    background: var(--pl-heading-accent);
+    transition: width var(--pl-dur-4) var(--pl-ease-spring);
+  }
+
+  &:hover::after {
+    width: 4rem;
+  }
+}
+
+// ── Bullet: pionowy znacznik z lewej ────────────────────────────────────
+.pl-heading-bullet {
+  position: relative;
+  padding-left: 0.75em;
+
+  &::before {
+    content: '';
+    position: absolute;
+    top: 0.14em;
+    bottom: 0.14em;
+    left: 0;
+    width: max(3px, 0.16em);
+    border-radius: 1em;
+    background: var(--pl-heading-accent);
+  }
+}
+
+.pl-heading-bullet-spark::before {
+  background: var(--pl-spark);
+  box-shadow: 0 0 0 1px color-mix(in oklab, var(--pl-on-spark) 18%, transparent);
+}
+
+// ── Line: tekst z linią ─────────────────────────────────────────────────
+.pl-heading-line {
+  display: flex;
+  align-items: center;
+  gap: 0.75em;
+
+  &::after,
+  &.pl-heading-line-center::before,
+  &.pl-heading-line-right::before {
+    content: '';
+    flex: 1 1 2rem;
+    height: 1px;
+    background: var(--pl-border-strong);
+  }
+
+  &.pl-heading-line-right::after {
+    content: none;
+  }
+
+  &.pl-heading-line-center {
+    text-align: center;
+  }
+
+  > span,
+  > a {
+    flex: 0 1 auto;
+    min-width: 0;
+  }
+}
+
+// Linia przerywana.
+.pl-heading-line-dashed {
+  &::before,
+  &::after {
+    height: 0;
+    background: none;
+    border-top: 1px dashed var(--pl-border-strong);
+  }
+}

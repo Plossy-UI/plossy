@@ -1,0 +1,584 @@
+---
+import Example from '../../layouts/Example.astro';
+
+const sections = [
+  ['hero', 'Hero'],
+  ['produkty', 'Karuzela produktów'],
+  ['srodek', 'Tryb wyśrodkowany'],
+  ['opinie', 'Opinie'],
+  ['logotypy', 'Logotypy'],
+  ['galeria', 'Galeria z miniaturami'],
+  ['peek', 'Karty z zajawką'],
+  ['kenburns', 'Fade i Ken Burns'],
+  ['split', 'Pokaz dzielony'],
+  ['combo', 'Slider + zakładki'],
+];
+
+const hero = [
+  { img: 8, eyebrow: 'Kolekcja jesień 2026', title: 'Światło, które zostaje na dłużej', text: 'Lampy z mosiądzu i szkła dmuchanego — ręcznie składane w Gdyni.', cta: 'Zobacz lampy' },
+  { img: 6, eyebrow: 'Ceramika Fjell', title: 'Naczynia z charakterem', text: 'Szkliwa reaktywne: każdy kubek wychodzi z pieca trochę inny.', cta: 'Poznaj serię' },
+  { img: 3, eyebrow: 'Tekstylia', title: 'Wełna na chłodne wieczory', text: 'Pledy z merynosa tkane w rodzinnej tkalni pod Bergen.', cta: 'Wybierz pled' },
+  { img: 5, eyebrow: 'Meble', title: 'Dąb, który pamięta las', text: 'Krzesła i stoliki olejowane naturalnie, bez lakieru.', cta: 'Zobacz meble' },
+];
+
+const products = [
+  { img: 1, name: 'Lampa stołowa Arko', meta: 'Mosiądz szczotkowany', price: '429 zł', label: 'Nowość', tone: 'spark' },
+  { img: 2, name: 'Wazon Fjell', meta: 'Ceramika szkliwiona', price: '189 zł', label: '−20%', tone: 'danger' },
+  { img: 3, name: 'Pled Skog', meta: 'Wełna merino', price: '349 zł', label: '', tone: '' },
+  { img: 4, name: 'Krzesło Nord', meta: 'Dąb olejowany', price: '529 zł', label: 'Bestseller', tone: 'primary' },
+  { img: 5, name: 'Stolik Lund', meta: 'Jesion bielony', price: '689 zł', label: '', tone: '' },
+  { img: 6, name: 'Kubek Fjell, 2 szt.', meta: 'Kamionka', price: '98 zł', label: '', tone: '' },
+  { img: 7, name: 'Poduszka Mose', meta: 'Len prany', price: '129 zł', label: 'Nowość', tone: 'spark' },
+  { img: 8, name: 'Kinkiet Halo', meta: 'Szkło opalowe', price: '359 zł', label: '', tone: '' },
+];
+
+const places = [
+  { img: 2, title: 'Pracownia ceramiki', meta: 'Gdynia Orłowo' },
+  { img: 5, title: 'Stolarnia', meta: 'Kartuzy' },
+  { img: 8, title: 'Salon firmowy', meta: 'Gdańsk Wrzeszcz' },
+  { img: 3, title: 'Tkalnia', meta: 'Bergen' },
+  { img: 6, title: 'Magazyn i wysyłka', meta: 'Pruszcz Gdański' },
+];
+
+const quotes = [
+  { av: 4, name: 'Karolina Bąk', role: 'Architektka wnętrz', text: 'Lampa Arko dotarła w dwa dni, zapakowana jak prezent. Światło jest ciepłe i miękkie — dokładnie takie, jak na zdjęciach.' },
+  { av: 5, name: 'Jakub Sowa', role: 'Właściciel kawiarni Mielone', text: 'Czterdzieści kubków Fjell po roku codziennego zmywania wygląda jak nowe. Goście pytają, skąd są.' },
+  { av: 6, name: 'Zofia Rak', role: 'Stała klientka', text: 'Wymiana pledu na inny kolor zajęła jedną wiadomość. Rzadko spotyka się tak ludzką obsługę.' },
+  { av: 1, name: 'Anna Kowalska', role: 'Projektantka', text: 'Krzesła Nord mają proporcje, których szukałam latami. I nie skrzypią, co wcale nie jest oczywiste.' },
+  { av: 2, name: 'Marek Nowak', role: 'Kupił stolik Lund', text: 'Instrukcja na jednej kartce, sześć śrub, kwadrans pracy. Stolik stoi równo jak od linijki.' },
+];
+
+const logos = [
+  ['leaf', 'Nordwind'], ['droplet', 'Studio Fala'], ['flame', 'Brzask'], ['compass', 'Halny'],
+  ['coffee', 'Mielone'], ['sun', 'Dom Bursztyn'], ['box', 'Kamień & Len'], ['globe', 'Sosna Hotel'],
+];
+
+const stories = [
+  { img: 4, eyebrow: 'Krok 1', title: 'Szkic i prototyp', text: 'Każdy przedmiot zaczyna się od rysunku w skali 1:1 i modelu z tektury. Dopiero gdy dobrze leży w dłoni, trafia do pracowni.' },
+  { img: 7, eyebrow: 'Krok 2', title: 'Materiał z bliska', text: 'Dąb z Kaszub, wełna z Norwegii, glina z Bolesławca. Znamy z imienia ludzi, od których kupujemy surowce.' },
+  { img: 1, eyebrow: 'Krok 3', title: 'Ręczne wykończenie', text: 'Olejowanie, szlifowanie krawędzi, kontrola każdej sztuki. Ostatni etap zajmuje tyle samo czasu, co wszystkie poprzednie.' },
+];
+
+const guides = [
+  'Jak czyścić mosiądz, żeby nie stracił patyny',
+  'Pielęgnacja ceramiki szkliwionej',
+  'Pranie wełny merino krok po kroku',
+  'Olejowanie dębu raz w roku',
+  'Jak usuwać plamy z lnu',
+  'Dobór żarówki do klosza z opalu',
+  'Przechowywanie tekstyliów latem',
+];
+
+const tabs = [
+  { label: 'Nowości', items: [0, 6, 4, 7, 2] },
+  { label: 'Bestsellery', items: [3, 1, 5, 0, 7] },
+  { label: 'Wyprzedaż', items: [1, 2, 5, 6, 4] },
+];
+---
+
+<Example title="Slidery" description="Galeria wzorców sliderów i pokazów slajdów zbudowanych z komponentów Slider i Slideshow biblioteki Plossy.">
+  <header class="pl-navbar-container pl-navbar-glass pl-navbar-sticky" data-pl-navbar>
+    <nav class="pl-navbar" aria-label="Wzorce">
+      <div class="pl-navbar-left">
+        <a class="pl-navbar-logo" href="/examples/"><span class="pl-navbar-logo-mark"></span> Wzorce</a>
+        <ul class="pl-navbar-nav pl-visible@s">
+          <li><a href="/examples/karty/">Karty</a></li>
+          <li class="pl-active"><a href="/examples/slidery/">Slidery</a></li>
+          <li><a href="/examples/landing/">Landing</a></li>
+          <li><a href="/examples/panel/">Panel</a></li>
+        </ul>
+      </div>
+      <div class="pl-navbar-right">
+        <span class="pl-navbar-item pl-text-meta pl-visible@m">10 wzorców</span>
+        <button class="pl-button pl-button-small" type="button">Spis treści <span data-pl-icon="chevron-down"></span></button>
+        <div class="pl-drop pl-dropdown" data-pl-drop="mode: click; pos: bottom-end">
+          <ul class="pl-dropdown-nav">
+            {sections.map(([id, label]) => <li><a href={`#${id}`}>{label}</a></li>)}
+          </ul>
+        </div>
+      </div>
+    </nav>
+  </header>
+
+  <main>
+    <section class="pl-section pl-section-small pl-background-dots pl-background-fade">
+      <div class="pl-container pl-container-small pl-text-center" data-pl-scrollspy="cls: pl-animation-slide-up-small; target: > *; delay: 80">
+        <p class="pl-heading-eyebrow pl-heading-eyebrow-center">Wzorce interfejsu</p>
+        <h1 class="pl-heading-medium pl-text-balance">Slidery, które <span class="pl-heading-mark">czują palec</span></h1>
+        <p class="pl-text-lead pl-text-muted pl-text-balance">Dziesięć gotowych układów na komponentach Slider i Slideshow. Przeciągaj myszą lub palcem — tor ma bezwładność i sprężyście dociąga.</p>
+      </div>
+    </section>
+
+    <!-- 1. Hero -->
+    <section id="hero">
+      <div class="pl-container">
+        <p class="pl-heading-eyebrow">01 · Slideshow</p>
+        <h2>Pokaz hero na całą szerokość</h2>
+        <p class="sx-opts"><code>data-pl-slideshow="animation: push; autoplay: true; autoplay-interval: 5000; ratio: 21:9; min-height: 420; max-height: 620"</code> · <code>.pl-slideshow-square</code></p>
+      </div>
+      <div class="pl-slideshow pl-slideshow-square pl-slideshow-arrows-hover pl-margin-top" data-pl-slideshow="animation: push; autoplay: true; autoplay-interval: 5000; ratio: 21:9; min-height: 420; max-height: 620" aria-label="Kolekcje Lorem">
+        <ul class="pl-slideshow-items">
+          {hero.map((s, i) => (
+            <li>
+              <img src={`/img/photo-${s.img}.svg`} alt="" loading={i ? 'lazy' : 'eager'} />
+              <div class="pl-slideshow-caption">
+                <div class="pl-container">
+                  <span class="pl-slideshow-eyebrow">{s.eyebrow}</span>
+                  <h3 class="pl-heading-small">{s.title}</h3>
+                  <p>{s.text}</p>
+                  <p><a class="pl-button pl-button-primary pl-button-pill" href="/examples/kategoria/">{s.cta} <span class="pl-button-arrow" data-pl-icon="arrow-right"></span></a></p>
+                </div>
+              </div>
+            </li>
+          ))}
+        </ul>
+        <button class="pl-slidenav-previous pl-slidenav-large pl-visible@s" type="button" aria-label="Poprzedni" data-pl-slideshow-item="previous"></button>
+        <button class="pl-slidenav-next pl-slidenav-large pl-visible@s" type="button" aria-label="Następny" data-pl-slideshow-item="next"></button>
+        <ul class="pl-slideshow-nav pl-slideshow-nav-inside pl-dotnav pl-dotnav-light"></ul>
+      </div>
+    </section>
+
+    <!-- 2. Karuzela produktów -->
+    <section class="pl-section pl-section-small" id="produkty">
+      <div class="pl-container">
+        <p class="pl-heading-eyebrow">02 · Slider</p>
+        <h2>Karuzela produktów</h2>
+        <p class="sx-opts"><code>data-pl-slider="sets: true"</code> · <code>.pl-slider-cols-1 -2@s -3@m -4@l</code> · <code>.pl-slider-container-offset</code> · <code>.pl-slider-arrows</code></p>
+
+        <div class="pl-slider pl-margin-top" data-pl-slider="sets: true" aria-label="Polecane produkty">
+          <div class="pl-slider-container pl-slider-container-offset">
+            <ul class="pl-slider-items pl-slider-cols-1 pl-slider-cols-2@s pl-slider-cols-3@m pl-slider-cols-4@l">
+              {products.map((p) => (
+                <li>
+                  <article class="pl-card pl-card-hover">
+                    {p.label && <span class={`pl-card-badge pl-label pl-label-${p.tone}`}>{p.label}</span>}
+                    <figure class="pl-card-media pl-image pl-ratio-4-3"><img src={`/img/photo-${p.img}.svg`} alt="" loading="lazy" draggable="false" /></figure>
+                    <div class="pl-card-body">
+                      <p class="pl-card-meta">{p.meta}</p>
+                      <h3 class="pl-card-title"><a class="pl-link-heading" href="/examples/produkt/">{p.name}</a></h3>
+                      <div class="pl-flex pl-flex-middle pl-flex-between pl-margin-small-top">
+                        <strong class="pl-text-lg pl-text-display">{p.price}</strong>
+                        <button class="pl-button pl-button-primary pl-button-soft pl-button-icon pl-button-small pl-drag-ignore" type="button" aria-label={`Dodaj do koszyka: ${p.name}`} data-add={p.name}><span data-pl-icon="shopping-bag"></span></button>
+                      </div>
+                    </div>
+                  </article>
+                </li>
+              ))}
+            </ul>
+          </div>
+          <div class="pl-slider-arrows">
+            <ul class="pl-slider-nav pl-dotnav"></ul>
+            <button class="pl-slidenav-previous pl-slidenav-small" type="button" aria-label="Poprzedni zestaw" data-pl-slider-item="previous"></button>
+            <button class="pl-slidenav-next pl-slidenav-small" type="button" aria-label="Następny zestaw" data-pl-slider-item="next"></button>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 3. Tryb wyśrodkowany -->
+    <section class="pl-section pl-section-small pl-section-muted pl-overflow-hidden" id="srodek">
+      <div class="pl-container">
+        <p class="pl-heading-eyebrow">03 · Slider</p>
+        <h2>Tryb wyśrodkowany</h2>
+        <p class="sx-opts"><code>data-pl-slider="center: true"</code> · <code>.pl-slider-focus</code> · <code>--pl-slider-items: 1.6</code></p>
+
+        <div class="pl-slider pl-slider-focus pl-margin-top" data-pl-slider="center: true; index: 1" aria-label="Nasze miejsca">
+          <div class="pl-slider-container">
+            <ul class="pl-slider-items pl-slider-gap-small sx-center">
+              {places.map((p) => (
+                <li>
+                  <figure class="pl-image pl-image-rounded pl-ratio-16-9">
+                    <img src={`/img/photo-${p.img}.svg`} alt="" loading="lazy" draggable="false" />
+                    <figcaption class="pl-image-caption"><strong>{p.title}</strong> {p.meta}</figcaption>
+                  </figure>
+                </li>
+              ))}
+            </ul>
+          </div>
+          <button class="pl-slidenav-previous" type="button" aria-label="Poprzedni" data-pl-slider-item="previous"></button>
+          <button class="pl-slidenav-next" type="button" aria-label="Następny" data-pl-slider-item="next"></button>
+          <ul class="pl-slider-nav pl-dotnav"></ul>
+        </div>
+      </div>
+    </section>
+
+    <!-- 4. Opinie -->
+    <section class="pl-section pl-section-small" id="opinie">
+      <div class="pl-container">
+        <p class="pl-heading-eyebrow">04 · Slider</p>
+        <h2>Slider opinii</h2>
+        <p class="sx-opts"><code>data-pl-slider="autoplay: true; autoplay-interval: 4500"</code> · <code>.pl-slider-cols-1 -2@m -3@l</code> · przycisk <code>data-pl-slider-item="toggle"</code></p>
+
+        <div class="pl-slider pl-margin-top" data-pl-slider="autoplay: true; autoplay-interval: 4500" aria-label="Opinie klientów">
+          <div class="pl-slider-container pl-slider-container-offset">
+            <ul class="pl-slider-items pl-slider-cols-1 pl-slider-cols-2@m pl-slider-cols-3@l">
+              {quotes.map((q) => (
+                <li>
+                  <figure class="pl-card pl-height-1-1">
+                    <div class="pl-card-body">
+                      <span class="pl-icon-box pl-icon-primary pl-icon-circle" data-pl-icon="quote"></span>
+                      <p class="pl-text-lg pl-margin-top pl-margin-remove-bottom">{q.text}</p>
+                    </div>
+                    <figcaption class="pl-card-footer">
+                      <div class="pl-avatar-item">
+                        <span class="pl-avatar"><img src={`/img/avatar-${q.av}.svg`} alt="" /></span>
+                        <span class="pl-avatar-text">
+                          <span class="pl-avatar-name">{q.name}</span>
+                          <span class="pl-avatar-meta">{q.role}</span>
+                        </span>
+                      </div>
+                    </figcaption>
+                  </figure>
+                </li>
+              ))}
+            </ul>
+          </div>
+          <div class="pl-slider-arrows">
+            <ul class="pl-slider-nav pl-dotnav pl-dotnav-spark"></ul>
+            <button class="pl-button pl-button-small pl-button-ghost" type="button" data-pl-slider-item="toggle"><span data-pl-icon="pause"></span> Autoodtwarzanie</button>
+            <button class="pl-slidenav-previous pl-slidenav-small" type="button" aria-label="Poprzednia opinia" data-pl-slider-item="previous"></button>
+            <button class="pl-slidenav-next pl-slidenav-small" type="button" aria-label="Następna opinia" data-pl-slider-item="next"></button>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 5. Logotypy -->
+    <section class="pl-section pl-section-small pl-section-muted" id="logotypy">
+      <div class="pl-container">
+        <p class="pl-heading-eyebrow">05 · Slider</p>
+        <h2>Karuzela logotypów</h2>
+        <p class="sx-opts"><code>data-pl-slider="autoplay: true; autoplay-interval: 1800; pause-on-hover: false; velocity: 0.6"</code> · <code>.pl-slider-fade</code> · pętla nieskończona (domyślna)</p>
+
+        <div class="pl-slider pl-margin-top" data-pl-slider="autoplay: true; autoplay-interval: 1800; pause-on-hover: false; velocity: 0.6" aria-label="Zaufali nam">
+          <div class="pl-slider-container pl-slider-fade">
+            <ul class="pl-slider-items pl-slider-cols-2 pl-slider-cols-3@s pl-slider-cols-5@m">
+              {logos.map(([icon, name]) => (
+                <li>
+                  <div class="pl-tile pl-tile-default pl-tile-small pl-tile-rounded pl-flex pl-flex-center pl-flex-middle pl-gap-small pl-text-muted">
+                    <span class="pl-icon-large" data-pl-icon={icon}></span>
+                    <span class="pl-text-display pl-text-lg pl-text-semibold pl-text-nowrap">{name}</span>
+                  </div>
+                </li>
+              ))}
+            </ul>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 6. Galeria -->
+    <section class="pl-section pl-section-small" id="galeria">
+      <div class="pl-container pl-container-small">
+        <p class="pl-heading-eyebrow">06 · Slideshow + Thumbnav + Lightbox</p>
+        <h2>Galeria z miniaturami</h2>
+        <p class="sx-opts"><code>data-pl-slideshow="animation: fade; ratio: 3:2"</code> · <code>.pl-slideshow-nav.pl-thumbnav</code> · powiększenie: <code>Plossy.lightboxPanel()</code></p>
+
+        <div class="pl-slideshow pl-slideshow-arrows-hover pl-margin-top" id="sx-gallery" data-pl-slideshow="animation: fade; ratio: 3:2" aria-label="Galeria produktu">
+          <ul class="pl-slideshow-items">
+            {[1, 2, 3, 4, 5, 6].map((n) => <li><img src={`/img/photo-${n}.svg`} alt={`Lampa Arko — ujęcie ${n}`} loading="lazy" /></li>)}
+          </ul>
+          <button class="pl-button pl-button-icon pl-button-pill pl-position-top-right pl-position-small pl-position-z-index" type="button" id="sx-gallery-zoom" aria-label="Powiększ zdjęcie" data-pl-tooltip="Powiększ"><span data-pl-icon="maximize-2"></span></button>
+          <button class="pl-slidenav-previous" type="button" aria-label="Poprzednie" data-pl-slideshow-item="previous"></button>
+          <button class="pl-slidenav-next" type="button" aria-label="Następne" data-pl-slideshow-item="next"></button>
+          <ul class="pl-slideshow-nav pl-thumbnav pl-thumbnav-center">
+            {[1, 2, 3, 4, 5, 6].map((n) => <li><a href="#" aria-label={`Ujęcie ${n}`}><img src={`/img/photo-${n}.svg`} alt="" /></a></li>)}
+          </ul>
+        </div>
+      </div>
+    </section>
+
+    <!-- 7. Peek -->
+    <section class="pl-section pl-section-small pl-section-muted pl-overflow-hidden" id="peek">
+      <div class="pl-container">
+        <div class="pl-flex pl-flex-bottom pl-flex-between pl-gap-small">
+          <div>
+            <p class="pl-heading-eyebrow">07 · Slider</p>
+            <h2>Karty z zajawką następnej</h2>
+          </div>
+          <div class="pl-slidenav-container pl-visible@s">
+            <button class="pl-slidenav-previous pl-slidenav-small" type="button" aria-label="Poprzednia" data-sx-peek="previous"></button>
+            <button class="pl-slidenav-next pl-slidenav-small" type="button" aria-label="Następna" data-sx-peek="next"></button>
+          </div>
+        </div>
+        <p class="sx-opts"><code>data-pl-slider="finite: true"</code> · ułamkowe <code>--pl-slider-items: 1.25 / 2.4 / 3.4</code> · kontener <code>overflow: visible</code> · strzałki przez <code>Plossy.slider().show()</code></p>
+
+        <div class="pl-slider pl-margin-top" id="sx-peek" data-pl-slider="finite: true" aria-label="Poradniki">
+          <div class="pl-slider-container pl-overflow-visible">
+            <ul class="pl-slider-items sx-peek">
+              {guides.map((g, i) => (
+                <li>
+                  <a class="pl-card pl-card-hover pl-height-1-1" href="/examples/wpis/">
+                    <figure class="pl-card-media pl-card-media-inset pl-image pl-ratio-3-2"><img src={`/img/photo-${i + 1}.svg`} alt="" loading="lazy" draggable="false" /></figure>
+                    <div class="pl-card-body">
+                      <p class="pl-card-meta">Poradnik · {4 + i} min</p>
+                      <h3 class="pl-card-title">{g}</h3>
+                      <span class="pl-link-arrow pl-text-small">Czytaj</span>
+                    </div>
+                  </a>
+                </li>
+              ))}
+            </ul>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 8. Ken Burns -->
+    <section class="pl-section pl-section-small" id="kenburns">
+      <div class="pl-container">
+        <p class="pl-heading-eyebrow">08 · Slideshow</p>
+        <h2>Przenikanie z efektem Kena Burnsa</h2>
+        <p class="sx-opts"><code>data-pl-slideshow="animation: fade; kenburns: true; autoplay: true; autoplay-interval: 5000; progress: false; ratio: 21:9; min-height: 360"</code> · <code>.pl-slideshow-caption-center</code></p>
+
+        <div class="pl-slideshow pl-margin-top" data-pl-slideshow="animation: fade; kenburns: true; autoplay: true; autoplay-interval: 5000; progress: false; ratio: 21:9; min-height: 360" aria-label="Historie z pracowni">
+          <ul class="pl-slideshow-items">
+            {hero.slice(0, 3).map((s) => (
+              <li>
+                <img src={`/img/photo-${s.img - 1}.svg`} alt="" loading="lazy" />
+                <div class="pl-slideshow-caption pl-slideshow-caption-center">
+                  <span class="pl-slideshow-eyebrow">{s.eyebrow}</span>
+                  <h3 class="pl-heading-small">{s.title}</h3>
+                  <p>{s.text}</p>
+                </div>
+              </li>
+            ))}
+          </ul>
+          <ul class="pl-slideshow-nav pl-slideshow-nav-inside pl-dotnav pl-dotnav-light"></ul>
+        </div>
+
+        <div class="pl-grid pl-child-width-1-1 pl-child-width-1-2@m pl-margin-top">
+          <div>
+            <p class="sx-opts"><code>animation: scale</code> · <code>.pl-slideshow-caption-card</code></p>
+            <div class="pl-slideshow pl-slideshow-arrows-hover" data-pl-slideshow="animation: scale; ratio: 3:2" aria-label="Animacja scale">
+              <ul class="pl-slideshow-items">
+                {[2, 5, 8].map((n, i) => (
+                  <li>
+                    <img src={`/img/photo-${n}.svg`} alt="" loading="lazy" />
+                    <div class="pl-slideshow-caption pl-slideshow-caption-card">
+                      <span class="pl-slideshow-eyebrow">Lookbook 0{i + 1}</span>
+                      <h3>{['Poranek w kuchni', 'Kąt do czytania', 'Stół na sześć osób'][i]}</h3>
+                    </div>
+                  </li>
+                ))}
+              </ul>
+              <button class="pl-slidenav-previous pl-slidenav-small" type="button" aria-label="Poprzedni" data-pl-slideshow-item="previous"></button>
+              <button class="pl-slidenav-next pl-slidenav-small" type="button" aria-label="Następny" data-pl-slideshow-item="next"></button>
+            </div>
+          </div>
+          <div>
+            <p class="sx-opts"><code>animation: zoom; finite: true</code> · <code>.pl-slideshow-arrows</code></p>
+            <div class="pl-slideshow" data-pl-slideshow="animation: zoom; finite: true; ratio: 3:2" aria-label="Animacja zoom">
+              <ul class="pl-slideshow-items">
+                {[7, 4, 1].map((n) => <li><img src={`/img/photo-${n}.svg`} alt="" loading="lazy" /></li>)}
+              </ul>
+              <div class="pl-slideshow-arrows">
+                <ul class="pl-slideshow-nav pl-dotnav"></ul>
+                <button class="pl-slidenav-previous pl-slidenav-small" type="button" aria-label="Poprzedni" data-pl-slideshow-item="previous"></button>
+                <button class="pl-slidenav-next pl-slidenav-small" type="button" aria-label="Następny" data-pl-slideshow-item="next"></button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 9. Split -->
+    <section class="pl-section pl-section-small pl-section-muted" id="split">
+      <div class="pl-container">
+        <p class="pl-heading-eyebrow">09 · Slideshow + Switcher</p>
+        <h2>Pokaz dzielony</h2>
+        <p class="sx-opts"><code>data-pl-slideshow="animation: pull; ratio: 4:3"</code> zsynchronizowany z <code>data-pl-switcher</code> przez zdarzenia <code>pl:itemshow</code> / <code>pl:show</code>. Slider i Slideshow nie mają trybu pionowego — układ dzielony zastępuje go tutaj.</p>
+
+        <div class="pl-card pl-overflow-hidden pl-margin-top">
+          <div class="pl-grid pl-grid-collapse pl-grid-match pl-child-width-1-1 pl-child-width-1-2@m">
+            <div>
+              <div class="pl-slideshow pl-slideshow-square pl-width-1-1" id="sx-split" data-pl-slideshow="animation: pull; ratio: 4:3" aria-label="Jak powstają nasze produkty">
+                <ul class="pl-slideshow-items">
+                  {stories.map((s) => <li><img src={`/img/photo-${s.img}.svg`} alt="" loading="lazy" /></li>)}
+                </ul>
+              </div>
+            </div>
+            <div>
+              <div class="pl-card-body pl-card-large pl-flex pl-flex-column pl-flex-between pl-width-1-1">
+                <div>
+                  <ul class="pl-subnav pl-subnav-pill" id="sx-split-nav" data-pl-switcher="connect: #sx-split-panels; animation: pl-animation-slide-left-small, pl-animation-slide-right-small">
+                    {stories.map((s, i) => <li class={i === 0 ? 'pl-active' : ''}><a href="#">{s.eyebrow}</a></li>)}
+                  </ul>
+                </div>
+                <div class="pl-switcher pl-margin-medium-top pl-margin-medium-bottom" id="sx-split-panels">
+                  {stories.map((s, i) => (
+                    <div class={i === 0 ? 'pl-active' : ''}>
+                      <h3 class="pl-heading-small">{s.title}</h3>
+                      <p class="pl-text-lead pl-text-muted">{s.text}</p>
+                    </div>
+                  ))}
+                </div>
+                <div class="pl-flex pl-flex-middle pl-flex-between">
+                  <a class="pl-link-arrow" href="/examples/cms/">Poznaj pracownię</a>
+                  <div class="pl-slidenav-container">
+                    <button class="pl-slidenav-previous pl-slidenav-small" type="button" aria-label="Poprzedni krok" data-sx-split="previous"></button>
+                    <button class="pl-slidenav-next pl-slidenav-small" type="button" aria-label="Następny krok" data-sx-split="next"></button>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 10. Combo -->
+    <section class="pl-section pl-section-small" id="combo">
+      <div class="pl-container">
+        <p class="pl-heading-eyebrow">10 · Switcher + Slider</p>
+        <h2>Slider w zakładkach</h2>
+        <p class="sx-opts"><code>.pl-tab.pl-tab-segment</code> + <code>data-pl-switcher</code>, w każdym panelu <code>data-pl-slider="finite: true"</code> z <code>.pl-slider-arrows-hover</code></p>
+
+        <div class="pl-flex pl-flex-middle pl-flex-between pl-flex-wrap pl-gap-small pl-margin-top">
+          <ul class="pl-tab pl-tab-segment" data-pl-switcher="connect: #sx-combo-panels">
+            {tabs.map((t, i) => <li class={i === 0 ? 'pl-active' : ''}><a href="#">{t.label}</a></li>)}
+          </ul>
+          <a class="pl-link-arrow" href="/examples/kategoria/">Wszystkie produkty</a>
+        </div>
+        <div class="pl-switcher pl-margin-top" id="sx-combo-panels">
+          {tabs.map((t, i) => (
+            <div class={i === 0 ? 'pl-active' : ''}>
+              <div class="pl-slider pl-slider-arrows-hover" data-pl-slider="finite: true" aria-label={t.label}>
+                <div class="pl-slider-container pl-slider-container-offset">
+                  <ul class="pl-slider-items pl-slider-cols-2 pl-slider-cols-3@s pl-slider-cols-4@m pl-slider-gap-small">
+                    {t.items.map((idx) => {
+                      const p = products[idx];
+                      return (
+                        <li>
+                          <a class="pl-card pl-card-small pl-card-hover" href="/examples/produkt/">
+                            <figure class="pl-card-media pl-image pl-ratio-1-1"><img src={`/img/photo-${p.img}.svg`} alt="" loading="lazy" draggable="false" /></figure>
+                            <div class="pl-card-body">
+                              <h3 class="pl-card-title pl-text-md pl-text-truncate">{p.name}</h3>
+                              <p class="pl-card-meta pl-margin-remove">{p.price}</p>
+                            </div>
+                          </a>
+                        </li>
+                      );
+                    })}
+                  </ul>
+                </div>
+                <button class="pl-slidenav-previous pl-slidenav-small" type="button" aria-label="Poprzedni" data-pl-slider-item="previous"></button>
+                <button class="pl-slidenav-next pl-slidenav-small" type="button" aria-label="Następny" data-pl-slider-item="next"></button>
+              </div>
+            </div>
+          ))}
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer class="pl-section pl-section-xsmall pl-border-top">
+    <div class="pl-container pl-flex pl-flex-between pl-flex-wrap pl-gap-small pl-text-meta">
+      <span>Wzorce sliderów · zbudowane z Plossy</span>
+      <span><a class="pl-link-muted" href="/examples/karty/">Karty</a> · <a class="pl-link-muted" href="/examples/landing/">Landing</a> · <a class="pl-link-muted" href="/examples/panel/">Panel</a></span>
+    </div>
+  </footer>
+
+  <style is:global>
+    section[id] {
+      scroll-margin-top: 4.5rem;
+    }
+    /* Podpis z użytymi opcjami. */
+    .sx-opts {
+      margin: 0.5rem 0 0;
+      color: var(--pl-text-muted);
+      font-family: var(--pl-font-mono);
+      font-size: var(--pl-text-xs);
+      line-height: 2;
+      overflow-wrap: anywhere;
+    }
+    .sx-opts code {
+      white-space: normal;
+    }
+    /* Obejście: ratio + min-height rozpychało pokaz w poziomie na wąskich ekranach. */
+    .pl-slideshow-items {
+      width: 100%;
+      min-width: 0;
+    }
+    /* Ułamkowa liczba kart — widać zajawkę następnej. */
+    .sx-peek {
+      --pl-slider-items: 1.25;
+      --pl-slider-gap: 1rem;
+    }
+    .sx-center {
+      --pl-slider-items: 1.15;
+    }
+    @media (min-width: 640px) {
+      .sx-peek {
+        --pl-slider-items: 2.4;
+      }
+      .sx-center {
+        --pl-slider-items: 1.6;
+      }
+    }
+    @media (min-width: 960px) {
+      .sx-peek {
+        --pl-slider-items: 3.4;
+        --pl-slider-gap: 1.5rem;
+      }
+    }
+  </style>
+
+  <script is:inline>
+    window.addEventListener('load', () => {
+      const P = window.Plossy;
+      if (!P) return;
+
+      // Galeria: przycisk powiększenia otwiera lightbox na bieżącym slajdzie.
+      const gallery = document.getElementById('sx-gallery');
+      let current = 0;
+      gallery.addEventListener('pl:itemshow', (event) => {
+        if (event.target === gallery) current = event.detail.index;
+      });
+      document.getElementById('sx-gallery-zoom').addEventListener('click', () => {
+        P.lightboxPanel({
+          index: current,
+          thumbs: true,
+          items: [1, 2, 3, 4, 5, 6].map((n) => ({ source: `/img/photo-${n}.svg`, type: 'image', caption: `Lampa Arko — ujęcie ${n}` })),
+        });
+      });
+
+      // Karty z zajawką: strzałki w nagłówku sekcji.
+      document.querySelectorAll('[data-sx-peek]').forEach((button) => {
+        button.addEventListener('click', () => P.slider('#sx-peek').show(button.dataset.sxPeek));
+      });
+
+      // Pokaz dzielony: slajdy i panele tekstu chodzą razem.
+      const split = document.getElementById('sx-split');
+      const nav = document.getElementById('sx-split-nav');
+      let splitIndex = 0;
+      split.addEventListener('pl:itemshow', (event) => {
+        if (event.target !== split || event.detail.index === splitIndex) return;
+        splitIndex = event.detail.index;
+        P.switcher(nav).show(splitIndex);
+      });
+      nav.addEventListener('pl:show', (event) => {
+        if (event.target !== nav || event.detail.index === splitIndex) return;
+        splitIndex = event.detail.index;
+        P.slideshow(split).show(splitIndex);
+      });
+      document.querySelectorAll('[data-sx-split]').forEach((button) => {
+        button.addEventListener('click', () => P.slideshow(split).show(button.dataset.sxSplit));
+      });
+
+      // Slidery w ukrytych panelach przeliczają układ po pokazaniu.
+      document.getElementById('sx-combo-panels').addEventListener('pl:shown', () => {
+        document.querySelectorAll('#sx-combo-panels .pl-active [data-pl-slider]').forEach((el) => P.slider(el).update());
+      });
+      document.querySelector('[data-pl-switcher="connect: #sx-combo-panels"]').addEventListener('pl:shown', () => {
+        document.querySelectorAll('#sx-combo-panels .pl-active [data-pl-slider]').forEach((el) => P.slider(el).update());
+      });
+    });
+
+    document.addEventListener('click', (event) => {
+      const add = event.target.closest('[data-add]');
+      if (add) window.Plossy.notification({ title: 'Dodano do koszyka', message: add.dataset.add, status: 'success', timeout: 2600 });
+    });
+  </script>
+</Example>

@@ -1,0 +1,291 @@
+// Comment
+@use '../abstracts' as *;
+
+.pl-comment,
+.pl-comment-list {
+  --pl-comment-avatar: 2.5rem;
+  --pl-comment-gap: 0.875rem;
+  --pl-comment-space: 1.5rem;
+  --pl-comment-pad: 0rem;
+  --pl-comment-line: var(--pl-border-strong);
+  --pl-comment-indent: calc(var(--pl-comment-avatar) + var(--pl-comment-gap));
+}
+
+.pl-comment {
+  position: relative;
+  display: flow-root;
+  padding: var(--pl-comment-pad);
+  border-radius: var(--pl-radius-md);
+  color: var(--pl-text);
+}
+
+.pl-comment-header {
+  display: flex;
+  align-items: center;
+  gap: var(--pl-comment-gap);
+  min-height: var(--pl-comment-avatar);
+}
+
+.pl-comment-avatar {
+  --pl-avatar-size: var(--pl-comment-avatar);
+  flex: none;
+  width: var(--pl-comment-avatar);
+  height: var(--pl-comment-avatar);
+  border-radius: 50%;
+  object-fit: cover;
+}
+
+.pl-comment-title {
+  margin: 0;
+  font-family: var(--pl-font-sans);
+  font-size: 0.9375rem;
+  font-weight: 600;
+  line-height: 1.3;
+  letter-spacing: -0.008em;
+  color: var(--pl-text);
+
+  a {
+    color: inherit;
+    text-decoration: none;
+
+    &:hover {
+      color: var(--pl-primary-text);
+    }
+  }
+}
+
+.pl-comment-meta {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0 0.5rem;
+  margin: 0.1rem 0 0;
+  padding: 0;
+  list-style: none;
+  font-size: var(--pl-text-xs);
+  line-height: 1.4;
+  color: var(--pl-text-subtle);
+
+  a {
+    color: inherit;
+    text-decoration: none;
+
+    &:hover {
+      color: var(--pl-text);
+    }
+  }
+
+  > li + li::before {
+    content: '';
+    display: inline-block;
+    width: 3px;
+    height: 3px;
+    margin-right: 0.5rem;
+    border-radius: 50%;
+    background: currentColor;
+    vertical-align: middle;
+    opacity: 0.6;
+  }
+}
+
+.pl-comment-body {
+  margin-top: 0.35rem;
+  padding-left: var(--pl-comment-indent);
+  font-size: 0.9375rem;
+  line-height: 1.6;
+  color: var(--pl-text-muted);
+  overflow-wrap: anywhere;
+
+  > :last-child {
+    margin-bottom: 0;
+  }
+
+  > p {
+    margin-bottom: 0.6em;
+  }
+}
+
+.pl-comment-actions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.15rem;
+  margin: 0.5rem 0 0 calc(var(--pl-comment-indent) - 0.5rem);
+  padding: 0;
+  list-style: none;
+}
+
+.pl-comment-action {
+  @include button-reset;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35em;
+  height: 1.75rem;
+  padding: 0 0.5rem;
+  border-radius: var(--pl-radius-sm);
+  color: var(--pl-text-muted);
+  font-size: var(--pl-text-xs);
+  font-weight: 540;
+  line-height: 1;
+  text-decoration: none;
+  transition:
+    background-color var(--pl-dur-2) var(--pl-ease),
+    color var(--pl-dur-2) var(--pl-ease),
+    transform var(--pl-dur-3) var(--pl-ease-spring);
+
+  > .pl-icon {
+    width: 1.15em;
+    height: 1.15em;
+    transition: transform var(--pl-dur-3) var(--pl-ease-spring);
+  }
+
+  &:hover {
+    background: var(--pl-muted);
+    color: var(--pl-text);
+
+    > .pl-icon {
+      transform: scale(1.15) rotate(-6deg);
+    }
+  }
+
+  &:active {
+    transform: scale(0.95);
+  }
+
+  &.pl-active {
+    color: var(--pl-primary-text);
+  }
+
+  @include focus-visible;
+}
+
+// Znaczek przy autorze (np. „Autor”, „Zespół”).
+.pl-comment-badge {
+  display: inline-block;
+  margin-left: 0.4em;
+  padding: 0.2em 0.5em;
+  border-radius: var(--pl-radius-pill);
+  background: var(--pl-spark);
+  color: var(--pl-on-spark);
+  font-family: var(--pl-font-mono);
+  font-size: 0.625rem;
+  font-weight: 500;
+  line-height: 1.2;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  vertical-align: 0.1em;
+}
+
+// ── Wyróżniony ──────────────────────────────────────────────────────────
+.pl-comment-primary {
+  --pl-comment-pad: 1rem;
+  border: 1px solid var(--pl-primary-border);
+  background: var(--pl-primary-soft);
+
+  .pl-comment-body {
+    color: var(--pl-text);
+  }
+
+  .pl-comment-action:hover {
+    background: color-mix(in oklab, var(--pl-primary) 14%, transparent);
+  }
+}
+
+// Komentarz jako karta.
+.pl-comment-card {
+  --pl-comment-pad: 1.125rem;
+  @include surface(var(--pl-radius-md), var(--pl-shadow-xs));
+}
+
+// ── Lista z odpowiedziami ───────────────────────────────────────────────
+.pl-comment-list {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+
+  > li + li {
+    margin-top: var(--pl-comment-space);
+  }
+
+  li > ul {
+    --pl-comment-offset: 0rem;
+    --pl-comment-x: calc(var(--pl-comment-avatar) / 2 + var(--pl-comment-offset) - var(--pl-comment-indent));
+    margin: 0;
+    padding: 0 0 0 var(--pl-comment-indent);
+    list-style: none;
+
+    > li {
+      position: relative;
+      padding-top: var(--pl-comment-space);
+
+      // „Łokieć" łączący odpowiedź z komentarzem nadrzędnym.
+      &::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: var(--pl-comment-x);
+        width: calc(var(--pl-comment-x) * -1 - 0.4rem);
+        height: calc(var(--pl-comment-space) + var(--pl-comment-avatar) / 2);
+        border: solid var(--pl-comment-line);
+        border-width: 0 0 1.5px 1.5px;
+        border-bottom-left-radius: 0.875rem;
+        pointer-events: none;
+      }
+
+      // Pionowa linia biegnąca do kolejnych odpowiedzi.
+      &:not(:last-child)::after {
+        content: '';
+        position: absolute;
+        top: 0;
+        bottom: 0;
+        left: var(--pl-comment-x);
+        border-left: 1.5px solid var(--pl-comment-line);
+        pointer-events: none;
+      }
+    }
+  }
+
+  // Linia od awatara w dół — do pierwszej odpowiedzi.
+  li:has(> ul) > .pl-comment::after {
+    content: '';
+    position: absolute;
+    top: calc(var(--pl-comment-pad) + var(--pl-comment-avatar) + 0.4rem);
+    bottom: 0;
+    left: calc(var(--pl-comment-pad) + var(--pl-comment-avatar) / 2);
+    border-left: 1.5px solid var(--pl-comment-line);
+    pointer-events: none;
+  }
+
+  li:has(> .pl-comment-primary, > .pl-comment-card) > ul {
+    --pl-comment-offset: 1rem;
+  }
+
+  li:has(> .pl-comment-card) > ul {
+    --pl-comment-offset: 1.125rem;
+  }
+
+  li:has(> ul) > :is(.pl-comment-primary, .pl-comment-card)::after {
+    top: 100%;
+    bottom: auto;
+    height: 0;
+  }
+}
+
+// Pozycje oddzielone liniami zamiast odstępem.
+.pl-comment-list-divider > li + li {
+  padding-top: var(--pl-comment-space);
+  border-top: 1px solid var(--pl-border);
+}
+
+// ── Rozmiar ─────────────────────────────────────────────────────────────
+.pl-comment-small,
+.pl-comment-list-small {
+  --pl-comment-avatar: 2rem;
+  --pl-comment-gap: 0.625rem;
+  --pl-comment-space: 1rem;
+
+  .pl-comment-title,
+  .pl-comment-body {
+    font-size: var(--pl-text-sm);
+  }
+}

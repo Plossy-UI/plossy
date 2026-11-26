@@ -1,0 +1,179 @@
+// Tooltip — „atramentowy" dymek ze strzałką, pozycjonowany przez JS.
+// <button data-pl-tooltip="Kopiuj link">…</button>
+@use '../abstracts' as *;
+
+.pl-tooltip {
+  --pl-tooltip-bg: var(--pl-ink);
+  --pl-tooltip-color: var(--pl-on-ink);
+  --pl-tooltip-border: transparent;
+  --pl-tooltip-arrow: 0.5rem;
+  --pl-tooltip-max: 17.5rem;
+  // Kierunek wejścia — zależny od data-pl-placement.
+  --pl-tooltip-tx: 0px;
+  --pl-tooltip-ty: 5px;
+  --pl-tooltip-rotate: 45deg;
+
+  @include floating-surface(var(--pl-radius-sm));
+  z-index: var(--pl-z-tooltip);
+  display: none;
+  box-sizing: border-box;
+  max-width: min(var(--pl-tooltip-max), calc(100vw - 16px));
+  padding: 0.375rem 0.625rem;
+  border-color: var(--pl-tooltip-border);
+  background: var(--pl-tooltip-bg);
+  box-shadow: var(--pl-shadow-md);
+  color: var(--pl-tooltip-color);
+  font-family: var(--pl-font-sans);
+  font-size: 0.8125rem;
+  font-weight: 480;
+  line-height: 1.4;
+  letter-spacing: 0;
+  text-align: center;
+  text-transform: none;
+  text-wrap: balance;
+  overflow-wrap: break-word;
+  pointer-events: none;
+  user-select: none;
+  transform-origin: 50% 100%;
+
+  &.pl-open,
+  &.pl-leave {
+    display: block;
+  }
+
+  &.pl-leave {
+    animation: pl-tooltip-out var(--pl-dur-1) var(--pl-ease) forwards;
+  }
+
+  // Strzałka: obrócony kwadrat z ramką na dwóch krawędziach.
+  &::before {
+    content: '';
+    position: absolute;
+    left: clamp(0.75rem, var(--pl-arrow-x, 50%), calc(100% - 0.75rem));
+    top: 100%;
+    box-sizing: border-box;
+    width: var(--pl-tooltip-arrow);
+    height: var(--pl-tooltip-arrow);
+    margin: calc(var(--pl-tooltip-arrow) / -2);
+    border: 1px solid var(--pl-tooltip-border);
+    border-top-color: transparent;
+    border-left-color: transparent;
+    border-bottom-right-radius: 2px;
+    background: var(--pl-tooltip-bg);
+    // Tło tylko pod widoczną połową — nie zasłania treści dymka.
+    clip-path: polygon(100% 0, 100% 100%, 0 100%);
+    transform: rotate(var(--pl-tooltip-rotate));
+  }
+
+  &[data-pl-placement^='bottom'] {
+    --pl-tooltip-ty: -5px;
+    --pl-tooltip-rotate: 225deg;
+    transform-origin: 50% 0;
+
+    &::before {
+      top: 0;
+    }
+  }
+
+  &[data-pl-placement^='left'] {
+    --pl-tooltip-tx: 5px;
+    --pl-tooltip-ty: 0px;
+    --pl-tooltip-rotate: -45deg;
+    transform-origin: 100% 50%;
+
+    &::before {
+      left: 100%;
+      top: clamp(0.625rem, var(--pl-arrow-y, 50%), calc(100% - 0.625rem));
+    }
+  }
+
+  &[data-pl-placement^='right'] {
+    --pl-tooltip-tx: -5px;
+    --pl-tooltip-ty: 0px;
+    --pl-tooltip-rotate: 135deg;
+    transform-origin: 0 50%;
+
+    &::before {
+      left: 0;
+      top: clamp(0.625rem, var(--pl-arrow-y, 50%), calc(100% - 0.625rem));
+    }
+  }
+
+  kbd {
+    margin-left: 0.375rem;
+    padding: 0 0.3em;
+    border: 0;
+    background: color-mix(in oklab, currentColor 16%, transparent);
+    color: inherit;
+    font-size: 0.6875rem;
+  }
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .pl-tooltip.pl-open:not(.pl-tooltip-instant) {
+    animation:
+      pl-tooltip-fade var(--pl-dur-1) var(--pl-ease),
+      pl-tooltip-in var(--pl-dur-3) var(--pl-ease-spring);
+  }
+}
+
+@keyframes pl-tooltip-fade {
+  from { opacity: 0; }
+}
+
+@keyframes pl-tooltip-in {
+  from { transform: translate(var(--pl-tooltip-tx), var(--pl-tooltip-ty)) scale(0.92); }
+}
+
+@keyframes pl-tooltip-out {
+  to { opacity: 0; }
+}
+
+// ── Warianty ────────────────────────────────────────────────────────────
+// Jasna powierzchnia z włosową ramką.
+.pl-tooltip-light {
+  --pl-tooltip-bg: var(--pl-surface-raised);
+  --pl-tooltip-color: var(--pl-text);
+  --pl-tooltip-border: var(--pl-border);
+  box-shadow: var(--pl-shadow-lg);
+}
+
+// Tony: .pl-tooltip-primary … .pl-tooltip-info
+@include tones('pl-tooltip');
+
+.pl-tooltip-primary,
+.pl-tooltip-secondary,
+.pl-tooltip-success,
+.pl-tooltip-warning,
+.pl-tooltip-danger,
+.pl-tooltip-info {
+  --pl-tooltip-bg: var(--pl-tone);
+  --pl-tooltip-color: var(--pl-on-tone);
+}
+
+// Rozmiary i układ.
+.pl-tooltip-small {
+  padding: 0.1875rem 0.4375rem;
+  border-radius: var(--pl-radius-xs);
+  font-size: 0.75rem;
+}
+
+.pl-tooltip-large {
+  --pl-tooltip-max: 22rem;
+  padding: 0.625rem 0.875rem;
+  border-radius: var(--pl-radius-md);
+  font-size: var(--pl-text-sm);
+  text-align: left;
+}
+
+.pl-tooltip-left {
+  text-align: left;
+}
+
+// Element, który sam nie jest interaktywny, a ma tooltip (np. skrót, termin).
+.pl-tooltip-hint {
+  text-decoration: underline dotted;
+  text-decoration-color: var(--pl-text-subtle);
+  text-underline-offset: 0.22em;
+  cursor: help;
+}

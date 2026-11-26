@@ -1,0 +1,174 @@
+// Spinner — wskaźniki ładowania w czystym CSS: pierścień, kropki, słupki, puls.
+@use '../abstracts' as *;
+
+.pl-spinner {
+  // Domyślnie dziedziczy kolor tekstu (działa w przyciskach); tony nadpisują --pl-tone.
+  --pl-tone: currentColor;
+  --pl-spinner-size: 1.5rem;
+  --pl-spinner-width: max(2px, calc(var(--pl-spinner-size) / 10));
+  --pl-spinner-speed: 0.75s;
+
+  position: relative;
+  display: inline-block;
+  flex: none;
+  width: var(--pl-spinner-size);
+  height: var(--pl-spinner-size);
+  color: var(--pl-tone);
+  vertical-align: -0.3em;
+}
+
+// ── Pierścień (domyślny) ────────────────────────────────────────────────
+.pl-spinner:not(.pl-spinner-dots, .pl-spinner-bars, .pl-spinner-pulse) {
+  border: var(--pl-spinner-width) solid color-mix(in oklab, currentColor 18%, transparent);
+  border-top-color: currentColor;
+  border-radius: 50%;
+  animation: pl-spinner-spin var(--pl-spinner-speed) linear infinite;
+}
+
+@keyframes pl-spinner-spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+// ── Kropki ──────────────────────────────────────────────────────────────
+.pl-spinner-dots {
+  --pl-spinner-dot: radial-gradient(circle closest-side, currentColor 92%, transparent);
+  width: calc(var(--pl-spinner-size) * 1.5);
+  background:
+    var(--pl-spinner-dot) 0% 62%,
+    var(--pl-spinner-dot) 50% 62%,
+    var(--pl-spinner-dot) 100% 62%;
+  background-repeat: no-repeat;
+  background-size: 24% 36%;
+  animation: pl-spinner-dots 1s var(--pl-ease-in-out) infinite;
+}
+
+@keyframes pl-spinner-dots {
+  0%,
+  70%,
+  100% {
+    background-position: 0% 62%, 50% 62%, 100% 62%;
+  }
+
+  17% {
+    background-position: 0% 12%, 50% 62%, 100% 62%;
+  }
+
+  34% {
+    background-position: 0% 62%, 50% 12%, 100% 62%;
+  }
+
+  51% {
+    background-position: 0% 62%, 50% 62%, 100% 12%;
+  }
+}
+
+// ── Słupki ──────────────────────────────────────────────────────────────
+.pl-spinner-bars {
+  --pl-spinner-bar: linear-gradient(currentColor, currentColor);
+  background:
+    var(--pl-spinner-bar) 8% 50%,
+    var(--pl-spinner-bar) 50% 50%,
+    var(--pl-spinner-bar) 92% 50%;
+  background-repeat: no-repeat;
+  background-size: 17% 45%;
+  animation: pl-spinner-bars 0.9s var(--pl-ease-in-out) infinite;
+}
+
+@keyframes pl-spinner-bars {
+  0%,
+  100% {
+    background-size: 17% 45%, 17% 45%, 17% 45%;
+  }
+
+  20% {
+    background-size: 17% 95%, 17% 45%, 17% 45%;
+  }
+
+  40% {
+    background-size: 17% 45%, 17% 95%, 17% 45%;
+  }
+
+  60% {
+    background-size: 17% 45%, 17% 45%, 17% 95%;
+  }
+}
+
+// ── Puls ────────────────────────────────────────────────────────────────
+.pl-spinner-pulse {
+  &::before,
+  &::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    border-radius: 50%;
+    background: currentColor;
+    animation: pl-spinner-pulse 1.5s var(--pl-ease) infinite;
+  }
+
+  &::after {
+    animation-delay: 0.75s;
+  }
+}
+
+@keyframes pl-spinner-pulse {
+  from {
+    transform: scale(0.1);
+    opacity: 0.85;
+  }
+
+  to {
+    transform: scale(1);
+    opacity: 0;
+  }
+}
+
+// ── Rozmiary ────────────────────────────────────────────────────────────
+.pl-spinner-small {
+  --pl-spinner-size: 1rem;
+}
+
+.pl-spinner-large {
+  --pl-spinner-size: 2.5rem;
+}
+
+.pl-spinner-xlarge {
+  --pl-spinner-size: 4rem;
+  --pl-spinner-width: 4px;
+}
+
+// ── Tony ────────────────────────────────────────────────────────────────
+@include tones('pl-spinner');
+
+.pl-spinner-muted {
+  --pl-tone: var(--pl-text-subtle);
+}
+
+// W przycisku: rozmiar ikony, kolor tekstu przycisku.
+.pl-button > .pl-spinner {
+  --pl-tone: currentColor;
+  --pl-spinner-size: 1.1em;
+  --pl-spinner-width: 2px;
+  vertical-align: middle;
+}
+
+// Wyśrodkowany blok ładowania z podpisem.
+.pl-spinner-block {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: var(--pl-space-3);
+  padding: var(--pl-space-6) var(--pl-space-4);
+  color: var(--pl-text-muted);
+  font-size: var(--pl-text-sm);
+  text-align: center;
+}
+
+// Wolniejszy obrót przy ograniczonym ruchu (wskaźnik musi pozostać czytelny).
+@media (prefers-reduced-motion: reduce) {
+  .pl-spinner {
+    --pl-spinner-speed: 1.6s;
+  }
+}

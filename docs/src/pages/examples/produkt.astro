@@ -1,0 +1,632 @@
+---
+import Example from '../../layouts/Example.astro';
+import ShopHeader from '../../components/examples/ShopHeader.astro';
+import ShopFooter from '../../components/examples/ShopFooter.astro';
+
+const gallery = [
+  { img: 1, alt: 'Lampa Fjord nad stołem jadalnianym' },
+  { img: 5, alt: 'Klosz z matowego szkła — zbliżenie' },
+  { img: 3, alt: 'Mosiężna oprawka i lniany przewód' },
+  { img: 8, alt: 'Lampa Fjord w sypialni' },
+  { img: 6, alt: 'Światło wieczorem, ściemnione do 30%' },
+];
+
+const variants = [
+  { id: 'grafit', label: 'Grafit', dot: 'var(--pl-ink)' },
+  { id: 'piasek', label: 'Piasek', dot: 'color-mix(in oklab, var(--pl-warning) 45%, var(--pl-surface))' },
+  { id: 'szalwia', label: 'Szałwia', dot: 'color-mix(in oklab, var(--pl-success) 55%, var(--pl-muted-strong))' },
+  { id: 'terakota', label: 'Terakota', dot: 'color-mix(in oklab, var(--pl-danger) 60%, var(--pl-warning))' },
+];
+
+const specs = [
+  ['Średnica klosza', '32 cm'],
+  ['Wysokość klosza', '24 cm'],
+  ['Długość przewodu', '150 cm, regulowana'],
+  ['Materiał klosza', 'Szkło matowe, dmuchane ręcznie'],
+  ['Oprawka', 'Mosiądz szczotkowany, gwint E27'],
+  ['Źródło światła', 'LED 8 W, 2700 K (w zestawie)'],
+  ['Ściemnianie', 'Tak, ze ściemniaczem LED'],
+  ['Klasa ochrony', 'IP20 — pomieszczenia suche'],
+  ['Waga', '2,4 kg'],
+  ['Gwarancja', '5 lat'],
+];
+
+const ratingBars = [
+  { stars: 5, count: 96 },
+  { stars: 4, count: 21 },
+  { stars: 3, count: 5 },
+  { stars: 2, count: 1 },
+  { stars: 1, count: 1 },
+];
+const ratingTotal = ratingBars.reduce((sum, r) => sum + r.count, 0);
+
+const reviews = [
+  { name: 'Marta Wilczek', avatar: 2, rating: 5, date: '12 listopada 2026', variant: 'Grafit · 32 cm', likes: 14, text: 'Wisi nad stołem od miesiąca i wciąż się na nią gapię. Światło jest miękkie, nie razi w oczy nawet bez ściemniacza. Montaż zajął mężowi kwadrans.' },
+  { name: 'Paweł Jasiński', avatar: 4, rating: 5, date: '3 listopada 2026', variant: 'Piasek · 40 cm', likes: 8, text: 'Jakość wykonania o klasę wyżej niż w sieciówkach. Szkło jest grube, oprawka ciężka, a przewód w lnianym oplocie wygląda świetnie. Paczka zapakowana wzorowo.' },
+  { name: 'Ola Nowicka', avatar: 5, rating: 4, date: '27 października 2026', variant: 'Szałwia · 32 cm', likes: 3, text: 'Piękna, ale kolor „szałwia" jest na żywo odrobinę chłodniejszy niż na zdjęciach. Obsługa od razu zaproponowała wymianę — zostawiłam, bo pasuje do zasłon.' },
+];
+
+const related = [
+  { name: 'Lampa stołowa Moln', meta: 'Szkło', price: '319 zł', old: '399 zł', img: 2 },
+  { name: 'Kinkiet Birk', meta: 'Drewno', price: '229 zł', img: 3 },
+  { name: 'Lampa podłogowa Stilla', meta: 'Metal', price: '899 zł', img: 4 },
+  { name: 'Lampa wisząca Dimma', meta: 'Szkło', price: '679 zł', old: '849 zł', img: 5 },
+  { name: 'Lampa stołowa Lera', meta: 'Ceramika', price: '389 zł', img: 6 },
+  { name: 'Lampa podłogowa Lin', meta: 'Len', price: '749 zł', img: 8 },
+];
+
+const faq = [
+  ['Czy lampę zamontuję samodzielnie?', 'Tak. W zestawie jest podsufitka z kostką przyłączeniową, komplet kołków i instrukcja krok po kroku. Jeśli nie czujesz się pewnie z elektryką, poproś o pomoc osobę z uprawnieniami.'],
+  ['Czy mogę skrócić przewód?', 'Długość regulujesz bez cięcia — nadmiar przewodu chowa się w podsufitce. Fabrycznie ma 150 cm, na życzenie przygotujemy dłuższy (do 3 m) bez dopłaty.'],
+  ['Jakie żarówki pasują?', 'Każda z gwintem E27 o mocy do 40 W (LED do 15 W). Polecamy barwę 2700 K — taką dokładamy do zestawu.'],
+  ['Jak czyścić matowe szkło?', 'Wystarczy miękka, lekko wilgotna ściereczka z mikrofibry. Unikaj środków z alkoholem i szorstkich gąbek — mogą zostawić smugi na macie.'],
+];
+
+---
+
+<Example title="Lampa wisząca Fjord — Lorem" description="Karta produktu: galeria z lightboxem, warianty, zakładki z opiniami i slider produktów powiązanych — z komponentów Plossy.">
+  <ShopHeader active="kategoria" />
+
+  <!-- Pasek zakupu przyklejany po minięciu przycisku „Dodaj do koszyka" -->
+  <div class="shop-buybar-wrap">
+    <div class="shop-buybar pl-sticky-raised" data-pl-sticky="top: #buy-end; offset: 64; animation: pl-animation-slide-down; cls-inactive: pl-invisible">
+      <div class="pl-container pl-flex pl-flex-middle pl-gap-small">
+        <img class="pl-image-rounded-small pl-object-cover shop-buybar-thumb" src="/img/photo-1.svg" alt="" width="48" height="48" />
+        <div class="pl-flex-1 shop-min">
+          <p class="pl-margin-remove pl-text-semibold pl-text-truncate">Lampa wisząca Fjord</p>
+          <p class="pl-margin-remove pl-text-sm pl-text-muted pl-text-truncate"><span data-variant-label>Grafit</span> · <span data-size-label>32 cm</span></p>
+        </div>
+        <strong class="pl-text-lg pl-text-tabular pl-visible@s" data-price>549 zł</strong>
+        <a class="pl-button pl-button-ghost pl-visible@m" href="#opinie" data-pl-scroll="offset: 140">Opinie</a>
+        <button class="pl-button pl-button-primary" type="button" data-add-cart><span data-pl-icon="shopping-bag"></span> <span class="pl-visible@s">Dodaj do koszyka</span></button>
+      </div>
+    </div>
+  </div>
+
+  <main>
+    <section class="pl-section pl-section-small">
+      <div class="pl-container">
+        <nav aria-label="Okruszki">
+          <ul class="pl-breadcrumb pl-breadcrumb-chevron pl-breadcrumb-small pl-breadcrumb-truncate">
+            <li><a href="/examples/sklep/">Lorem</a></li>
+            <li><a href="/examples/kategoria/">Oświetlenie</a></li>
+            <li><a href="/examples/kategoria/">Lampy wiszące</a></li>
+            <li><span aria-current="page">Lampa wisząca Fjord</span></li>
+          </ul>
+        </nav>
+
+        <div class="pl-grid pl-grid-large pl-margin-top">
+          <!-- Galeria -->
+          <div class="pl-width-3-5@m">
+            <div class="pl-slideshow" id="gallery" data-pl-slideshow="animation: fade; ratio: 4:3" aria-label="Zdjęcia produktu">
+              <ul class="pl-slideshow-items" data-pl-lightbox="thumbs: true">
+                {gallery.map((g) => (
+                  <li>
+                    <a class="pl-slideshow-media pl-cursor-zoom-in" href={`/img/photo-${g.img}.svg`} data-caption={g.alt}>
+                      <img class="pl-width-1-1 pl-height-1-1 pl-object-cover" src={`/img/photo-${g.img}.svg`} alt={g.alt} />
+                    </a>
+                  </li>
+                ))}
+              </ul>
+              <div class="pl-position-top-left pl-position-small pl-flex pl-gap-xsmall pl-pointer-events-none">
+                <span class="pl-label pl-label-spark pl-label-pill">Nowość</span>
+                <span class="pl-label pl-label-pill">Ręcznie dmuchane szkło</span>
+              </div>
+              <ul class="pl-slideshow-nav pl-thumbnav pl-thumbnav-center shop-thumbs">
+                {gallery.map((g) => (
+                  <li><a href="#" aria-label={g.alt}><img src={`/img/photo-${g.img}.svg`} alt="" /></a></li>
+                ))}
+              </ul>
+            </div>
+          </div>
+
+          <!-- Panel zakupu -->
+          <div class="pl-width-2-5@m">
+            <div data-pl-scrollspy="cls: pl-animation-slide-up; target: > *; delay: 60">
+              <p class="pl-heading-eyebrow">Lorem · kolekcja Fjord</p>
+              <h1 class="pl-heading-small pl-margin-remove-top pl-margin-small-bottom">Lampa wisząca Fjord</h1>
+
+              <div class="pl-flex pl-flex-middle pl-flex-wrap pl-gap-small pl-text-sm">
+                <span class="pl-rating pl-rating-small" style="--pl-rating-value: 4.8" role="img" aria-label="Ocena 4,8 na 5"></span>
+                <strong class="pl-text-tabular">4,8</strong>
+                <a class="pl-link-muted" href="#opinie" data-pl-scroll="offset: 140" data-open-reviews>{ratingTotal} opinie</a>
+                <span class="pl-label pl-label-success pl-label-dot pl-label-pulse pl-label-pill">W magazynie · 14 szt.</span>
+              </div>
+
+              <p class="pl-margin-top pl-margin-small-bottom pl-flex pl-flex-baseline pl-gap-small">
+                <strong class="pl-text-3xl pl-text-display pl-text-tabular" data-price>549 zł</strong>
+                <span class="pl-text-sm pl-text-muted">lub 3 raty × <span data-rate>183 zł</span> bez odsetek</span>
+              </p>
+
+              <p class="pl-text-muted">
+                Klosz z matowego, ręcznie dmuchanego szkła rozprasza światło miękko jak poranna mgła nad zatoką.
+                Szczotkowany mosiądz i przewód w lnianym oplocie — detale, które widać dopiero z bliska.
+              </p>
+
+              <form id="buy-form">
+                <fieldset class="pl-fieldset pl-margin-top">
+                  <legend class="pl-form-label">Kolor: <span class="pl-text-muted" data-variant-label>Grafit</span></legend>
+                  <div class="pl-chip-group" role="radiogroup" aria-label="Kolor">
+                    {variants.map((v, i) => (
+                      <label class="pl-chip pl-chip-selectable pl-chip-soft pl-chip-plain">
+                        <input type="radio" name="variant" value={v.label} checked={i === 0} />
+                        <span class="pl-chip-dot shop-dot" style={`--pl-chip-dot: ${v.dot}`}></span>
+                        {v.label}
+                      </label>
+                    ))}
+                  </div>
+                </fieldset>
+
+                <div class="pl-grid pl-grid-small pl-margin-top">
+                  <div class="pl-width-expand">
+                    <div class="pl-form-field">
+                      <label class="pl-form-label" for="size">Średnica klosza</label>
+                      <select class="pl-select" id="size" name="size">
+                        <option value="549" data-label="32 cm">32 cm — 549 zł</option>
+                        <option value="689" data-label="40 cm">40 cm — 689 zł</option>
+                        <option value="849" data-label="48 cm">48 cm — 849 zł</option>
+                      </select>
+                    </div>
+                  </div>
+                  <div class="pl-width-auto">
+                    <div class="pl-form-field">
+                      <label class="pl-form-label" for="qty">Ilość</label>
+                      <div class="pl-input-group shop-qty" data-qty>
+                        <button class="pl-button pl-button-icon" type="button" aria-label="Mniej" data-qty-step="-1"><span data-pl-icon="minus"></span></button>
+                        <input class="pl-input pl-text-center pl-text-tabular" id="qty" name="qty" type="text" inputmode="numeric" value="1" />
+                        <button class="pl-button pl-button-icon" type="button" aria-label="Więcej" data-qty-step="1"><span data-pl-icon="plus"></span></button>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                <div class="pl-flex pl-gap-small pl-margin-top">
+                  <button class="pl-button pl-button-primary pl-button-large pl-flex-1" type="button" data-add-cart>
+                    <span data-pl-icon="shopping-bag"></span> Dodaj do koszyka
+                  </button>
+                  <button class="pl-button pl-button-large pl-button-icon shop-wish" type="button" aria-label="Dodaj do ulubionych" aria-pressed="false" data-wish data-pl-tooltip="Dodaj do ulubionych">
+                    <span data-pl-icon="heart"></span>
+                  </button>
+                </div>
+                <div id="buy-end"></div>
+              </form>
+
+              <ul class="pl-list-group pl-list-group-small pl-margin-medium-top">
+                <li class="pl-list-group-item">
+                  <span class="pl-text-primary" data-pl-icon="truck"></span>
+                  <span class="pl-list-group-content">
+                    <span class="pl-list-group-title">Dostawa jutro</span>
+                    <span class="pl-list-group-text">Zamów w ciągu <strong data-pl-countdown-fallback>3 godz. 20 min</strong> — wyślemy dziś.</span>
+                  </span>
+                  <span class="pl-list-group-meta">0 zł</span>
+                </li>
+                <li class="pl-list-group-item">
+                  <span class="pl-text-primary" data-pl-icon="rotate-ccw"></span>
+                  <span class="pl-list-group-content">
+                    <span class="pl-list-group-title">30 dni na zwrot</span>
+                    <span class="pl-list-group-text">Kurier odbierze paczkę spod drzwi, bez opłat.</span>
+                  </span>
+                </li>
+                <li class="pl-list-group-item">
+                  <span class="pl-text-primary" data-pl-icon="shield-check"></span>
+                  <span class="pl-list-group-content">
+                    <span class="pl-list-group-title">5 lat gwarancji</span>
+                    <span class="pl-list-group-text">Na oprawkę, okablowanie i szkło.</span>
+                  </span>
+                </li>
+              </ul>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Zakładki -->
+    <section class="pl-section pl-section-small pl-section-remove-top" id="opinie">
+      <div class="pl-container">
+        <div class="pl-overflow-x-auto">
+          <ul class="pl-tab pl-flex-nowrap" id="product-tabs" data-pl-switcher="connect: #product-panels">
+            <li class="pl-active"><a href="#">Opis</a></li>
+            <li><a href="#">Specyfikacja</a></li>
+            <li><a href="#">Opinie <span class="pl-badge pl-badge-soft pl-badge-primary">{ratingTotal}</span></a></li>
+            <li><a href="#">Dostawa</a></li>
+          </ul>
+        </div>
+
+        <div class="pl-switcher pl-margin-medium-top" id="product-panels">
+          <!-- Opis -->
+          <div class="pl-active">
+            <div class="pl-grid pl-grid-large pl-flex-middle">
+              <div class="pl-width-1-2@m">
+                <h2 class="pl-margin-remove-top">Światło, które uspokaja pokój</h2>
+                <p class="pl-text-lead pl-text-muted">
+                  Fjord powstał z obserwacji norweskiego poranka: światło jest wtedy rozproszone, bez wyraźnego źródła.
+                </p>
+                <p>
+                  Każdy klosz dmuchany jest ręcznie w hucie pod Krosnem, a potem matowiony od środka — dzięki temu z
+                  zewnątrz pozostaje gładki i łatwy do czyszczenia. Drobne różnice w grubości szkła nie są wadą, tylko
+                  podpisem rzemieślnika.
+                </p>
+                <ul class="pl-list pl-list-check pl-list-primary">
+                  <li>Matowe szkło eliminuje olśnienie — żarówki nie widać nawet od dołu</li>
+                  <li>Przewód 150 cm w lnianym oplocie, regulowany bez cięcia</li>
+                  <li>Współpracuje ze ściemniaczami i inteligentnymi żarówkami</li>
+                  <li>Żarówka LED 2700 K i komplet montażowy w zestawie</li>
+                </ul>
+              </div>
+              <div class="pl-width-1-2@m">
+                <div class="pl-grid pl-grid-small pl-child-width-1-2">
+                  <div><div class="pl-image pl-image-rounded pl-image-zoom pl-ratio-3-4"><img src="/img/photo-5.svg" alt="Klosz z bliska" loading="lazy" /></div></div>
+                  <div class="pl-margin-medium-top"><div class="pl-image pl-image-rounded pl-image-zoom pl-ratio-3-4"><img src="/img/photo-3.svg" alt="Mosiężna oprawka" loading="lazy" /></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Specyfikacja -->
+          <div>
+            <div class="pl-grid pl-grid-large">
+              <div class="pl-width-2-3@m">
+                <dl class="pl-description-list pl-description-list-horizontal pl-description-list-striped pl-description-list-plain">
+                  {specs.map(([term, value]) => (
+                    <Fragment>
+                      <dt>{term}</dt>
+                      <dd>{value}</dd>
+                    </Fragment>
+                  ))}
+                </dl>
+              </div>
+              <div class="pl-width-1-3@m">
+                <div class="pl-card pl-card-muted">
+                  <div class="pl-card-body">
+                    <h3 class="pl-card-title">Do pobrania</h3>
+                    <ul class="pl-list pl-list-divider pl-margin-remove-bottom">
+                      <li><a class="pl-flex pl-flex-middle pl-gap-small pl-link-text" href="#"><span data-pl-icon="file-text"></span> Instrukcja montażu (PDF)</a></li>
+                      <li><a class="pl-flex pl-flex-middle pl-gap-small pl-link-text" href="#"><span data-pl-icon="file-text"></span> Karta produktu (PDF)</a></li>
+                      <li><a class="pl-flex pl-flex-middle pl-gap-small pl-link-text" href="#"><span data-pl-icon="box"></span> Model 3D (.obj)</a></li>
+                    </ul>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Opinie -->
+          <div>
+            <div class="pl-grid pl-grid-large">
+              <div class="pl-width-1-3@m">
+                <div class="pl-card">
+                  <div class="pl-card-body">
+                    <div class="pl-flex pl-flex-middle pl-gap">
+                      <strong class="pl-text-5xl pl-text-display pl-text-tabular">4,8</strong>
+                      <div>
+                        <span class="pl-rating" style="--pl-rating-value: 4.8" role="img" aria-label="Średnia ocena 4,8 na 5"></span>
+                        <p class="pl-margin-remove pl-text-sm pl-text-muted">na podstawie {ratingTotal} opinii</p>
+                      </div>
+                    </div>
+                    <div class="pl-margin-top">
+                      {ratingBars.map((r) => (
+                        <div class="pl-flex pl-flex-middle pl-gap-small pl-text-sm pl-margin-xsmall-top">
+                          <span class="pl-text-tabular pl-text-muted shop-bar-label">{r.stars} ★</span>
+                          <div class="pl-progress-bar pl-progress-small pl-progress-warning pl-flex-1" role="progressbar" aria-label={`${r.stars} gwiazdek`} aria-valuenow={Math.round((r.count / ratingTotal) * 100)} aria-valuemin="0" aria-valuemax="100" style={`--pl-progress: ${Math.round((r.count / ratingTotal) * 100)}`}>
+                            <div class="pl-progress-fill"></div>
+                          </div>
+                          <span class="pl-text-tabular pl-text-subtle pl-text-right shop-bar-count">{r.count}</span>
+                        </div>
+                      ))}
+                    </div>
+                    <button class="pl-button pl-button-primary pl-button-block pl-margin-top" type="button" data-pl-modal-open="#review-modal">
+                      <span data-pl-icon="pen-line"></span> Dodaj opinię
+                    </button>
+                    <p class="pl-text-sm pl-text-subtle pl-margin-small-top pl-margin-remove-bottom">Opinie mogą dodawać tylko osoby, które kupiły produkt.</p>
+                  </div>
+                </div>
+              </div>
+              <div class="pl-width-2-3@m">
+                <div class="pl-comment-list pl-comment-list-divider" id="review-list">
+                  {reviews.map((r) => (
+                    <article class="pl-comment">
+                      <header class="pl-comment-header">
+                        <img class="pl-comment-avatar" src={`/img/avatar-${r.avatar}.svg`} alt="" width="40" height="40" />
+                        <div>
+                          <h4 class="pl-comment-title">{r.name} <span class="pl-comment-badge">Zweryfikowany zakup</span></h4>
+                          <ul class="pl-comment-meta">
+                            <li>
+                              <span class="pl-rating pl-rating-small" style={`--pl-rating-value: ${r.rating}`} role="img" aria-label={`Ocena ${r.rating} na 5`}></span>
+                            </li>
+                            <li>{r.date}</li>
+                            <li>{r.variant}</li>
+                          </ul>
+                        </div>
+                      </header>
+                      <div class="pl-comment-body"><p>{r.text}</p></div>
+                      <div class="pl-comment-actions">
+                        <button class="pl-comment-action" type="button" data-like><span data-pl-icon="thumbs-up"></span> <span>{r.likes}</span></button>
+                        <button class="pl-comment-action" type="button"><span data-pl-icon="flag"></span> Zgłoś</button>
+                      </div>
+                    </article>
+                  ))}
+                </div>
+                <button class="pl-button pl-margin-top" type="button">Pokaż więcej opinii</button>
+              </div>
+            </div>
+          </div>
+
+          <!-- Dostawa -->
+          <div>
+            <div class="pl-grid pl-grid-match pl-child-width-1-3@m">
+              <div>
+                <div class="pl-card pl-card-outline">
+                  <div class="pl-card-body">
+                    <span class="pl-text-primary" data-pl-icon="truck"></span>
+                    <h3 class="pl-card-title pl-margin-small-top">Kurier — 0 zł</h3>
+                    <p class="pl-card-text pl-text-muted">Dostawa w 24 h dla zamówień złożonych do 14:00. Szkło pakujemy w formowane wytłoczki z tektury.</p>
+                  </div>
+                </div>
+              </div>
+              <div>
+                <div class="pl-card pl-card-outline">
+                  <div class="pl-card-body">
+                    <span class="pl-text-primary" data-pl-icon="package"></span>
+                    <h3 class="pl-card-title pl-margin-small-top">Automat paczkowy — 0 zł</h3>
+                    <p class="pl-card-text pl-text-muted">Odbiór całą dobę w ponad 25 000 punktów. Powiadomimy Cię SMS-em, gdy paczka będzie czekać.</p>
+                  </div>
+                </div>
+              </div>
+              <div>
+                <div class="pl-card pl-card-outline">
+                  <div class="pl-card-body">
+                    <span class="pl-text-primary" data-pl-icon="store"></span>
+                    <h3 class="pl-card-title pl-margin-small-top">Showroom w Gdyni</h3>
+                    <p class="pl-card-text pl-text-muted">Odbiór osobisty następnego dnia roboczego. Przy okazji zobaczysz całą kolekcję na żywo.</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="pl-alert pl-alert-info pl-margin-top">
+              <span class="pl-alert-icon" data-pl-icon="rotate-ccw"></span>
+              <div class="pl-alert-body">
+                <p class="pl-alert-title">Zwrot bez tłumaczenia się</p>
+                <p>Masz 30 dni na odesłanie lampy. Zamów kuriera w panelu klienta — pieniądze oddajemy w ciągu 3 dni roboczych.</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- FAQ -->
+    <section class="pl-section pl-section-muted">
+      <div class="pl-container">
+        <div class="pl-grid pl-grid-large">
+          <div class="pl-width-1-3@m">
+            <p class="pl-heading-eyebrow">Pytania i odpowiedzi</p>
+            <h2 class="pl-margin-remove-top">Zanim zamówisz</h2>
+            <p class="pl-text-muted">Nie znalazłaś odpowiedzi? Napisz do nas — odpowiadamy w ciągu jednego dnia roboczego.</p>
+            <a class="pl-button" href="/examples/kontakt/"><span data-pl-icon="message-circle"></span> Zapytaj o produkt</a>
+          </div>
+          <div class="pl-width-2-3@m">
+            <div class="pl-accordion pl-accordion-card" data-pl-accordion>
+              {faq.map(([question, answer], i) => (
+                <div class={`pl-accordion-item ${i === 0 ? 'pl-open' : ''}`}>
+                  <button class="pl-accordion-title" type="button">{question}</button>
+                  <div class="pl-accordion-content"><p>{answer}</p></div>
+                </div>
+              ))}
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Powiązane -->
+    <section class="pl-section">
+      <div class="pl-container">
+        <p class="pl-heading-eyebrow">Z tej samej pracowni</p>
+        <h2 class="pl-margin-remove-top">Pasuje do Fjorda</h2>
+        <div class="pl-slider" data-pl-slider="finite: true" aria-label="Produkty powiązane">
+          <div class="pl-slider-container pl-slider-container-offset">
+            <ul class="pl-slider-items pl-slider-cols-2 pl-slider-cols-3@s pl-slider-cols-4@m">
+              {related.map((p) => (
+                <li>
+                  <article class="pl-card pl-card-hover pl-card-small">
+                    <div class="pl-card-media">
+                      <div class="pl-image pl-ratio-1-1"><img src={`/img/photo-${p.img}.svg`} alt="" loading="lazy" /></div>
+                    </div>
+                    <div class="pl-card-body">
+                      <p class="pl-card-meta pl-margin-remove">{p.meta}</p>
+                      <h3 class="pl-card-title pl-text-md pl-margin-xsmall-top pl-margin-xsmall-bottom">
+                        <a class="pl-link-reset pl-card-stretch" href="/examples/produkt/">{p.name}</a>
+                      </h3>
+                      <p class="pl-margin-remove pl-text-tabular">
+                        <strong class={p.old ? 'pl-text-danger' : ''}>{p.price}</strong>
+                        {p.old && <s class="pl-text-subtle pl-text-sm pl-margin-xsmall-left">{p.old}</s>}
+                      </p>
+                    </div>
+                  </article>
+                </li>
+              ))}
+            </ul>
+          </div>
+          <button class="pl-slidenav-previous" type="button" aria-label="Poprzednie" data-pl-slider-item="previous"></button>
+          <button class="pl-slidenav-next" type="button" aria-label="Następne" data-pl-slider-item="next"></button>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <!-- Modal opinii -->
+  <dialog class="pl-modal" id="review-modal" data-pl-modal>
+    <div class="pl-modal-dialog">
+      <form id="review-form" data-pl-form-validate>
+        <div class="pl-modal-header">
+          <div>
+            <p class="pl-modal-eyebrow">Lampa wisząca Fjord</p>
+            <h2 class="pl-modal-title">Twoja opinia</h2>
+          </div>
+          <button class="pl-close" type="button" aria-label="Zamknij" data-pl-modal-close></button>
+        </div>
+        <div class="pl-modal-body pl-form-stacked">
+          <fieldset class="pl-fieldset">
+            <legend class="pl-form-label pl-form-required">Ocena</legend>
+            <div class="pl-rating pl-rating-large" data-pl-rating="value: 5; name: rating; clearable: false" aria-label="Ocena"></div>
+          </fieldset>
+          <div class="pl-form-field">
+            <label class="pl-form-label pl-form-required" for="review-name">Imię</label>
+            <input class="pl-input" id="review-name" name="name" type="text" required minlength="2" autocomplete="given-name" />
+          </div>
+          <div class="pl-form-field">
+            <label class="pl-form-label pl-form-required" for="review-text">Opinia</label>
+            <textarea class="pl-textarea" id="review-text" name="text" rows="4" required minlength="20" maxlength="600" data-pl-autosize data-pl-char-count="target: #review-count" data-pl-message-minlength="Napisz chociaż 20 znaków — to pomaga innym."></textarea>
+            <p class="pl-form-help pl-form-help-split"><span>Co Ci się spodobało? Co warto wiedzieć przed zakupem?</span><span class="pl-form-count" id="review-count"></span></p>
+          </div>
+          <label class="pl-form-check">
+            <input class="pl-checkbox" type="checkbox" name="recommend" checked />
+            Polecam ten produkt
+          </label>
+        </div>
+        <div class="pl-modal-footer">
+          <button class="pl-button" type="button" data-pl-modal-close>Anuluj</button>
+          <button class="pl-button pl-button-primary" type="submit">Opublikuj opinię</button>
+        </div>
+      </form>
+    </div>
+  </dialog>
+
+  <ShopFooter />
+
+  <style is:global>
+    .shop-dot {
+      width: 0.85rem;
+      height: 0.85rem;
+      box-shadow: inset 0 0 0 1px var(--pl-border-strong);
+    }
+    .shop-wish[aria-pressed='true'] {
+      color: var(--pl-danger);
+    }
+    .shop-wish[aria-pressed='true'] svg {
+      fill: currentColor;
+    }
+    /* Miniatury galerii: większe od breakpointu „s". */
+    .pl-slideshow .pl-thumbnav.shop-thumbs {
+      --pl-thumbnav-w: clamp(3rem, 14.5vw, 6rem);
+      --pl-thumbnav-h: clamp(2.25rem, 11vw, 4.25rem);
+    }
+    .shop-qty {
+      width: 8.5rem;
+    }
+    .shop-min {
+      min-width: 0;
+    }
+    .shop-bar-label {
+      width: 2rem;
+    }
+    .shop-bar-count {
+      width: 1.75rem;
+    }
+    /* Pasek zakupu nie zajmuje miejsca w układzie, dopóki nie jest przyklejony. */
+    .shop-buybar-wrap {
+      height: 0;
+      overflow: visible;
+    }
+    .shop-buybar {
+      padding-block: var(--pl-space-2);
+      border-bottom: 1px solid var(--pl-border);
+      background: color-mix(in oklab, var(--pl-surface-raised) 88%, transparent);
+    }
+    .shop-buybar-thumb {
+      width: 2.75rem;
+      height: 2.75rem;
+    }
+  </style>
+
+  <script is:inline>
+    window.addEventListener('load', () => {
+      const Plossy = window.Plossy;
+      const form = document.querySelector('#buy-form');
+      const qty = form.elements.qty;
+      const zl = (n) => n.toLocaleString('pl-PL').replace(/ /g, ' ') + ' zł';
+      const count = () => Math.max(1, Math.min(14, parseInt(qty.value, 10) || 1));
+
+      const update = () => {
+        const option = form.elements.size.selectedOptions[0];
+        const price = Number(option.value);
+        qty.value = count();
+        document.querySelectorAll('[data-price]').forEach((el) => (el.textContent = zl(price)));
+        document.querySelectorAll('[data-rate]').forEach((el) => (el.textContent = zl(Math.round(price / 3))));
+        document.querySelectorAll('[data-variant-label]').forEach((el) => (el.textContent = form.elements.variant.value));
+        document.querySelectorAll('[data-size-label]').forEach((el) => (el.textContent = option.dataset.label));
+      };
+      form.addEventListener('change', update);
+      form.addEventListener('click', (event) => {
+        const step = event.target.closest('[data-qty-step]');
+        if (!step) return;
+        qty.value = count() + Number(step.dataset.qtyStep);
+        update();
+      });
+      update();
+
+      document.addEventListener('click', (event) => {
+        if (event.target.closest('[data-add-cart]')) {
+          const n = count();
+          const badge = document.querySelector('[data-shop-cart-count]');
+          if (badge) {
+            badge.textContent = Number(badge.textContent) + n;
+            badge.classList.remove('pl-animation-spring');
+            void badge.offsetWidth;
+            badge.classList.add('pl-animation-spring');
+          }
+          Plossy.notification({
+            title: 'Dodano do koszyka',
+            message: `${n} × Lampa wisząca Fjord, ${form.elements.variant.value.toLowerCase()}, ${form.elements.size.selectedOptions[0].dataset.label}`,
+            status: 'success',
+            icon: 'shopping-bag',
+            action: { label: 'Przejdź do koszyka', onClick: () => (location.href = '/examples/koszyk/') },
+          });
+        }
+        const wish = event.target.closest('[data-wish]');
+        if (wish) {
+          const on = wish.getAttribute('aria-pressed') !== 'true';
+          wish.setAttribute('aria-pressed', String(on));
+          Plossy.notification({ message: on ? 'Zapisano na liście ulubionych.' : 'Usunięto z ulubionych.', icon: 'heart', timeout: 2200 });
+        }
+        const like = event.target.closest('[data-like]');
+        if (like) {
+          const on = like.classList.toggle('pl-active');
+          const value = like.querySelector('span:last-child');
+          value.textContent = Number(value.textContent) + (on ? 1 : -1);
+        }
+        // Linki „opinie" otwierają właściwą zakładkę przed przewinięciem.
+        if (event.target.closest('a[href="#opinie"]')) Plossy.switcher('#product-tabs')?.show(2);
+      });
+
+      // Formularz opinii: po poprawnej walidacji dopisuje opinię na górze listy.
+      const review = document.querySelector('#review-form');
+      review.addEventListener('submit', (event) => {
+        event.preventDefault();
+        if (!review.checkValidity()) return;
+        const data = new FormData(review);
+        const rating = Number(data.get('rating'));
+        const article = document.createElement('article');
+        article.className = 'pl-comment pl-comment-primary pl-animation-slide-up';
+        article.innerHTML = `
+          <header class="pl-comment-header">
+            <span class="pl-avatar pl-comment-avatar pl-avatar-primary"></span>
+            <div>
+              <h4 class="pl-comment-title"><span data-name></span> <span class="pl-comment-badge">Nowa opinia</span></h4>
+              <ul class="pl-comment-meta"><li><span class="pl-rating pl-rating-small" style="--pl-rating-value: ${rating}" role="img" aria-label="Ocena ${rating} na 5"></span></li><li>przed chwilą</li></ul>
+            </div>
+          </header>
+          <div class="pl-comment-body"><p data-text></p></div>`;
+        const name = String(data.get('name')).trim();
+        article.querySelector('.pl-avatar').textContent = name.slice(0, 1).toUpperCase();
+        article.querySelector('[data-name]').textContent = name;
+        article.querySelector('[data-text]').textContent = String(data.get('text')).trim();
+        document.querySelector('#review-list').prepend(article);
+        Plossy.modal('#review-modal')?.hide();
+        review.reset();
+        Plossy.notification({ message: 'Dziękujemy! Twoja opinia została opublikowana.', status: 'success' });
+      });
+    });
+  </script>
+</Example>

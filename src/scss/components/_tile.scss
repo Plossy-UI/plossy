@@ -1,0 +1,114 @@
+// Tile — kafel: blok z tłem i paddingiem do układania w siatce.
+@use '../abstracts' as *;
+
+// Odwrócona paleta (jak w sekcji): tokeny przeliczone względem tła kafla.
+@mixin on-tone {
+  --pl-bg: var(--pl-tone);
+  --pl-surface: color-mix(in oklab, var(--pl-on-tone) 9%, var(--pl-tone));
+  --pl-surface-raised: color-mix(in oklab, var(--pl-on-tone) 13%, var(--pl-tone));
+  --pl-muted: color-mix(in oklab, var(--pl-on-tone) 8%, var(--pl-tone));
+  --pl-muted-strong: color-mix(in oklab, var(--pl-on-tone) 15%, var(--pl-tone));
+  --pl-border: color-mix(in oklab, var(--pl-on-tone) 18%, transparent);
+  --pl-border-strong: color-mix(in oklab, var(--pl-on-tone) 34%, transparent);
+  --pl-text: var(--pl-on-tone);
+  --pl-text-muted: color-mix(in oklab, var(--pl-on-tone) 78%, transparent);
+  --pl-text-subtle: color-mix(in oklab, var(--pl-on-tone) 60%, transparent);
+  --pl-primary-text: var(--pl-on-tone);
+  --pl-focus: color-mix(in oklab, var(--pl-on-tone) 70%, transparent);
+
+  background-color: var(--pl-tone);
+  background-image: radial-gradient(90% 120% at 100% 0%, oklch(1 0 0 / 0.1), transparent 60%);
+  color: var(--pl-text);
+}
+
+.pl-tile {
+  --pl-tile-p: var(--pl-space-6);
+
+  display: flow-root;
+  position: relative;
+  box-sizing: border-box;
+  width: 100%;
+  max-width: 100%;
+  padding: var(--pl-tile-p);
+  color: var(--pl-text);
+  @include transition('background-color, box-shadow, transform', var(--pl-dur-3));
+
+  > :last-child {
+    margin-bottom: 0;
+  }
+
+  @include up(m) {
+    --pl-tile-p: var(--pl-space-7);
+  }
+}
+
+// ── Paddingi ────────────────────────────────────────────────────────────
+.pl-tile-xsmall { --pl-tile-p: var(--pl-space-4); }
+.pl-tile-small { --pl-tile-p: var(--pl-space-5); }
+
+.pl-tile-large {
+  --pl-tile-p: var(--pl-space-7);
+
+  @include up(m) {
+    --pl-tile-p: var(--pl-space-8);
+  }
+}
+
+.pl-tile-xlarge {
+  --pl-tile-p: var(--pl-space-8);
+
+  @include up(m) {
+    --pl-tile-p: var(--pl-space-9);
+  }
+}
+
+.pl-tile-padding-remove { padding: 0; }
+
+// ── Style ───────────────────────────────────────────────────────────────
+.pl-tile-default {
+  background-color: var(--pl-surface);
+  box-shadow: inset 0 0 0 1px var(--pl-border);
+}
+
+.pl-tile-muted {
+  background-color: var(--pl-muted);
+}
+
+.pl-tile-primary {
+  --pl-tone: var(--pl-primary);
+  --pl-on-tone: var(--pl-on-primary);
+  @include on-tone;
+}
+
+.pl-tile-secondary {
+  --pl-tone: var(--pl-ink);
+  --pl-on-tone: var(--pl-on-ink);
+  @include on-tone;
+}
+
+// ── Kształt i interakcja ────────────────────────────────────────────────
+.pl-tile-rounded {
+  border-radius: var(--pl-radius-lg);
+}
+
+// Kafel-link: lekkie uniesienie po najechaniu.
+.pl-tile-hover,
+a.pl-tile {
+  text-decoration: none;
+  transition:
+    transform var(--pl-dur-4) var(--pl-ease-spring),
+    box-shadow var(--pl-dur-3) var(--pl-ease),
+    background-color var(--pl-dur-2) var(--pl-ease);
+
+  &:hover {
+    z-index: 1;
+    box-shadow: var(--pl-shadow-lg);
+    transform: translateY(-3px);
+  }
+
+  &:active {
+    transform: scale(0.985);
+  }
+
+  @include focus-visible;
+}

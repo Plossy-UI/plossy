@@ -1,0 +1,452 @@
+// Lightbox — pełnoekranowa galeria (obrazy, wideo, iframe) w natywnym <dialog>.
+// Okno tworzy JS; dostaje data-pl-theme="dark", więc tokeny są zawsze ciemne.
+// <div data-pl-lightbox><a href="duze.jpg" data-caption="Podpis"><img src="male.jpg" alt=""></a>…</div>
+@use '../abstracts' as *;
+
+// Odnośniki galerii — kursor lupy.
+[data-pl-lightbox] a[href],
+a[data-pl-lightbox] {
+  cursor: zoom-in;
+}
+
+.pl-lightbox {
+  --pl-lightbox-gap: clamp(0.75rem, 2vw, 1.25rem);
+  --pl-lightbox-dir: 1;
+
+  position: fixed;
+  inset: 0;
+  box-sizing: border-box;
+  width: 100%;
+  max-width: none;
+  height: 100%;
+  max-height: none;
+  margin: 0;
+  padding: 0;
+  overflow: hidden;
+  border: 0;
+  background: transparent;
+  color: var(--pl-text);
+  font-family: var(--pl-font-sans);
+  user-select: none;
+
+  &[open] {
+    display: grid;
+    grid-template-rows: auto minmax(0, 1fr) auto;
+  }
+
+  &:focus {
+    outline: none;
+  }
+
+  &::backdrop {
+    background: transparent;
+  }
+}
+
+// Tło jako zwykły element — pewniejsze niż ::backdrop i łatwe do animowania.
+.pl-lightbox-backdrop {
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  background: color-mix(in oklab, var(--pl-bg) 93%, transparent);
+  backdrop-filter: blur(16px) saturate(1.2);
+  animation: pl-lightbox-fade-in var(--pl-dur-3) var(--pl-ease) both;
+
+  .pl-lightbox.pl-closing & {
+    animation: pl-lightbox-fade-out var(--pl-dur-3) var(--pl-ease) both;
+  }
+}
+
+// ── Pasek górny ─────────────────────────────────────────────────────────
+.pl-lightbox-toolbar {
+  position: relative;
+  z-index: 2;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--pl-space-3);
+  min-height: 2.75rem;
+  padding: var(--pl-lightbox-gap) var(--pl-lightbox-gap) 0;
+}
+
+.pl-lightbox-counter {
+  padding: 0.3rem 0.7rem;
+  border: 1px solid var(--pl-border);
+  border-radius: var(--pl-radius-pill);
+  background: color-mix(in oklab, var(--pl-surface-raised) 70%, transparent);
+  font-family: var(--pl-font-mono);
+  font-size: var(--pl-text-xs);
+  letter-spacing: 0.06em;
+  font-variant-numeric: tabular-nums;
+  color: var(--pl-text-muted);
+
+  b {
+    font-weight: 500;
+    color: var(--pl-text);
+  }
+}
+
+.pl-lightbox .pl-lightbox-close {
+  --pl-close-size: 2.75rem;
+  --pl-close-icon: 1.05rem;
+  margin-left: auto;
+  border: 1px solid var(--pl-border);
+  background: color-mix(in oklab, var(--pl-surface-raised) 70%, transparent);
+  color: var(--pl-text);
+  opacity: 1;
+
+  &:hover {
+    background: var(--pl-muted-strong);
+  }
+}
+
+// ── Scena i pozycje ─────────────────────────────────────────────────────
+.pl-lightbox-stage {
+  position: relative;
+  min-height: 0;
+  touch-action: none;
+}
+
+.pl-lightbox-item {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  grid-template: minmax(0, 1fr) / minmax(0, 1fr);
+  padding: var(--pl-lightbox-gap) clamp(0.75rem, 7vw, 6rem);
+
+  > * {
+    grid-area: 1 / 1;
+  }
+
+  &.pl-lightbox-enter {
+    animation:
+      pl-lightbox-fade-in var(--pl-dur-2) var(--pl-ease) both,
+      pl-lightbox-slide-in var(--pl-dur-4) var(--pl-ease-spring) both;
+  }
+
+  &.pl-lightbox-leave {
+    pointer-events: none;
+    animation: pl-lightbox-slide-out var(--pl-dur-3) var(--pl-ease) both;
+  }
+
+  .pl-lightbox-fade > .pl-lightbox-stage > &.pl-lightbox-enter {
+    animation: pl-lightbox-cross-in var(--pl-dur-4) var(--pl-ease) both;
+  }
+
+  .pl-lightbox-fade > .pl-lightbox-stage > &.pl-lightbox-leave {
+    animation: pl-lightbox-cross-out var(--pl-dur-3) var(--pl-ease) both;
+  }
+
+  // Pierwsze wejście bez animacji „z miniatury".
+  .pl-lightbox > .pl-lightbox-stage > &.pl-lightbox-first {
+    animation:
+      pl-lightbox-fade-in var(--pl-dur-2) var(--pl-ease) both,
+      pl-lightbox-pop-in var(--pl-dur-4) var(--pl-ease-spring) both;
+  }
+
+  .pl-lightbox.pl-closing:not(.pl-lightbox-zooming) > .pl-lightbox-stage > & {
+    animation: pl-lightbox-pop-out var(--pl-dur-2) var(--pl-ease-in) both;
+  }
+
+  // Powrót po niedokończonym geście.
+  &.pl-lightbox-snap {
+    transition:
+      translate var(--pl-dur-3) var(--pl-ease-spring),
+      opacity var(--pl-dur-2) var(--pl-ease);
+  }
+}
+
+.pl-lightbox-media {
+  display: block;
+  min-width: 0;
+  max-width: 100%;
+  min-height: 0;
+  max-height: 100%;
+  border-radius: var(--pl-radius-md);
+  box-shadow: var(--pl-shadow-xl);
+  -webkit-user-drag: none;
+  transition: opacity var(--pl-dur-2) var(--pl-ease);
+
+  .pl-loading > &,
+  .pl-lightbox-pending > & {
+    opacity: 0;
+  }
+}
+
+img.pl-lightbox-media {
+  width: auto;
+  height: auto;
+  object-fit: contain;
+}
+
+video.pl-lightbox-media {
+  background: var(--pl-bg);
+}
+
+iframe.pl-lightbox-media {
+  width: min(100%, 72rem);
+  height: auto;
+  aspect-ratio: 16 / 9;
+  border: 0;
+  background: var(--pl-surface);
+}
+
+.pl-lightbox-error {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--pl-space-2);
+  padding: var(--pl-space-5) var(--pl-space-6);
+  border: 1px dashed var(--pl-border-strong);
+  border-radius: var(--pl-radius-lg);
+  font-size: var(--pl-text-sm);
+  color: var(--pl-text-muted);
+}
+
+.pl-lightbox-spinner {
+  width: 2rem;
+  height: 2rem;
+  border: 2px solid var(--pl-border-strong);
+  border-top-color: var(--pl-text);
+  border-radius: 50%;
+  opacity: 0;
+  pointer-events: none;
+  animation: pl-lightbox-spin 0.8s linear infinite;
+  transition: opacity var(--pl-dur-2) var(--pl-ease);
+
+  .pl-loading > & {
+    opacity: 1;
+    // Krótkie ładowanie nie mignie spinnerem.
+    transition-delay: 180ms;
+  }
+}
+
+// ── Strzałki (własny wygląd — niezależny od .pl-slidenav) ───────────────
+.pl-lightbox .pl-lightbox-nav {
+  @include button-reset;
+  position: absolute;
+  top: 50%;
+  z-index: 2;
+  display: grid;
+  place-items: center;
+  width: 3rem;
+  height: 3rem;
+  margin-top: -1.5rem;
+  border: 1px solid var(--pl-border);
+  border-radius: 50%;
+  background: color-mix(in oklab, var(--pl-surface-raised) 70%, transparent);
+  backdrop-filter: blur(8px);
+  color: var(--pl-text);
+  opacity: 1;
+  transform: none;
+  transition:
+    background-color var(--pl-dur-2) var(--pl-ease),
+    border-color var(--pl-dur-2) var(--pl-ease),
+    opacity var(--pl-dur-2) var(--pl-ease),
+    scale var(--pl-dur-4) var(--pl-ease-spring);
+
+  &::before,
+  &::after {
+    content: none;
+  }
+
+  svg {
+    width: 1.25rem;
+    height: 1.25rem;
+    transition: translate var(--pl-dur-4) var(--pl-ease-spring);
+  }
+
+  &:hover {
+    border-color: var(--pl-border-strong);
+    background: var(--pl-muted-strong);
+  }
+
+  &:active {
+    scale: 0.92;
+  }
+
+  &:disabled {
+    opacity: 0.3;
+    pointer-events: none;
+  }
+
+  &[hidden] {
+    display: none;
+  }
+
+  @include focus-visible;
+}
+
+.pl-lightbox .pl-lightbox-previous {
+  left: var(--pl-lightbox-gap);
+}
+
+.pl-lightbox .pl-lightbox-next {
+  right: var(--pl-lightbox-gap);
+}
+
+// Na telefonach strzałki chowamy — zostaje gest przesunięcia.
+@include down(s) {
+  .pl-lightbox .pl-lightbox-nav {
+    display: none;
+  }
+}
+
+// ── Stopka: podpis + miniatury ──────────────────────────────────────────
+.pl-lightbox-footer {
+  position: relative;
+  z-index: 2;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--pl-space-3);
+  min-height: var(--pl-lightbox-gap);
+  padding: 0 var(--pl-lightbox-gap) calc(var(--pl-lightbox-gap) + env(safe-area-inset-bottom, 0px));
+}
+
+.pl-lightbox-caption {
+  max-width: 64ch;
+  font-size: var(--pl-text-sm);
+  line-height: 1.5;
+  text-align: center;
+  text-wrap: balance;
+  color: var(--pl-text-muted);
+  user-select: text;
+
+  &:empty {
+    display: none;
+  }
+}
+
+.pl-lightbox-thumbs {
+  display: flex;
+  gap: 0.5rem;
+  max-width: 100%;
+  padding: 0.35rem;
+  overflow-x: auto;
+  scrollbar-width: none;
+
+  &::-webkit-scrollbar {
+    display: none;
+  }
+}
+
+.pl-lightbox-thumb {
+  @include button-reset;
+  position: relative;
+  flex: none;
+  display: grid;
+  place-items: center;
+  width: 4.25rem;
+  height: 3rem;
+  overflow: hidden;
+  border-radius: var(--pl-radius-sm);
+  background: var(--pl-muted);
+  color: var(--pl-text-muted);
+  opacity: 0.45;
+  transition:
+    opacity var(--pl-dur-2) var(--pl-ease),
+    box-shadow var(--pl-dur-2) var(--pl-ease),
+    scale var(--pl-dur-4) var(--pl-ease-spring);
+
+  img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+
+  svg {
+    width: 1.1rem;
+    height: 1.1rem;
+  }
+
+  &:hover {
+    opacity: 0.85;
+  }
+
+  &:active {
+    scale: 0.95;
+  }
+
+  // Aktywna miniatura — obrączka z „iskry".
+  &.pl-active {
+    opacity: 1;
+    box-shadow:
+      0 0 0 2px var(--pl-bg),
+      0 0 0 3.5px var(--pl-spark);
+  }
+
+  &:focus-visible {
+    @include focus-ring;
+    opacity: 1;
+  }
+}
+
+// ── Wejście / wyjście elementów interfejsu ──────────────────────────────
+.pl-lightbox[open] :is(.pl-lightbox-toolbar, .pl-lightbox-footer, .pl-lightbox-nav) {
+  animation: pl-lightbox-fade-in var(--pl-dur-3) var(--pl-ease) 80ms both;
+}
+
+.pl-lightbox.pl-closing :is(.pl-lightbox-toolbar, .pl-lightbox-footer, .pl-lightbox-nav) {
+  animation: pl-lightbox-fade-out var(--pl-dur-2) var(--pl-ease) both;
+}
+
+// ── Animacje ────────────────────────────────────────────────────────────
+@keyframes pl-lightbox-fade-in {
+  from {
+    opacity: 0;
+  }
+}
+
+@keyframes pl-lightbox-fade-out {
+  to {
+    opacity: 0;
+  }
+}
+
+@keyframes pl-lightbox-slide-in {
+  from {
+    transform: translateX(calc(var(--pl-lightbox-dir) * 4rem)) scale(0.97);
+  }
+}
+
+@keyframes pl-lightbox-slide-out {
+  to {
+    opacity: 0;
+    transform: translateX(calc(var(--pl-lightbox-dir) * -4rem)) scale(0.97);
+  }
+}
+
+@keyframes pl-lightbox-cross-in {
+  from {
+    opacity: 0;
+    transform: scale(1.03);
+  }
+}
+
+@keyframes pl-lightbox-cross-out {
+  to {
+    opacity: 0;
+    transform: scale(0.98);
+  }
+}
+
+@keyframes pl-lightbox-pop-in {
+  from {
+    transform: translateY(10px) scale(0.95);
+  }
+}
+
+@keyframes pl-lightbox-pop-out {
+  to {
+    opacity: 0;
+    transform: scale(0.95);
+  }
+}
+
+@keyframes pl-lightbox-spin {
+  to {
+    rotate: 360deg;
+  }
+}

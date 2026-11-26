@@ -1,0 +1,162 @@
+// Slidenav
+@use '../abstracts' as *;
+
+.pl-slidenav-previous,
+.pl-slidenav-next {
+  --pl-slidenav-size: 2.5rem;
+  --pl-slidenav-arrow: 0.55rem;
+
+  @include button-reset;
+  position: relative;
+  display: inline-flex;
+  flex: none;
+  align-items: center;
+  justify-content: center;
+  width: var(--pl-slidenav-size);
+  height: var(--pl-slidenav-size);
+  border: 1px solid color-mix(in oklab, var(--pl-border) 70%, transparent);
+  border-radius: 50%;
+  // Lekko szklane tło — czytelne także na zdjęciach.
+  background: color-mix(in oklab, var(--pl-surface) 78%, transparent);
+  -webkit-backdrop-filter: blur(12px) saturate(1.6);
+  backdrop-filter: blur(12px) saturate(1.6);
+  box-shadow:
+    inset 0 1px 0 oklch(1 0 0 / 0.25),
+    var(--pl-shadow-sm);
+  color: var(--pl-text);
+  text-decoration: none;
+  // Tekst (jeśli jest) zostaje tylko dla czytników ekranu.
+  font-size: 0;
+  user-select: none;
+  transition:
+    background-color var(--pl-dur-2) var(--pl-ease),
+    border-color var(--pl-dur-2) var(--pl-ease),
+    box-shadow var(--pl-dur-3) var(--pl-ease),
+    opacity var(--pl-dur-2) var(--pl-ease),
+    transform var(--pl-dur-3) var(--pl-ease-spring);
+
+  // Strzałka z dwóch krawędzi.
+  &::before {
+    content: '';
+    width: var(--pl-slidenav-arrow);
+    height: var(--pl-slidenav-arrow);
+    border: solid currentColor;
+    border-width: 1.75px 1.75px 0 0;
+    border-radius: 1px;
+  }
+
+  &:hover {
+    border-color: var(--pl-border-strong);
+    background: var(--pl-surface);
+    box-shadow:
+      inset 0 1px 0 oklch(1 0 0 / 0.25),
+      var(--pl-shadow-md);
+    color: var(--pl-text);
+    transform: scale(1.08);
+  }
+
+  &:active {
+    transform: scale(0.94);
+    transition-duration: var(--pl-dur-1);
+  }
+
+  @include focus-visible;
+
+  &:disabled,
+  &.pl-disabled,
+  &[aria-disabled='true'] {
+    opacity: 0.4;
+    pointer-events: none;
+    box-shadow: none;
+  }
+
+  &[hidden],
+  &.pl-hidden {
+    display: none;
+  }
+}
+
+.pl-slidenav-previous {
+  &::before {
+    margin-left: calc(var(--pl-slidenav-arrow) * 0.35);
+    transform: rotate(-135deg);
+  }
+}
+
+.pl-slidenav-next {
+  &::before {
+    margin-right: calc(var(--pl-slidenav-arrow) * 0.35);
+    transform: rotate(45deg);
+  }
+}
+
+// ── Rozmiary ────────────────────────────────────────────────────────────
+.pl-slidenav-small {
+  --pl-slidenav-size: 2rem;
+  --pl-slidenav-arrow: 0.45rem;
+}
+
+.pl-slidenav-large {
+  --pl-slidenav-size: 3.5rem;
+  --pl-slidenav-arrow: 0.8rem;
+
+  &::before {
+    border-width: 2px 2px 0 0;
+  }
+}
+
+// ── Warianty ────────────────────────────────────────────────────────────
+// Pełne wypełnienie „atramentem".
+.pl-slidenav-solid {
+  border-color: transparent;
+  background: var(--pl-ink);
+  -webkit-backdrop-filter: none;
+  backdrop-filter: none;
+  color: var(--pl-on-ink);
+
+  &:hover {
+    border-color: transparent;
+    background: color-mix(in oklab, var(--pl-ink) 88%, var(--pl-on-ink));
+    color: var(--pl-on-ink);
+  }
+}
+
+// Sama strzałka, bez tła.
+.pl-slidenav-ghost {
+  border-color: transparent;
+  background: transparent;
+  -webkit-backdrop-filter: none;
+  backdrop-filter: none;
+  box-shadow: none;
+  color: var(--pl-text-muted);
+
+  &:hover {
+    border-color: transparent;
+    background: color-mix(in oklab, var(--pl-text) 8%, transparent);
+    box-shadow: none;
+  }
+}
+
+// Strzałki pionowe (góra / dół).
+.pl-slidenav-vertical {
+  &.pl-slidenav-previous::before {
+    margin: calc(var(--pl-slidenav-arrow) * 0.35) 0 0;
+    transform: rotate(-45deg);
+  }
+
+  &.pl-slidenav-next::before {
+    margin: 0 0 calc(var(--pl-slidenav-arrow) * 0.35);
+    transform: rotate(135deg);
+  }
+}
+
+// ── Kontener: para strzałek obok siebie ─────────────────────────────────
+.pl-slidenav-container {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--pl-space-2);
+}
+
+.pl-slidenav-container-vertical {
+  flex-direction: column;
+}

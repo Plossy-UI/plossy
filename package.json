@@ -1,0 +1,44 @@
+{
+  "name": "plossy",
+  "version": "0.1.1",
+  "description": "Plossy — lekka, nowoczesna biblioteka komponentów UI (CSS + vanilla JS).",
+  "type": "module",
+  "license": "MIT",
+  "main": "dist/plossy.esm.js",
+  "style": "dist/plossy.css",
+  "scripts": {
+    "dev": "astro dev --root docs",
+    "docs": "astro build --root docs",
+    "preview": "astro preview --root docs",
+    "icons": "node build/icons.mjs",
+    "dist": "node build/dist.mjs",
+    "build": "npm run dist && npm run docs"
+  },
+  "devDependencies": {
+    "@fontsource-variable/baloo-tamma-2": "^5.3.0",
+    "@fontsource-variable/bricolage-grotesque": "^5.3.0",
+    "@fontsource-variable/cormorant-garamond": "^5.3.0",
+    "@fontsource-variable/fraunces": "^5.3.0",
+    "@fontsource-variable/geist": "^5.3.0",
+    "@fontsource-variable/geist-mono": "^5.3.0",
+    "@fontsource-variable/jost": "^5.3.0",
+    "@fontsource-variable/manrope": "^5.3.0",
+    "@fontsource-variable/nunito": "^5.3.0",
+    "@fontsource-variable/playfair-display": "^5.3.0",
+    "@fontsource/dm-serif-display": "^5.3.0",
+    "@fontsource/instrument-serif": "^5.3.0",
+    "astro": "^6.0.5",
+    "esbuild": "^0.28.2",
+    "lucide-static": "^1.80.0",
+    "sass": "^1.108.2"
+  },
+  "files": [
+    "dist/"
+  ],
+  "module": "dist/plossy.esm.js",
+  "author": "Katarzyna Płoska",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/plossy-ui/plossy.git"
+  }
+}
