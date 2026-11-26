@@ -2,6 +2,10 @@
 // Kreator motywu — ustawia tokeny Plossy na podglądzie i wypisuje gotowy CSS.
 import Base from '../layouts/Base.astro';
 import { styles } from '../styles';
+import pkg from '../../../package.json';
+
+// Adresy CDN w eksporcie wskazują bieżące wydanie (np. 0.3).
+const cdn = `https://cdn.jsdelivr.net/npm/plossy@${pkg.version.split('.').slice(0, 2).join('.')}/dist`;
 
 const fonts = [
   ['', 'Ze stylu'],
@@ -19,7 +23,7 @@ const fonts = [
 ---
 
 <Base title="Kreator motywu" description="Ułóż własny wygląd Plossy: styl, motyw, akcent, zaokrąglenia, cienie i kroje pisma — z podglądem na żywo, kontrolą kontrastu i gotowym CSS do skopiowania.">
-  <main id="main" class="kreator" data-kreator>
+  <main id="main" class="kreator" data-kreator data-cdn={cdn}>
     <header class="kreator-head">
       <p class="pl-heading-eyebrow">Kreator motywu</p>
       <h1 class="kreator-title">Jeden framework. <em>Twoja osobowość.</em></h1>
@@ -191,11 +195,14 @@ const fonts = [
             <h2 class="kreator-h2" id="k-export-title">Twój motyw</h2>
             <div class="kreator-row">
               <button class="pl-button pl-button-small" type="button" data-kreator-copy="link"><span data-pl-icon="link"></span> Kopiuj link</button>
-              <button class="pl-button pl-button-primary pl-button-small" type="button" data-kreator-copy="css"><span data-pl-icon="copy"></span> Kopiuj CSS</button>
+              <button class="pl-button pl-button-primary pl-button-small" type="button" data-kreator-copy="css"><span data-pl-icon="copy"></span> Kopiuj wszystko</button>
             </div>
           </div>
-          <p class="kreator-note">Dodaj atrybuty do znacznika <code>&lt;html&gt;</code>, a CSS wklej po arkuszu Plossy.</p>
-          <pre class="kreator-code" tabindex="0" aria-label="Znacznik html"><code data-kreator-html></code></pre>
+          <h3 class="kreator-h3">1. Pliki i atrybuty</h3>
+          <p class="kreator-note">Styl i motyw są wbudowane w Plossy — wybiera się je atrybutami znacznika <code>&lt;html&gt;</code>. Do tego rdzeń biblioteki i plik wybranego stylu.</p>
+          <pre class="kreator-code" tabindex="0" aria-label="Znaczniki do wklejenia w dokumencie HTML"><code data-kreator-html></code></pre>
+          <h3 class="kreator-h3">2. Twoje zmiany</h3>
+          <p class="kreator-note" data-kreator-cssnote></p>
           <pre class="kreator-code" tabindex="0" aria-label="Kod CSS motywu"><code data-kreator-css></code></pre>
           <p class="kreator-note" data-kreator-fontnote hidden>Biblioteka nie dołącza krojów pisma — wybrany krój załaduj u siebie (np. z Google Fonts albo paczki Fontsource).</p>
         </section>
@@ -447,6 +454,11 @@ const fonts = [
     gap: 0.75rem;
   }
 
+  .kreator-h3 {
+    margin: 1.5rem 0 0;
+    font-size: var(--pl-text-base, 1rem);
+  }
+
   .kreator-note {
     margin: 0.75rem 0 0;
     font-size: var(--pl-text-sm);
@@ -595,9 +607,15 @@ const fonts = [
       const css = [];
       if (accent.length) css.push(block("[data-pl-accent='custom']", accent));
       if (rest.length) css.push(block(state.style === 'soft' ? ':root' : `[data-pl-style='${state.style}']`, rest));
+      const cdn = root.dataset.cdn;
+      const head = [`<link rel="stylesheet" href="${cdn}/plossy.core.min.css">`];
+      if (state.style !== 'soft') head.push(`<link rel="stylesheet" href="${cdn}/presets/${state.style}.min.css">`);
+      if (css.length) head.push('<link rel="stylesheet" href="motyw.css"> <!-- kod z punktu 2 -->');
+      head.push(`<script src="${cdn}/plossy.min.js" defer></${'script'}>`);
       return {
-        html: `<html lang="pl" ${attrs.join(' ')}>`,
-        css: css.length ? `/* Plossy — motyw z kreatora */\n${css.join('\n\n')}` : '/* Ten zestaw nie wymaga dodatkowego CSS — wystarczą atrybuty powyżej. */',
+        html: `<html lang="pl" ${attrs.join(' ')}>\n<head>\n  ${head.join('\n  ')}\n</head>`,
+        css: css.length ? `/* motyw.css — Plossy, motyw z kreatora */\n${css.join('\n\n')}` : '',
+        custom: css.length > 0,
       };
     }
 
@@ -623,7 +641,13 @@ const fonts = [
       root.querySelector('[data-kreator-shadownote]').hidden = !noShadow;
       const code = exportCode();
       root.querySelector('[data-kreator-html]').textContent = code.html;
-      root.querySelector('[data-kreator-css]').textContent = code.css;
+      const cssBox = root.querySelector('[data-kreator-css]');
+      cssBox.textContent = code.css;
+      cssBox.parentElement.hidden = !code.custom;
+      root.querySelector('[data-kreator-cssnote]').textContent = code.custom
+        ? 'Zapisz ten kod jako motyw.css (albo wklej do własnego arkusza) i załaduj po plikach Plossy.'
+        : 'Na razie nic tu nie ma: wybrany styl i motyw nie wymagają dodatkowego CSS. Włącz „Własny kolor akcentu” albo „Własne zaokrąglenia, ramki i cienie” lub zmień krój pisma — wtedy pojawi się tu kod.';
+      root.querySelector('[data-kreator-copy="css"]').lastChild.textContent = code.custom ? ' Kopiuj wszystko' : ' Kopiuj znaczniki';
       root.querySelector('[data-kreator-fontnote]').hidden = !(state.fd || state.fs);
       history.replaceState(null, '', `${location.pathname}${location.search}${shareHash() ? `#${shareHash()}` : ''}`);
       // Kolory ustalają się po przeliczeniu stylów.
@@ -656,10 +680,10 @@ const fonts = [
         render();
       } else if (copy) {
         const code = exportCode();
-        const text = copy.dataset.kreatorCopy === 'link' ? location.href : `${code.html}\n\n${code.css}`;
+        const text = copy.dataset.kreatorCopy === 'link' ? location.href : code.custom ? `${code.html}\n\n${code.css}` : code.html;
         try {
           await navigator.clipboard.writeText(text);
-          window.Plossy?.notification(copy.dataset.kreatorCopy === 'link' ? 'Link skopiowany' : 'CSS skopiowany', { status: 'success', timeout: 2200 });
+          window.Plossy?.notification(copy.dataset.kreatorCopy === 'link' ? 'Link skopiowany' : 'Kod skopiowany', { status: 'success', timeout: 2200 });
         } catch {
           window.Plossy?.notification('Nie udało się skopiować — zaznacz kod ręcznie.', { status: 'danger' });
         }
