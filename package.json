@@ -1,6 +1,6 @@
 {
   "name": "plossy",
-  "version": "0.3.0",
+  "version": "0.3.1",
   "description": "Plossy — jeden framework, wiele osobowości. Biblioteka komponentów UI (CSS + vanilla JS) z przełączanymi stylami, motywami i akcentami.",
   "type": "module",
   "license": "MIT",
@@ -9,7 +9,7 @@
   "style": "dist/plossy.css",
   "scripts": {
     "dev": "astro dev --root docs",
-    "docs": "astro build --root docs",
+    "docs": "node build/clean-docs-cache.mjs && astro build --root docs",
     "preview": "astro preview --root docs",
     "icons": "node build/icons.mjs",
     "dist": "node build/dist.mjs",

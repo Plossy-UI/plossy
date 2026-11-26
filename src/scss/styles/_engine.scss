@@ -10,8 +10,12 @@
 // także lokalnie (na fragmencie strony), nie tylko na <html>.
 @use '../tokens' as tokens;
 
+// Zagnieżdżanie: fragment z własnym motywem lub stylem nie może dostać palety przodka.
+//   • jasny fragment (data-pl-theme="light") w ciemnej stronie zostaje jasny,
+//   • fragment z innym stylem (data-pl-style) nie dziedziczy palety stylu strony.
 @mixin preset($name) {
-  [data-pl-style='#{$name}'] {
+  [data-pl-style='#{$name}'],
+  [data-pl-style='#{$name}'] [data-pl-theme='light']:not([data-pl-style]) {
     @content;
     @include tokens.derived;
   }
@@ -19,8 +23,8 @@
 
 @mixin preset-dark($name) {
   [data-pl-theme='dark'][data-pl-style='#{$name}'],
-  [data-pl-theme='dark'] [data-pl-style='#{$name}'],
-  [data-pl-style='#{$name}'] [data-pl-theme='dark'] {
+  [data-pl-theme='dark'] [data-pl-style='#{$name}']:not([data-pl-theme='light']),
+  [data-pl-style='#{$name}'] [data-pl-theme='dark']:not([data-pl-style]) {
     @content;
     @include tokens.derived;
   }
@@ -44,7 +48,7 @@
 
 @mixin preset-accent-dark($name, $l, $c, $h, $on: null) {
   [data-pl-theme='dark'][data-pl-style='#{$name}']:not([data-pl-accent]),
-  [data-pl-theme='dark'] [data-pl-style='#{$name}']:not([data-pl-accent]) {
+  [data-pl-theme='dark'] [data-pl-style='#{$name}']:not([data-pl-accent], [data-pl-theme='light']) {
     --pl-accent-l: #{$l};
     --pl-accent-c: #{$c};
     --pl-accent-h: #{$h};

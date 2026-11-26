@@ -3,11 +3,11 @@
 @use 'engine' as *;
 
 @mixin hard-shadows {
-  --pl-shadow-xs: 2px 2px 0 var(--pl-pop-shadow);
-  --pl-shadow-sm: 3px 3px 0 var(--pl-pop-shadow);
-  --pl-shadow-md: 4px 4px 0 var(--pl-pop-shadow);
-  --pl-shadow-lg: 6px 6px 0 var(--pl-pop-shadow);
-  --pl-shadow-xl: 8px 8px 0 var(--pl-pop-shadow);
+  --pl-shadow-xs: calc(2px * var(--pl-shadow-size)) calc(2px * var(--pl-shadow-size)) 0 var(--pl-pop-shadow);
+  --pl-shadow-sm: calc(3px * var(--pl-shadow-size)) calc(3px * var(--pl-shadow-size)) 0 var(--pl-pop-shadow);
+  --pl-shadow-md: calc(4px * var(--pl-shadow-size)) calc(4px * var(--pl-shadow-size)) 0 var(--pl-pop-shadow);
+  --pl-shadow-lg: calc(6px * var(--pl-shadow-size)) calc(6px * var(--pl-shadow-size)) 0 var(--pl-pop-shadow);
+  --pl-shadow-xl: calc(8px * var(--pl-shadow-size)) calc(8px * var(--pl-shadow-size)) 0 var(--pl-pop-shadow);
 }
 
 @include preset('pop') {
@@ -67,7 +67,7 @@
 
 // Twarde cienie (po tokenach pochodnych, także w zagnieżdżonych motywach).
 [data-pl-style='pop'],
-[data-pl-style='pop'] [data-pl-theme],
+[data-pl-style='pop'] [data-pl-theme]:not([data-pl-style]),
 [data-pl-style='pop']:not([data-pl-accent]),
 [data-pl-theme][data-pl-style='pop'] {
   @include hard-shadows;

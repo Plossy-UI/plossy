@@ -235,5 +235,36 @@ test('kreator: ustawienia zmieniają podgląd, a wyeksportowany CSS daje ten sam
   await page.goto(shared);
   await expect(page.locator('#k-style')).toHaveValue('flat');
   await expect(page.locator('#k-h')).toHaveValue('150');
-  await expect(page.locator('[data-kreator-preview]')).toHaveAttribute('data-pl-theme', 'dark');
+  await expect(page.locator('html')).toHaveAttribute('data-pl-theme', 'dark');
+  await expect(page.locator('html')).toHaveAttribute('data-pl-style', 'flat');
+});
+
+test('zagnieżdżanie: fragment z własnym motywem i stylem nie przejmuje wyglądu strony', async ({ page }) => {
+  // Strona: Tender, ciemna. Fragmenty w środku mają wyglądać po swojemu.
+  await open(page, '/docs/start/javascript/', { style: 'tender', theme: 'dark' });
+  await page.evaluate(() => {
+    const box = document.createElement('div');
+    box.innerHTML = `
+      <div id="n-tender-light" data-pl-style="tender" data-pl-theme="light">x</div>
+      <div id="n-flat-light" data-pl-style="flat" data-pl-theme="light">x</div>
+      <div id="n-flat-dark" data-pl-style="flat" data-pl-theme="dark">x</div>
+      <div id="n-soft-light" data-pl-style="soft" data-pl-theme="light">x</div>
+      <div id="n-soft" data-pl-style="soft">x</div>
+      <div id="n-light" data-pl-theme="light">x</div>`;
+    document.body.append(box);
+  });
+  const token = (id, name) =>
+    page.evaluate(([i, n]) => getComputedStyle(document.getElementById(i)).getPropertyValue(n).trim(), [id, name]);
+  // Jasność tła: > 0.9 = jasne, < 0.4 = ciemne.
+  const lightness = async (id) => Number((await token(id, '--pl-bg')).match(/oklch\(([\d.]+)/)[1]);
+
+  expect(await lightness('n-tender-light'), 'Tender jasny w ciemnej stronie').toBeGreaterThan(0.9);
+  expect(await lightness('n-flat-light'), 'Flat jasny').toBeGreaterThan(0.9);
+  expect(await lightness('n-flat-dark'), 'Flat ciemny').toBeLessThan(0.4);
+  expect(await lightness('n-flat-dark'), 'ciemny Flat ma własną paletę (0.13), nie Tender').toBeCloseTo(0.13, 2);
+  expect(await lightness('n-soft-light'), 'Soft jasny').toBeGreaterThan(0.9);
+  expect(await lightness('n-soft'), 'Soft bez motywu dziedziczy ciemny').toBeLessThan(0.4);
+  expect(await lightness('n-light'), 'sam jasny motyw w ciemnej stronie').toBeGreaterThan(0.9);
+  // Styl domyślny na fragmencie przywraca kształty Soft, a nie zostawia pastylek Tender.
+  expect(await token('n-soft-light', '--pl-radius-md')).toBe('12px');
 });

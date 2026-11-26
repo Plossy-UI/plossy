@@ -131,6 +131,12 @@ html {
       color: var(--pl-text);
     }
   }
+
+  // Wyróżniona pozycja (Kreator).
+  .docs-topnav-strong {
+    font-weight: 700;
+    color: var(--pl-text);
+  }
 }
 
 .docs-search-btn {

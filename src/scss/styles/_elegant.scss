@@ -79,8 +79,8 @@
 
 // Paleta ciemna: głęboka czerń, kremowy tekst, złoty akcent.
 [data-pl-theme='dark'][data-pl-style='elegant'],
-[data-pl-theme='dark'] [data-pl-style='elegant'],
-[data-pl-style='elegant'] [data-pl-theme='dark'] {
+[data-pl-theme='dark'] [data-pl-style='elegant']:not([data-pl-theme='light']),
+[data-pl-style='elegant'] [data-pl-theme='dark']:not([data-pl-style]) {
   --pl-bg: oklch(0.125 0.008 285);
   --pl-surface: oklch(0.15 0.008 285);
   --pl-surface-raised: oklch(0.18 0.009 285);
@@ -100,7 +100,7 @@
 }
 
 [data-pl-theme='dark'][data-pl-style='elegant']:not([data-pl-accent]),
-[data-pl-theme='dark'] [data-pl-style='elegant']:not([data-pl-accent]) {
+[data-pl-theme='dark'] [data-pl-style='elegant']:not([data-pl-accent], [data-pl-theme='light']) {
   --pl-accent-l: 0.67;
   --pl-accent-c: 0.09;
   --pl-accent-h: 82;

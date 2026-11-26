@@ -106,9 +106,13 @@
     --pl-button-px: 0;
   }
 
-  // Główny przycisk: przejście róż → granat z miękką poświatą.
+  // Główny przycisk: przejście akcent → fiolet z miękką poświatą. Drugi kolor ma zbliżoną jasność,
+  // żeby napis (ciemny na jasnym akcencie) był czytelny na całej szerokości przycisku.
   .pl-button.pl-button-primary:not(.pl-button-soft, .pl-button-outline, .pl-button-ghost) {
-    background-image: linear-gradient(100deg, var(--pl-primary), oklch(0.36 0.09 285));
+    background-image: linear-gradient(100deg, var(--pl-primary), color-mix(in oklch, var(--pl-primary) 40%, oklch(0.66 0.13 300)));
+    // Gradient sięga pod ramkę — inaczej na prawym końcu zostaje pasek w kolorze ramki.
+    background-origin: border-box;
+    border-color: transparent;
     box-shadow: 0 8px 28px -6px color-mix(in oklab, var(--pl-primary) 65%, transparent);
 
     &:hover {

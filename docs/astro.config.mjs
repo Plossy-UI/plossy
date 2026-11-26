@@ -2,13 +2,15 @@ import { defineConfig } from 'astro/config';
 import { fileURLToPath } from 'node:url';
 import { createCssVariablesTheme } from 'shiki';
 import remarkExample from './src/plugins/remark-example.mjs';
+import remarkVersion from './src/plugins/remark-version.mjs';
 
 const theme = createCssVariablesTheme({ name: 'plossy', variablePrefix: '--shiki-', fontStyle: true });
 
 export default defineConfig({
   devToolbar: { enabled: false },
   markdown: {
-    remarkPlugins: [remarkExample],
+    // remarkVersion przed remarkExample: numer wersji trafia też do kodu przykładów.
+    remarkPlugins: [remarkVersion, remarkExample],
     shikiConfig: { theme, wrap: false },
   },
   vite: {

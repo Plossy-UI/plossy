@@ -27,7 +27,7 @@ const fonts = [
     <header class="kreator-head">
       <p class="pl-heading-eyebrow">Kreator motywu</p>
       <h1 class="kreator-title">Jeden framework. <em>Twoja osobowość.</em></h1>
-      <p class="kreator-lead">Wybierz styl, dobierz kolor i kształt, a na końcu skopiuj kilka linii CSS. Podgląd reaguje od razu, a kontrast sprawdza się sam.</p>
+      <p class="kreator-lead">Wybierz styl, dobierz kolor i kształt, a na końcu skopiuj kilka linii CSS. Zmienia się cała strona — tak jak będzie wyglądać Twoja — a kontrast sprawdza się sam.</p>
     </header>
 
     <div class="kreator-grid">
@@ -58,15 +58,15 @@ const fonts = [
           <div class="kreator-sub" data-kreator-sub="accentOn">
             <div class="pl-form-field">
               <label class="pl-form-label" for="k-h">Odcień <output data-kreator-out="h"></output></label>
-              <input class="kreator-range kreator-hue" id="k-h" name="h" type="range" min="0" max="360" step="1" value="282">
+              <input class="kreator-hue" id="k-h" name="h" type="range" min="0" max="360" step="1" value="282">
             </div>
             <div class="pl-form-field">
               <label class="pl-form-label" for="k-c">Nasycenie <output data-kreator-out="c"></output></label>
-              <input class="kreator-range" id="k-c" name="c" type="range" min="0" max="0.3" step="0.005" value="0.21">
+              <input class="pl-range" data-pl-range id="k-c" name="c" type="range" min="0" max="0.3" step="0.005" value="0.21">
             </div>
             <div class="pl-form-field">
               <label class="pl-form-label" for="k-l">Jasność <output data-kreator-out="l"></output></label>
-              <input class="kreator-range" id="k-l" name="l" type="range" min="0.25" max="0.8" step="0.005" value="0.52">
+              <input class="pl-range" data-pl-range id="k-l" name="l" type="range" min="0.25" max="0.8" step="0.005" value="0.52">
             </div>
           </div>
         </fieldset>
@@ -80,16 +80,24 @@ const fonts = [
           <div class="kreator-sub" data-kreator-sub="shapeOn">
             <div class="pl-form-field">
               <label class="pl-form-label" for="k-r">Zaokrąglenie <output data-kreator-out="r"></output></label>
-              <input class="kreator-range" id="k-r" name="r" type="range" min="0" max="28" step="1" value="12">
+              <input class="pl-range" data-pl-range id="k-r" name="r" type="range" min="0" max="28" step="1" value="12">
             </div>
             <div class="pl-form-field">
               <label class="pl-form-label" for="k-b">Grubość ramek <output data-kreator-out="b"></output></label>
-              <input class="kreator-range" id="k-b" name="b" type="range" min="0.5" max="3" step="0.5" value="1">
+              <input class="pl-range" data-pl-range id="k-b" name="b" type="range" min="0.5" max="3" step="0.5" value="1">
             </div>
             <div class="pl-form-field">
               <label class="pl-form-label" for="k-s">Siła cieni <output data-kreator-out="s"></output></label>
-              <input class="kreator-range" id="k-s" name="s" type="range" min="0" max="2.5" step="0.05" value="1">
-              <p class="pl-form-help" data-kreator-shadownote hidden>Ten styl nie używa miękkich cieni, więc suwak nie ma tu czego zmieniać.</p>
+              <input class="pl-range" data-pl-range id="k-s" name="s" type="range" min="0" max="2.5" step="0.05" value="1">
+            <div class="pl-form-field">
+              <label class="pl-form-label" for="k-sz">Rozmiar cieni <output data-kreator-out="sz"></output></label>
+              <input class="pl-range" data-pl-range id="k-sz" name="sz" type="range" min="0.25" max="2.5" step="0.05" value="1">
+            </div>
+            <label class="pl-form-check">
+              <input class="pl-switch" type="checkbox" role="switch" name="tint">
+              Cień w kolorze akcentu
+            </label>
+            <p class="pl-form-help" data-kreator-shadownote hidden></p>
             </div>
           </div>
         </fieldset>
@@ -121,7 +129,7 @@ const fonts = [
           <ul class="kreator-checks" data-kreator-contrast aria-live="polite"></ul>
         </section>
 
-        <section class="kreator-preview" data-kreator-preview aria-label="Podgląd motywu">
+        <section class="kreator-preview" data-kreator-preview aria-label="Podgląd komponentów">
           <div class="kreator-row">
             <button class="pl-button pl-button-primary" type="button">Zapisz zmiany</button>
             <button class="pl-button" type="button">Anuluj</button>
@@ -325,6 +333,8 @@ const fonts = [
 
   // Suwak odcienia pokazuje koło barw.
   .kreator-hue {
+    width: 100%;
+    margin: 0.35rem 0;
     height: 0.6rem;
     border-radius: 999px;
     appearance: none;
@@ -480,21 +490,30 @@ const fonts = [
 </style>
 
 <script>
-  // Kreator motywu: formularz → tokeny na podglądzie → kontrast → eksport. Stan mieszka w adresie (#…).
+  // Kreator motywu: formularz → tokeny na całej stronie → kontrast → eksport. Stan mieszka w adresie (#…).
+  // Kreator steruje wyglądem całej strony (tak jak przełączniki w nagłówku), więc to, co widać,
+  // jest dokładnie tym, co da wyeksportowany kod — bez zagnieżdżania stylu w stylu.
   const RADIUS = { xs: 0.33, sm: 0.67, md: 1, lg: 1.5, xl: 2.33 };
-  const DEFAULTS = { style: 'soft', theme: 'light', accentOn: false, h: 282, c: 0.21, l: 0.52, shapeOn: false, r: 12, b: 1, s: 1, fd: '', fs: '' };
-  const NUMERIC = ['h', 'c', 'l', 'r', 'b', 's'];
-  // Style, które celowo wyłączają miękkie cienie (płaskie) albo mają własne, twarde.
-  const NO_SOFT_SHADOW = ['flat', 'editorial', 'pop'];
+  const DEFAULTS = { style: 'soft', theme: 'light', accentOn: false, h: 282, c: 0.21, l: 0.52, shapeOn: false, r: 12, b: 1, s: 1, sz: 1, tint: false, fd: '', fs: '' };
+  const NUMERIC = ['h', 'c', 'l', 'r', 'b', 's', 'sz'];
+  // Style płaskie nie mają cieni wcale; Pop ma własne, twarde — tam działa tylko rozmiar.
+  const NO_SHADOW = ['flat', 'editorial'];
+  const HARD_SHADOW = ['pop'];
+  const store = {
+    get: (key) => { try { return localStorage.getItem(key); } catch { return null; } },
+    set: (key, value) => { try { localStorage.setItem(key, value); } catch { /* tryb prywatny */ } },
+  };
 
   function setup() {
     const root = document.querySelector('[data-kreator]');
     if (!root || root.dataset.ready) return;
     root.dataset.ready = 'true';
 
+    const page = document.documentElement;
     const form = root.querySelector('[data-kreator-form]');
-    const preview = root.querySelector('[data-kreator-preview]');
     const state = { ...DEFAULTS };
+    let applied = []; // nazwy zmiennych ustawionych przez kreator na <html>
+    let writing = false; // true, gdy atrybuty zmienia sam kreator
 
     // ── Stan z adresu albo z bieżącego wyglądu strony ──
     const hash = new URLSearchParams(location.hash.slice(1));
@@ -505,8 +524,8 @@ const fonts = [
         state[key] = typeof DEFAULTS[key] === 'boolean' ? value === '1' : NUMERIC.includes(key) ? Number(value) : value;
       }
     } else {
-      state.style = document.documentElement.dataset.plStyle || 'soft';
-      state.theme = document.documentElement.dataset.plTheme === 'dark' ? 'dark' : 'light';
+      state.style = page.dataset.plStyle || 'soft';
+      state.theme = page.dataset.plTheme === 'dark' ? 'dark' : 'light';
     }
 
     function writeForm() {
@@ -514,11 +533,14 @@ const fonts = [
       for (const key of [...NUMERIC, 'fd', 'fs']) form.elements[key].value = state[key];
       form.elements.accentOn.checked = state.accentOn;
       form.elements.shapeOn.checked = state.shapeOn;
+      form.elements.tint.checked = state.tint;
+      // Suwaki Plossy odświeżają wypełnienie toru po zmianie wartości z kodu.
+      for (const range of form.querySelectorAll('[data-pl-range]')) window.Plossy?.range(range)?.update();
     }
 
     /** Wartości wynikające ze stylu — punkt startowy suwaków, gdy użytkownik włącza własne ustawienia. */
     function seedFromStyle(group) {
-      const computed = getComputedStyle(preview);
+      const computed = getComputedStyle(page);
       const number = (name, fallback) => {
         const value = parseFloat(computed.getPropertyValue(name));
         return Number.isFinite(value) ? value : fallback;
@@ -531,6 +553,7 @@ const fonts = [
         state.r = Math.min(28, Math.round(number('--pl-radius-md', DEFAULTS.r)));
         state.b = number('--pl-border-w', DEFAULTS.b);
         state.s = number('--pl-shadow-scale', DEFAULTS.s);
+        state.sz = 1;
       }
     }
 
@@ -541,30 +564,51 @@ const fonts = [
       if (state.shapeOn) {
         for (const [size, factor] of Object.entries(RADIUS)) rest.push([`--pl-radius-${size}`, `${Math.round(state.r * factor)}px`]);
         rest.push(['--pl-border-w', `${state.b}px`]);
-        if (!NO_SOFT_SHADOW.includes(state.style)) rest.push(['--pl-shadow-scale', state.s]);
+        const flat = NO_SHADOW.includes(state.style);
+        const hard = HARD_SHADOW.includes(state.style);
+        if (!flat && !hard) rest.push(['--pl-shadow-scale', state.s]);
+        if (!flat && state.sz !== 1) rest.push(['--pl-shadow-size', state.sz]);
+        // Trzy liczby (jasność, nasycenie, odcień) — odcień idzie za akcentem.
+        if (!flat && !hard && state.tint) rest.push(['--pl-shadow-color', '0.5 0.17 var(--pl-accent-h)']);
       }
       if (state.fd) rest.push(['--pl-font-display', state.fd]);
       if (state.fs) rest.push(['--pl-font-sans', state.fs]);
       return { accent, rest };
     }
 
-    function applyPreview() {
-      preview.dataset.plTheme = state.theme;
-      preview.dataset.plStyle = state.style;
+    /** Przenosi stan na <html>: atrybuty stylu i motywu (zapamiętywane jak z nagłówka) oraz własne zmienne. */
+    function applyPage() {
+      writing = true;
+      page.dataset.plTheme = state.theme;
+      store.set('plossy-theme', state.theme);
+      if (state.style === 'soft') delete page.dataset.plStyle;
+      else page.dataset.plStyle = state.style;
+      store.set('plossy-style', state.style);
+      const label = document.querySelector('[data-docs-style-label]');
+      if (label) label.textContent = form.elements.style.selectedOptions[0]?.textContent.split(' — ')[0] || label.textContent;
+
       // Znacznik „custom" wyłącza domyślny akcent stylu, żeby kolor tekstu na akcencie dobrał się sam.
-      if (state.accentOn) preview.dataset.plAccent = 'custom';
-      else delete preview.dataset.plAccent;
-      preview.removeAttribute('style');
+      if (state.accentOn) page.dataset.plAccent = 'custom';
+      else if (page.dataset.plAccent === 'custom') {
+        const saved = store.get('plossy-accent');
+        if (saved) page.dataset.plAccent = saved;
+        else delete page.dataset.plAccent;
+      }
+      for (const name of applied) page.style.removeProperty(name);
       const { accent, rest } = declarations();
-      for (const [name, value] of [...accent, ...rest]) preview.style.setProperty(name, String(value));
+      applied = [...accent, ...rest].map(([name, value]) => {
+        page.style.setProperty(name, String(value));
+        return name;
+      });
+      queueMicrotask(() => (writing = false));
     }
 
-    // ── Kontrast (WCAG): pary tokenów liczone na faktycznych kolorach podglądu ──
+    // ── Kontrast (WCAG): pary tokenów liczone na faktycznych kolorach strony ──
     const canvas = document.createElement('canvas').getContext('2d', { willReadFrequently: true });
     function paint(token, under) {
       const probe = document.createElement('i');
       probe.style.cssText = `position:absolute;visibility:hidden;background:var(--pl-${token})`;
-      preview.append(probe);
+      root.append(probe);
       const color = getComputedStyle(probe).backgroundColor;
       probe.remove();
       canvas.clearRect(0, 0, 1, 1);
@@ -586,9 +630,9 @@ const fonts = [
       ['Odnośnik na karcie', 'primary-text', 'surface'],
     ];
     function renderContrast() {
-      const page = paint('bg', [255, 255, 255]);
-      root.querySelector('[data-kreator-contrast]').innerHTML = PAIRS.map(([label, text, ground]) => {
-        const back = ground === 'bg' ? page : paint(ground, page);
+      const ground = paint('bg', [255, 255, 255]);
+      root.querySelector('[data-kreator-contrast]').innerHTML = PAIRS.map(([label, text, under]) => {
+        const back = under === 'bg' ? ground : paint(under, ground);
         const a = luminance(paint(text, back));
         const b = luminance(back);
         const ratio = (Math.max(a, b) + 0.05) / (Math.min(a, b) + 0.05);
@@ -624,21 +668,28 @@ const fonts = [
       for (const [key, value] of Object.entries(state)) {
         if (value === DEFAULTS[key]) continue;
         if (!state.accentOn && ['h', 'c', 'l'].includes(key)) continue;
-        if (!state.shapeOn && ['r', 'b', 's'].includes(key)) continue;
+        if (!state.shapeOn && ['r', 'b', 's', 'sz', 'tint'].includes(key)) continue;
         params.set(key, typeof value === 'boolean' ? (value ? '1' : '0') : String(value));
       }
       return params.toString();
     }
 
     function render() {
-      applyPreview();
+      applyPage();
       for (const sub of root.querySelectorAll('[data-kreator-sub]')) sub.hidden = !state[sub.dataset.kreatorSub];
       for (const button of root.querySelectorAll('[data-kreator-theme]')) button.setAttribute('aria-pressed', String(button.dataset.kreatorTheme === state.theme));
-      const out = { h: `${Math.round(state.h)}°`, c: Number(state.c).toFixed(3), l: Number(state.l).toFixed(3), r: `${state.r}px`, b: `${state.b}px`, s: `×${Number(state.s).toFixed(2)}` };
+      const out = { h: `${Math.round(state.h)}°`, c: Number(state.c).toFixed(3), l: Number(state.l).toFixed(3), r: `${state.r}px`, b: `${state.b}px`, s: `×${Number(state.s).toFixed(2)}`, sz: `×${Number(state.sz).toFixed(2)}` };
       for (const el of root.querySelectorAll('[data-kreator-out]')) el.textContent = out[el.dataset.kreatorOut];
-      const noShadow = NO_SOFT_SHADOW.includes(state.style);
-      form.elements.s.disabled = noShadow;
-      root.querySelector('[data-kreator-shadownote]').hidden = !noShadow;
+      const flat = NO_SHADOW.includes(state.style);
+      const hard = HARD_SHADOW.includes(state.style);
+      form.elements.s.disabled = flat || hard;
+      form.elements.tint.disabled = flat || hard;
+      form.elements.sz.disabled = flat;
+      const note = root.querySelector('[data-kreator-shadownote]');
+      note.hidden = !(flat || hard);
+      note.textContent = flat
+        ? 'Ten styl jest płaski — nie ma cieni, więc te ustawienia nic w nim nie zmieniają.'
+        : 'Ten styl ma twarde cienie: działa rozmiar, a siła i kolor są stałe.';
       const code = exportCode();
       root.querySelector('[data-kreator-html]').textContent = code.html;
       const cssBox = root.querySelector('[data-kreator-css]');
@@ -657,7 +708,9 @@ const fonts = [
     form.addEventListener('input', (event) => {
       const { name } = event.target;
       if (!name) return;
-      if (name === 'accentOn' || name === 'shapeOn') {
+      if (name === 'tint') {
+        state.tint = event.target.checked;
+      } else if (name === 'accentOn' || name === 'shapeOn') {
         state[name] = event.target.checked;
         if (event.target.checked) seedFromStyle(name === 'accentOn' ? 'accent' : 'shape');
         writeForm();
@@ -691,6 +744,33 @@ const fonts = [
         event.preventDefault();
       }
     });
+
+    // Przełączniki w nagłówku (styl, motyw, akcent) zmieniają te same atrybuty — kreator idzie za nimi.
+    const observer = new MutationObserver(() => {
+      if (writing) return;
+      state.style = page.dataset.plStyle || 'soft';
+      state.theme = page.dataset.plTheme === 'dark' ? 'dark' : 'light';
+      if (page.dataset.plAccent !== 'custom') state.accentOn = false;
+      writeForm();
+      render();
+    });
+    observer.observe(page, { attributes: true, attributeFilter: ['data-pl-style', 'data-pl-theme', 'data-pl-accent'] });
+
+    // Wyjście z kreatora: własne zmienne i znacznik „custom" nie idą na inne strony (styl i motyw zostają).
+    document.addEventListener(
+      'astro:before-swap',
+      (event) => {
+        observer.disconnect();
+        for (const name of applied) page.style.removeProperty(name);
+        const next = event.newDocument.documentElement;
+        if (next.dataset.plAccent === 'custom') {
+          const saved = store.get('plossy-accent');
+          if (saved) next.dataset.plAccent = saved;
+          else delete next.dataset.plAccent;
+        }
+      },
+      { once: true },
+    );
 
     writeForm();
     render();
