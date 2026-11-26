@@ -323,6 +323,109 @@ html {
   }
 }
 
+// Strony bez paska bocznego: przycisk menu jest potrzebny tylko, dopóki górne menu się nie mieści.
+.docs-menu-btn-mobile,
+.docs-sidebar-mobile,
+.docs-backdrop-mobile {
+  @include up(m) {
+    display: none;
+  }
+}
+
+// ── Menu mobilne (w wysuwanym panelu) ──────────────────────────────────
+.docs-mobile {
+  margin-bottom: 1.5rem;
+  padding-bottom: 1.25rem;
+  border-bottom: 1px solid var(--pl-border);
+
+  // Od 960 px te same pozycje są w nagłówku.
+  @include up(m) {
+    display: none;
+  }
+
+  .docs-sidebar-mobile & {
+    margin-bottom: 0;
+    padding-bottom: 0;
+    border-bottom: 0;
+  }
+
+  .docs-nav-label {
+    margin: 1.25rem 0 0.6rem;
+  }
+}
+
+.docs-mobile-links {
+  display: grid;
+  gap: 0.15rem;
+
+  a {
+    display: flex;
+    align-items: center;
+    gap: 0.7rem;
+    padding: 0.65rem 0.6rem;
+    border-radius: var(--pl-radius-sm);
+    font-weight: 560;
+    color: var(--pl-text);
+    text-decoration: none;
+
+    &:hover,
+    &:focus-visible {
+      background: var(--pl-muted);
+    }
+
+    .pl-icon,
+    [data-pl-icon] {
+      width: 1.15rem;
+      height: 1.15rem;
+      color: var(--pl-text-muted);
+    }
+  }
+}
+
+// Od 640 px styl i akcent są w nagłówku.
+.docs-mobile-settings {
+  @include up(s) {
+    display: none;
+  }
+}
+
+.docs-mobile-styles {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4rem;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+
+  a {
+    display: block;
+    padding: 0.4rem 0.75rem;
+    border: 1px solid var(--pl-border);
+    border-radius: var(--pl-radius-pill);
+    background: var(--pl-surface);
+    font-size: var(--pl-text-sm);
+    font-weight: 500;
+    color: var(--pl-text);
+    text-decoration: none;
+  }
+
+  .pl-active > a {
+    border-color: var(--pl-ink);
+    background: var(--pl-ink);
+    color: var(--pl-on-ink);
+  }
+}
+
+.docs-mobile-accents {
+  display: flex;
+  gap: 0.6rem;
+
+  .docs-accent {
+    width: 1.75rem;
+    height: 1.75rem;
+  }
+}
+
 .docs-theme-moon,
 [data-pl-theme='dark'] .docs-theme-sun {
   display: none;
@@ -675,10 +778,19 @@ html {
   }
 }
 
-// Długi kod w zdaniu może się łamać — inaczej wypycha stronę na wąskich ekranach.
+// Kod w zdaniu nie łamie się w środku nazwy (np. „data-pl-" / „*"). Gdy jest dłuższy niż wiersz,
+// przewija się w poziomie wewnątrz własnej ramki, zamiast wypychać stronę.
 .docs-content :is(p, li, dd, blockquote) code {
-  white-space: normal;
-  overflow-wrap: anywhere;
+  display: inline-block;
+  max-width: 100%;
+  overflow-x: auto;
+  vertical-align: middle;
+  white-space: nowrap;
+  scrollbar-width: none;
+
+  &::-webkit-scrollbar {
+    display: none;
+  }
 }
 
 // Styl „glass": pod komponentami potrzebne jest kolorowe tło, inaczej szkło nie ma czego

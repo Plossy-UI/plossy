@@ -1,0 +1,53 @@
+---
+// Menu na telefon: główne działy oraz styl i akcent, które w nagłówku nie mieszczą się na wąskim ekranie.
+// Siedzi w wysuwanym panelu (na stronach dokumentacji — nad spisem komponentów).
+import { styles } from '../styles';
+
+const links = [
+  ['/docs/start/wprowadzenie/', 'Dokumentacja', 'book-open'],
+  ['/docs/elements/button/', 'Komponenty', 'layout-grid'],
+  ['/examples/', 'Przykłady', 'monitor'],
+  ['/docs/start/motywy/', 'Motywy', 'palette'],
+  ['/kreator/', 'Kreator', 'sliders-horizontal'],
+];
+const accents = [
+  ['iris', 'Iris'],
+  ['moss', 'Moss'],
+  ['coral', 'Coral'],
+  ['ocean', 'Ocean'],
+  ['plum', 'Plum'],
+  ['ink', 'Ink'],
+];
+---
+
+<div class="docs-mobile">
+  <nav class="docs-mobile-links" aria-label="Główna">
+    {
+      links.map(([href, label, icon]) => (
+        <a href={href}>
+          <span data-pl-icon={icon} />
+          {label}
+        </a>
+      ))
+    }
+  </nav>
+
+  <div class="docs-mobile-settings">
+    <p class="docs-nav-label">Styl</p>
+    <ul class="docs-mobile-styles">
+      {
+        styles.map((style) => (
+          <li>
+            <a href="#" data-docs-style={style.id}>
+              <span>{style.label}</span>
+            </a>
+          </li>
+        ))
+      }
+    </ul>
+    <p class="docs-nav-label">Akcent</p>
+    <div class="docs-mobile-accents" role="group" aria-label="Kolor akcentu">
+      {accents.map(([id, label]) => <button type="button" class="docs-accent" data-docs-accent={id} data-pl-accent={id} title={label} aria-label={`Akcent ${label}`} />)}
+    </div>
+  </div>
+</div>

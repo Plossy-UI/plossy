@@ -38,12 +38,12 @@ function init(signal) {
   // Uruchamiane po zainicjowaniu komponentów; błąd w jednym nie zatrzymuje pozostałych.
   // Podglądy, które się przewijają, muszą być osiągalne z klawiatury.
   requestAnimationFrame(() => {
-    document.querySelectorAll('.docs-preview, .docs-table').forEach((box) => {
+    document.querySelectorAll('.docs-preview, .docs-table, .docs-content :is(p, li, dd, blockquote) code').forEach((box) => {
       if (box.hasAttribute('tabindex')) return;
       if (box.scrollWidth > box.clientWidth + 1 || box.scrollHeight > box.clientHeight + 1) {
         box.tabIndex = 0;
         box.setAttribute('role', 'region');
-        box.setAttribute('aria-label', box.classList.contains('docs-table') ? 'Tabela — przewiń' : 'Podgląd przykładu — przewiń');
+        box.setAttribute('aria-label', box.matches('code') ? 'Kod — przewiń' : box.classList.contains('docs-table') ? 'Tabela — przewiń' : 'Podgląd przykładu — przewiń');
       }
     });
   });
@@ -115,7 +115,13 @@ function init(signal) {
 
   // ── Menu mobilne ────────────────────────────────────────────────────────
   document.querySelectorAll('[data-docs-menu]').forEach((el) =>
-    el.addEventListener('click', () => document.body.classList.toggle('docs-menu-open')),
+    el.addEventListener('click', () => {
+      const open = document.body.classList.toggle('docs-menu-open');
+      // Na telefonie panel zaczyna od góry — tam są główne działy, styl i akcent.
+      if (open && matchMedia('(max-width: 959.98px)').matches) {
+        document.querySelectorAll('.docs-sidebar').forEach((panel) => (panel.scrollTop = 0));
+      }
+    }),
   );
 
   // Aktywny link w sidebarze — przewiń do widoku.

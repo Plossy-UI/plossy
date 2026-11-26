@@ -143,7 +143,8 @@
   isolation: isolate;
   max-width: 15ch;
   margin: 1.75rem auto 1.25rem;
-  font-size: clamp(2.9rem, 1.6rem + 6.2vw, 6rem);
+  // 9.8vw: na telefonie druga linia hasła („Wiele osobowości.") mieści się w jednym wierszu.
+  font-size: clamp(2rem, 9.8vw, 6rem);
   font-weight: 640;
   line-height: 0.98;
   letter-spacing: -0.05em;
@@ -202,7 +203,12 @@
     border-radius: var(--pl-radius-pill);
     background: color-mix(in oklab, var(--pl-surface) 70%, transparent);
     color: var(--pl-text-muted);
-    white-space: normal;
+    white-space: nowrap;
+  }
+
+  // Na telefonie cała linia ma się zmieścić w jednej pastylce.
+  @media (max-width: 479.98px) {
+    font-size: 0.6875rem;
   }
 }
 
@@ -402,11 +408,13 @@
 // ── „Jeden atrybut" ─────────────────────────────────────────────────────
 .home-split {
   display: grid;
+  // minmax(0, …): kolumna nie rozpycha się do szerokości najdłuższego wiersza kodu (telefon).
+  grid-template-columns: minmax(0, 1fr);
   gap: 3rem;
   align-items: center;
 
   @include up(m) {
-    grid-template-columns: 1fr 1.05fr;
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1.05fr);
     gap: 4.5rem;
   }
 }
@@ -421,11 +429,17 @@
 
   li {
     display: flex;
-    align-items: center;
+    align-items: flex-start;
     gap: 0.7rem;
+
+    // Tekst z fragmentami kodu zawija się jak zwykłe zdanie.
+    > :not(.pl-icon, [data-pl-icon]) {
+      min-width: 0;
+    }
   }
 
   .pl-icon {
+    flex: none;
     width: 1.35rem;
     height: 1.35rem;
     padding: 0.25rem;
@@ -450,6 +464,7 @@
 
   pre {
     margin: 0;
+    overflow-x: auto;
     padding: 1.4rem 1.5rem 1.6rem;
     border: 0;
     border-radius: 0;

@@ -1,6 +1,7 @@
 ---
 import Base from './Base.astro';
 import { getNav } from '../nav';
+import MobileMenu from '../components/MobileMenu.astro';
 import type { MarkdownHeading } from 'astro';
 
 interface Props {
@@ -21,9 +22,10 @@ const next = flat[index + 1];
 const toc = headings.filter((h) => h.depth === 2 || h.depth === 3);
 ---
 
-<Base title={title} description={description}>
+<Base title={title} description={description} sidebar>
   <div class="docs-shell">
     <aside class="docs-sidebar" data-docs-sidebar transition:name="docs-sidebar" transition:animate="none">
+      <MobileMenu />
       <nav class="docs-nav" aria-label="Dokumentacja">
         {
           nav.map((group) => (

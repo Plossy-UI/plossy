@@ -17,14 +17,17 @@ import '@plossy/scss/plossy.scss';
 import '../styles/docs.scss';
 import Header from '../components/Header.astro';
 import Search from '../components/Search.astro';
+import MobileMenu from '../components/MobileMenu.astro';
 
 interface Props {
   title?: string;
   description?: string;
   home?: boolean;
+  /** Strona ma własny pasek boczny (dokumentacja) — wtedy menu mobilne siedzi w nim. */
+  sidebar?: boolean;
 }
 
-const { title, description = 'Plossy — jeden framework, wiele osobowości. Biblioteka komponentów UI z przełączanymi stylami, motywami i akcentami.', home = false } = Astro.props;
+const { title, description = 'Plossy — jeden framework, wiele osobowości. Biblioteka komponentów UI z przełączanymi stylami, motywami i akcentami.', home = false, sidebar = false } = Astro.props;
 const fullTitle = title ? `${title} · Plossy` : 'Plossy — nowoczesne komponenty UI';
 ---
 
@@ -62,7 +65,17 @@ const fullTitle = title ? `${title} · Plossy` : 'Plossy — nowoczesne komponen
   </head>
   <body class:list={['docs', { 'docs-home': home }]}>
     <a class="docs-skip" href="#main">Przejdź do treści</a>
-    <Header home={home} />
+    <Header home={home} sidebar={sidebar} />
+    {
+      !sidebar && (
+        <>
+          <aside class="docs-sidebar docs-sidebar-mobile" aria-label="Menu">
+            <MobileMenu />
+          </aside>
+          <div class="docs-backdrop docs-backdrop-mobile" data-docs-menu />
+        </>
+      )
+    }
     <slot />
     <Search />
     <script>

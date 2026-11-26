@@ -268,3 +268,43 @@ test('zagnieżdżanie: fragment z własnym motywem i stylem nie przejmuje wyglą
   // Styl domyślny na fragmencie przywraca kształty Soft, a nie zostawia pastylek Tender.
   expect(await token('n-soft-light', '--pl-radius-md')).toBe('12px');
 });
+
+test.describe('telefon', () => {
+  test.use({ viewport: { width: 390, height: 844 }, hasTouch: true, isMobile: true });
+
+  for (const path of ['/', '/docs/elements/button/', '/kreator/', '/examples/']) {
+    test(`menu mobilne na ${path}: działy, styl i akcent są dostępne`, async ({ page }) => {
+      await open(page, path);
+      const drawer = page.locator('.docs-sidebar');
+      const links = drawer.locator('.docs-mobile-links a');
+      await expect(page.locator('.docs-menu-btn')).toBeVisible();
+      await expect(links.first()).not.toBeInViewport();
+
+      await page.locator('.docs-menu-btn').click();
+      await expect(links).toHaveCount(5);
+      await expect(links.first()).toBeInViewport();
+
+      // Styl i akcent, których na telefonie nie ma w nagłówku.
+      await drawer.locator('[data-docs-style="flat"]').click();
+      await expect(page.locator('html')).toHaveAttribute('data-pl-style', 'flat');
+      await drawer.locator('[data-docs-accent="coral"]').click();
+      await expect(page.locator('html')).toHaveAttribute('data-pl-accent', 'coral');
+
+      // Przejście do innego działu zamyka menu.
+      await drawer.locator('.docs-mobile-links a[href="/docs/start/motywy/"]').click();
+      await expect(page).toHaveURL(/\/docs\/start\/motywy\/$/);
+      await expect(page.locator('body')).not.toHaveClass(/docs-menu-open/);
+    });
+  }
+
+  test('strona główna: hasło mieści się na ekranie, sekcje nie są ucięte', async ({ page }) => {
+    await open(page, '/');
+    const cut = await page.evaluate(() => {
+      const width = document.documentElement.clientWidth;
+      return [...document.querySelectorAll('.home-title em, .home-split > *, .home-split p, .home-code, .home-install code')]
+        .filter((el) => el.getBoundingClientRect().right > width + 1)
+        .map((el) => el.className || el.tagName);
+    });
+    expect(cut, 'elementy wychodzące poza prawą krawędź').toEqual([]);
+  });
+});

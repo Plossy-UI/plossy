@@ -4,8 +4,9 @@ import pkg from '../../../package.json';
 
 interface Props {
   home?: boolean;
+  sidebar?: boolean;
 }
-const { home = false } = Astro.props;
+const { home = false, sidebar = false } = Astro.props;
 const accents = [
   ['iris', 'Iris'],
   ['moss', 'Moss'],
@@ -18,13 +19,9 @@ const accents = [
 
 <header class="docs-header" transition:name="docs-header" transition:animate="none">
   <div class="docs-header-inner">
-    {
-      !home && (
-        <button class="docs-icon-btn docs-menu-btn" type="button" data-docs-menu aria-label="Menu">
-          <span data-pl-icon="menu" />
-        </button>
-      )
-    }
+    <button class:list={['docs-icon-btn docs-menu-btn', { 'docs-menu-btn-mobile': !sidebar }]} type="button" data-docs-menu aria-label="Menu">
+      <span data-pl-icon="menu" />
+    </button>
     <a class="docs-logo" href="/" title="Strona główna">
       <span class="docs-logo-text">plossy<span class="docs-logo-dot">.</span></span>
       <span class="docs-logo-version">{pkg.version}</span>
