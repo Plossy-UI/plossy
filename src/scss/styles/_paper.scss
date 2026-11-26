@@ -32,15 +32,17 @@ $noise: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width=
   --pl-border-strong: oklch(0.74 0.045 70);
   --pl-text: oklch(0.3 0.035 55);
   --pl-text-muted: oklch(0.47 0.035 58);
-  --pl-text-subtle: oklch(0.6 0.03 62);
+  --pl-text-subtle: oklch(0.5 0.03 62);
   --pl-ink: oklch(0.3 0.035 55);
   --pl-on-ink: oklch(0.96 0.02 84);
   --pl-secondary: oklch(0.34 0.04 55);
   --pl-success: oklch(0.55 0.1 140);
-  --pl-info: oklch(0.56 0.08 225);
+  --pl-info: oklch(0.54 0.08 225);
 }
 
 @include preset-dark('paper') {
+  --pl-success: oklch(0.7 0.1 140);
+  --pl-info: oklch(0.72 0.08 225);
   --pl-shadow-color: 0 0 0;
   --pl-bg: oklch(0.2 0.018 60);
   --pl-surface: oklch(0.235 0.02 60);
@@ -51,7 +53,7 @@ $noise: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width=
   --pl-border-strong: oklch(0.44 0.034 64);
   --pl-text: oklch(0.925 0.028 84);
   --pl-text-muted: oklch(0.74 0.03 80);
-  --pl-text-subtle: oklch(0.58 0.028 76);
+  --pl-text-subtle: oklch(0.65 0.028 76);
   --pl-ink: oklch(0.925 0.028 84);
   --pl-on-ink: oklch(0.22 0.02 60);
   --pl-secondary: oklch(0.925 0.028 84);

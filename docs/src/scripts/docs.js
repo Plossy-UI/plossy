@@ -36,6 +36,18 @@ document.addEventListener('astro:page-load', () => {
 function init(signal) {
   // ── Skrypty przykładów (bloki „js example-js") ──────────────────────────
   // Uruchamiane po zainicjowaniu komponentów; błąd w jednym nie zatrzymuje pozostałych.
+  // Podglądy, które się przewijają, muszą być osiągalne z klawiatury.
+  requestAnimationFrame(() => {
+    document.querySelectorAll('.docs-preview, .docs-table').forEach((box) => {
+      if (box.hasAttribute('tabindex')) return;
+      if (box.scrollWidth > box.clientWidth + 1 || box.scrollHeight > box.clientHeight + 1) {
+        box.tabIndex = 0;
+        box.setAttribute('role', 'region');
+        box.setAttribute('aria-label', box.classList.contains('docs-table') ? 'Tabela — przewiń' : 'Podgląd przykładu — przewiń');
+      }
+    });
+  });
+
   queueMicrotask(() => {
     document.querySelectorAll('script[data-docs-example-js]').forEach((holder) => {
       try {

@@ -111,6 +111,11 @@ class Datepicker extends Component {
       this.picker.hidden = true;
       this.picker.setAttribute('role', 'dialog');
       this.picker.setAttribute('aria-label', this.labels.dialog);
+      // aria-expanded jest niedozwolone na zwykłym polu tekstowym — pole z kalendarzem to combobox.
+      if (!this.picker.id) this.picker.id = uid('pl-datepicker');
+      this.ownRole = this.isInput && !el.hasAttribute('role');
+      if (this.ownRole) el.setAttribute('role', 'combobox');
+      el.setAttribute('aria-controls', this.picker.id);
       el.setAttribute('aria-haspopup', 'dialog');
       el.setAttribute('aria-expanded', 'false');
       el.autocomplete = 'off';
@@ -124,6 +129,8 @@ class Datepicker extends Component {
       if (!this.inline) {
         el.removeAttribute('aria-haspopup');
         el.removeAttribute('aria-expanded');
+        el.removeAttribute('aria-controls');
+        if (this.ownRole) el.removeAttribute('role');
       }
     });
   }

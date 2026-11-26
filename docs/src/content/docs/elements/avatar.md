@@ -74,27 +74,27 @@ Tony nadają inicjałom i ikonom miękkie, zabarwione tło. Z `.pl-avatar-solid`
 Kropkę statusu wstaw jako `.pl-avatar-status` wewnątrz awatara. Stan `-online` to pulsująca limonkowa iskra; pozostałe: `-busy`, `-away`, `-offline`. Dodaj tekst dla czytników ekranu, np. przez `aria-label` na awatarze.
 
 ```html example center
-<span class="pl-avatar pl-avatar-large" aria-label="Anna Kowalska, dostępna">
+<span class="pl-avatar pl-avatar-large" role="img" aria-label="Anna Kowalska, dostępna">
   <img src="/img/avatar-1.svg" alt="">
   <span class="pl-avatar-status pl-avatar-status-online"></span>
 </span>
-<span class="pl-avatar pl-avatar-large" aria-label="Marek Nowak, zajęty">
+<span class="pl-avatar pl-avatar-large" role="img" aria-label="Marek Nowak, zajęty">
   <img src="/img/avatar-5.svg" alt="">
   <span class="pl-avatar-status pl-avatar-status-busy"></span>
 </span>
-<span class="pl-avatar pl-avatar-large pl-avatar-warning" aria-label="Olga Lis, zaraz wraca">
+<span class="pl-avatar pl-avatar-large pl-avatar-warning" role="img" aria-label="Olga Lis, zaraz wraca">
   OL
   <span class="pl-avatar-status pl-avatar-status-away"></span>
 </span>
-<span class="pl-avatar pl-avatar-large" aria-label="Piotr Zych, niedostępny">
+<span class="pl-avatar pl-avatar-large" role="img" aria-label="Piotr Zych, niedostępny">
   <img src="/img/avatar-6.svg" alt="">
   <span class="pl-avatar-status pl-avatar-status-offline"></span>
 </span>
-<span class="pl-avatar pl-avatar-large pl-avatar-rounded" aria-label="Ewa Maj, dostępna">
+<span class="pl-avatar pl-avatar-large pl-avatar-rounded" role="img" aria-label="Ewa Maj, dostępna">
   <img src="/img/avatar-3.svg" alt="">
   <span class="pl-avatar-status pl-avatar-status-online"></span>
 </span>
-<span class="pl-avatar pl-avatar-small" aria-label="Jan Kot, dostępny">
+<span class="pl-avatar pl-avatar-small" role="img" aria-label="Jan Kot, dostępny">
   <img src="/img/avatar-2.svg" alt="">
   <span class="pl-avatar-status pl-avatar-status-online pl-avatar-status-top"></span>
 </span>
@@ -117,7 +117,7 @@ Awatar na elemencie `<a>` lub `<button>` sprężyście powiększa się po najech
 
 ```html example center
 <a class="pl-avatar pl-avatar-large" href="#" aria-label="Profil: Anna Kowalska"><img src="/img/avatar-1.svg" alt=""></a>
-<button class="pl-avatar pl-avatar-large pl-avatar-primary" type="button" aria-label="Menu użytkownika">TW</button>
+<button class="pl-avatar pl-avatar-large pl-avatar-primary" type="button" aria-label="TW — menu użytkownika">TW</button>
 <button class="pl-avatar pl-avatar-large" type="button" aria-label="Dodaj osobę"><span data-pl-icon="plus"></span></button>
 ```
 

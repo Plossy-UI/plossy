@@ -42,16 +42,17 @@
   --pl-border-strong: oklch(0.82 0.04 38);
   --pl-text: oklch(0.32 0.03 45);
   --pl-text-muted: oklch(0.48 0.03 45);
-  --pl-text-subtle: oklch(0.62 0.028 45);
+  --pl-text-subtle: oklch(0.535 0.028 45);
   --pl-ink: oklch(0.32 0.05 300);
   --pl-on-ink: oklch(0.985 0.012 55);
   --pl-secondary: oklch(0.34 0.07 285);
   --pl-on-secondary: oklch(0.985 0.012 55);
-  --pl-success: oklch(0.6 0.09 158);
+  --pl-success: oklch(0.535 0.09 158);
   --pl-overlay: oklch(0.4 0.06 320 / 0.3);
 }
 
 @include preset-dark('tender') {
+  --pl-success: oklch(0.72 0.09 158);
   --pl-spark: oklch(0.4 0.05 158);
   --pl-on-spark: oklch(0.93 0.05 155);
   --pl-shadow-color: 0 0 0;
@@ -64,7 +65,7 @@
   --pl-border-strong: oklch(0.47 0.04 320);
   --pl-text: oklch(0.945 0.02 50);
   --pl-text-muted: oklch(0.78 0.03 45);
-  --pl-text-subtle: oklch(0.62 0.03 40);
+  --pl-text-subtle: oklch(0.66 0.03 40);
   --pl-ink: oklch(0.945 0.02 50);
   --pl-on-ink: oklch(0.23 0.03 320);
   --pl-secondary: oklch(0.945 0.02 50);
@@ -72,7 +73,10 @@
   --pl-overlay: oklch(0.1 0.03 320 / 0.6);
 }
 
-@include preset-accent('tender', 0.62, 0.1, 33);
+@include preset-accent('tender', 0.62, 0.1, 33) {
+  // Pastelowy akcent jest za jasny na tekst na własnym jasnym tle.
+  --pl-primary-text: oklch(0.46 0.1 33);
+}
 @include preset-accent-dark('tender', 0.62, 0.1, 33);
 
 // Pastelowe plamy w tle strony.

@@ -121,18 +121,18 @@ Elementy `.pl-pagination-previous` i `.pl-pagination-next` to strzałki rysowane
 
 ```html example
 <ul class="pl-pagination pl-pagination-center">
-  <li><a href="#"><span class="pl-pagination-previous"></span></a></li>
+  <li><a href="#" aria-label="Poprzednia strona"><span class="pl-pagination-previous"></span></a></li>
   <li><a href="#">1</a></li>
   <li class="pl-active"><a href="#">2</a></li>
   <li><a href="#">3</a></li>
-  <li><a href="#"><span class="pl-pagination-next"></span></a></li>
+  <li><a href="#" aria-label="Następna strona"><span class="pl-pagination-next"></span></a></li>
 </ul>
 <ul class="pl-pagination pl-pagination-right pl-margin-small-top">
-  <li><a href="#"><span class="pl-pagination-previous"></span></a></li>
+  <li><a href="#" aria-label="Poprzednia strona"><span class="pl-pagination-previous"></span></a></li>
   <li><a href="#">1</a></li>
   <li class="pl-active"><a href="#">2</a></li>
   <li><a href="#">3</a></li>
-  <li><a href="#"><span class="pl-pagination-next"></span></a></li>
+  <li><a href="#" aria-label="Następna strona"><span class="pl-pagination-next"></span></a></li>
 </ul>
 <ul class="pl-pagination pl-margin-small-top">
   <li><a href="#"><span class="pl-pagination-previous"></span> Nowsze wpisy</a></li>

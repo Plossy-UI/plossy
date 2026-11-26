@@ -19,3 +19,9 @@ Thumbs.db
 .vscode/
 .idea/
 *.log
+
+# Testy: wyniki, raport i lokalne wzorce zrzutów ekranu (43 MB — odtwarza je `npm run test:zrzuty`)
+tests/.wyniki/
+tests/.raport/
+tests/zrzuty/
+tests/znane-naruszenia

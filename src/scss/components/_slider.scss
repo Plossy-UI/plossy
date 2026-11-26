@@ -23,6 +23,12 @@
 .pl-slider-container-offset {
   margin: -1rem -1.5rem -3.5rem;
   padding: 1rem 1.5rem 3.5rem;
+
+  // Na telefonie zapas boczny nie może być szerszy niż margines kontenera strony.
+  @media (max-width: 639.98px) {
+    margin-inline: -1rem;
+    padding-inline: 1rem;
+  }
 }
 
 // Wygaszone krawędzie.

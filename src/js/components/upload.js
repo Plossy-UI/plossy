@@ -79,6 +79,8 @@ class Upload extends Component {
       this.input.type = 'file';
       this.input.tabIndex = -1;
       this.input.name = options.name;
+      this.input.setAttribute('aria-label', 'Wybierz pliki');
+      this.input.hidden = true; // strefa sama jest przyciskiem — pole nie może być drugim elementem klikalnym
       el.append(this.input);
       if (!el.hasAttribute('tabindex')) el.tabIndex = 0;
       el.setAttribute('role', 'button');

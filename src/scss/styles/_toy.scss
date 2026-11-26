@@ -33,7 +33,7 @@
   --pl-border-strong: oklch(0.76 0.1 296);
   --pl-text: oklch(0.27 0.07 292);
   --pl-text-muted: oklch(0.45 0.07 292);
-  --pl-text-subtle: oklch(0.6 0.06 292);
+  --pl-text-subtle: oklch(0.525 0.06 292);
   --pl-ink: oklch(0.27 0.07 292);
   --pl-on-ink: oklch(0.98 0.02 300);
   --pl-secondary: oklch(0.5 0.22 292);
@@ -51,14 +51,17 @@
   --pl-border-strong: oklch(0.5 0.11 292);
   --pl-text: oklch(0.96 0.02 300);
   --pl-text-muted: oklch(0.8 0.04 298);
-  --pl-text-subtle: oklch(0.65 0.05 296);
+  --pl-text-subtle: oklch(0.66 0.05 296);
   --pl-ink: oklch(0.96 0.02 300);
   --pl-on-ink: oklch(0.22 0.06 292);
   --pl-secondary: oklch(0.72 0.16 292);
   --pl-on-secondary: oklch(0.2 0.06 292);
 }
 
-@include preset-accent('toy', 0.7, 0.18, 52, oklch(0.24 0.06 50));
+@include preset-accent('toy', 0.7, 0.18, 52, oklch(0.24 0.06 50)) {
+  // Jasny pomarańcz jest za jasny na tekst — linki i tekst akcentu dostają ciemniejszy odcień.
+  --pl-primary-text: oklch(0.5 0.16 48);
+}
 @include preset-accent-dark('toy', 0.66, 0.18, 52, oklch(0.2 0.05 50));
 
 [data-pl-style='toy'] {

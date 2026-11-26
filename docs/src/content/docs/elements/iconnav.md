@@ -39,7 +39,7 @@ Klasa `.pl-active` na `<li>` wyróżnia bieżącą pozycję tłem w kolorze akce
   <li><a href="#" aria-label="Projekty"><span data-pl-icon="folder"></span></a></li>
   <li><a href="#" aria-label="Kalendarz"><span data-pl-icon="calendar"></span></a></li>
   <li><a href="#" aria-label="Zespół"><span data-pl-icon="users"></span></a></li>
-  <li class="pl-iconnav-divider" role="separator"></li>
+  <li class="pl-iconnav-divider" aria-hidden="true"></li>
   <li><a href="#" aria-label="Ustawienia"><span data-pl-icon="settings"></span></a></li>
 </ul>
 ```
@@ -50,16 +50,16 @@ Klasa `.pl-active` na `<li>` wyróżnia bieżącą pozycję tłem w kolorze akce
 
 ```html example center
 <ul class="pl-iconnav pl-iconnav-bar" role="toolbar" aria-label="Formatowanie">
-  <li class="pl-active"><button type="button" aria-label="Pogrubienie" aria-pressed="true"><span data-pl-icon="bold"></span></button></li>
-  <li><button type="button" aria-label="Kursywa" aria-pressed="false"><span data-pl-icon="italic"></span></button></li>
-  <li><button type="button" aria-label="Podkreślenie" aria-pressed="false"><span data-pl-icon="underline"></span></button></li>
+  <li class="pl-active" role="presentation"><button type="button" aria-label="Pogrubienie" aria-pressed="true"><span data-pl-icon="bold"></span></button></li>
+  <li role="presentation"><button type="button" aria-label="Kursywa" aria-pressed="false"><span data-pl-icon="italic"></span></button></li>
+  <li role="presentation"><button type="button" aria-label="Podkreślenie" aria-pressed="false"><span data-pl-icon="underline"></span></button></li>
   <li class="pl-iconnav-divider" role="separator"></li>
-  <li class="pl-active"><button type="button" aria-label="Do lewej" aria-pressed="true"><span data-pl-icon="align-left"></span></button></li>
-  <li><button type="button" aria-label="Do środka" aria-pressed="false"><span data-pl-icon="align-center"></span></button></li>
-  <li><button type="button" aria-label="Do prawej" aria-pressed="false"><span data-pl-icon="align-right"></span></button></li>
+  <li class="pl-active" role="presentation"><button type="button" aria-label="Do lewej" aria-pressed="true"><span data-pl-icon="align-left"></span></button></li>
+  <li role="presentation"><button type="button" aria-label="Do środka" aria-pressed="false"><span data-pl-icon="align-center"></span></button></li>
+  <li role="presentation"><button type="button" aria-label="Do prawej" aria-pressed="false"><span data-pl-icon="align-right"></span></button></li>
   <li class="pl-iconnav-divider" role="separator"></li>
-  <li><button type="button" aria-label="Wstaw link"><span data-pl-icon="link"></span></button></li>
-  <li><button type="button" aria-label="Wstaw obraz"><span data-pl-icon="image"></span></button></li>
+  <li role="presentation"><button type="button" aria-label="Wstaw link"><span data-pl-icon="link"></span></button></li>
+  <li role="presentation"><button type="button" aria-label="Wstaw obraz"><span data-pl-icon="image"></span></button></li>
 </ul>
 
 <ul class="pl-iconnav pl-iconnav-bar pl-iconnav-pill pl-iconnav-solid" aria-label="Motyw">

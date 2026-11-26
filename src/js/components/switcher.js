@@ -250,6 +250,10 @@ class Switcher extends Component {
       el.setAttribute('role', 'tablist');
       if (this.vertical) el.setAttribute('aria-orientation', 'vertical');
       else el.removeAttribute('aria-orientation');
+      // Nagłówki i separatory między zakładkami nie są zakładkami.
+      for (const child of el.children) {
+        if (!items.includes(child) && !child.hasAttribute('role')) child.setAttribute('role', 'presentation');
+      }
     }
     const containers = this.containers;
     items.forEach((item, i) => {

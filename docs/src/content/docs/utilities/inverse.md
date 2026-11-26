@@ -82,7 +82,7 @@ Klasy inwersji można postawić na tym samym elemencie co tło tonu. Na elemenci
     </div>
   </div>
   <div>
-    <div class="pl-light pl-background-primary pl-padding pl-radius-lg">
+    <div class="pl-background-primary pl-padding pl-radius-lg">
       <h4>Primary</h4>
       <p>Tło w kolorze akcentu.</p>
       <button class="pl-button pl-button-secondary pl-button-small" type="button">Dalej</button>

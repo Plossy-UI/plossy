@@ -69,7 +69,7 @@ const zl = (n) => n.toLocaleString('pl-PL', { minimumFractionDigits: Number.isIn
                     {items.map((item) => (
                       <li class="shop-item" data-price={item.price} data-name={item.name}>
                         <div class="pl-flex pl-gap pl-padding-small">
-                          <a class="pl-image pl-image-rounded-small pl-ratio-1-1 pl-flex-none shop-item-thumb" href="/examples/produkt/">
+                          <a class="pl-image pl-image-rounded-small pl-ratio-1-1 pl-flex-none shop-item-thumb" href="/examples/produkt/" aria-label={item.name}>
                             <img src={`/img/photo-${item.img}.svg`} alt="" />
                           </a>
                           <div class="pl-flex-1 shop-min">

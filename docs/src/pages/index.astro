@@ -1,6 +1,7 @@
 ---
 import Base from '../layouts/Base.astro';
 import { getNav } from '../nav';
+import pkg from '../../../package.json';
 import '../styles/home.scss';
 
 const nav = await getNav();
@@ -25,11 +26,11 @@ const features = [
       <div class="home-container">
         <a class="home-pill" href="/docs/start/wprowadzenie/">
           <span class="home-pill-dot"></span>
-          Wersja 0.1 · {count} komponentów
+          Wersja {pkg.version} · {count} komponentów
           <span data-pl-icon="arrow-right"></span>
         </a>
         <h1 class="home-title">
-          Interfejsy, które mają <em>charakter</em>.
+          Jeden framework. <em>Wiele osobowości.</em>
         </h1>
         <p class="home-lead">
           Plossy to biblioteka komponentów: czysty CSS oparty na tokenach, małe moduły JavaScript bez zależności i ruch, który

@@ -54,9 +54,16 @@ class Filter extends Component {
       this.apply(control);
     });
     this.on(this.el, 'keydown', (event) => {
-      if ((event.key !== 'Enter' && event.key !== ' ') || !event.target.matches?.(`${CONTROL}[role="button"]`)) return;
-      event.preventDefault();
-      this.apply(event.target);
+      if (event.key !== 'Enter' && event.key !== ' ') return;
+      const target = event.target;
+      if (target.matches?.(`${CONTROL}[role="button"]`)) {
+        event.preventDefault();
+        this.apply(target);
+      } else if (event.key === ' ' && target.matches?.('a[role="button"]') && target.closest(CONTROL)) {
+        // Odnośnik w roli przycisku ma reagować także na spację.
+        event.preventDefault();
+        this.apply(target.closest(CONTROL));
+      }
     });
     this.onDestroy(() => this.finishAnimations());
 
@@ -130,7 +137,10 @@ class Filter extends Component {
       const active = this.isActive(control);
       control.classList.toggle('pl-active', active);
       const button = control.matches('a, button, [role="button"]') ? control : control.querySelector('a, button');
-      button?.setAttribute('aria-pressed', String(active));
+      if (!button) continue;
+      // aria-pressed wolno ustawić tylko na przycisku — odnośnik-kontrolka dostaje jego rolę.
+      if (button.matches('a') && !button.hasAttribute('role')) button.setAttribute('role', 'button');
+      button.setAttribute('aria-pressed', String(active));
     }
 
     this.finishAnimations();

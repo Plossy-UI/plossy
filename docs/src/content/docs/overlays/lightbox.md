@@ -37,14 +37,14 @@ Opcja `thumbs: true` dodaje na dole pasek miniatur. Aktywną pozycję wyróżnia
 
 ```html example
 <div class="pl-grid pl-grid-small pl-child-width-1-4 pl-child-width-1-8@m" data-pl-lightbox="thumbs: true">
-  <div><a href="/img/photo-1.svg" data-caption="Poranna mgła nad jeziorem"><img src="/img/photo-1.svg" alt="" style="aspect-ratio: 1; width: 100%; object-fit: cover; border-radius: var(--pl-radius-sm)"></a></div>
-  <div><a href="/img/photo-2.svg" data-caption="Ścieżka przez sosnowy las"><img src="/img/photo-2.svg" alt="" style="aspect-ratio: 1; width: 100%; object-fit: cover; border-radius: var(--pl-radius-sm)"></a></div>
-  <div><a href="/img/photo-3.svg" data-caption="Zachód słońca nad doliną"><img src="/img/photo-3.svg" alt="" style="aspect-ratio: 1; width: 100%; object-fit: cover; border-radius: var(--pl-radius-sm)"></a></div>
-  <div><a href="/img/photo-4.svg" data-caption="Skaliste wybrzeże"><img src="/img/photo-4.svg" alt="" style="aspect-ratio: 1; width: 100%; object-fit: cover; border-radius: var(--pl-radius-sm)"></a></div>
-  <div><a href="/img/photo-5.svg" data-caption="Górski szlak"><img src="/img/photo-5.svg" alt="" style="aspect-ratio: 1; width: 100%; object-fit: cover; border-radius: var(--pl-radius-sm)"></a></div>
-  <div><a href="/img/photo-6.svg" data-caption="Dolina o świcie"><img src="/img/photo-6.svg" alt="" style="aspect-ratio: 1; width: 100%; object-fit: cover; border-radius: var(--pl-radius-sm)"></a></div>
-  <div><a href="/img/photo-7.svg" data-caption="Łąka w pełni lata"><img src="/img/photo-7.svg" alt="" style="aspect-ratio: 1; width: 100%; object-fit: cover; border-radius: var(--pl-radius-sm)"></a></div>
-  <div><a href="/img/photo-8.svg" data-caption="Wieczór nad zatoką"><img src="/img/photo-8.svg" alt="" style="aspect-ratio: 1; width: 100%; object-fit: cover; border-radius: var(--pl-radius-sm)"></a></div>
+  <div><a href="/img/photo-1.svg" data-caption="Poranna mgła nad jeziorem"><img src="/img/photo-1.svg" alt="Poranna mgła nad jeziorem" style="aspect-ratio: 1; width: 100%; object-fit: cover; border-radius: var(--pl-radius-sm)"></a></div>
+  <div><a href="/img/photo-2.svg" data-caption="Ścieżka przez sosnowy las"><img src="/img/photo-2.svg" alt="Ścieżka przez sosnowy las" style="aspect-ratio: 1; width: 100%; object-fit: cover; border-radius: var(--pl-radius-sm)"></a></div>
+  <div><a href="/img/photo-3.svg" data-caption="Zachód słońca nad doliną"><img src="/img/photo-3.svg" alt="Zachód słońca nad doliną" style="aspect-ratio: 1; width: 100%; object-fit: cover; border-radius: var(--pl-radius-sm)"></a></div>
+  <div><a href="/img/photo-4.svg" data-caption="Skaliste wybrzeże"><img src="/img/photo-4.svg" alt="Skaliste wybrzeże" style="aspect-ratio: 1; width: 100%; object-fit: cover; border-radius: var(--pl-radius-sm)"></a></div>
+  <div><a href="/img/photo-5.svg" data-caption="Górski szlak"><img src="/img/photo-5.svg" alt="Górski szlak" style="aspect-ratio: 1; width: 100%; object-fit: cover; border-radius: var(--pl-radius-sm)"></a></div>
+  <div><a href="/img/photo-6.svg" data-caption="Dolina o świcie"><img src="/img/photo-6.svg" alt="Dolina o świcie" style="aspect-ratio: 1; width: 100%; object-fit: cover; border-radius: var(--pl-radius-sm)"></a></div>
+  <div><a href="/img/photo-7.svg" data-caption="Łąka w pełni lata"><img src="/img/photo-7.svg" alt="Łąka w pełni lata" style="aspect-ratio: 1; width: 100%; object-fit: cover; border-radius: var(--pl-radius-sm)"></a></div>
+  <div><a href="/img/photo-8.svg" data-caption="Wieczór nad zatoką"><img src="/img/photo-8.svg" alt="Wieczór nad zatoką" style="aspect-ratio: 1; width: 100%; object-fit: cover; border-radius: var(--pl-radius-sm)"></a></div>
 </div>
 ```
 

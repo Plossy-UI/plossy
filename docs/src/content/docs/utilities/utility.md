@@ -127,7 +127,7 @@ Klasy `.pl-radius-*` odpowiadają tokenom `--pl-radius-*`.
 `.pl-panel` to neutralny kontener: tworzy kontekst pozycjonowania, obejmuje floaty i usuwa dolny margines ostatniego dziecka. `.pl-panel-scrollable` daje przewijane pole o stałej wysokości, które użytkownik może rozciągnąć.
 
 ```html example
-<div class="pl-panel-scrollable">
+<div class="pl-panel-scrollable" tabindex="0" role="region" aria-label="Przewijana treść">
   <p><strong>§1.</strong> Regulamin określa zasady korzystania z serwisu oraz prawa i obowiązki użytkowników.</p>
   <p><strong>§2.</strong> Konto zakłada się bezpłatnie. Użytkownik odpowiada za poufność swojego hasła.</p>
   <p><strong>§3.</strong> Płatności za plany płatne pobierane są z góry za każdy okres rozliczeniowy.</p>
@@ -154,7 +154,7 @@ Klasy `.pl-radius-*` odpowiadają tokenom `--pl-radius-*`.
 <div class="pl-grid pl-grid-small pl-child-width-1-2@m">
   <div>
     <p class="pl-text-eyebrow">.pl-overflow-auto</p>
-    <div class="pl-overflow-auto pl-border pl-radius-md pl-padding-small" style="height: 7rem">
+    <div class="pl-overflow-auto pl-border pl-radius-md pl-padding-small" style="height: 7rem" tabindex="0" role="region" aria-label="Przewijana treść">
       <p style="width: 34rem">Szeroka treść przewija się wewnątrz kontenera w obu kierunkach, zamiast rozpychać układ strony. To przydatne dla tabel i bloków kodu.</p>
       <p style="width: 34rem">Drugi akapit zapewnia przewijanie w pionie.</p>
     </div>

@@ -53,7 +53,7 @@ description: Wysokości stałe, procentowe, maksymalne i liczone od wysokości o
   <div><img class="pl-height-max-small" src="/img/photo-1.svg" alt="Zdjęcie o maksymalnej wysokości small" style="border-radius: var(--pl-radius-md)"></div>
   <div><img class="pl-height-max-medium" src="/img/photo-2.svg" alt="Zdjęcie o maksymalnej wysokości medium" style="border-radius: var(--pl-radius-md)"></div>
   <div>
-    <div class="pl-card pl-card-small pl-height-max-small" style="overflow: auto"><div class="pl-card-body">
+    <div class="pl-card pl-card-small pl-height-max-small" style="overflow: auto" tabindex="0" role="region" aria-label="Przewijana karta"><div class="pl-card-body">
       <p>Regulamin promocji „Jesienne porządki" obowiązuje od 1 do 30 listopada.</p>
       <p>Rabat nalicza się automatycznie w koszyku po dodaniu co najmniej dwóch produktów z kategorii objętych akcją.</p>
       <p>Promocje nie łączą się z innymi kodami rabatowymi.</p>

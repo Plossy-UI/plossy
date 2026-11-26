@@ -1,7 +1,7 @@
 {
   "name": "plossy",
-  "version": "0.2.2",
-  "description": "Plossy — nowoczesna biblioteka komponentów UI (CSS + vanilla JS).",
+  "version": "0.3.0",
+  "description": "Plossy — jeden framework, wiele osobowości. Biblioteka komponentów UI (CSS + vanilla JS) z przełączanymi stylami, motywami i akcentami.",
   "type": "module",
   "license": "MIT",
   "main": "dist/plossy.esm.js",
@@ -13,9 +13,13 @@
     "preview": "astro preview --root docs",
     "icons": "node build/icons.mjs",
     "dist": "node build/dist.mjs",
-    "build": "npm run dist && npm run docs"
+    "build": "npm run dist && npm run docs",
+    "test": "npm run docs && playwright test",
+    "test:zrzuty": "npm run docs && playwright test wyglad --update-snapshots",
+    "test:a11y-spis": "npm run docs && A11Y_SPIS=1 playwright test dostepnosc"
   },
   "devDependencies": {
+    "@axe-core/playwright": "^4.14.1",
     "@fontsource-variable/baloo-tamma-2": "^5.3.0",
     "@fontsource-variable/bricolage-grotesque": "^5.3.0",
     "@fontsource-variable/cormorant-garamond": "^5.3.0",
@@ -28,6 +32,7 @@
     "@fontsource-variable/playfair-display": "^5.3.0",
     "@fontsource/dm-serif-display": "^5.3.0",
     "@fontsource/instrument-serif": "^5.3.0",
+    "@playwright/test": "^1.65.1",
     "astro": "^6.0.5",
     "esbuild": "^0.28.2",
     "lucide-static": "^1.80.0",

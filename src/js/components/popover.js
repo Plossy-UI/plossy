@@ -69,8 +69,12 @@ class Popover extends Component {
       el.removeAttribute('title');
     }
 
-    el.setAttribute('aria-haspopup', 'dialog');
-    el.setAttribute('aria-expanded', 'false');
+    // Pola formularza nie mogą mieć aria-expanded / aria-haspopup — dostają tylko aria-describedby.
+    this.expandable = !el.matches('input, select, textarea');
+    if (this.expandable) {
+      el.setAttribute('aria-haspopup', 'dialog');
+      el.setAttribute('aria-expanded', 'false');
+    }
     if (!el.matches('button, a[href], input, select, textarea, [tabindex]')) {
       el.setAttribute('role', 'button');
       el.tabIndex = 0;
@@ -272,7 +276,7 @@ class Popover extends Component {
     pop.classList.remove('pl-leave');
     pop.classList.add('pl-open');
     el.classList.add('pl-open');
-    el.setAttribute('aria-expanded', 'true');
+    if (this.expandable) el.setAttribute('aria-expanded', 'true');
     if (options.mode === 'click') el.setAttribute('aria-controls', pop.id);
     else el.setAttribute('aria-describedby', pop.id);
     showLayer(pop);
@@ -308,7 +312,7 @@ class Popover extends Component {
     if (index > -1) open.splice(index, 1);
 
     el.classList.remove('pl-open');
-    el.setAttribute('aria-expanded', 'false');
+    if (this.expandable) el.setAttribute('aria-expanded', 'false');
     el.removeAttribute('aria-describedby');
     if (hadFocus || (refocus === true && this.options.mode === 'click')) {
       this.suppressFocus = true;

@@ -445,7 +445,7 @@ html {
   font-size: 0.625rem;
   font-weight: 500;
   letter-spacing: 0.02em;
-  color: var(--pl-text-muted);
+  color: var(--pl-text);
 }
 
 .docs-main {
@@ -643,6 +643,18 @@ html {
   @include up(s) {
     padding: 2.5rem 2rem;
   }
+
+  // Na telefonie szerokie przykłady (tabele, pola kodu OTP…) przewijają się w podglądzie,
+  // zamiast rozpychać całą stronę.
+  @media (max-width: 639.98px) {
+    overflow-x: auto;
+  }
+}
+
+// Długi kod w zdaniu może się łamać — inaczej wypycha stronę na wąskich ekranach.
+.docs-content :is(p, li, dd, blockquote) code {
+  white-space: normal;
+  overflow-wrap: anywhere;
 }
 
 // Styl „glass": pod komponentami potrzebne jest kolorowe tło, inaczej szkło nie ma czego

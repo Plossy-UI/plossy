@@ -12,7 +12,7 @@ Dodaj `data-pl-scroll` do linku z kotwicą. Przewijanie odbywa się w najbliższ
 <p>
   <a class="pl-button pl-button-primary" href="#demo-scroll-end" data-pl-scroll>Przewiń na koniec listy</a>
 </p>
-<div class="pl-card" style="height: 16rem; overflow: auto">
+<div class="pl-card" style="height: 16rem; overflow: auto" tabindex="0" role="region" aria-label="Przewijana treść">
   <div class="pl-card-body">
     <h4 id="demo-scroll-start">Dziennik zmian</h4>
     <p><strong>3.4</strong> — nowy edytor szablonów wiadomości i eksport do PDF.</p>
@@ -48,7 +48,7 @@ Sama liczba w atrybucie (`data-pl-scroll="96"`) również ustawia `offset`.
   <a class="pl-button pl-button-small" href="#demo-scroll-b" data-pl-scroll="duration: 900; easing: spring">spring · 900 ms</a>
   <a class="pl-button pl-button-small" href="#demo-scroll-a" data-pl-scroll="duration: 300">Powrót · 300 ms</a>
 </p>
-<div class="pl-card" style="height: 14rem; overflow: auto">
+<div class="pl-card" style="height: 14rem; overflow: auto" tabindex="0" role="region" aria-label="Przewijana treść">
   <div class="pl-card-body">
     <p id="demo-scroll-a"><strong>Początek.</strong> Wybierz jeden z przycisków powyżej i porównaj charakter ruchu.</p>
     <div style="height: 40rem; border-left: 2px dashed var(--pl-border-strong); margin-left: .5rem"></div>
@@ -76,7 +76,7 @@ Funkcja `Plossy.scroll.to(cel, opcje)` przewija bez żadnego znacznika. Zwraca `
   <button class="pl-button" id="demo-scroll-js" type="button">Przewiń do ostatniego wiersza</button>
   <small id="demo-scroll-log" style="margin-left: .5rem; color: var(--pl-text-muted)"></small>
 </p>
-<div class="pl-card" id="demo-scroll-box" style="height: 12rem; overflow: auto">
+<div class="pl-card" id="demo-scroll-box" style="height: 12rem; overflow: auto" tabindex="0" role="region" aria-label="Lista faktur">
   <div class="pl-card-body">
     <p>Faktura 03/2025 — opłacona</p>
     <p>Faktura 04/2025 — opłacona</p>

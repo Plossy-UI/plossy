@@ -48,18 +48,19 @@
   --pl-border-strong: oklch(0.74 0 0);
   --pl-text: oklch(0.21 0 0);
   --pl-text-muted: oklch(0.45 0 0);
-  --pl-text-subtle: oklch(0.6 0 0);
+  --pl-text-subtle: oklch(0.535 0 0);
   --pl-ink: oklch(0.15 0 0);
   --pl-on-ink: oklch(1 0 0);
   --pl-secondary: oklch(0.15 0 0);
   --pl-on-secondary: oklch(1 0 0);
   --pl-spark: oklch(0.925 0.018 85);
   --pl-on-spark: oklch(0.21 0 0);
-  --pl-danger: oklch(0.6 0.22 25);
+  --pl-danger: oklch(0.575 0.22 25);
   --pl-overlay: oklch(0 0 0 / 0.45);
 }
 
 @include preset-dark('flat') {
+  --pl-danger: oklch(0.68 0.2 25);
   --pl-bg: oklch(0.13 0 0);
   --pl-surface: oklch(0.13 0 0);
   --pl-surface-raised: oklch(0.18 0 0);
@@ -69,7 +70,7 @@
   --pl-border-strong: oklch(0.42 0 0);
   --pl-text: oklch(0.96 0 0);
   --pl-text-muted: oklch(0.74 0 0);
-  --pl-text-subtle: oklch(0.56 0 0);
+  --pl-text-subtle: oklch(0.595 0 0);
   --pl-ink: oklch(0.96 0 0);
   --pl-on-ink: oklch(0.13 0 0);
   --pl-secondary: oklch(0.96 0 0);

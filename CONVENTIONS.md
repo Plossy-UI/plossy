@@ -144,3 +144,20 @@ Krótki opis.
 - SCSS: `npx sass --no-source-map src/scss/plossy.scss > /dev/null` (kompiluje całość).
 - JS: `node --check src/js/components/{nazwa}.js`.
 - Dev-serwer dokumentacji: `npm run dev` (gdy ENOSPC: `PLOSSY_POLL=1 npm run dev`).
+
+## Testy
+
+`npm test` buduje dokumentację i uruchamia testy Playwright na wszystkich jej stronach (wymaga Google Chrome).
+
+| Plik | Co sprawdza |
+| --- | --- |
+| `tests/strony.spec.mjs` | Każda strona: brak błędów JS, brak wyjścia poza ekran na telefonie i komputerze. |
+| `tests/style.spec.mjs` | Strony-reprezentanci w 10 stylach × 2 motywach. |
+| `tests/kontrast.spec.mjs` | Kontrast par tokenów kolorów (min. 4.5:1) w każdym stylu i motywie. |
+| `tests/dostepnosc.spec.mjs` | Audyt axe-core (WCAG 2.1 AA). Znane naruszenia: `tests/znane-naruszenia/`. |
+| `tests/zachowanie.spec.mjs` | Zachowanie komponentów: klawiatura, fokus, zdarzenia, animacje. |
+| `tests/wyglad.spec.mjs` | Porównanie zrzutów ekranu z wzorcami w `tests/zrzuty/`. |
+
+- Wzorce zrzutów są lokalne (nie w repozytorium). Przed zmianą wyglądu zapisz je: `npm run test:zrzuty`; po zmianie `npm test` pokaże różnice (raport: `npx playwright show-report tests/.raport`).
+- Po naprawieniu naruszenia dostępności odśwież spis: `npm run test:a11y-spis`. Nowych naruszeń do spisu nie dopisuj — napraw je.
+- Nowy komponent z JS: dodaj test do `tests/zachowanie.spec.mjs`. Nowy token koloru tekstu: dodaj parę do `tests/kontrast.spec.mjs`.

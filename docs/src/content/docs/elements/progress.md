@@ -98,7 +98,7 @@ Gdy potrzebujesz etykiety w środku, segmentów lub pasków, użyj `.pl-progress
 W rozmiarze `.pl-progress-large` tekst wewnątrz `.pl-progress-fill` jest widoczny.
 
 ```html example narrow
-<div class="pl-progress-bar pl-progress-large" role="progressbar" aria-valuenow="72" aria-valuemin="0" aria-valuemax="100" style="--pl-progress: 72">
+<div class="pl-progress-bar pl-progress-large" role="progressbar" aria-label="Postęp" aria-valuenow="72" aria-valuemin="0" aria-valuemax="100" style="--pl-progress: 72">
   <div class="pl-progress-fill">72%</div>
 </div>
 ```
@@ -147,10 +147,10 @@ Kilka wypełnień w jednym pasku — każde ma własną wartość `--pl-progress
 `.pl-progress-ring` rysuje okrągły wskaźnik w czystym CSS (`conic-gradient`). Wartość podaj w `--pl-progress`; treść elementu trafia do środka.
 
 ```html example center
-<div class="pl-progress-ring" role="progressbar" aria-valuenow="64" aria-valuemin="0" aria-valuemax="100" style="--pl-progress: 64">64%</div>
-<div class="pl-progress-ring pl-progress-success" role="progressbar" aria-valuenow="100" aria-valuemin="0" aria-valuemax="100" style="--pl-progress: 100"><span data-pl-icon="check"></span></div>
-<div class="pl-progress-ring pl-progress-warning" role="progressbar" aria-valuenow="38" aria-valuemin="0" aria-valuemax="100" style="--pl-progress: 38">38%</div>
-<div class="pl-progress-ring pl-progress-danger" role="progressbar" aria-valuenow="12" aria-valuemin="0" aria-valuemax="100" style="--pl-progress: 12">12%</div>
+<div class="pl-progress-ring" role="progressbar" aria-label="Postęp" aria-valuenow="64" aria-valuemin="0" aria-valuemax="100" style="--pl-progress: 64">64%</div>
+<div class="pl-progress-ring pl-progress-success" role="progressbar" aria-label="Postęp" aria-valuenow="100" aria-valuemin="0" aria-valuemax="100" style="--pl-progress: 100"><span data-pl-icon="check"></span></div>
+<div class="pl-progress-ring pl-progress-warning" role="progressbar" aria-label="Postęp" aria-valuenow="38" aria-valuemin="0" aria-valuemax="100" style="--pl-progress: 38">38%</div>
+<div class="pl-progress-ring pl-progress-danger" role="progressbar" aria-label="Postęp" aria-valuenow="12" aria-valuemin="0" aria-valuemax="100" style="--pl-progress: 12">12%</div>
 ```
 
 ### Rozmiary i podpis
@@ -159,9 +159,9 @@ Kilka wypełnień w jednym pasku — każde ma własną wartość `--pl-progress
 
 ```html example center
 <div class="pl-progress-ring pl-progress-small" role="progressbar" aria-label="Postęp" aria-valuenow="75" aria-valuemin="0" aria-valuemax="100" style="--pl-progress: 75"></div>
-<div class="pl-progress-ring" role="progressbar" aria-valuenow="75" aria-valuemin="0" aria-valuemax="100" style="--pl-progress: 75">75%</div>
-<div class="pl-progress-ring pl-progress-large" role="progressbar" aria-valuenow="75" aria-valuemin="0" aria-valuemax="100" style="--pl-progress: 75">7 500<small>kroków</small></div>
-<div class="pl-progress-ring pl-progress-large pl-progress-spark" role="progressbar" aria-valuenow="42" aria-valuemin="0" aria-valuemax="100" style="--pl-progress: 42; --pl-progress-width: 1rem">42%<small>celu</small></div>
+<div class="pl-progress-ring" role="progressbar" aria-label="Postęp" aria-valuenow="75" aria-valuemin="0" aria-valuemax="100" style="--pl-progress: 75">75%</div>
+<div class="pl-progress-ring pl-progress-large" role="progressbar" aria-label="Postęp" aria-valuenow="75" aria-valuemin="0" aria-valuemax="100" style="--pl-progress: 75">7 500<small>kroków</small></div>
+<div class="pl-progress-ring pl-progress-large pl-progress-spark" role="progressbar" aria-label="Postęp" aria-valuenow="42" aria-valuemin="0" aria-valuemax="100" style="--pl-progress: 42; --pl-progress-width: 1rem">42%<small>celu</small></div>
 ```
 
 ### Animowany i nieokreślony
@@ -169,7 +169,7 @@ Kilka wypełnień w jednym pasku — każde ma własną wartość `--pl-progress
 Zmiana `--pl-progress` animuje się płynnie. `.pl-progress-indeterminate` zamienia pierścień w obracający się łuk.
 
 ```html example center
-<div class="pl-progress-ring pl-progress-large" id="demo-ring" role="progressbar" aria-valuenow="25" aria-valuemin="0" aria-valuemax="100" style="--pl-progress: 25">25%</div>
+<div class="pl-progress-ring pl-progress-large" id="demo-ring" role="progressbar" aria-label="Postęp" aria-valuenow="25" aria-valuemin="0" aria-valuemax="100" style="--pl-progress: 25">25%</div>
 <div class="pl-progress-ring pl-progress-indeterminate" role="progressbar" aria-label="Wczytywanie"></div>
 <button class="pl-button pl-button-small" id="demo-ring-random" type="button">Losuj wartość</button>
 ```
@@ -189,7 +189,7 @@ document.getElementById('demo-ring-random').addEventListener('click', () => {
 ```html example
 <div class="pl-card" style="max-width: 26rem; margin-inline: auto">
   <div class="pl-card-body pl-flex pl-flex-middle" style="gap: 1.25rem">
-    <div class="pl-progress-ring pl-progress-success" role="progressbar" aria-valuenow="80" aria-valuemin="0" aria-valuemax="100" style="--pl-progress: 80">4/5</div>
+    <div class="pl-progress-ring pl-progress-success" role="progressbar" aria-label="Postęp" aria-valuenow="80" aria-valuemin="0" aria-valuemax="100" style="--pl-progress: 80">4/5</div>
     <div style="flex: 1">
       <h3 class="pl-card-title">Konfiguracja sklepu</h3>
       <p class="pl-card-text" style="font-size: var(--pl-text-sm)">Został ostatni krok — podłącz bramkę płatności.</p>

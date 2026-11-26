@@ -176,7 +176,7 @@ const tags = ['len', 'dąb', 'kamionka', 'małe mieszkanie', 'sypialnia', 'kuchn
                 <div class="pl-card-header">
                   <h2 class="pl-card-title pl-text-lg pl-margin-remove">Najczęściej czytane</h2>
                 </div>
-                <ul class="pl-list-group pl-list-group-flush">
+                <div class="pl-list-group pl-list-group-flush">
                   {popular.map((item, index) => (
                     <a class="pl-list-group-item" href="/examples/wpis/">
                       <span class="pl-text-display pl-text-xl pl-text-subtle pl-text-tabular">{String(index + 1).padStart(2, '0')}</span>
@@ -187,7 +187,7 @@ const tags = ['len', 'dąb', 'kamionka', 'małe mieszkanie', 'sypialnia', 'kuchn
                       <img class="pl-image-rounded-small pl-object-cover blog-thumb" src={`/img/photo-${item.photo}.svg`} alt="" width="56" height="56" loading="lazy">
                     </a>
                   ))}
-                </ul>
+                </div>
               </div>
 
               <div class="pl-margin-medium-top">

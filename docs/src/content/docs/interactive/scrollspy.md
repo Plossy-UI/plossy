@@ -121,7 +121,7 @@ Drugi komponent, `data-pl-scrollspy-nav`, podświetla link prowadzący do sekcji
     </ul>
   </div>
   <div class="pl-width-expand">
-    <div class="pl-card" style="height: 18rem; overflow: auto">
+    <div class="pl-card" style="height: 18rem; overflow: auto" tabindex="0" role="region" aria-label="Przewijana treść">
       <div class="pl-card-body">
         <h4 id="demo-spy-wstep">Wstęp</h4>
         <p>Przewodnik przeprowadzi Cię od pustego katalogu do działającej strony. Każdy krok zajmuje kilka minut i nie wymaga wcześniejszego doświadczenia.</p>

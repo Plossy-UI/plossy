@@ -203,7 +203,7 @@ export class Carousel extends Component {
         const current = [...nav.children].map((li) => li.getAttribute(this.attr)).join();
         if (current !== indexes.join()) {
           nav.innerHTML = indexes
-            .map((i) => `<li ${this.attr}="${i}"><a href="#" role="button">${L.goto} ${i + 1}</a></li>`)
+            .map((i) => `<li ${this.attr}="${i}"><a href="#" role="button" aria-label="${L.goto} ${i + 1}"></a></li>`)
             .join('');
         }
       } else {

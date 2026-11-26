@@ -152,6 +152,7 @@ Sam obraz ustaw przez `background-image`. Klasy sterują rozmiarem, powtarzaniem
   padding: 0.2rem 0.55rem;
   border-radius: var(--pl-radius-pill);
   background: var(--pl-surface);
+  color: var(--pl-text);
   font-family: var(--pl-font-mono);
   font-size: var(--pl-text-xs);
 }

@@ -151,7 +151,7 @@ Klasy `.pl-text-top`, `.pl-text-middle`, `.pl-text-bottom` i `.pl-text-baseline`
   <p class="pl-text-eyebrow">.pl-text-break</p>
   <p class="pl-text-break">https://przyklad.pl/zamowienia/2025/03/faktury/korekty/FV-2025-03-000118-korekta-ostateczna</p>
   <p class="pl-text-eyebrow">.pl-text-nowrap</p>
-  <p class="pl-text-nowrap pl-overflow-auto">Ten wiersz nigdy się nie zawinie, nawet jeśli nie mieści się w kontenerze.</p>
+  <p class="pl-text-nowrap pl-overflow-auto" tabindex="0">Ten wiersz nigdy się nie zawinie, nawet jeśli nie mieści się w kontenerze.</p>
   <p class="pl-text-eyebrow">.pl-text-balance</p>
   <p class="pl-text-balance pl-text-large">Równomiernie rozłożone wiersze sprawiają, że krótkie nagłówki wyglądają spokojniej.</p>
 </div>

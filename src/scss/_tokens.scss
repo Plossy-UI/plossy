@@ -5,6 +5,15 @@
 
 // Tokeny zależne od innych zmiennych muszą być zadeklarowane ponownie
 // wszędzie tam, gdzie zmienia się motyw lub akcent (inaczej się nie przeliczą).
+// Kolor tekstu na tle akcentu dobiera się sam: jasny na ciemnym akcencie, ciemny na jasnym
+// (próg jasności 0.59 — powyżej biały tekst traci wymagany kontrast 4.5:1).
+// Dołączany wszędzie, gdzie zmienia się akcent albo motyw; preset może podać własny kolor.
+@mixin on-primary {
+  --pl-on-primary: oklch(
+    clamp(0.18, calc((0.59 - var(--pl-accent-l) - var(--pl-accent-shift)) * 1000), 0.99) 0.012 var(--pl-accent-h)
+  );
+}
+
 @mixin derived {
   --pl-primary: oklch(calc(var(--pl-accent-l) + var(--pl-accent-shift)) var(--pl-accent-c) var(--pl-accent-h));
   --pl-focus: color-mix(in oklab, var(--pl-primary) 65%, transparent);
@@ -15,6 +24,8 @@
     --pl-#{$tone}-border: color-mix(in oklab, var(--pl-#{$tone}) 32%, var(--pl-surface));
     --pl-#{$tone}-text: color-mix(in oklab, var(--pl-#{$tone}) 78%, var(--pl-text));
   }
+  // Żółty jest za jasny na tekst — ostrzeżenie miesza się z kolorem tekstu mocniej niż pozostałe tony.
+  --pl-warning-text: color-mix(in oklab, var(--pl-warning) 40%, var(--pl-text));
 
   --pl-ring: 0 0 0 3px color-mix(in oklab, var(--pl-primary) 22%, transparent);
   --pl-shadow-xs: 0 1px 2px oklch(var(--pl-shadow-color) / calc(var(--pl-shadow-strength) * var(--pl-shadow-scale) * 0.07));
@@ -47,7 +58,7 @@
 
   --pl-text: oklch(0.225 0.012 85);
   --pl-text-muted: oklch(0.48 0.012 85);
-  --pl-text-subtle: oklch(0.63 0.011 85);
+  --pl-text-subtle: oklch(0.535 0.011 85);
 
   // „Atrament" — odwrócona powierzchnia (ciemne sekcje, tooltipy, przyciski secondary).
   --pl-ink: oklch(0.215 0.012 85);
@@ -55,17 +66,17 @@
 
   --pl-accent-shift: 0;
   --pl-mix-strong: black;
-  --pl-on-primary: oklch(0.99 0.005 85);
+  @include on-primary;
 
   --pl-secondary: oklch(0.235 0.012 85);
   --pl-on-secondary: oklch(0.975 0.005 85);
-  --pl-success: oklch(0.56 0.14 152);
+  --pl-success: oklch(0.535 0.14 152);
   --pl-on-success: oklch(0.99 0.01 152);
   --pl-warning: oklch(0.76 0.15 75);
   --pl-on-warning: oklch(0.24 0.05 75);
-  --pl-danger: oklch(0.58 0.2 25);
+  --pl-danger: oklch(0.575 0.2 25);
   --pl-on-danger: oklch(0.99 0.01 25);
-  --pl-info: oklch(0.6 0.13 235);
+  --pl-info: oklch(0.545 0.13 235);
   --pl-on-info: oklch(0.99 0.01 235);
 
 
@@ -89,14 +100,14 @@
 
   --pl-text: oklch(0.955 0.006 85);
   --pl-text-muted: oklch(0.72 0.01 85);
-  --pl-text-subtle: oklch(0.57 0.01 85);
+  --pl-text-subtle: oklch(0.625 0.01 85);
 
   --pl-ink: oklch(0.955 0.006 85);
   --pl-on-ink: oklch(0.2 0.01 85);
 
   --pl-accent-shift: 0.1;
   --pl-mix-strong: white;
-  --pl-on-primary: oklch(0.99 0.005 85);
+  @include on-primary;
 
   --pl-secondary: oklch(0.94 0.006 85);
   --pl-on-secondary: oklch(0.2 0.01 85);
@@ -104,8 +115,8 @@
   --pl-on-success: oklch(0.2 0.05 152);
   --pl-warning: oklch(0.8 0.15 78);
   --pl-on-warning: oklch(0.24 0.05 75);
-  --pl-danger: oklch(0.66 0.2 25);
-  --pl-on-danger: oklch(0.99 0.01 25);
+  --pl-danger: oklch(0.68 0.19 25);
+  --pl-on-danger: oklch(0.18 0.04 25);
   --pl-info: oklch(0.72 0.13 235);
   --pl-on-info: oklch(0.2 0.04 235);
 
@@ -229,7 +240,7 @@
 $accents: (
   'iris': (0.52, 0.21, 282),
   'moss': (0.5, 0.115, 165),
-  'coral': (0.6, 0.19, 32),
+  'coral': (0.57, 0.19, 32),
   'ocean': (0.53, 0.15, 245),
   'plum': (0.5, 0.19, 340),
   'ink': (0.27, 0.015, 85),
@@ -240,6 +251,7 @@ $accents: (
     --pl-accent-l: #{list.nth($v, 1)};
     --pl-accent-c: #{list.nth($v, 2)};
     --pl-accent-h: #{list.nth($v, 3)};
+    @include on-primary;
     @include derived;
   }
 }

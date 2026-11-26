@@ -34,6 +34,8 @@
     --pl-accent-h: #{$h};
     @if $on {
       --pl-on-primary: #{$on};
+    } @else {
+      @include tokens.on-primary;
     }
     @include tokens.derived;
     @content;
@@ -48,6 +50,8 @@
     --pl-accent-h: #{$h};
     @if $on {
       --pl-on-primary: #{$on};
+    } @else {
+      @include tokens.on-primary;
     }
     @include tokens.derived;
     @content;

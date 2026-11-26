@@ -159,7 +159,7 @@
   color: var(--pl-on-tone);
   --pl-border: color-mix(in oklab, var(--pl-on-tone) 18%, transparent);
   --pl-text: var(--pl-on-tone);
-  --pl-text-muted: color-mix(in oklab, var(--pl-on-tone) 78%, transparent);
+  --pl-text-muted: var(--pl-on-tone);
   --pl-text-subtle: color-mix(in oklab, var(--pl-on-tone) 60%, transparent);
   // Domyślne przyciski, chipy i pola stają się półprzezroczyste na kolorze karty.
   --pl-surface: color-mix(in oklab, var(--pl-on-tone) 10%, transparent);

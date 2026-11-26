@@ -1,5 +1,6 @@
 ---
 import { styles } from '../styles';
+import pkg from '../../../package.json';
 
 interface Props {
   home?: boolean;
@@ -24,9 +25,9 @@ const accents = [
         </button>
       )
     }
-    <a class="docs-logo" href="/" aria-label="Plossy — strona główna">
+    <a class="docs-logo" href="/" title="Strona główna">
       <span class="docs-logo-text">plossy<span class="docs-logo-dot">.</span></span>
-      <span class="docs-logo-version">0.1</span>
+      <span class="docs-logo-version">{pkg.version}</span>
     </a>
 
     <nav class="docs-topnav" aria-label="Główna">
@@ -42,8 +43,9 @@ const accents = [
       <kbd>Ctrl</kbd><kbd>K</kbd>
     </button>
 
-    <button class="docs-style-btn" type="button" aria-label="Styl">
+    <button class="docs-style-btn" type="button">
       <span data-pl-icon="palette"></span>
+      <span class="pl-visually-hidden">Styl:</span>
       <span data-docs-style-label>Soft</span>
       <span data-pl-icon="chevron-down"></span>
     </button>

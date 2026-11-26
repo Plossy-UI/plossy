@@ -284,7 +284,7 @@ Element `<caption>` opisuje tabelę (z `.pl-table-caption-bottom` trafia pod ni�
 Szeroką tabelę owiń w `.pl-overflow-auto` — na wąskich ekranach przewinie się w poziomie, nie rozpychając strony.
 
 ```html example
-<div class="pl-overflow-auto">
+<div class="pl-overflow-auto" tabindex="0" role="region" aria-label="Tabela — przewiń w poziomie">
   <table class="pl-table pl-table-divider pl-table-small pl-table-nowrap">
     <thead>
       <tr><th>Miesiąc</th><th>Sesje</th><th>Użytkownicy</th><th>Współczynnik odrzuceń</th><th>Konwersja</th><th>Średni koszyk</th><th>Przychód</th><th>Zwroty</th></tr>
@@ -303,7 +303,7 @@ Szeroką tabelę owiń w `.pl-overflow-auto` — na wąskich ekranach przewinie 
 `.pl-table-sticky` przykleja nagłówek do górnej krawędzi przewijanego kontenera. Odsunięcie (np. pod przyklejonym paskiem nawigacji) ustawisz zmienną `--pl-table-sticky-top`, tło — `--pl-table-sticky-bg`.
 
 ```html example
-<div class="pl-overflow-auto" style="overflow: auto; max-height: 15rem; border: 1px solid var(--pl-border); border-radius: var(--pl-radius-md); background: var(--pl-surface)">
+<div class="pl-overflow-auto" tabindex="0" role="region" aria-label="Tabela — przewiń" style="overflow: auto; max-height: 15rem; border: 1px solid var(--pl-border); border-radius: var(--pl-radius-md); background: var(--pl-surface)">
   <table class="pl-table pl-table-divider pl-table-small pl-table-sticky">
     <thead>
       <tr><th>Data</th><th>Zdarzenie</th><th>Użytkownik</th></tr>
@@ -362,7 +362,7 @@ Szeroką tabelę owiń w `.pl-overflow-auto` — na wąskich ekranach przewinie 
     <h3 class="pl-card-title">Najlepiej sprzedające się</h3>
     <a class="pl-link-arrow" href="#" style="margin-left: auto; font-size: var(--pl-text-sm)">Wszystkie</a>
   </div>
-  <div class="pl-overflow-auto">
+  <div class="pl-overflow-auto" tabindex="0" role="region" aria-label="Tabela — przewiń w poziomie">
     <table class="pl-table pl-table-divider pl-table-hover pl-table-middle" style="--pl-table-px: 1.5rem">
       <thead>
         <tr><th>Produkt</th><th>Sprzedano</th><th>Trend</th><th class="pl-table-numeric">Przychód</th></tr>

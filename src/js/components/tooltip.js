@@ -79,6 +79,11 @@ class Tooltip extends Component {
       !el.textContent.trim() &&
       !el.matches('input, select, textarea')
     ) {
+      // aria-label wymaga roli: element bez niej (np. <span> z samą ikoną) staje się obrazem.
+      if (!el.hasAttribute('role') && !el.matches('a[href], button, summary, img, svg')) {
+        el.setAttribute('role', 'img');
+        this.onDestroy(() => el.removeAttribute('role'));
+      }
       el.setAttribute('aria-label', String(options.title));
       this.labelled = true;
     }

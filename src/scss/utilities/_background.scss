@@ -14,6 +14,11 @@
     color: var(--pl-on-#{$tone});
   }
 
+  // Nagłówki bezpośrednio na kolorowym tle biorą jego kolor tekstu (własny kolor nagłówka nie miałby kontrastu).
+  .pl-background-#{$tone} > :where(h1, h2, h3, h4, h5, h6) {
+    color: inherit;
+  }
+
   .pl-background-#{$tone}-soft {
     background-color: var(--pl-#{$tone}-soft) !important;
   }
