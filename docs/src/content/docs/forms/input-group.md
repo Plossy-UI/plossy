@@ -15,7 +15,7 @@ order: 6
 </div>
 <div class="pl-input-group">
   <input class="pl-input" type="text" placeholder="twoja-firma" aria-label="Subdomena">
-  <span class="pl-input-group-text">.plossy.app</span>
+  <span class="pl-input-group-text">.example.com</span>
 </div>
 <div class="pl-input-group">
   <span class="pl-input-group-text">https://</span>
@@ -50,7 +50,7 @@ Przyciski w grupie dopasowują wysokość i tracą wewnętrzne zaokrąglenia.
   <button class="pl-button pl-button-primary" type="button">Zapisz się</button>
 </div>
 <div class="pl-input-group">
-  <input class="pl-input" type="text" value="https://plossy.app/zaproszenie/k3f9" readonly aria-label="Link z zaproszeniem">
+  <input class="pl-input" type="text" value="https://example.com/zaproszenie/k3f9" readonly aria-label="Link z zaproszeniem">
   <button class="pl-button" type="button"><span data-pl-icon="copy"></span> Kopiuj</button>
 </div>
 <div class="pl-input-group">
@@ -107,7 +107,7 @@ Kontrolki dostają `.pl-form-small` / `.pl-form-large`, przyciski — `.pl-butto
 
 ```html example column narrow
 <div class="pl-form-affix">
-  <span class="pl-form-prefix">plossy.app/</span>
+  <span class="pl-form-prefix">example.com/</span>
   <input class="pl-input" type="text" value="studio-kreska" aria-label="Adres profilu">
 </div>
 <div class="pl-form-affix">

@@ -28,7 +28,8 @@ interface Props {
 }
 
 const { title, description = 'Plossy — jeden framework, wiele osobowości. Biblioteka komponentów UI z przełączanymi stylami, motywami i akcentami.', home = false, sidebar = false } = Astro.props;
-const fullTitle = title ? `${title} · Plossy` : 'Plossy — nowoczesne komponenty UI';
+const fullTitle = title ? `${title} · Plossy` : 'Plossy — jeden framework, wiele osobowości';
+const canonical = new URL(Astro.url.pathname, Astro.site);
 ---
 
 <!doctype html>
@@ -38,6 +39,12 @@ const fullTitle = title ? `${title} · Plossy` : 'Plossy — nowoczesne komponen
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>{fullTitle}</title>
     <meta name="description" content={description} />
+    <link rel="canonical" href={canonical} />
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content="Plossy" />
+    <meta property="og:title" content={fullTitle} />
+    <meta property="og:description" content={description} />
+    <meta property="og:url" content={canonical} />
     <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
     <script is:inline>
       (() => {

@@ -43,6 +43,7 @@
   ],
   "module": "dist/plossy.esm.js",
   "author": "Katarzyna Płoska",
+  "homepage": "https://plossyui.com",
   "repository": {
     "type": "git",
     "url": "git+https://github.com/plossy-ui/plossy.git"

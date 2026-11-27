@@ -3,6 +3,8 @@
 
 A modern CSS and Vanilla JavaScript UI framework.
 
+Documentation, examples and theme builder: https://plossyui.com
+
 ## Installation
 
 ```bash

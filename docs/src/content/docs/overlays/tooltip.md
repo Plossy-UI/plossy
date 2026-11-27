@@ -99,7 +99,7 @@ Tooltip działa na dowolnym elemencie. Elementy nieinteraktywne powinny mieć `t
 `Plossy.tooltip(element, opcje)` tworzy lub zwraca instancję. Metoda `setTitle()` podmienia treść — także wtedy, gdy tooltip jest widoczny.
 
 ```html example center
-<button class="pl-button" id="demo-tooltip-copy" type="button" data-pl-tooltip="Kopiuj adres"><span data-pl-icon="copy"></span> hello@plossy.dev</button>
+<button class="pl-button" id="demo-tooltip-copy" type="button" data-pl-tooltip="Kopiuj adres"><span data-pl-icon="copy"></span> kontakt@example.com</button>
 <button class="pl-button pl-button-ghost" id="demo-tooltip-api" type="button">Pokaż na 2 sekundy</button>
 ```
 

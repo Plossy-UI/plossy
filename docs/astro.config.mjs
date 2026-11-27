@@ -7,6 +7,8 @@ import remarkVersion from './src/plugins/remark-version.mjs';
 const theme = createCssVariablesTheme({ name: 'plossy', variablePrefix: '--shiki-', fontStyle: true });
 
 export default defineConfig({
+  // Adres strony: adresy kanoniczne i mapa strony (sitemap.xml).
+  site: 'https://plossyui.com',
   devToolbar: { enabled: false },
   markdown: {
     // remarkVersion przed remarkExample: numer wersji trafia też do kodu przykładów.

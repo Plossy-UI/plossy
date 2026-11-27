@@ -158,7 +158,7 @@ Opcja `success: true` dodaje `.pl-form-success` do pól, które przeszły walida
   </div>
   <div class="pl-form-field">
     <label class="pl-form-label" for="demo-s-www">Strona WWW</label>
-    <input class="pl-input" id="demo-s-www" type="url" value="plossy.app">
+    <input class="pl-input" id="demo-s-www" type="url" value="example.com">
   </div>
   <div class="pl-form-actions">
     <button class="pl-button pl-button-primary" type="submit">Zapisz</button>

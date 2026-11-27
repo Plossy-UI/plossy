@@ -39,6 +39,7 @@ const { title, description = 'Przykładowa strona zbudowana z komponentów Ploss
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>{title} · Przykłady Plossy</title>
     <meta name="description" content={description} />
+    <link rel="canonical" href={new URL(Astro.url.pathname, Astro.site)} />
     <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
     <script is:inline>
       (() => {
