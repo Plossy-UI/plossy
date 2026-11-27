@@ -213,7 +213,7 @@ Klasy `.pl-form-small`, `.pl-form-large`, `.pl-form-danger` i `.pl-form-success`
 
 ## Źródło asynchroniczne
 
-Przekaż funkcję `source` — dostaje wpisany tekst i zwraca (asynchronicznie) tablicę napisów lub obiektów `{ value, label, group, description, icon, image, disabled }`. Zapytania są opóźniane (`delay`), nieaktualne odpowiedzi — pomijane, a w polu kręci się wskaźnik ładowania. `source` może też być adresem URL: komponent doklei do niego zapytanie i oczekuje JSON-a.
+Przekaż funkcję `source` — dostaje wpisany tekst i zwraca (asynchronicznie) tablicę napisów lub obiektów `{ value, label, group, description, icon, image, disabled }`. Drugi argument to `{ signal }` — przekaż go do `fetch()`, a zapytanie zostanie przerwane, gdy pole zniknie ze strony. Zapytania są opóźniane (`delay`), nieaktualne odpowiedzi — pomijane, a w polu kręci się wskaźnik ładowania. `source` może też być adresem URL: komponent doklei do niego zapytanie i oczekuje JSON-a.
 
 ```html example narrow tall
 <div class="pl-form-field">
@@ -299,7 +299,7 @@ Opcje przekazujesz w atrybucie: `data-pl-combobox="clearable: true; placeholder:
 | `highlight` | boolean | `true` | Wyróżnia dopasowany fragment nazwy. |
 | `close-on-select` | boolean | auto | Zamyka listę po wyborze (domyślnie `true` dla pojedynczego wyboru, `false` dla `multiple`). |
 | `options` | array / string | `null` | Lista pozycji; w atrybucie — napisy rozdzielone przecinkami. |
-| `source` | function / string | `null` | Źródło asynchroniczne: `async (q) => [...]` lub adres URL, do którego doklejane jest zapytanie. |
+| `source` | function / string | `null` | Źródło asynchroniczne: `async (q, { signal }) => [...]` lub adres URL, do którego doklejane jest zapytanie. |
 | `min-length` | number | `0` | Minimalna długość zapytania dla `source`. |
 | `delay` | number | `220` | Opóźnienie zapytań do `source` (ms). |
 | `placement` | string | `'bottom-start'` | Położenie listy; odwraca się, gdy brakuje miejsca. |

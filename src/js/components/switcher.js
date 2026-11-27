@@ -272,6 +272,7 @@ class Switcher extends Component {
 
     // Panele.
     const token = ++this.token;
+    const { signal } = this;
     const detail = { index, previous, item: items[index] };
     if (animate && previous > -1) this.emit('hide', { index: previous, item: items[previous] });
     const pending = [];
@@ -299,7 +300,7 @@ class Switcher extends Component {
       if (hash && hash !== location.hash) history.replaceState(null, '', hash);
     }
     Promise.all(pending).then(() => {
-      if (token === this.token) this.emit('shown', detail);
+      if (!signal.aborted && token === this.token) this.emit('shown', detail);
     });
   }
 

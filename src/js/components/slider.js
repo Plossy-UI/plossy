@@ -104,7 +104,9 @@ export class Carousel extends Component {
     this.index = 0;
     this.pauses = new Set();
     this.autoplayOn = Boolean(this.options.autoplay);
-    this.generatedNavs = new WeakSet();
+    this.generatedNavs = new Set();
+    // Wygenerowane kropki znikają w destroy() — ponowne init() zbuduje je od nowa.
+    this.onDestroy(() => this.generatedNavs.forEach((nav) => nav.replaceChildren()));
     this._timer = 0;
     this._remaining = 0;
     this._startedAt = 0;

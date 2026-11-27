@@ -4,12 +4,34 @@
  * Komponent = klasa dziedzicząca po `Component`, zarejestrowana przez
  * `register('nazwa', Klasa)`. Inicjalizuje się sam na elementach z atrybutem
  * `data-pl-nazwa`, także dodanych do DOM później.
+ *
+ * Cykl życia: instancja elementu usuniętego z dokumentu jest niszczona automatycznie
+ * (destroy()), a po ponownym wstawieniu elementu wraca do życia ta sama instancja
+ * (ponowne init()). Przeniesienie elementu w obrębie DOM niczego nie niszczy.
  */
 
 const registry = new Map();
+/** element → Map(nazwa → instancja) — instancje żywe. */
 const store = new WeakMap();
+/** instancja → { options, declarative, destroyed } — dane potrzebne do ponownego montowania. */
+const meta = new WeakMap();
+/** element → Map(nazwa → instancja) — instancje zniszczone po odłączeniu, czekające na powrót elementu. */
+const dormant = new WeakMap();
+let dormantCount = 0;
+let liveCount = 0;
+// Uśpiony element, który nigdy nie wróci, znika z pamięci — wtedy zmniejszamy licznik.
+const dormantGone = typeof FinalizationRegistry === 'function' ? new FinalizationRegistry(() => dormantCount--) : null;
 let started = false;
 let selector = '';
+
+/** Atrybut wyłączający automatyczne niszczenie: na odłączanym elemencie albo na kontenerze, z którego wyjmuje się dzieci. */
+const PERSIST = 'data-pl-persist';
+
+/** Ustawienia globalne (Plossy.config). */
+export const config = {
+  /** Niszczy instancje elementów usuniętych z dokumentu. `false` — dawne zachowanie (instancje żyją dalej). */
+  autoDestroy: true,
+};
 
 /** Publiczne API (window.Plossy). Moduły mogą dopisywać własne funkcje. */
 export const api = {};
@@ -105,35 +127,49 @@ export class Component {
   static primary = null;
 
   constructor(el, options = {}) {
-    const C = this.constructor;
+    const name = this.constructor.componentName;
     this.el = el;
-    this.options = {
-      ...C.defaults,
-      ...parseOptions(el.getAttribute(`data-pl-${C.componentName}`), C.defaults, C.primary),
-      ...options,
-    };
-    this._cleanup = [];
-    let map = store.get(el);
-    if (!map) store.set(el, (map = new Map()));
-    map.set(C.componentName, this);
-    this.init();
+    meta.set(this, { options, declarative: el.hasAttribute(`data-pl-${name}`), destroyed: false });
+    // destroy() działa tylko raz — także gdy klasa potomna je nadpisuje.
+    const destroy = this.destroy;
+    Object.defineProperty(this, 'destroy', {
+      configurable: true,
+      writable: true,
+      value: () => {
+        const state = meta.get(this);
+        forget(this);
+        if (state.destroyed) return;
+        state.destroyed = true;
+        destroy.call(this);
+      },
+    });
+    mount(this);
   }
 
   /** Punkt wejścia komponentu. Stan instancji ustawiaj tutaj (nie w polach klasy). */
   init() {}
 
+  /**
+   * AbortSignal bieżącego „życia" instancji — przerywany w destroy(), nowy po ponownym init().
+   * Przekazuj go do fetch() i sprawdzaj po każdym await (`if (signal.aborted) return`).
+   */
+  get signal() {
+    return this._life.signal;
+  }
+
   /** addEventListener z automatycznym sprzątaniem w destroy(). Zwraca funkcję odpinającą. */
   on(target, type, handler, options) {
-    if (!target) return () => {};
+    if (!target || meta.get(this)?.destroyed) return () => {};
     target.addEventListener(type, handler, options);
     const off = () => target.removeEventListener(type, handler, options);
     this._cleanup.push(off);
     return off;
   }
 
-  /** Rejestruje dowolną funkcję sprzątającą. */
+  /** Rejestruje dowolną funkcję sprzątającą. Po destroy() wywołuje ją od razu. */
   onDestroy(fn) {
-    this._cleanup.push(fn);
+    if (meta.get(this)?.destroyed) fn();
+    else this._cleanup.push(fn);
   }
 
   /**
@@ -151,9 +187,46 @@ export class Component {
   }
 
   destroy() {
-    this._cleanup.splice(0).forEach((fn) => fn());
-    store.get(this.el)?.delete(this.constructor.componentName);
+    const state = meta.get(this);
+    if (state) state.destroyed = true;
+    // Najpierw sygnał — spóźnione kontynuacje (zapytania, animacje) wiedzą już, że instancja nie żyje.
+    this._life?.abort();
+    const name = this.constructor.componentName;
+    for (const fn of this._cleanup.splice(0)) {
+      // Błąd jednej funkcji sprzątającej nie może zablokować pozostałych.
+      try {
+        fn();
+      } catch (error) {
+        console.error(`[Plossy] ${name}:`, error);
+      }
+    }
+    const map = store.get(this.el);
+    // Usuwamy wpis tylko wtedy, gdy wskazuje tę instancję (na elemencie mogła już powstać nowa).
+    if (map?.get(name) === this) {
+      map.delete(name);
+      liveCount--;
+    }
   }
+}
+
+/** (Ponownie) montuje instancję: scala opcje, zapisuje ją na elemencie i wywołuje init(). */
+function mount(instance) {
+  const C = instance.constructor;
+  const el = instance.el;
+  const state = meta.get(instance);
+  instance.options = {
+    ...C.defaults,
+    ...parseOptions(el.getAttribute(`data-pl-${C.componentName}`), C.defaults, C.primary),
+    ...state.options,
+  };
+  instance._cleanup = [];
+  instance._life = new AbortController();
+  state.destroyed = false;
+  let map = store.get(el);
+  if (!map) store.set(el, (map = new Map()));
+  if (!map.has(C.componentName)) liveCount++;
+  map.set(C.componentName, instance);
+  instance.init();
 }
 
 // ── Rejestr ───────────────────────────────────────────────────────────────
@@ -163,7 +236,90 @@ export function getInstance(el, name) {
 }
 
 function create(el, name, options) {
-  return getInstance(el, name) || new (registry.get(name))(el, options);
+  return getInstance(el, name) || wake(el, name) || new (registry.get(name))(el, options);
+}
+
+// ── Cykl życia ────────────────────────────────────────────────────────────
+
+/** Odkłada instancję zniszczoną po odłączeniu elementu — wróci, gdy element wróci do dokumentu. */
+function keep(instance) {
+  const el = instance.el;
+  let map = dormant.get(el);
+  if (!map) {
+    dormant.set(el, (map = new Map()));
+    dormantCount++;
+    dormantGone?.register(el, null, map);
+  }
+  map.set(instance.constructor.componentName, instance);
+}
+
+/** Rezygnuje z przywrócenia instancji (np. po jawnym destroy()). */
+function forget(instance) {
+  const map = dormant.get(instance.el);
+  const name = instance.constructor.componentName;
+  if (map?.get(name) !== instance) return;
+  map.delete(name);
+  if (!map.size) {
+    dormant.delete(instance.el);
+    dormantCount--;
+    dormantGone?.unregister(map);
+  }
+}
+
+/**
+ * Przywraca uśpione instancje elementu (wszystkie albo jedną, o podanej nazwie).
+ * Zwraca ostatnią przywróconą instancję albo null.
+ */
+function wake(el, only) {
+  const map = dormant.get(el);
+  if (!map) return null;
+  let woken = null;
+  for (const [name, instance] of [...map]) {
+    if (only && name !== only) continue;
+    forget(instance);
+    // Komponent z atrybutu, któremu w międzyczasie zdjęto atrybut — nie wraca.
+    if (getInstance(el, name) || (meta.get(instance).declarative && !el.hasAttribute(`data-pl-${name}`))) continue;
+    try {
+      mount(instance);
+      woken = instance;
+    } catch (error) {
+      console.error(`[Plossy] ${name}:`, error);
+    }
+  }
+  return woken;
+}
+
+/** Element i jego potomkowie (elementy). */
+const subtree = (root) => (root instanceof Element ? [root, ...root.querySelectorAll('*')] : [...root.querySelectorAll('*')]);
+
+/** Niszczy instancje w poddrzewie odłączonym od dokumentu — od najgłębszych elementów. */
+function release(root) {
+  if (!liveCount || root.isConnected) return;
+  for (const el of subtree(root).reverse()) {
+    const map = store.get(el);
+    if (!map || el.isConnected || el.closest(`[${PERSIST}]`)) continue;
+    for (const [name, instance] of [...map]) {
+      if (map.get(name) !== instance) continue;
+      try {
+        instance.destroy();
+      } catch (error) {
+        console.error(`[Plossy] ${name}:`, error);
+      }
+      keep(instance);
+    }
+  }
+}
+
+/** Poddrzewa usunięte z DOM — sprawdzane po zakończeniu bieżącego zadania. */
+const removed = new Set();
+let releaseTimer = 0;
+
+function flushRemoved() {
+  releaseTimer = 0;
+  const roots = [...removed];
+  removed.clear();
+  // Element przeniesiony (albo wstawiony z powrotem w tym samym zadaniu) jest już w dokumencie — zostaje.
+  if (config.autoDestroy) roots.forEach(release);
 }
 
 /** Rejestruje komponent i udostępnia go jako Plossy.nazwa(element, opcje). */
@@ -182,8 +338,12 @@ export function register(name, Class) {
   return Class;
 }
 
-/** Inicjalizuje komponenty w `root` (wywoływane automatycznie). */
+/**
+ * Inicjalizuje komponenty w `root` (wywoływane automatycznie). Najpierw przywraca
+ * instancje zniszczone po odłączeniu elementów (z ich pierwotnymi opcjami).
+ */
 export function scan(root = document) {
+  if (dormantCount) subtree(root).forEach((el) => wake(el));
   if (!selector) return;
   const nodes = [...root.querySelectorAll(selector)];
   if (root instanceof Element && root.matches(selector)) nodes.unshift(root);
@@ -207,10 +367,21 @@ export function start() {
     scan(document);
     new MutationObserver((records) => {
       for (const record of records) {
+        // Dzieci usunięte z kontenera data-pl-persist też są chronione.
+        if (config.autoDestroy && !record.target.closest?.(`[${PERSIST}]`)) {
+          for (const node of record.removedNodes) {
+            if (node.nodeType === 1) removed.add(node);
+          }
+        }
         for (const node of record.addedNodes) {
-          if (node.nodeType === 1) scan(node);
+          // Węzeł dodany i od razu usunięty nie jest inicjalizowany.
+          if (node.nodeType === 1 && node.isConnected) scan(node);
         }
       }
+      // Niszczenie po zakończeniu zadania: element przeniesiony albo wstawiony z powrotem w tym samym
+      // zadaniu (także po await na rozwiązanej obietnicy) zachowuje instancję. Odłączenie na czas
+      // sieci / timera / zdarzenia kończy się destroy() i przywróceniem — chyba że jest data-pl-persist.
+      if (removed.size && !releaseTimer) releaseTimer = setTimeout(flushRemoved);
     }).observe(document.documentElement, { childList: true, subtree: true });
   };
   if (document.readyState === 'loading') {
@@ -417,6 +588,7 @@ Object.assign(api, {
   register,
   scan,
   getInstance,
+  config,
   Component,
   util: {
     $,

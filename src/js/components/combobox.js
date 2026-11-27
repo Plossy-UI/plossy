@@ -36,7 +36,7 @@ class Combobox extends Component {
     highlight: true, // wyróżnia dopasowany fragment
     closeOnSelect: null, // domyślnie: true dla pojedynczego wyboru
     options: null, // lista pozycji (JS)
-    source: null, // funkcja async (q) => [...] lub adres URL (doklejane ?q)
+    source: null, // funkcja async (q, { signal }) => [...] lub adres URL (doklejane ?q)
     minLength: 0, // minimalna długość zapytania dla `source`
     delay: 220, // opóźnienie zapytań `source` (ms)
     placement: 'bottom-start',
@@ -269,14 +269,17 @@ class Combobox extends Component {
     if (this.isSelect) {
       // Fokus na ukrytym <select> (np. klik w <label>) przechodzi na pole.
       this.on(this.el, 'focus', () => input.focus());
-      this.on(this.el.form, 'reset', () => setTimeout(() => this.refresh()));
+      this.on(this.el.form, 'reset', () => setTimeout(() => !this.signal.aborted && this.refresh()));
     } else {
       this.on(input, 'change', () => {
         if (!this.syncing) this.emit('change', { value: input.value, item: null });
       });
     }
 
-    this.load = debounce((query) => this.fetch(query), options.delay);
+    // Odroczone zapytanie z poprzedniego „życia" instancji nie może już wystartować.
+    const { signal } = this;
+    this.load = debounce((query) => !signal.aborted && this.fetch(query), options.delay);
+    this.onDestroy(() => clearTimeout(this.typedTimer));
   }
 
   // ── Wartość ─────────────────────────────────────────────────────────────
@@ -463,20 +466,22 @@ class Combobox extends Component {
   async fetch(query) {
     const { options } = this;
     const token = ++this.request;
+    // destroy() przerywa zapytanie, a odpowiedź spóźniona względem destroy() / ponownego init() jest odrzucana.
+    const { signal } = this;
     try {
       const source = options.source;
       const result =
         typeof source === 'function'
-          ? await source(query)
-          : await fetch(`${source}${encodeURIComponent(query)}`).then((response) => response.json());
-      if (token !== this.request) return;
+          ? await source(query, { signal })
+          : await fetch(`${source}${encodeURIComponent(query)}`, { signal }).then((response) => response.json());
+      if (signal.aborted || token !== this.request) return;
       const items = normalize(result);
       // Zachowaj obiekty już wybranych pozycji.
       this.items = items.map((item) => this.selected.find((other) => other.value === item.value) || item);
       this.setLoading(false);
       if (this.isOpen) this.renderList(null, undefined, true);
     } catch (error) {
-      if (token !== this.request) return;
+      if (signal.aborted || token !== this.request) return;
       this.setLoading(false);
       this.renderMessage('Nie udało się pobrać wyników');
       this.emit('error', { error });
@@ -746,8 +751,9 @@ class Combobox extends Component {
     if (this.isSelect) this.renderValue();
     this.emit('close');
     list.classList.add('pl-combobox-list-out');
+    const { signal } = this;
     await animationsDone(list);
-    if (this.isOpen) return;
+    if (signal.aborted || this.isOpen) return;
     this.stopPlace?.();
     this.stopPlace = null;
     list.classList.remove('pl-combobox-list-out');

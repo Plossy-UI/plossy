@@ -41,6 +41,38 @@ modal.show();
 Plossy.accordion(document.querySelector('.faq'), { multiple: true });
 ```
 
+## Cykl życia
+
+Gdy element komponentu zostanie usunięty z dokumentu (podmiana treści z AJAX-a, przejście w aplikacji SPA, `remove()`), Plossy sam wywoła `destroy()` — dla wszystkich instancji w usuniętym fragmencie, także tych utworzonych z kodu. Odpinane są nasłuchy, zatrzymywane obserwatory i liczniki, usuwane elementy pływające (np. dymki).
+
+- **Przeniesienie nie niszczy.** Element przeniesiony w inne miejsce (`append`, sortowanie, filtrowanie) zachowuje instancję. Dotyczy to także elementu odłączonego i wstawionego z powrotem w tym samym zadaniu — również po `await` na obietnicy, która jest już rozwiązana. Jeśli między odłączeniem a powrotem czekasz na sieć, timer, klatkę animacji lub zdarzenie, instancja zostanie zniszczona i przywrócona (patrz niżej) — chyba że użyjesz `data-pl-persist`.
+- **Powrót do dokumentu.** Element odłączony na dłużej (np. na czas zapytania AJAX) i wstawiony ponownie odzyskuje tę samą instancję z pierwotnymi opcjami — referencja trzymana w kodzie dalej działa. Instancja uruchamia się jednak od nowa: to, co jest w Twoim HTML-u (wartości pól, zaznaczenia), zostaje, ale stan samego komponentu wraca do początkowego — karuzela do pierwszego slajdu, lista wybranych plików uploadu znika.
+- **Jawne `destroy()`** jest ostateczne: element po ponownym wstawieniu nie odzyska instancji z kodu (komponent z atrybutu `data-pl-…` uruchomi się od nowa). Kolejne wywołania `destroy()` nic nie robią.
+
+```js
+const slider = Plossy.slider('#polecane');
+const widok = document.querySelector('#widok');
+widok.remove();              // po chwili: slider.destroy() — automatycznie
+kontener.append(widok);      // ten sam obiekt `slider` działa dalej
+```
+
+Gdy widok ma przeżyć odłączenie razem ze stanem (np. zakładki SPA trzymane w pamięci, fragment koszyka odkładany na czas zapytania), oznacz atrybutem `data-pl-persist` sam odkładany element albo kontener, z którego wyjmujesz dzieci. Takich instancji Plossy nie niszczy — jeśli fragment nie wróci, wywołaj `destroy()` sam. Dawne zachowanie całej strony — bez automatycznego niszczenia — przywraca `Plossy.config.autoDestroy = false`.
+
+```html
+<section data-pl-persist>…</section>   <!-- odłączana sekcja zachowuje instancje -->
+<main data-pl-persist>…</main>         <!-- dzieci wyjmowane z <main> też -->
+```
+
+Atrybut można też ustawić tylko na czas operacji:
+
+```js
+koszyk.setAttribute('data-pl-persist', '');
+koszyk.remove();
+const html = await fetch('/koszyk').then((r) => r.text()); // dowolnie długo
+kontener.append(koszyk);
+koszyk.removeAttribute('data-pl-persist');
+```
+
 ## Zdarzenia
 
 Komponenty wysyłają zdarzenia z prefiksem `pl:`. Bąbelkują, więc można nasłuchiwać wyżej w drzewie; `event.detail.component` wskazuje instancję. Zdarzenia `before…` można anulować.
@@ -93,6 +125,8 @@ Plossy.register('clicker', Clicker);
 | `init()` | Punkt wejścia; tu ustawiaj stan instancji. |
 | `this.el`, `this.options` | Element i scalone opcje. |
 | `this.on(cel, typ, fn)` | Nasłuch sprzątany automatycznie w `destroy()`. |
+| `this.onDestroy(fn)` | Własne sprzątanie: timery, obserwatory, elementy dodane do `body`. |
+| `this.signal` | `AbortSignal` przerywany w `destroy()` — dla `fetch()` i sprawdzania po `await`. |
 | `this.emit(typ, detail, cancelable)` | Wysyła `pl:{typ}`; zwraca `false`, gdy anulowano. |
 
 ## TypeScript

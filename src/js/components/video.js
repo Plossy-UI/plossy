@@ -34,8 +34,9 @@ class Video extends Component {
         if (this.wanted) this.play();
       });
       // Ramka mogła załadować się przed inicjalizacją.
+      const { signal } = this;
       setTimeout(() => {
-        if (this.ready) return;
+        if (signal.aborted || this.ready) return;
         this.ready = true;
         if (this.wanted) this.play();
       }, 1500);

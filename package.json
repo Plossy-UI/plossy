@@ -1,6 +1,6 @@
 {
   "name": "plossy",
-  "version": "0.3.1",
+  "version": "0.4.0",
   "description": "Plossy — jeden framework, wiele osobowości. Biblioteka komponentów UI (CSS + vanilla JS) z przełączanymi stylami, motywami i akcentami.",
   "type": "module",
   "license": "MIT",

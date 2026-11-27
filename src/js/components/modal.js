@@ -1,4 +1,4 @@
-import { Component, register, api, $, uid, lockScroll, unlockScroll, animateClass } from '../core.js';
+import { Component, register, api, $, uid, getInstance, scan, lockScroll, unlockScroll, animateClass } from '../core.js';
 
 /**
  * Modal
@@ -145,8 +145,10 @@ export class Overlay extends Component {
       [...opened].filter((other) => other !== this && !other.el.contains(el)).forEach((other) => other.hide());
     }
 
-    this.opener = opener instanceof Element ? opener : document.activeElement;
     if (!el.isConnected) document.body.append(el);
+    // Instancja zniszczona po odłączeniu okna wraca do życia, zanim ustawimy jej stan.
+    if (getInstance(el, this.constructor.componentName) !== this) scan(el);
+    this.opener = opener instanceof Element ? opener : document.activeElement;
     el.classList.remove('pl-closing');
     if (el.open) el.close(); // otwarty atrybutem `open` — przełączamy w tryb modalny
     this.state = 'open';
@@ -178,7 +180,11 @@ export class Overlay extends Component {
     this.state = 'closing';
     this.el.classList.add('pl-closing');
     this.emit('hide');
-    this.closing = settle([this.el, this.panel]).then(() => this.finish());
+    const { signal } = this;
+    // Po destroy() okno domknęło się już w finish(true) — spóźnione domknięcie nie może zamknąć nowego otwarcia.
+    this.closing = settle([this.el, this.panel]).then(() => {
+      if (!signal.aborted) this.finish();
+    });
     return this.closing;
   }
 

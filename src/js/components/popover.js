@@ -270,6 +270,7 @@ class Popover extends Component {
     });
 
     const token = ++this.token;
+    const { signal } = this;
     this.isOpen = true;
     open.push(this);
 
@@ -289,7 +290,7 @@ class Popover extends Component {
 
     this.emit('show');
     animationsDone(pop).then(() => {
-      if (token === this.token && this.isOpen) this.emit('shown');
+      if (!signal.aborted && token === this.token && this.isOpen) this.emit('shown');
     });
   }
 
@@ -306,6 +307,7 @@ class Popover extends Component {
     });
 
     const token = ++this.token;
+    const { signal } = this;
     const hadFocus = pop.contains(document.activeElement);
     this.isOpen = false;
     const index = open.indexOf(this);
@@ -324,7 +326,8 @@ class Popover extends Component {
     pop.classList.remove('pl-open');
     this.emit('hide');
     await animationsDone(pop);
-    if (token !== this.token) return;
+    // Po destroy() (także przed ponownym init()) spóźnione zamknięcie nic nie robi.
+    if (signal.aborted || token !== this.token) return;
     this.teardown();
     this.emit('hidden');
   }

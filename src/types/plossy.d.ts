@@ -40,14 +40,30 @@ export class Component<O = Record<string, any>> {
 
   /** Punkt wejścia komponentu — nadpisywany w klasach potomnych. */
   init(): void;
+  /** Sygnał bieżącego „życia" instancji: przerywany w `destroy()`, nowy po ponownym `init()`. */
+  readonly signal: AbortSignal;
   /** `addEventListener` z automatycznym sprzątaniem w `destroy()`. Zwraca funkcję odpinającą. */
   on(target: EventTarget | null | undefined, type: string, handler: (event: any) => void, options?: boolean | AddEventListenerOptions): () => void;
-  /** Rejestruje funkcję sprzątającą wywoływaną w `destroy()`. */
+  /** Rejestruje funkcję sprzątającą wywoływaną w `destroy()` (po `destroy()` — wywołuje ją od razu). */
   onDestroy(fn: () => void): void;
   /** Wysyła zdarzenie `pl:{type}` na elemencie. Zwraca `false`, gdy anulowano je przez `preventDefault()`. */
   emit(type: string, detail?: Record<string, any>, cancelable?: boolean): boolean;
-  /** Odpina zdarzenia i usuwa instancję z elementu. */
+  /**
+   * Odpina zdarzenia i usuwa instancję z elementu. Kolejne wywołania nic nie robią.
+   * Wywoływane automatycznie, gdy element zostanie usunięty z dokumentu (zob. `PlossyConfig.autoDestroy`).
+   */
   destroy(): void;
+}
+
+/** Ustawienia globalne — `Plossy.config`. */
+export interface PlossyConfig {
+  /**
+   * Niszczy instancje elementów usuniętych z dokumentu (domyślnie `true`). Elementy przenoszone
+   * w obrębie DOM zachowują instancje; po ponownym wstawieniu elementu wraca ta sama instancja.
+   * Nie są niszczone elementy z atrybutem `data-pl-persist` (i ich potomkowie) ani dzieci wyjmowane
+   * z kontenera z tym atrybutem. `false` — dawne zachowanie.
+   */
+  autoDestroy: boolean;
 }
 
 // ── Opcje komponentów ─────────────────────────────────────────────────────
@@ -97,7 +113,10 @@ export interface ComboboxOptions {
   /** Lista pozycji (JS) */
   options?: Array<string | ComboboxItem> | string | null;
   /** Funkcja async (q) => [...] lub adres URL (doklejane ?q) */
-  source?: string | ((query: string) => ComboboxItem[] | string[] | Promise<ComboboxItem[] | string[]>) | null;
+  source?:
+    | string
+    | ((query: string, context: { signal: AbortSignal }) => ComboboxItem[] | string[] | Promise<ComboboxItem[] | string[]>)
+    | null;
   /** Minimalna długość zapytania dla `source`. */
   minLength?: number;
   /** Opóźnienie zapytań `source` (ms) */
@@ -1101,6 +1120,8 @@ export interface PlossyApi {
   /** Inicjalizuje komponenty w podanym fragmencie (zwykle dzieje się to samo). */
   scan(root?: ParentNode): void;
   getInstance<C = Component<any>>(el: Element, name: string): C | null;
+  /** Ustawienia globalne. */
+  config: PlossyConfig;
   Component: typeof Component;
   util: PlossyUtil;
 
@@ -1117,6 +1138,7 @@ export const api: PlossyApi;
 export const register: PlossyApi['register'];
 export const scan: PlossyApi['scan'];
 export const getInstance: PlossyApi['getInstance'];
+export const config: PlossyConfig;
 /** Uruchamia automatyczną inicjalizację (przy imporcie w przeglądarce dzieje się to samo). */
 export function start(): void;
 

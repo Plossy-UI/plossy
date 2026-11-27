@@ -781,8 +781,9 @@ class Datepicker extends Component {
     if (focus || picker.contains(document.activeElement)) el.focus({ preventScroll: true });
     this.emit('close');
     picker.classList.add('pl-datepicker-out');
+    const { signal } = this;
     await animationsDone(picker);
-    if (this.isOpen) return;
+    if (signal.aborted || this.isOpen) return;
     this.stopPlace?.();
     this.stopPlace = null;
     picker.classList.remove('pl-datepicker-out');

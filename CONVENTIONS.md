@@ -72,7 +72,7 @@ export default Alert;
 
 - **Nie używaj pól klasy dla stanu instancji** (`foo = 1`) — konstruktor bazowy wywołuje `init()` wcześniej, pola by go nadpisały. Stan ustawiaj w `init()`.
 - Opcje z atrybutu: `data-pl-nazwa="klucz: wartość; inny-klucz: 2"` (kebab → camelCase, typy rozpoznawane automatycznie) lub JSON. Parsowane są tylko klucze obecne w `defaults`.
-- `this.el`, `this.options`, `this.on(target, type, handler, opts)` (sprząta się w `destroy()`), `this.onDestroy(fn)`, `this.emit(type, detail, cancelable)` → zdarzenie `pl:{type}` bąbelkujące z `detail.component`; zwraca `false` po `preventDefault()`.
+- `this.el`, `this.options`, `this.on(target, type, handler, opts)` (sprząta się w `destroy()`), `this.onDestroy(fn)`, `this.signal` (AbortSignal przerywany w `destroy()`), `this.emit(type, detail, cancelable)` → zdarzenie `pl:{type}` bąbelkujące z `detail.component`; zwraca `false` po `preventDefault()`.
 - Nazwy zdarzeń: `beforeshow`, `show`, `shown`, `beforehide`, `hide`, `hidden` oraz własne (`change`, `select`, `move`, …).
 - Publiczne metody: `show()`, `hide()`, `toggle()` itd. Instancja: `Plossy.nazwa(elementLubSelektor, opcje)`.
 - Funkcje statyczne (np. `Plossy.notification({...})`) dopisz po `register`: `import { api } …; api.notification = …`.
@@ -81,6 +81,7 @@ export default Alert;
 - Modale i panele boczne to natywne `<dialog>` + `showModal()`; animację wyjścia rób klasą, po `animationsDone()` wywołaj `close()`.
 - Dostępność: role/ARIA, obsługa klawiatury (Esc, strzałki, Home/End), zarządzanie fokusem.
 - Komponent musi działać także dla elementów dodanych dynamicznie i nie może wyrzucać błędów, gdy brakuje opcjonalnych części.
+- `destroy()` wywołuje się samo, gdy element zniknie z dokumentu, a po jego powrocie ta sama instancja dostaje ponownie `init()`. Dlatego wszystko, co komponent dodaje (nasłuchy na `window` / `document`, obserwatory, liczniki, elementy w `body`), sprzątaj przez `this.on()` / `this.onDestroy()`, a `init()` pisz tak, by mógł się wykonać drugi raz. Kontynuacje asynchroniczne (`await`, `.then`, `setTimeout`) zmieniające stan instancji poprzedź `const { signal } = this;` i po czekaniu sprawdź `if (signal.aborted) return;` — liczniki typu `this.token` zerowane w `init()` nie wystarczą. `this.signal` przekazuj też do `fetch()`.
 - Komentarze i komunikaty po polsku, zwięźle.
 
 ## Style (presety)
@@ -156,6 +157,7 @@ Krótki opis.
 | `tests/kontrast.spec.mjs` | Kontrast par tokenów kolorów (min. 4.5:1) w każdym stylu i motywie. |
 | `tests/dostepnosc.spec.mjs` | Audyt axe-core (WCAG 2.1 AA). Znane naruszenia: `tests/znane-naruszenia/`. |
 | `tests/zachowanie.spec.mjs` | Zachowanie komponentów: klawiatura, fokus, zdarzenia, animacje. |
+| `tests/cykl-zycia.spec.mjs` | Cykl życia: automatyczne `destroy()` po usunięciu z DOM, przenoszenie, ponowne montowanie, zwalnianie zasobów. |
 | `tests/wyglad.spec.mjs` | Porównanie zrzutów ekranu z wzorcami w `tests/zrzuty/`. |
 
 - Wzorce zrzutów są lokalne (nie w repozytorium). Przed zmianą wyglądu zapisz je: `npm run test:zrzuty`; po zmianie `npm test` pokaże różnice (raport: `npx playwright show-report tests/.raport`).
