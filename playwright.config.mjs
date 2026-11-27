@@ -8,6 +8,9 @@ export default defineConfig({
   outputDir: 'tests/.wyniki',
   snapshotPathTemplate: 'tests/zrzuty/{arg}{ext}',
   fullyParallel: true,
+  // Domyślnie tylko 2 przeglądarki naraz — pełna równoległość potrafi zawiesić komputer,
+  // na którym równocześnie się pracuje. Mocniejsza maszyna lub CI: PW_WORKERS=8 npm test.
+  workers: Number(process.env.PW_WORKERS) || 2,
   timeout: 45_000,
   retries: 0,
   reporter: [['list'], ['html', { outputFolder: 'tests/.raport', open: 'never' }]],

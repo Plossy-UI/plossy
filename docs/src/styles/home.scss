@@ -509,21 +509,39 @@
 }
 
 // ── Indeks komponentów ──────────────────────────────────────────────────
+// Spis komponentów: kolumny tekstu zamiast siatki. Grupy mają bardzo różną długość (7–26 pozycji),
+// więc w siatce krótkie grupy zostawiały puste pola; kolumny układają je ciasno jedna pod drugą.
 .home-index {
-  display: grid;
-  grid-template-columns: repeat(2, 1fr);
-  gap: 2.5rem 1.5rem;
+  columns: 2;
+  column-gap: 1.5rem;
 
   @include up(s) {
-    grid-template-columns: repeat(3, 1fr);
+    columns: 3;
+    column-gap: 2rem;
   }
 
+  @include up(m) {
+    columns: 4;
+  }
+
+  // Na szerokim ekranie każda grupa ma własną kolumnę.
   @include up(l) {
+    display: grid;
     grid-template-columns: repeat(7, 1fr);
+    gap: 1.5rem;
+    columns: auto;
   }
 }
 
 .home-index-group {
+  // Grupa nie dzieli się między kolumny.
+  break-inside: avoid;
+  margin-bottom: 2.25rem;
+
+  @include up(l) {
+    margin-bottom: 0;
+  }
+
   h3 {
     display: flex;
     align-items: baseline;
