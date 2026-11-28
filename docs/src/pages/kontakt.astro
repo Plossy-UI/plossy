@@ -1,0 +1,178 @@
+---
+// Kontakt — formularz wysyłany przez /kontakt.php (docs/public). Działa tylko na serwerze z PHP.
+import Base from '../layouts/Base.astro';
+---
+
+<Base title="Kontakt" description="Napisz do autorki Plossy — pytanie, zgłoszenie błędu albo pomysł na komponent.">
+  <main id="main" class="kontakt">
+    <header>
+      <p class="pl-heading-eyebrow">Kontakt</p>
+      <h1 class="kontakt-title">Napisz <em>do mnie</em>.</h1>
+      <p class="kontakt-lead">Pytanie, błąd, pomysł na komponent? Odpiszę na adres, który podasz.</p>
+      <p class="kontakt-author"><span data-pl-icon="user"></span> <strong>Katarzyna Płoska</strong></p>
+    </header>
+
+    <form class="kontakt-form" action="/kontakt.php" method="post" data-pl-form-validate data-kontakt-form>
+      <div class="pl-form-field">
+        <label class="pl-form-label pl-form-required" for="kontakt-name">Imię</label>
+        <input class="pl-input" id="kontakt-name" name="name" type="text" required maxlength="100" autocomplete="name">
+      </div>
+      <div class="pl-form-field">
+        <label class="pl-form-label pl-form-required" for="kontakt-email">E-mail</label>
+        <div class="pl-form-icon">
+          <span data-pl-icon="mail"></span>
+          <input class="pl-input" id="kontakt-email" name="email" type="email" required maxlength="200" autocomplete="email">
+        </div>
+      </div>
+      <div class="pl-form-field">
+        <label class="pl-form-label pl-form-required" for="kontakt-message">Wiadomość</label>
+        <textarea class="pl-textarea" id="kontakt-message" name="message" rows="6" required minlength="10" maxlength="5000"></textarea>
+      </div>
+
+      <!-- Pułapka na boty: ludzie tego pola nie widzą i go nie wypełniają. -->
+      <div class="kontakt-trap" aria-hidden="true">
+        <label for="kontakt-website">Strona www</label>
+        <input id="kontakt-website" name="website" type="text" tabindex="-1" autocomplete="off" data-pl-novalidate>
+      </div>
+
+      <div class="pl-form-field">
+        <label class="pl-form-label pl-form-required" for="kontakt-captcha">Ile to <span data-kontakt-question>…</span>?</label>
+        <div class="kontakt-captcha">
+          <input class="pl-input pl-form-width-xsmall" id="kontakt-captcha" name="captcha" type="text" inputmode="numeric" required pattern="[0-9]{1,3}" autocomplete="off" data-pl-message-pattern="Wpisz sam wynik, cyframi.">
+          <button class="pl-button pl-button-ghost pl-button-small" type="button" data-kontakt-new>
+            <span data-pl-icon="refresh-cw"></span> Inne działanie
+          </button>
+        </div>
+        <p class="pl-form-help">Proste sprawdzenie, że nie jesteś botem.</p>
+      </div>
+
+      <div class="kontakt-status" role="status" aria-live="polite" data-kontakt-status></div>
+
+      <div class="pl-form-actions">
+        <button class="pl-button pl-button-primary" type="submit">
+          <span data-pl-icon="send"></span> Wyślij wiadomość
+        </button>
+      </div>
+    </form>
+  </main>
+</Base>
+
+<style lang="scss" is:global>
+  .kontakt {
+    max-width: 40rem;
+    margin: 0 auto;
+    padding: clamp(1.75rem, 5vw, 3.5rem) 1.25rem 5rem;
+  }
+
+  .kontakt-title {
+    margin: 0.4rem 0 0.75rem;
+    font-size: clamp(2rem, 4.5vw, 3.25rem);
+    line-height: 1.05;
+    letter-spacing: var(--pl-display-tracking, -0.03em);
+
+    em {
+      font-style: normal;
+      color: var(--pl-primary-text);
+    }
+  }
+
+  .kontakt-lead {
+    margin: 0 0 1rem;
+    font-size: var(--pl-text-lg);
+    color: var(--pl-text-muted);
+  }
+
+  .kontakt-author {
+    display: flex;
+    align-items: center;
+    gap: 0.4rem;
+    margin: 0 0 2.25rem;
+    color: var(--pl-text-muted);
+  }
+
+  .kontakt-captcha {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 0.75rem;
+  }
+
+  .kontakt-trap {
+    position: absolute;
+    left: -10000px;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+  }
+
+  .kontakt-status:empty {
+    display: none;
+  }
+</style>
+
+<script>
+  // Pytanie pobierane z serwera (wynik zna tylko on); wysyłka bez przeładowania strony.
+  function setup() {
+    const form = document.querySelector<HTMLFormElement>('[data-kontakt-form]');
+    if (!form || form.dataset.ready) return;
+    form.dataset.ready = 'true';
+
+    const endpoint = form.getAttribute('action')!;
+    const question = form.querySelector<HTMLElement>('[data-kontakt-question]')!;
+    const answer = form.querySelector<HTMLInputElement>('[name="captcha"]')!;
+    const status = form.querySelector<HTMLElement>('[data-kontakt-status]')!;
+    const submit = form.querySelector<HTMLButtonElement>('[type="submit"]')!;
+
+    const show = (tone: 'success' | 'danger', text: string) => {
+      const alert = document.createElement('div');
+      alert.className = `pl-alert pl-alert-${tone}`;
+      const body = document.createElement('div');
+      body.className = 'pl-alert-body';
+      body.textContent = text;
+      alert.append(body);
+      status.replaceChildren(alert);
+    };
+
+    const ask = async () => {
+      question.textContent = '…';
+      answer.value = '';
+      try {
+        const response = await fetch(endpoint, { headers: { Accept: 'application/json' }, cache: 'no-store' });
+        const data = await response.json();
+        question.textContent = data.question;
+      } catch {
+        question.textContent = '?';
+        show('danger', 'Nie udało się połączyć z serwerem. Odśwież stronę albo spróbuj później.');
+      }
+    };
+
+    form.addEventListener('pl:valid', async (event) => {
+      (event as CustomEvent).detail.originalEvent.preventDefault();
+      submit.disabled = true;
+      try {
+        const response = await fetch(endpoint, { method: 'POST', body: new FormData(form), headers: { Accept: 'application/json' } });
+        const data = await response.json().catch(() => ({}));
+        if (response.ok) {
+          form.reset();
+          show('success', 'Dziękuję! Wiadomość wysłana — odpiszę najszybciej, jak się da.');
+        } else {
+          show('danger', data.message || 'Nie udało się wysłać wiadomości. Spróbuj ponownie za chwilę.');
+        }
+      } catch {
+        show('danger', 'Nie udało się połączyć z serwerem. Spróbuj ponownie za chwilę.');
+      } finally {
+        submit.disabled = false;
+        ask();
+      }
+    });
+
+    form.querySelector('[data-kontakt-new]')!.addEventListener('click', () => {
+      ask();
+      answer.focus();
+    });
+    ask();
+  }
+
+  document.addEventListener('astro:page-load', setup);
+  setup();
+</script>

@@ -628,6 +628,15 @@
   padding-block: 2.5rem;
   font-size: var(--pl-text-sm);
   color: var(--pl-text-subtle);
+
+  a {
+    color: var(--pl-text-muted);
+    text-underline-offset: 0.2em;
+
+    &:hover {
+      color: var(--pl-text);
+    }
+  }
 }
 
 // Baloo Tamma 2 (styl Flat) ma litery osadzone wyżej w polu znaku — zakreślacz idzie za nimi.
